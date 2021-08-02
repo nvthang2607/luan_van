@@ -20,5 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 route::get('/hello',function(){
     $a='hello sang';
-    return $a;
+    return ['name' => $a,'old'=>12];
 });
