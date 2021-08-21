@@ -46,7 +46,7 @@ class CreateUsersTable extends Migration
                     'name' => $name,
                     'gender'=>$gender,
                     'email'=>$faker->unique()->email,
-                    'password'=>bcrypt($i),
+                    'password'=>bcrypt($i+1),
                     'phone' => $faker->phoneNumber,
                     'address' => $faker->address,
                     'isadmin' => $admin,

@@ -25,26 +25,32 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|confirmed|min:6',
+    public function register(Request $req) {
+        $validator = Validator::make($req->all(), [
+            'name' => 'required|string|between:2,50',
+            'gender' => 'required',
+            'email' => 'required|string|email|max:50|unique:users',
+            'password' => 'required|string|confirmed|min:8',
+            'phone'=>'required|numeric',
+            'address'=>'required',
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json(['errorCode'=> 1], 400);
         }
 
-        $user = User::create(array_merge(
-                    $validator->validated(),
-                    ['password' => bcrypt($request->password)]
-                ));
-
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user
-        ], 201);
+        $user=new User;
+        $user->name=$req->name;
+        $user->gender=$req->gender;
+        $user->email=$req->email;
+        $user->password=$req->password;
+        $user->address=$req->address;
+        $user->phone=$req->phone;
+        $user->isadmin=0;
+        $user->active=1;
+        if($user->Save()){
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
     }
 
     public function changepass(Request $request) {
@@ -77,15 +83,15 @@ class AuthController extends Controller
     public function login(Request $request){
     	$validator = Validator::make($request->all(), [
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['errorCode'=> 1], 400);
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['errorCode'=> 2], 422);
         }
 
         return $this->createNewToken($token);
@@ -131,10 +137,11 @@ class AuthController extends Controller
      */
     protected function createNewToken($token){
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'errorCode'=> null,
+            'data' => ['accessToken'=>$token],
+            //'token_type' => 'bearer',
+            //'expires_in' => auth()->factory()->getTTL() * 60,
+            //'user' => auth()->user()
         ]);
     }
 
