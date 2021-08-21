@@ -15,10 +15,10 @@ class AddressController extends Controller
         $data=[];
         $u=0;
         foreach($city as $i){
-            $data=['id'=>$i->matp,'name'=> $i->name];
+            $data[$u]=['id'=>$i->matp,'name'=> $i->name];
             $u++;
         }
-        return response()->json(['errorCode'=> null,'data'=>$city], 200);
+        return response()->json(['errorCode'=> null,'data'=>$data], 200);
         echo $city;
     }
     public function district_select_list(Request $req){
