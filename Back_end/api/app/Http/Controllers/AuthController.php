@@ -14,6 +14,7 @@ class AuthController extends Controller
      *
      * @return void
      */
+
     public function __construct() {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
@@ -30,7 +31,7 @@ class AuthController extends Controller
             'name' => 'required|string|between:2,50',
             'gender' => 'required',
             'email' => 'required|string|email|max:50|unique:users',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|min:8',
             'phone'=>'required|numeric',
             'address'=>'required',
         ]);
@@ -38,12 +39,11 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json(['errorCode'=> 1], 400);
         }
-
         $user=new User;
         $user->name=$req->name;
         $user->gender=$req->gender;
         $user->email=$req->email;
-        $user->password=$req->password;
+        $user->password=bcrypt($req->password);
         $user->address=$req->address;
         $user->phone=$req->phone;
         $user->isadmin=0;
