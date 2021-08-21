@@ -11,8 +11,15 @@ class AddressController extends Controller
 {
     //
     public function city_select_list(Request $req){
-        $city=City::all()->pluck('matp','name');
-        return response()->json(['errorCode'=> null,'data'=>$city], 200);
+        $city=City::all('matp','name');
+        $data=[];
+        $u=0;
+        foreach($city as $i){
+            $data[$u]=['id'=>$i->matp,'name'=> $i->name];
+            $u++;
+        }
+        return response()->json(['errorCode'=> null,'data'=>$data], 200);
+        echo $city;
     }
     public function district_select_list(Request $req){
         $validator = Validator::make($req->all(), [
@@ -21,8 +28,14 @@ class AddressController extends Controller
         if($validator->fails()){
             return response()->json(['errorCode'=> 1], 400);
         }
-        $district=District::where('matp',$req->idCity)->pluck('maqh','name');
-        return response()->json(['errorCode'=> null,'data'=>$district], 200);
+        $district=District::where('matp',$req->idCity)->get(['name','maqh']);
+        $data=[];
+        $u=0;
+        foreach($district as $i){
+            $data[$u]=['id'=>$i->maqh,'name'=> $i->name];
+            $u++;
+        }
+        return response()->json(['errorCode'=> null,'data'=>$data], 200);
     }
     public function commune_select_list(Request $req){
         $validator = Validator::make($req->all(), [
@@ -32,7 +45,13 @@ class AddressController extends Controller
         if($validator->fails()){
             return response()->json(['errorCode'=> 1], 400);
         }
-        $commune=Commune::where('maqh',$req->idDistrict)->pluck('xaid','name');
-        return response()->json(['errorCode'=> null,'data'=>$commune], 200);
+        $commune=Commune::where('maqh',$req->idDistrict)->get(['xaid','name']);
+        $data=[];
+        $u=0;
+        foreach($commune as $i){
+            $data[$u]=['id'=>$i->xaid,'name'=> $i->name];
+            $u++;
+        }
+        return response()->json(['errorCode'=> null,'data'=>$data], 200);
     }
 }
