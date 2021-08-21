@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Ratting;
 use Validator;
 class AuthController extends Controller
 {
@@ -16,7 +17,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','ratting']]);
     }
 
 
@@ -68,7 +69,6 @@ class AuthController extends Controller
         $user = User::find($id)->update(
             ['password' => bcrypt($request->new_password)]
         );
-
         return response()->json([
             'message' => 'User successfully change password',
             'user' => $user
@@ -143,6 +143,22 @@ class AuthController extends Controller
             //'expires_in' => auth()->factory()->getTTL() * 60,
             //'user' => auth()->user()
         ]);
+    }
+    public function ratting(Request $req){
+        $a=[];
+        $ratting=Ratting::all();
+        // foreach($ratting as $rate){
+        //     echo $rate;
+        // }
+        $n=count($ratting);
+        $n2=ceil($n/3)*2;
+        $n3=$n-$n2;
+        //echo $n2;
+        $ratting1=Ratting::all()->take($n2);
+        $ratting2=Ratting::all()->skip($n3);
+        // echo $ratting1;
+        // echo $ratting2;
+        
     }
 
 }

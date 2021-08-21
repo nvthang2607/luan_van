@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AddressController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,4 +29,14 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);    
     Route::post('/changepass', [AuthController::class, 'changepass']); 
+    Route::get('/ratting', [AuthController::class, 'ratting']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'address'
+
+], function ($router) {
+    Route::get('/city/select_list', [AddressController::class, 'city_select_list']); 
+    Route::post('/district/select_list', [AddressController::class, 'district_select_list']); 
+    Route::post('/commune/select_list', [AddressController::class, 'commune_select_list']); 
 });
