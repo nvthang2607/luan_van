@@ -87,11 +87,11 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errorCode'=> 1], 400);
+            return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['errorCode'=> 2], 422);
+            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
 
         return $this->createNewToken($token);
