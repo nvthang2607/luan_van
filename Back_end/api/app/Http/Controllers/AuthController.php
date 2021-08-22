@@ -124,7 +124,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function profile() {
+    public function profile(){
         return response()->json(['errorCode'=> null, auth()->user()]);
     }
 
