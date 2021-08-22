@@ -14,7 +14,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import KeyboardArrowLeftRoundedIcon from '@material-ui/icons/KeyboardArrowLeftRounded';
-import Logo from '../../public/images/logo1.png';
+import 'react-toastify/dist/ReactToastify.css';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
@@ -40,10 +40,15 @@ import {
 	Button,
 	FormHelperText,
 } from '@material-ui/core';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { Message, Visibility, VisibilityOff } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
-import { TypeLogin } from '../../PropTypes/Account/Account';
 import { LoginPost } from '../../api/LoginAPI';
+import { toast, ToastContainer } from 'react-toastify';
+import { LoginDTO } from '../../DTO/Login/LoginDTO';
+interface loginprops {
+	receivePropsLogin?: (result: boolean) => void;
+	resultApiLogin?: (result: any) => void;
+}
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		bgHeader: {
@@ -94,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 	})
 );
-const Login: React.FC = () => {
+const Login: React.FC<loginprops> = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const schema = yup.object().shape({
@@ -109,9 +114,14 @@ const Login: React.FC = () => {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const onSubmit = async (data: TypeLogin) => {
+	const onSubmit = async (data: LoginDTO) => {
 		const res = await LoginPost({ email: data.email, password: data.password });
-		console.log(res);
+		if (res?.errorCode || res?.errorCode === null) {
+			props?.resultApiLogin?.(res.errorCode);
+		}
+		if (res?.data.accessToken) {
+			window.localStorage.setItem('token', res.data.accessToken || '');
+		}
 	};
 	const [state, setState] = React.useState({
 		showPwdLogin: false,
@@ -120,7 +130,7 @@ const Login: React.FC = () => {
 	const handleClickShowPassword = () => {
 		setState({ ...state, showPwdLogin: !state.showPwdLogin });
 	};
-
+	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Grid container spacing={3}>
@@ -192,6 +202,7 @@ const Login: React.FC = () => {
 						}}
 						fullWidth
 						type="submit"
+						disabled={isSubmitting}
 					>
 						đăng nhập
 					</Button>
@@ -222,6 +233,7 @@ const Login: React.FC = () => {
 						}}
 						fullWidth
 						startIcon={<img src={ggIcon} alt="google" width="35px" />}
+						disabled={isSubmitting}
 					>
 						đăng nhập bằng google
 					</Button>
@@ -239,6 +251,7 @@ const Login: React.FC = () => {
 						}}
 						fullWidth
 						startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
+						disabled={isSubmitting}
 					>
 						đăng nhập bằng facebook
 					</Button>

@@ -43,12 +43,18 @@ import {
 	FormControlLabel,
 	Radio,
 	RadioGroup,
+	CircularProgress,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { Controller, useForm } from 'react-hook-form';
-import { TypeLogin } from '../../PropTypes/Account/Account';
 import axios from 'axios';
-import { AddressGet } from '../../api/Address';
+import { CityGet, CommunePost, DistrictPost } from '../../api/Address';
+import { RegisterDTO } from '../../DTO/Register/RegisterDTO';
+import { RegisterPost } from '../../api/RegisterAPI';
+interface registerProps {
+	receivePropsRegister?: (result: boolean) => void;
+	resultApiRegister?: (result: any) => void;
+}
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		bgHeader: {
@@ -99,13 +105,15 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 	})
 );
-const Register: React.FC = () => {
+const Register: React.FC<registerProps> = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const schema = yup.object().shape({
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
 		name: yup.string().required('Name không để trống'),
 		address: yup.string().required('Address không để trống'),
+		district: yup.string().required('district không để trống'),
+		commune: yup.string().required('commune không để trống'),
 		password: yup.string().required('Mật khẩu không để trống'),
 		retypePassword: yup
 			.string()
@@ -126,36 +134,82 @@ const Register: React.FC = () => {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const onSubmit = (data: TypeLogin) => {
-		console.log(data);
+	const [progress, setProgress] = React.useState(false);
+	const onSubmit = async (data: any) => {
+		const dataRegister = {
+			name: data.name,
+			email: data.email,
+			password: data.password,
+			gender: data.gender,
+			address: data.commune + ' ' + data.district + ' ' + data.address,
+			phone: data.phone,
+		};
+		props?.receivePropsRegister?.(true);
+		setProgress(true);
+		const response = await RegisterPost(dataRegister);
+		if (response?.errorCode) {
+			props?.resultApiRegister?.(response.errorCode);
+			props?.receivePropsRegister?.(false);
+			setProgress(false);
+		} else if (response?.errorCode === null) {
+			console.log('dang nhap');
+			props?.receivePropsRegister?.(false);
+			setProgress(false);
+		}
 	};
 	const [state, setState] = React.useState({
-		showPwdLogin: false,
-		showPwdRegister: false,
+		showPwd: false,
+		showRetypePwd: false,
 	});
 	const handleClickShowPassword = () => {
-		setState({ ...state, showPwdLogin: !state.showPwdLogin });
+		setState({ ...state, showPwd: !state.showPwd });
+	};
+	const handleClickShowRetypePassword = () => {
+		setState({ ...state, showRetypePwd: !state.showRetypePwd });
 	};
 	const [data, setData] = React.useState<any>([]);
-	const [data1, setData1] = React.useState([
-		{ name: '12', id: '3' },
-		{ name: '12', id: '3' },
-	]);
+	const [openCity, setOpenCity] = React.useState(false);
+	const loadingCity = openCity && data.length === 0;
+	const ref: React.MutableRefObject<undefined> = React.useRef();
+
 	React.useEffect(() => {
 		const getData = async () => {
-			const response = await AddressGet();
-			const dataNew = response.data.map((item: any) => {
-				return {
-					name: item.name,
-					id: item.matp,
-				};
-			});
-			setData(dataNew);
+			setOpenCity(true);
+			const response = await CityGet();
+			setData(response.data);
 		};
 		getData();
 	}, []);
-	console.log(data1);
-	console.log(data);
+	const [dataDistrict, setDataDistrict] = React.useState<any>([]);
+	const [dataCommune, setDataCommune] = React.useState<any>([]);
+	const [idCity, setIdCity] = React.useState('');
+	const [idDistrict, setIdDistrict] = React.useState('');
+	const [idCommune, setIdCommune] = React.useState('');
+	const [openCommune, setOpenCommune] = React.useState(false);
+	const [openDistrict, setOpenDistrict] = React.useState(false);
+	const loadingCommune = openCommune && dataCommune.length === 0;
+	const loadingDistrict = openDistrict && dataDistrict.length === 0;
+	const onChangeCity = async (options: any) => {
+		if (options) {
+			setOpenCommune(false);
+			setOpenDistrict(true);
+			setDataDistrict([]);
+			setIdCity(options.id);
+			const getDistrict = await DistrictPost({ idCity: options.id });
+			setDataDistrict(getDistrict.data);
+			setDataCommune([]);
+		}
+	};
+	const onChangeDistrict = async (options: any) => {
+		if (options) {
+			setOpenCommune(true);
+			setDataCommune([]);
+			setIdCommune(options.id);
+			const getCommune = await CommunePost({ idDistrict: options.id });
+			setDataCommune(getCommune.data);
+		}
+	};
+	const onChangeCommune = (options: any) => {};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Grid container spacing={3}>
@@ -196,7 +250,7 @@ const Register: React.FC = () => {
 							{...register('password')}
 							id="psssword"
 							name="password"
-							type={state.showPwdLogin ? 'text' : 'password'}
+							type={state.showPwd ? 'text' : 'password'}
 							error={errors.password ? true : false}
 							//helperText={errors.password?.message}
 							//value={values.password}
@@ -209,7 +263,7 @@ const Register: React.FC = () => {
 										//onMouseDown={handleMouseDownPassword}
 										edge="end"
 									>
-										{state.showPwdLogin ? <Visibility /> : <VisibilityOff />}
+										{state.showPwd ? <Visibility /> : <VisibilityOff />}
 									</IconButton>
 								</InputAdornment>
 							}
@@ -228,7 +282,7 @@ const Register: React.FC = () => {
 							{...register('retypePassword')}
 							id="retypePassword"
 							name="retypePassword"
-							type={state.showPwdLogin ? 'text' : 'password'}
+							type={state.showRetypePwd ? 'text' : 'password'}
 							error={errors.retypePassword ? true : false}
 							//helperText={errors.password?.message}
 							//value={values.password}
@@ -237,11 +291,11 @@ const Register: React.FC = () => {
 								<InputAdornment position="end">
 									<IconButton
 										aria-label="toggle password visibility"
-										onClick={handleClickShowPassword}
+										onClick={handleClickShowRetypePassword}
 										//onMouseDown={handleMouseDownPassword}
 										edge="end"
 									>
-										{state.showPwdLogin ? <Visibility /> : <VisibilityOff />}
+										{state.showRetypePwd ? <Visibility /> : <VisibilityOff />}
 									</IconButton>
 								</InputAdornment>
 							}
@@ -258,16 +312,101 @@ const Register: React.FC = () => {
 					<Autocomplete
 						options={data}
 						{...register('address')}
+						onChange={(e, options: any) => onChangeCity(options)}
 						getOptionLabel={(option: any) => option.name}
-						getOptionSelected={(option, value) => option.id === option.id}
+						loading={loadingCity}
+						//getOptionSelected={(option, value) => option.id === option.id}
 						renderInput={(params) => (
 							<TextField
 								{...params}
+								label="City *"
 								variant="outlined"
 								name="address"
 								fullWidth
 								error={errors.address ? true : false}
 								helperText={errors.address?.message}
+								InputProps={{
+									...params.InputProps,
+									endAdornment: (
+										<React.Fragment>
+											{loadingCity ? <CircularProgress color="inherit" size={20} /> : null}
+											{params.InputProps.endAdornment}
+										</React.Fragment>
+									),
+								}}
+							/>
+						)}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					{/* <Typography variant="body1" gutterBottom className={classes.titleInput}>
+						District
+					</Typography> */}
+					<Autocomplete
+						options={dataDistrict}
+						{...register('district')}
+						onChange={(e, options: any) => onChangeDistrict(options)}
+						getOptionLabel={(option: any) => option.name}
+						loading={loadingDistrict}
+						//getOptionSelected={(option, value) => option.id === option.id}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								variant="outlined"
+								name="district"
+								label="District *"
+								fullWidth
+								error={errors.district ? true : false}
+								helperText={errors.district?.message}
+								InputProps={{
+									...params.InputProps,
+									endAdornment: (
+										<React.Fragment>
+											{loadingDistrict ? <CircularProgress color="inherit" size={20} /> : null}
+											{params.InputProps.endAdornment}
+										</React.Fragment>
+									),
+								}}
+							/>
+						)}
+					/>
+				</Grid>
+				<Grid item xs={12}>
+					{/* <Typography variant="body1" gutterBottom className={classes.titleInput}>
+						Commune
+					</Typography> */}
+					<Autocomplete
+						options={dataCommune}
+						{...register('commune')}
+						onChange={(e, options: any) => onChangeCommune(options)}
+						getOptionLabel={(option: any) => option.name}
+						//getOptionSelected={(option, value) => option.id === option.id}
+						// open={open}
+						// onOpen={() => {
+						// 	setOpen(true);
+						// }}
+						// onClose={() => {
+						// 	setOpen(false);
+						// }}
+						loading={loadingCommune}
+						renderInput={(params) => (
+							<TextField
+								{...params}
+								label="Commune *"
+								variant="outlined"
+								name="commune"
+								fullWidth
+								error={errors.commune ? true : false}
+								helperText={errors.commune?.message}
+								InputProps={{
+									...params.InputProps,
+									endAdornment: (
+										<React.Fragment>
+											{loadingCommune ? <CircularProgress color="inherit" size={20} /> : null}
+											{params.InputProps.endAdornment}
+										</React.Fragment>
+									),
+								}}
 							/>
 						)}
 					/>
@@ -318,6 +457,7 @@ const Register: React.FC = () => {
 						}}
 						fullWidth
 						type="submit"
+						disabled={progress}
 					>
 						đăng ký
 					</Button>

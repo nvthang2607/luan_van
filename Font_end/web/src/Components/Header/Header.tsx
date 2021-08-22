@@ -29,6 +29,7 @@ import {
 	OutlinedInput,
 } from '@material-ui/core';
 import { AppURL } from '../../utils/const';
+import { UserGet } from '../../api/User';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -181,6 +182,13 @@ const Header: React.FC = () => {
 			</MenuItem>
 		</Menu>
 	);
+	React.useEffect(() => {
+		const getDataUser = async () => {
+			const response = await UserGet();
+			console.log(response.data);
+		};
+		getDataUser();
+	}, []);
 	return (
 		<div className={classes.grow}>
 			<AppBar position="static" className={classes.bgHeader}>

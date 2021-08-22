@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -39,12 +39,14 @@ import {
 	Link as MuiLink,
 	Button,
 	FormHelperText,
+	LinearProgress,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
-import { TypeLogin } from '../../PropTypes/Account/Account';
+import 'react-toastify/dist/ReactToastify.css';
 import Login from './Login';
 import Register from './Register';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -83,8 +85,8 @@ const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		bgHeader: {
 			backgroundColor: theme.palette.primary.main,
-			paddingRight: theme.spacing(3),
-			paddingLeft: theme.spacing(3),
+			paddingRight: theme.spacing(0),
+			paddingLeft: theme.spacing(0),
 		},
 		grow: {
 			flexGrow: 1,
@@ -108,7 +110,7 @@ const Account: React.FC = () => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const [value, setValue] = React.useState(0);
-
+	const history = useHistory();
 	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
 		setValue(newValue);
 	};
@@ -116,10 +118,30 @@ const Account: React.FC = () => {
 	const handleChangeIndex = (index: number) => {
 		setValue(index);
 	};
-
+	const [propressLogin, setPropressLogin] = React.useState(false);
+	const [propressRegister, setPropressRegister] = React.useState(false);
+	const receivePropsLogin: (result: boolean) => void = (result) => {
+		setPropressLogin(result);
+	};
+	const receivePropsRegister: (result: boolean) => void = (result) => {
+		setPropressRegister(result);
+	};
+	const resultApiLogin: (result: any) => void = (result) => {
+		if (result === null) {
+			//toast.success('dang nhap thanh cong');
+			history.push('/');
+		} else if (result === 2) {
+			toast.error('Tai skhoan ko chinh xac');
+		}
+	};
+	const resultApiRegister: (result: any) => void = (result) => {
+		if (result === 1) {
+			toast.error('ten tai khoan da ton tai');
+		}
+	};
 	return (
 		<div className={classes.grow}>
-			<AppBar position="static" className={classes.bgHeader}>
+			<AppBar position="fixed" className={classes.bgHeader}>
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container>
 						<Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
@@ -141,8 +163,11 @@ const Account: React.FC = () => {
 						</Grid>
 					</Grid>
 				</Toolbar>
+				{propressLogin && <LinearProgress color="secondary" />}
+				{propressRegister && <LinearProgress color="secondary" />}
 			</AppBar>
-			<Container>
+
+			<Container style={{ marginTop: theme.spacing(10) }}>
 				<Grid
 					container
 					spacing={5}
@@ -159,8 +184,18 @@ const Account: React.FC = () => {
 									indicatorColor="primary"
 									aria-label="full width tabs example"
 								>
-									<Tab label="ĐĂNG NHẬP" {...a11yProps(0)} style={{ fontSize: '1.5vw' }} />
-									<Tab label="ĐĂNG KÝ" {...a11yProps(1)} style={{ fontSize: '1.5vw' }} />
+									<Tab
+										disabled={propressRegister}
+										label="ĐĂNG NHẬP"
+										{...a11yProps(0)}
+										style={{ fontSize: '1.5vw' }}
+									/>
+									<Tab
+										disabled={propressLogin}
+										label="ĐĂNG KÝ"
+										{...a11yProps(1)}
+										style={{ fontSize: '1.5vw' }}
+									/>
 								</Tabs>
 
 								<SwipeableViews
@@ -170,10 +205,13 @@ const Account: React.FC = () => {
 									className={classes.content}
 								>
 									<TabPanel value={value} index={0} dir={theme.direction}>
-										<Login />
+										<Login receivePropsLogin={receivePropsLogin} resultApiLogin={resultApiLogin} />
 									</TabPanel>
 									<TabPanel value={value} index={1} dir={theme.direction}>
-										<Register />
+										<Register
+											receivePropsRegister={receivePropsRegister}
+											resultApiRegister={resultApiRegister}
+										/>
 									</TabPanel>
 								</SwipeableViews>
 							</div>
@@ -207,6 +245,17 @@ const Account: React.FC = () => {
 					<Typography component="span">để được hỗ trợ tốt nhất.</Typography>
 				</Grid>
 			</Grid>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 		</div>
 	);
 };
