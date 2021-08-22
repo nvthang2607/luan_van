@@ -47,6 +47,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Login from './Login';
 import Register from './Register';
 import { toast, ToastContainer } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -126,6 +127,7 @@ const Account: React.FC = () => {
 	const receivePropsRegister: (result: boolean) => void = (result) => {
 		setPropressRegister(result);
 	};
+	const { t } = useTranslation();
 	const resultApiLogin: (result: any) => void = (result) => {
 		if (result === null) {
 			//toast.success('dang nhap thanh cong');
@@ -186,13 +188,13 @@ const Account: React.FC = () => {
 								>
 									<Tab
 										disabled={propressRegister}
-										label="ĐĂNG NHẬP"
+										label={t('account.sign_in')}
 										{...a11yProps(0)}
 										style={{ fontSize: '1.5vw' }}
 									/>
 									<Tab
 										disabled={propressLogin}
-										label="ĐĂNG KÝ"
+										label={t('account.sign_up')}
 										{...a11yProps(1)}
 										style={{ fontSize: '1.5vw' }}
 									/>

@@ -1,0 +1,12 @@
+{
+	"header": {
+		"news": " News",
+		"cart": "Cart",
+		"contact": "Contact",
+		"account": "Account"
+	},
+	"account": {
+		"sign_in": "Sign in",
+		"sign_up": "Sign up"
+	}
+}

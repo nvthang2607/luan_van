@@ -104,7 +104,7 @@ const Login: React.FC<loginprops> = (props) => {
 	const theme = useTheme();
 	const schema = yup.object().shape({
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
-		password: yup.string().required('Mật khẩu không để trống').max(8, 'Mật khẩu tối đa 8 ký tự'),
+		password: yup.string().required('Mật khẩu không để trống').min(8, 'Mật khẩu ít nhất 8 ký tự'),
 	});
 	const {
 		register,
@@ -116,11 +116,11 @@ const Login: React.FC<loginprops> = (props) => {
 	});
 	const onSubmit = async (data: LoginDTO) => {
 		const res = await LoginPost({ email: data.email, password: data.password });
+		if (res?.errorCode === null) {
+			window.localStorage.setItem('token', res.data.accessToken || '');
+		}
 		if (res?.errorCode || res?.errorCode === null) {
 			props?.resultApiLogin?.(res.errorCode);
-		}
-		if (res?.data.accessToken) {
-			window.localStorage.setItem('token', res.data.accessToken || '');
 		}
 	};
 	const [state, setState] = React.useState({
