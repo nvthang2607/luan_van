@@ -38,7 +38,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json(['errorCode'=> 1], 400);
+            return response()->json(['errorCode'=> 1,$validator->errors()->toJson()], 400);
         }
         $user=new User;
         $user->name=$req->name;
@@ -154,8 +154,8 @@ class AuthController extends Controller
         $n2=ceil($n/3)*2;
         $n3=$n-$n2;
         //echo $n2;
-        $ratting1=Ratting::all()->take($n2);
-        $ratting2=Ratting::all()->skip($n3);
+        $strain=Ratting::all()->take($n2);
+        $test=Ratting::all()->skip($n3);
         // echo $ratting1;
         // echo $ratting2;
         
