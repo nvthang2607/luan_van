@@ -19,7 +19,7 @@ class AddressController extends Controller
             $u++;
         }
         return response()->json(['errorCode'=> null,'data'=>$data], 200);
-        echo $city;
+        //echo $city;
     }
     public function district_select_list(Request $req){
         $validator = Validator::make($req->all(), [
