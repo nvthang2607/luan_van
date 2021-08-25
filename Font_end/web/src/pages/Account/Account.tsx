@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -143,6 +143,7 @@ const Account: React.FC = () => {
 	};
 	return (
 		<div className={classes.grow}>
+			{window.localStorage.getItem('token') && <Redirect to="/" />}
 			<AppBar position="fixed" className={classes.bgHeader}>
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container>

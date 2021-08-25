@@ -130,6 +130,8 @@ const Header: React.FC = () => {
 			const response = await UserGet();
 			if (response.errorCode === null) {
 				setDataUser(response.data);
+			} else {
+				window.localStorage.getItem('token') && window.localStorage.removeItem('token');
 			}
 		};
 		getDataUser();
@@ -145,13 +147,16 @@ const Header: React.FC = () => {
 		setAnchorEl(null);
 	};
 	const { t, i18n } = useTranslation();
+	const [valueI18n, setValueI18n] = React.useState('en');
 	const handleLanguage = (value: string) => {
 		setAnchorEl(null);
 		i18n.changeLanguage(value);
 		if (value === 'en') {
 			setItem(icon);
+			setValueI18n(value);
 		} else {
 			setItem(iconvn);
+			setValueI18n(value);
 		}
 	};
 	const [item, setItem] = React.useState<any>(icon);
@@ -159,10 +164,12 @@ const Header: React.FC = () => {
 		const i18nLng = window.localStorage.getItem('i18nextLng') || 'en';
 		if (i18nLng === 'en') {
 			setItem(icon);
+			setValueI18n(i18nLng);
 		} else {
 			setItem(iconvn);
+			setValueI18n(i18nLng);
 		}
-	}, []);
+	}, [setValueI18n]);
 	return (
 		<div className={classes.grow}>
 			<AppBar position="static" className={classes.bgHeader}>
@@ -271,11 +278,13 @@ const Header: React.FC = () => {
 							>
 								<MenuItem onClick={() => handleLanguage('en')}>
 									<img src={icon} />
-									&nbsp;English
+									&nbsp;English&nbsp;
+									{valueI18n === 'en' && <i className="fa fa-check" aria-hidden="true"></i>}
 								</MenuItem>
 								<MenuItem onClick={() => handleLanguage('vi')}>
 									<img src={iconvn} />
-									&nbsp;Vietnamese
+									&nbsp;Vietnamese&nbsp;
+									{valueI18n === 'vi' && <i className="fa fa-check" aria-hidden="true"></i>}
 								</MenuItem>
 							</Menu>
 						</Grid>
