@@ -11,6 +11,8 @@ import Account from './pages/Account/Account';
 import { AppURL } from './utils/const';
 import NotFound from './pages/NotFound/NotFound';
 import theme from './utils/theme';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './utils/locales/i18n';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -32,22 +34,24 @@ function App() {
 	// 	},
 	// });
 	return (
-		<ThemeProvider theme={theme}>
-			<Router>
-				<ClientLayout>
-					<Switch>
-						<Route exact path={[AppURL.HOME]}>
-							<Home>
-								<HeaderBanner />
-								<Header />
-							</Home>
-						</Route>
-						<Route exact path="/account" component={Account} />
-						<Route path="*" component={NotFound} />
-					</Switch>
-				</ClientLayout>
-			</Router>
-		</ThemeProvider>
+		<I18nextProvider i18n={i18n}>
+			<ThemeProvider theme={theme}>
+				<Router>
+					<ClientLayout>
+						<Switch>
+							<Route exact path={[AppURL.HOME]}>
+								<Home>
+									<HeaderBanner />
+									<Header />
+								</Home>
+							</Route>
+							<Route exact path="/account" component={Account} />
+							<Route path="*" component={NotFound} />
+						</Switch>
+					</ClientLayout>
+				</Router>
+			</ThemeProvider>
+		</I18nextProvider>
 	);
 }
 

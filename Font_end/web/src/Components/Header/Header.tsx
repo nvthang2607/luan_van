@@ -16,10 +16,13 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Logo from '../../public/images/logo1.png';
 import icon from '../../public/images/english.svg';
+import iconvn from '../../public/images/vietnamese.svg';
 import {
 	Avatar,
+	Button,
 	Card,
 	CardHeader,
+	Fade,
 	FormControl,
 	Grid,
 	Input,
@@ -30,6 +33,7 @@ import {
 } from '@material-ui/core';
 import { AppURL } from '../../utils/const';
 import { UserGet } from '../../api/User';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -103,12 +107,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 const Header: React.FC = () => {
 	const classes = useStyles();
-	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
-
-	const isMenuOpen = Boolean(anchorEl);
-	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+	const [dataUser, setDataUser] = React.useState({ name: '' });
 	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -125,79 +125,53 @@ const Header: React.FC = () => {
 	const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setMobileMoreAnchorEl(event.currentTarget);
 	};
-
-	const menuId = 'primary-search-account-menu';
-	const renderMenu = (
-		<Menu
-			anchorEl={anchorEl}
-			anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-			id={menuId}
-			keepMounted
-			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-			<MenuItem onClick={handleMenuClose}>My account</MenuItem>
-		</Menu>
-	);
-
-	const mobileMenuId = 'primary-search-account-menu-mobile';
-	const renderMobileMenu = (
-		<Menu
-			anchorEl={mobileMoreAnchorEl}
-			anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-			id={mobileMenuId}
-			keepMounted
-			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-			open={isMobileMenuOpen}
-			onClose={handleMobileMenuClose}
-		>
-			<MenuItem>
-				<IconButton aria-label="show 4 new mails" color="inherit">
-					<Badge badgeContent={4} color="secondary">
-						<MailIcon />
-					</Badge>
-				</IconButton>
-				<p>Messages</p>
-			</MenuItem>
-			<MenuItem>
-				<IconButton aria-label="show 11 new notifications" color="inherit">
-					<Badge badgeContent={11} color="secondary">
-						<NotificationsIcon />
-					</Badge>
-				</IconButton>
-				<p>Notifications</p>
-			</MenuItem>
-			<MenuItem onClick={handleProfileMenuOpen}>
-				<IconButton
-					aria-label="account of current user"
-					aria-controls="primary-search-account-menu"
-					aria-haspopup="true"
-					color="inherit"
-				>
-					<AccountCircle />
-				</IconButton>
-				<p>Profile</p>
-			</MenuItem>
-		</Menu>
-	);
 	React.useEffect(() => {
 		const getDataUser = async () => {
 			const response = await UserGet();
-			console.log(response.data);
+			if (response.errorCode === null) {
+				setDataUser(response.data);
+			}
 		};
 		getDataUser();
+	}, []);
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+	const open = Boolean(anchorEl);
+
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+
+	const handleClose = () => {
+		setAnchorEl(null);
+	};
+	const { t, i18n } = useTranslation();
+	const handleLanguage = (value: string) => {
+		setAnchorEl(null);
+		i18n.changeLanguage(value);
+		if (value === 'en') {
+			setItem(icon);
+		} else {
+			setItem(iconvn);
+		}
+	};
+	const [item, setItem] = React.useState<any>(icon);
+	React.useEffect(() => {
+		const i18nLng = window.localStorage.getItem('i18nextLng') || 'en';
+		if (i18nLng === 'en') {
+			setItem(icon);
+		} else {
+			setItem(iconvn);
+		}
 	}, []);
 	return (
 		<div className={classes.grow}>
 			<AppBar position="static" className={classes.bgHeader}>
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container spacing={2}>
-						<Grid item xs={2}>
+						<Grid item xs={2} style={{ display: 'grid', alignItems: 'center' }}>
 							<img src={Logo} alt="logo" width="85%" />
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 							<FormControl style={{ width: '100%' }}>
 								<OutlinedInput
 									className={classes.inputSearch}
@@ -220,7 +194,7 @@ const Header: React.FC = () => {
 								spacing={3}
 								style={{ textAlign: 'center', color: '#fff' }}
 							>
-								<Grid item xs={3}>
+								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
 									<i className="fa fa-newspaper-o" style={{ fontSize: '1.5vw' }}></i>
 									<Link
@@ -228,11 +202,11 @@ const Header: React.FC = () => {
 										style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}
 									>
 										<Typography component="h5" style={{ lineHeight: 'inherit' }}>
-											Tin tức
+											{t('header.news')}
 										</Typography>
 									</Link>
 								</Grid>
-								<Grid item xs={3}>
+								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
 
 									<Link
@@ -241,45 +215,73 @@ const Header: React.FC = () => {
 									>
 										<i className="fa fa-phone" style={{ fontSize: '1.5vw' }}></i>
 										<Typography component="h5" style={{ lineHeight: 'inherit' }}>
-											Liên hệ: 08434534
+											{t('header.contact') + ': 08434534'}
 										</Typography>
 									</Link>
 								</Grid>
-								<Grid item xs={3}>
+								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
 
 									<a href="#" style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}>
 										<i className="fa fa-shopping-cart" style={{ fontSize: '1.5vw' }}></i>
 										<Typography component="h5" style={{ lineHeight: 'inherit' }}>
-											Giỏ hàng
+											{t('header.cart')}
 										</Typography>
 									</a>
 								</Grid>
-								<Grid item xs={3}>
+								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
 
 									<RouteLink
 										to={AppURL.ACCOUNT}
 										style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}
 									>
-										<i className="fa fa-user" style={{ fontSize: '1.5vw' }}></i>
-										<Typography component="h5" style={{ lineHeight: 'inherit' }}>
-											Tài khoản
+										{dataUser.name === '' ? (
+											<i className="fa fa-user" style={{ fontSize: '1.5vw' }}></i>
+										) : (
+											<i
+												className="fa fa-user-circle"
+												style={{ fontSize: '1.5vw', color: 'brown' }}
+											></i>
+										)}
+
+										<Typography
+											component="h5"
+											style={{ lineHeight: 'inherit', display: 'content' }}
+										>
+											{dataUser.name === '' ? t('header.account') : dataUser.name}
 										</Typography>
 									</RouteLink>
 								</Grid>
 							</Grid>
 						</Grid>
 						<Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
-							<img src={icon} />
-							&nbsp;
-							<i className="fa fa-angle-down" aria-hidden="true"></i>
+							<Button onClick={handleClick}>
+								<img src={item} />
+								&nbsp;
+								<i className="fa fa-angle-down" style={{ color: '#fff' }}></i>
+							</Button>
+							<Menu
+								id="fade-menu"
+								anchorEl={anchorEl}
+								keepMounted
+								open={open}
+								onClose={handleClose}
+								TransitionComponent={Fade}
+							>
+								<MenuItem onClick={() => handleLanguage('en')}>
+									<img src={icon} />
+									&nbsp;English
+								</MenuItem>
+								<MenuItem onClick={() => handleLanguage('vi')}>
+									<img src={iconvn} />
+									&nbsp;Vietnamese
+								</MenuItem>
+							</Menu>
 						</Grid>
 					</Grid>
 				</Toolbar>
 			</AppBar>
-			{renderMobileMenu}
-			{renderMenu}
 		</div>
 	);
 };

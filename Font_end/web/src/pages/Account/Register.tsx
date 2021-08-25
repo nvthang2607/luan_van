@@ -114,7 +114,7 @@ const Register: React.FC<registerProps> = (props) => {
 		address: yup.string().required('Address không để trống'),
 		district: yup.string().required('district không để trống'),
 		commune: yup.string().required('commune không để trống'),
-		password: yup.string().required('Mật khẩu không để trống'),
+		password: yup.string().required('Mật khẩu không để trống').min(8, 'Mật khẩu ít nhất 8 ký tự'),
 		retypePassword: yup
 			.string()
 			.required('Mật khẩu không để trống')
@@ -122,7 +122,7 @@ const Register: React.FC<registerProps> = (props) => {
 		phone: yup
 			.number()
 			.required('Phone không để trống')
-			.typeError('Phone không để trống')
+			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 		//.max(11, 'Số điện thoại không hợp lệ'),
 	});
@@ -170,7 +170,6 @@ const Register: React.FC<registerProps> = (props) => {
 	const [data, setData] = React.useState<any>([]);
 	const [openCity, setOpenCity] = React.useState(false);
 	const loadingCity = openCity && data.length === 0;
-	const ref: React.MutableRefObject<undefined> = React.useRef();
 
 	React.useEffect(() => {
 		const getData = async () => {

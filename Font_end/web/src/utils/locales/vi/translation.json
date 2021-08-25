@@ -1,0 +1,12 @@
+{
+	"header": {
+		"news": " Tin tức",
+		"cart": "Giỏ hàng",
+		"contact": "Liên hệ",
+		"account": "Tài khoản"
+	},
+	"account": {
+		"sign_in": "đăng nhập",
+		"sign_up": "đăng ký"
+	}
+}
