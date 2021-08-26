@@ -31,9 +31,8 @@ class CreateProductTable extends Migration
         $n=50;
         for($i=0;$i<$n;$i++){
             $branch= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng']);
-            $type= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng']);
             $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512']);
-            $name= $branch." ".$type." ".$g."GB";
+            $name= $branch." ".$g."GB";
             DB::table('product')->insert(
                 array(
                     'id_branch'=>mt_rand(1,$n),

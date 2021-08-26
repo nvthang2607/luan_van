@@ -34,7 +34,7 @@ class CreateRattingTable extends Migration
         for($i=0;$i<$n;$i++){
             $id_u=User::where('isadmin','user')->pluck('id');
             $id_user=$faker->randomElement($id_u);
-            $ratting=mt_rand(0,5);
+            $ratting=mt_rand(1,5);
             if($ratting==0){
                 $comment='';
             }

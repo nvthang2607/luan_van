@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\TypeProductController;
 use App\Http\Controllers\BranchProductController;
+use App\Http\Controllers\ProductController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,7 +32,7 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/profile', [AuthController::class, 'profile']);    
     Route::post('/changepass', [AuthController::class, 'changepass']); 
-    Route::get('/ratting', [AuthController::class, 'list_user_KNN']); 
+    Route::get('/ratting', [AuthController::class, 'du_doan']); 
 });
 Route::group([
     'middleware' => 'api',
@@ -56,4 +57,11 @@ Route::group([
 ], function ($router) {
     Route::post('/select_list', [BranchProductController::class, 'post_branch_product_select_list']); 
     Route::get('/select_list', [BranchProductController::class, 'get_branch_product_select_list']); 
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'product'
+
+], function ($router) {
+    Route::get('/search', [ProductController::class, 'product_search']); 
 });

@@ -18,7 +18,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register','ratting','y','list_user_KNN','type_product_select_list']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','ratting','y','list_user_KNN','du_doan']]);
     }
 
 
@@ -194,7 +194,7 @@ class AuthController extends Controller
                 $t1=0;$t2=0;$t3=0;$t4=0;
                 foreach($user1_rated_id as $i2){
                     $temp=$i2->ratting;
-                // echo 'id: '.$i.'= '.$temp.'<br>';
+                 //echo 'id: '.$i.'= '.$temp.'<br>';
                     $t1=$t1+$temp;
                     $t3=$t3+1;
                 }
@@ -215,13 +215,13 @@ class AuthController extends Controller
             }
             //echo 'total: '.$total.'<br>';
             //mẫu số
-            //echo 't5: '.$t5.'<br>';
-            //echo 't6: '.$t6.'<br>';
+           // echo 't5: '.$t5.'<br>';
+           // echo 't6: '.$t6.'<br>';
             $total2=sqrt($t5)*sqrt($t6);
             //echo 'total2: '.$total2.'<br>';
 
             //tính $total/$total2;
-            //echo $total/$total2;
+            //echo $total/$total2.'<br>';
             return $total/$total2;
         }
         else{
@@ -229,28 +229,43 @@ class AuthController extends Controller
         }
     }
 
-    public function list_user_KNN(){
-        $strain=Ratting::all()->take(2);
+    public function list_user_KNN($id_user){
         $user=User::all();
-        $product=Product::all();
         
         $cosine_uu=[];
-        //echo $this->sim_cosine_user(11,23);
         foreach($user as $i){
-            echo '-'.$i->id.'<br>';
-            foreach($user as $i2){
-                if($i->id==$i2->id){
+            //echo '-'.$i->id.'<br>';
+            if($i->id==$id_user){
                     continue;
-                }
-                echo '+++'.$i2->id.'<br>';
-                $cosine_uu[count($cosine_uu)]=[$i->id,$i2->id,$this->sim_cosine_user($i,$i2)];
-                echo 'sim= '.$this->sim_cosine_user($i,$i2).'<br>';
             }
+            if($this->sim_cosine_user($id_user,$i->id)!=0){
+                //$cosine_uu[count($cosine_uu)]=[$id_user,$i->id,$this->sim_cosine_user($id_user,$i->id)];
+                $cosine_uu[count($cosine_uu)]=[$i->id,$this->sim_cosine_user($id_user,$i->id)];
+            } 
+            //echo 'sim= '.$this->sim_cosine_user($id_user,$i->id).'<br>';
         }
-
-
+        //echo $this->sim_cosine_user(11,23);
+        //$k=$cosine_uu;
+        usort($cosine_uu, function($a, $b) {
+            return $a[1] <=> $b[1];
+        });
+        return $cosine_uu;
     }
     
+    public function du_doan(){
+        // lấy danh sách
+        //$k=$this->list_user_KNN(11);
+        //dd($k);
+        $user=User::all();
+        $u_knn=[];
+        foreach($user as $i){
+            //echo '-'.$i->id.'<br>';
+            $u_knn[count($u_knn)]=$this->list_user_KNN($i->id);
+        }
+        dd($u_knn);
+        //$x=$this->list_user_KNN(11);
+        //dd($x);
+    }
 
     // public function ratting(Request $req){
     //     //$l=[];
