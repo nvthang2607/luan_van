@@ -19,16 +19,16 @@ class CreateTypeProductTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        
-        for($i=0;$i<$n;$i++){
-            DB::table('type_product')->insert(
-                array(
-                    'name'=>$faker->randomElement(['Điện thoại', 'Máy tính']),
-                )
-            );
-        }
+        DB::table('type_product')->insert(
+            array(
+                'name'=>'Điện thoại',
+            )
+        );
+        DB::table('type_product')->insert(
+            array(
+                'name'=>'Máy tính',
+            )
+        );
     }
 
     /**

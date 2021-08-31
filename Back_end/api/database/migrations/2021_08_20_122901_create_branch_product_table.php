@@ -23,17 +23,24 @@ class CreateBranchProductTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        
-        for($i=0;$i<$n;$i++){
-            DB::table('branch_product')->insert(
-                array(
-                    'id_type'=>mt_rand(1,$n),
-                    'name'=>$faker->randomElement(['SangSung', 'Apple','VMart']),
-                )
-            );
-        }
+        DB::table('branch_product')->insert(
+            array(
+                'id_type'=>mt_rand(1,2),
+                'name'=>'SangSung'
+            )
+        );
+        DB::table('branch_product')->insert(
+            array(
+                'id_type'=>mt_rand(1,2),
+                'name'=>'Apple'
+            )
+        );
+        DB::table('branch_product')->insert(
+            array(
+                'id_type'=>mt_rand(1,2),
+                'name'=>'VMart'
+            )
+        );
     }
 
     /**

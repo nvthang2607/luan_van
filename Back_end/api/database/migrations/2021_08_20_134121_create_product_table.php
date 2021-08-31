@@ -28,14 +28,15 @@ class CreateProductTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=50;
+        $n=1682;
         for($i=0;$i<$n;$i++){
-            $branch= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng']);
-            $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512']);
-            $name= $branch." ".$g."GB";
+            $branch= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng','phụ kiện','']);
+            $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512','']);
+            $r= $faker->randomElement(['A', 'B','C','D','E','F','G','H','I','K','L','U','V','R','']);
+            $name= $branch." ".$r.''.$g."GB";
             DB::table('product')->insert(
                 array(
-                    'id_branch'=>mt_rand(1,$n),
+                    'id_branch'=>mt_rand(1,3),
                     'name'=>$name,
                     'quantity'=>mt_rand(1,$n),
                     'unit_price'=>mt_rand(1,$n)*1000000,

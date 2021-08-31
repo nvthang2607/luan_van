@@ -25,19 +25,19 @@ class CreateCommentTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        for($i=0;$i<$n;$i++){
-            $id_g=GroupChat::all()->pluck('id');
-            $id_group=$faker->randomElement($id_g);
-            DB::table('comment')->insert(
-                array(
-                    'id_group'=>$id_group,
-                    'email'=>$faker->email,
-                    'comment'=>'comment'
-                )
-            );
-        }
+        // $faker=Faker\Factory::create('vi_VN');
+        // $n=50;
+        // for($i=0;$i<$n;$i++){
+        //     $id_g=GroupChat::all()->pluck('id');
+        //     $id_group=$faker->randomElement($id_g);
+        //     DB::table('comment')->insert(
+        //         array(
+        //             'id_group'=>$id_group,
+        //             'email'=>$faker->email,
+        //             'comment'=>'comment'
+        //         )
+        //     );
+        // }
     }
 
     /**

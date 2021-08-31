@@ -29,20 +29,20 @@ class CreateBillDetailTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        for($i=0;$i<$n;$i++){
-            $id_b=Bill::all()->pluck('id');
-            $id_bill=$faker->randomElement($id_b);
-            DB::table('bill_detail')->insert(
-                array(
-                    'id_product'=>mt_rand(1,$n),
-                    'id_bill'=>$id_bill,
-                    'quantity'=>mt_rand(1,$n),
-                    'price'=>mt_rand(1,$n)*1000000,
-                )
-            );
-        }
+        // $faker=Faker\Factory::create('vi_VN');
+        // $n=50;
+        // for($i=0;$i<$n;$i++){
+        //     $id_b=Bill::all()->pluck('id');
+        //     $id_bill=$faker->randomElement($id_b);
+        //     DB::table('bill_detail')->insert(
+        //         array(
+        //             'id_product'=>mt_rand(1,$n),
+        //             'id_bill'=>$id_bill,
+        //             'quantity'=>mt_rand(1,$n),
+        //             'price'=>mt_rand(1,$n)*1000000,
+        //         )
+        //     );
+        // }
     }
 
     /**

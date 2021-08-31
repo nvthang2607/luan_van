@@ -7,6 +7,8 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\TypeProductController;
 use App\Http\Controllers\BranchProductController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RSController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,6 +23,16 @@ use App\Http\Controllers\ProductController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/train', [RSController::class, 'train']);
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'insert'
+
+], function ($router) {
+    Route::get('/users', [UserController::class, 'insert']);
+});
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'users'
@@ -32,7 +44,8 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/profile', [AuthController::class, 'profile']);    
     Route::post('/changepass', [AuthController::class, 'changepass']); 
-    Route::get('/ratting', [AuthController::class, 'du_doan']); 
+    Route::get('/ratting', [AuthController::class, 'user_ratting_item']); 
+    Route::get('/convert', [AuthController::class, 'convert']);
 });
 Route::group([
     'middleware' => 'api',

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 class CreateUsersTable extends Migration
 {
     /**
@@ -27,7 +28,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=50;
+        $n=943;
         for($i=0;$i<$n;$i++){
             $name=$faker->name;
             $a = explode(".", $name);
@@ -39,7 +40,6 @@ class CreateUsersTable extends Migration
             }
             
             $gender=$faker->randomElement(['Nam', 'Nữ']);
-            $admin=$faker->randomElement(['user', 'manager']);
             $active=$faker->randomElement([0,1]);
             DB::table('users')->insert(
                 array(
@@ -49,11 +49,12 @@ class CreateUsersTable extends Migration
                     'password'=>bcrypt($i+1),
                     'phone' => $faker->phoneNumber,
                     'address' => $faker->address,
-                    'isadmin' => $admin,
+                    'isadmin' => 'user',
                     'active'=>$active,
                 )
             );
         }
+        
         
     }
 

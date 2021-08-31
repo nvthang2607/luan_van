@@ -29,21 +29,21 @@ class CreateFeedBackTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        for($i=0;$i<$n;$i++){
-            $id_g=GroupChat::all()->pluck('id');
-            $id_group=$faker->randomElement($id_g);
-            $id_u=User::where('isadmin','manager')->pluck('id');
-            $id_user=$faker->randomElement($id_u);
-            DB::table('feed_back')->insert(
-                array(
-                    'id_group'=>$id_group,
-                    'id_user'=>$id_user,
-                    'comment'=>'comment'
-                )
-            );
-        }
+        // $faker=Faker\Factory::create('vi_VN');
+        // $n=50;
+        // for($i=0;$i<$n;$i++){
+        //     $id_g=GroupChat::all()->pluck('id');
+        //     $id_group=$faker->randomElement($id_g);
+        //     $id_u=User::where('isadmin','manager')->pluck('id');
+        //     $id_user=$faker->randomElement($id_u);
+        //     DB::table('feed_back')->insert(
+        //         array(
+        //             'id_group'=>$id_group,
+        //             'id_user'=>$id_user,
+        //             'comment'=>'comment'
+        //         )
+        //     );
+        // }
     }
 
     /**

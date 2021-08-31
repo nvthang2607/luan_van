@@ -23,31 +23,31 @@ class CreateCustomerTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        for($i=0;$i<$n;$i++){
-            $name=$faker->name;
-            $a = explode(".", $name);
-            if (str_contains($name, '.')) {
-                $name=$a[1];
-            }
-            else{
-                $name=$a[0];
-            }
+        // $faker=Faker\Factory::create('vi_VN');
+        // $n=50;
+        // for($i=0;$i<$n;$i++){
+        //     $name=$faker->name;
+        //     $a = explode(".", $name);
+        //     if (str_contains($name, '.')) {
+        //         $name=$a[1];
+        //     }
+        //     else{
+        //         $name=$a[0];
+        //     }
             
-            $gender=$faker->randomElement(['Nam', 'Nữ']);
-            $admin=$faker->randomElement(['user', 'manager']);
-            $active=$faker->randomElement([0,1]);
-            DB::table('customer')->insert(
-                array(
-                    'name' => $name,
-                    'gender'=>$gender,
-                    'email'=>$faker->unique()->email,
-                    'phone' => $faker->phoneNumber,
-                    'address' => $faker->address,
-                )
-            );
-        }
+        //     $gender=$faker->randomElement(['Nam', 'Nữ']);
+        //     $admin=$faker->randomElement(['user', 'manager']);
+        //     $active=$faker->randomElement([0,1]);
+        //     DB::table('customer')->insert(
+        //         array(
+        //             'name' => $name,
+        //             'gender'=>$gender,
+        //             'email'=>$faker->unique()->email,
+        //             'phone' => $faker->phoneNumber,
+        //             'address' => $faker->address,
+        //         )
+        //     );
+        // }
         
     }
 

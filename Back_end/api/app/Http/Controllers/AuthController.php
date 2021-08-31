@@ -5,10 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
+use File;
 use App\Models\User;
 use App\Models\Ratting;
 use App\Models\Product;
 use Validator;
+
+use Carbon\Carbon;
+
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
+
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Box\Spout\Common\Entity\Row;
+require_once '../vendor/box/spout/src/Spout/Autoloader/autoload.php';
+
 class AuthController extends Controller
 {
     /**
@@ -18,7 +28,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register','ratting','y','list_user_KNN','du_doan']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','ratting','y','list_user_KNN','user_ratting_item','convert']]);
     }
 
 
@@ -252,98 +262,186 @@ class AuthController extends Controller
         return $cosine_uu;
     }
     
-    public function du_doan(){
+    public function user_ratting_item(){
         // lấy danh sách
         //$k=$this->list_user_KNN(11);
         //dd($k);
         $user=User::all();
-        $u_knn=[];
+        //để chứa dự đoán rui cho các sản phẩm
+        $rate=[];
+        //chạy tất cả user
         foreach($user as $i){
+            echo '-du_doan cua user thu '.$i->id.':<br>';
             //echo '-'.$i->id.'<br>';
-            $u_knn[count($u_knn)]=$this->list_user_KNN($i->id);
+            //lấy giá trị trung bình của Rui
+            $user1=Ratting::where('id_user',$i->id)->get('ratting');
+            $temp=0;
+            foreach($user1 as $u1){
+                echo '++++++'.$u1->ratting.'<br>';
+                $temp=$temp+$u1->ratting;
+               
+            }
+            if(count($user1)>0){
+                //đây giá trị trung bình Ru
+                $temp=$temp/count($user1);
+            }
+            echo '-Ru: '.$temp.'<br>';
+
+
+            //danh sach người dùng láng giềng của người dùng
+            //$rate[count($rate)]=$this->list_user_KNN($i->id);
+            $k=$this->list_user_KNN($i->id);
+             echo '-danh sách các láng giềng của user:'.$i->id.'<br>';
+             for($u=0;$u<count($k);$u++){
+                 echo '++id_user= '.$k[$u][0];
+            }
+             echo '<br>';
+            $kq1=[];
+            //hết hàm đánh giá trung bình của Rui
+            //dự đoán đánh giá của user đối với sản phẩm i
+            $product=Product::all();
+            foreach($product as $p){
+                echo '---sản phẩm '.$p->id.':<br>';
+                $m1=0;
+                $m2=0;
+                
+                for($u=0;$u<count($k);$u++){
+                    echo '++++++id_user= '.$k[$u][0].'<br>';
+                    //echo '---sim= '.$k[$u][1].'<br>';
+                    //hàm đánh giá  Ru2
+                    echo '++++++sim '.$k[$u][1].':<br>';
+                    $user2=Ratting::where('id_user',$k[$u][0])->get('ratting');
+                    $temp2=0;
+                    foreach($user2 as $u2){
+                        //echo '++++++++++++++'.$u2->ratting.'<br>';
+                        $temp2=$temp2+$u2->ratting;
+                    
+                    }
+                    if(count($user2)>0){
+                        //đây giá trị trung bình Ru'i
+                        $temp2=$temp2/count($user2);
+                    }
+                    echo '++++++Ru2: '.$temp2.'<br>';
+                    //hết hàm đánh giá trung bình
+                    //lấy đánh giá của láng giềng với sản phẩm Ru'i 
+                    $rui2=Ratting::where('id_user',$k[$u][0])->where('id_product',$p->id)->get('ratting');
+                    $temp3=0;
+                    if(count($rui2)>0){
+                        //echo 'count= '.count($rui2).'<br>';
+                        $count=count($rui2);
+                        foreach($rui2 as $rui2){
+                            //echo '+++++++++rui: '.$rui2->ratting.'<br>';
+                            $temp3=$temp3+$rui2->ratting;
+                        }
+                        $temp3=$temp3/$count;
+                        
+                    }
+                    echo '++++++rui: '.$temp3.'<br>';
+                    $m1=$m1+$k[$u][1]*($temp3-$temp2);
+                    //echo '++++++m='.$m.'<br>';
+                    $m2=$m2+abs($k[$u][1]);
+                }
+                echo 'm1= '.$m1.'<br>';
+                echo 'm2= '.$m2.'<br>';
+                if($m2>0){
+                    $kq=$temp+($m1/$m2);
+                }
+                else{
+                    $kq=0;
+                }
+                echo 'kết quả= '.$kq.'<br>';
+                $kq1[count($kq1)]=$kq;
+            }
+            //dd($kq1);
+            $rate[count($rate)]=$kq1;
         }
-        dd($u_knn);
-        //$x=$this->list_user_KNN(11);
-        //dd($x);
+        dd($rate);
     }
 
-    // public function ratting(Request $req){
-    //     //$l=[];
-    //     //$Ratting11=Ratting::where('id_product',11)->get('id_user');
-    //     //dd($Ratting11);
-    //     //lấy tất cả id_user bỏ vào mảng l;
-    //     // foreach($Ratting11 as $key=>$i){
-    //     //     $l[count($l)]=$i->id_user;
-    //     //     //echo $i.'<br>';
-    //     // }
-    //     //-in mảng
-    //     //dd($l);
-    //     //-kiểm tra có tồn tại giá trị trong mảng ko?
-    //     //echo in_array(23,$l);
-    //     //-điếm số lần xuất hiện giá trị trong mảng
-    //     //dd(array_count_values($l)[23]);
-    //     //biến rate để kiểm tra giá trị tổng đánh giá của 2 user
 
-    //     echo $this->sim_cosine_user(11,23);
+    
+    public function convert(){
+        $now1=Carbon::now();
+        $data=collect();
+        $u=0;
+        $user=Ratting::where('id_user',1)->get('ratting');
+        $user1=$user->chunk(100);
+        foreach($user1 as $i){
+            foreach($i as $i2){
+                //echo 'name'.$u.':'.$i2->raa.'<br>';
+                // $u++;
+                $u=$u+$i2->ratting;   
+            }
+            
+        }
+        echo $u."<br>";
+        $now2=Carbon::now();
+        echo 't1='.$now1.'<br>';
+        echo 't2='.$now2.'<br>';
+        echo 'Xong!';
 
-
-
-
-
-    //     // $u='nguyễn';
-    //     // $v='thắng';
-    //     //  $p=[];
-    //     //  $p1=[];
-    //     // array_push($p,['họ'=>'nguyen']);
-    //     // array_push($p1,['ten'=>'thang']);
-    //     // $p2=array_merge($p, $p);
-    //     // dd($p2);
+        //lấy phần chung
+        // $collection = collect(['a', 'b', 'c','d']);
+        // $collection1 = collect(['a', 'c', 'f','g']);
+        // // dd($collection->duplicates());
+        // $collection2 = $collection1->intersect($collection);
+        // dd($collection2);
 
 
-    //     // $a1=[];
-    //     // $t1=0;
-    //     // foreach($user as $i){
-    //     //     $a1[$t1]=$i->id;
-    //     //     $t1=$t1+1;
-    //     // }
-    //     // //dd ($a1);
-    //     // $a2=[];
-    //     // $t2=0;
-    //     // foreach($product as $i){
-    //     //     $a2[$t2]=$i->id;
-    //     //     $t2=$t2+1;
-    //     // }
-    //     //dd($a2);
-    //     //$a1=[];
+
+        //echo $data;
+        //*****đọc file csv
+        // $file = fopen('user.csv', 'r');
+        // $all_data = array();
+        // while (($data = fgetcsv($file,1000,'|')) !==FALSE )
+        //     {
+        //     $id=$data[0];
+        //     array_push($all_data,[$id]);
+        // }
+        // fclose($file);
+        //dd($all_data);
+
+        //******đọc file xlsx
+        // $filePath = getcwd().'/item.xlsx';
+ 
+        // $reader = ReaderEntityFactory::createReaderFromFile($filePath);
+    
+        // $reader->open($filePath);
+        // $all_data = array();
+        // foreach ($reader->getSheetIterator() as $sheet) {
+        //     foreach ($sheet->getRowIterator() as $row) {
+        //         $cells = $row->getCells();
+        //         $item = $row->toArray();
+        //         array_push($all_data, [$item[0]]);
+        //     }
+        // }
+        // $reader->close();
+        //dd($all_data);
+
+        //*****ghi file excel
+        // $filePath = getcwd().'/item.xlsx';
         
-    //     // for($u1=0;$u1<count($a1);$u1++){
-    //     //     for($u2=0;$u2<count($a2);$u2++){
-    //     //         // echo $a1[$u];
-    //     //         // echo $a2[$u1];
-    //     //        $id_p=Ratting::where('id_user',$a1[$u1])->where('id_product',$a2[$u2])->get(['id_product','id_user']);
-    //     //         foreach($id_p as $i){
-    //     //             if($i!=''){
-    //     //                 $t4=$i->id_product;
-    //     //                 //echo $t4;
-    //     //                 //echo $i->id_user;
-    //     //                 for($u3=$u1+1;$u3<count($a1);$u3++){
-    //     //                     if($u1==$u3) continue;
-    //     //                     $user2=Ratting::where('id_user',$a1[$u3])->where('id_product',$t4)->get('id_product');
-    //     //                     //echo $a3[$t3].'<br>';
-    //     //                     foreach($user2 as $i2){
-    //     //                         $t3=count($a3);
-    //     //                         $a3[count($a3)]=$i2->id_product;
-    //     //                         //echo 'user1: '.$a1[$u1].'-user2: '.$a1[$u3].'= '.$i2->id_product.'<br>';
-    //     //                     }
-                            
-    //     //                 }
-                        
-    //     //             }
-    //     //         }
-    //     //     }
-    //         //dd($a3);
-    //     //}
-    // }
+        // $writer = WriterEntityFactory::createXLSXWriter();
+        // if (File::exists($filePath)) {
+        //     if(!File::delete($filePath)){
+        //         dd('File đã tồn tại, đóng file trước khi update');
+        //     }
+        // }
+        // $writer->openToFile($filePath);
+        // foreach ($all_data as $d) {
+        //     $cells = [
+        //         WriterEntityFactory::createCell((int)$d[0]),
+        //     ];
+    
+        //     $singleRow = WriterEntityFactory::createRow($cells);
+        //     $writer->addRow($singleRow);
+        // }
+        // $writer->close();
+        //echo 'xong rồi!';
+
+        
+    }
+    
     public function x($i,$u){
         $t=$i+$u;
         return $t;

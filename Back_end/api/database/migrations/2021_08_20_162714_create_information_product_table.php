@@ -24,17 +24,17 @@ class CreateInformationProductTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=50;
-        for($i=0;$i<$n;$i++){
-            DB::table('information_product')->insert(
-                array(
-                    'id_product'=>mt_rand(1,$n),
-                    'name'=>'name',
-                    'content'=>'content'
-                )
-            );
-        }
+        // $faker=Faker\Factory::create('vi_VN');
+        // $n=50;
+        // for($i=0;$i<$n;$i++){
+        //     DB::table('information_product')->insert(
+        //         array(
+        //             'id_product'=>mt_rand(1,$n),
+        //             'name'=>'name',
+        //             'content'=>'content'
+        //         )
+        //     );
+        // }
     }
 
     /**
