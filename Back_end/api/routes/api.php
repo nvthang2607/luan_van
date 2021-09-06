@@ -25,6 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/train', [RSController::class, 'train']);
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'insert'

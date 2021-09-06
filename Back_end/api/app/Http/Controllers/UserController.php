@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use DB;
-use App\Models\Ratting;
+use App\Models\Rating;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -14,7 +14,7 @@ class UserController extends Controller
     //
     public function insert(){
         $now1=Carbon::now();
-        $filePath = getcwd().'/u1_base.xlsx';
+        $filePath = getcwd().'/ua_base.xlsx';
  
         $reader = ReaderEntityFactory::createReaderFromFile($filePath);
     
