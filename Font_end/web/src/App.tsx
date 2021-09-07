@@ -13,6 +13,15 @@ import NotFound from './pages/NotFound/NotFound';
 import theme from './utils/theme';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './utils/locales/i18n';
+import Menu from './Components/Menu';
+import Content from './Components/Content/Content';
+import Footer from './Components/Footer/Footer';
+import View from './pages/Views/View';
+import ProductDetail from './pages/ProductDetail/ProductDetail';
+import Profile from './pages/Profile/Profile';
+import ProfileInfo from './pages/Profile/ProfileInfo';
+import ChangePwd from './pages/Profile/ChangePwd';
+import { profile } from 'console';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -39,10 +48,46 @@ function App() {
 				<Router>
 					<ClientLayout>
 						<Switch>
-							<Route exact path={[AppURL.HOME]}>
+							<Route
+								exact
+								path={[
+									AppURL.HOME,
+									AppURL.VIEWS,
+									AppURL.PRODUCTDETAIL,
+									AppURL.PROFILE_INFO,
+									AppURL.PROFILE_CHANGEPWD,
+								]}
+							>
 								<Home>
-									<HeaderBanner />
+									{/* <HeaderBanner /> */}
 									<Header />
+
+									<Menu />
+									<Switch>
+										<Route
+											path={[
+												AppURL.VIEWS,
+												AppURL.PRODUCTDETAIL,
+												AppURL.PROFILE_INFO,
+												AppURL.PROFILE_CHANGEPWD,
+											]}
+										>
+											<Switch>
+												<Route path={AppURL.VIEWS} component={View} />
+												<Route path={AppURL.PRODUCTDETAIL} component={ProductDetail} />
+												<Route path={[AppURL.PROFILE_INFO, AppURL.PROFILE_CHANGEPWD]}>
+													<Profile>
+														<Switch>
+															<Route path={AppURL.PROFILE_INFO} component={ProfileInfo} />
+															<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
+														</Switch>
+													</Profile>
+												</Route>
+											</Switch>
+										</Route>
+										<Route path={AppURL.HOME} component={Content} />
+									</Switch>
+									<Footer />
 								</Home>
 							</Route>
 							<Route exact path="/account" component={Account} />
