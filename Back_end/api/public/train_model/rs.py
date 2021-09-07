@@ -4,6 +4,7 @@ Created on Mon Sep  6 13:41:31 2021
 
 @author: vanth
 """
+import sys
 import pickle 
 import pandas as pd 
 import numpy as np
@@ -113,14 +114,13 @@ class CF(object):
     def print_recommendation(self):
         # print ('Recommendation: ')
         for u in range(self.n_users):
-            recommended_items = self.recommend(u+1)
+            recommended_items = self.recommend(u)
             # for i in recommended_items:
                 # print ('    for user ', u+1, ': ', i[1:2])
-            break
     
 r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
-ratings_base = pd.read_csv('ua.base', sep='\t', names=r_cols, encoding='latin-1')
-ratings_test = pd.read_csv('ua.test', sep='\t', names=r_cols, encoding='latin-1')
+ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
+ratings_test = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
 # bắt đầu từ 0
 ratings_base.drop('unix_timestamp',axis='columns', inplace=True)
 ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
@@ -133,9 +133,9 @@ rs = CF(rate_train, k = 50)
 rs.fit()
 
 # u=rs.normalize_Y()
-# p=rs.recommend(1)
-# print recommended items for user 4 
-u=rs.recommend(1)
+# u=rs.recommend(50)
+u=rs.recommend(int(sys.argv[1]))
+# print(rs.pred(1,33))
 # SE = 0 # squared error
 
 # for n in range(n_tests):
@@ -144,7 +144,6 @@ u=rs.recommend(1)
 
 # RMSE = np.sqrt(SE/n_tests)
 # print ('User-user CF, RMSE =', RMSE)
-
-object_pi =u[:,0]
-file_pi = open ('rs.pickle', 'wb') 
-pickle.dump (object_pi, file_pi)
+object_i =u[:,0]
+for i in object_i:
+    print(i);

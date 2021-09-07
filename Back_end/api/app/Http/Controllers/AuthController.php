@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Rating;
 use App\Models\Product;
 use Validator;
+use Hash;
 
 use Carbon\Carbon;
 
@@ -28,7 +29,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_update_profile']]);
     }
 
 
@@ -45,7 +46,9 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:50|unique:users',
             'password' => 'required|string|min:8',
             'phone'=>'required|numeric',
-            'address'=>'required',
+            'idCommue'=>'required',
+            'idDistrict'=>'required',
+            'idCity'=>'required'
         ]);
 
         if($validator->fails()){
@@ -56,7 +59,7 @@ class AuthController extends Controller
         $user->gender=$req->gender;
         $user->email=$req->email;
         $user->password=bcrypt($req->password);
-        $user->address=$req->address;
+        $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
         $user->phone=$req->phone;
         $user->isadmin=0;
         $user->active=1;
@@ -136,7 +139,35 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get_profile(){
-        return response()->json(['errorCode'=> null, 'data'=>auth()->user()]);
+        $name=auth()->user()->name;
+        $email=auth()->user()->email;
+        $gender=auth()->user()->gender;
+        $phone =auth()->user()->phone ;
+        $address=auth()->user()->address;
+        $address = explode(", ", $address);
+        $idCommune=$address[0];
+        $idDistrict=$address[1];
+        $idCity=$address[2];
+        return response()->json(['errorCode'=> null, 'data'=>['name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune]]);
+    }
+    public function post_update_profile(request $req){
+        
+        if(Hash::check($req->password,auth()->user()->password)){
+            $user=User::find(auth()->user()->id);
+            $user->name=$req->name;
+            $user-> address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
+            $user->gender=$req->gender;
+            $user->phone=$req->phone;
+            if($user->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>$e], 404);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
+        }
     }
 
     /**

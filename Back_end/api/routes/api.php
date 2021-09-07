@@ -45,7 +45,7 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'post_logout']);
     Route::post('/refresh', [AuthController::class, 'post_refresh']);
     Route::get('/profile', [AuthController::class, 'get_profile']);
-    Route::get('/profile', [AuthController::class, 'get_profile']);
+    Route::post('/update_profile', [AuthController::class, 'post_update_profile']);
 });
 Route::group([
     'middleware' => 'api',
