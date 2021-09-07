@@ -12,7 +12,7 @@ use Carbon\Carbon;
 class UserController extends Controller
 {
     //
-    public function insert(){
+    public function get_insert(){
         $now1=Carbon::now();
         $filePath = getcwd().'/ua_base.xlsx';
  

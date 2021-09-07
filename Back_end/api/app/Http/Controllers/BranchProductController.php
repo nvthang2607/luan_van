@@ -13,6 +13,7 @@ class BranchProductController extends Controller
     }
     public function post_branch_product_select_list(Request $req){
         $branch_product=BranchProduct::where('id_type',$req->idType)->get(['id','name']);
+        $n=$branch_product->count();
         if(count($branch_product)>0){
             $data=[];
             $u=0;
@@ -20,7 +21,7 @@ class BranchProductController extends Controller
                 $data[$u]=['id'=>$i->id,'name'=> $i->name];
                 $u++;
             }
-            return response()->json(['errorCode'=> null,'data'=>$data], 200);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
@@ -28,6 +29,7 @@ class BranchProductController extends Controller
     }
     public function get_branch_product_select_list(Request $req){
         $product=Product::where('id_branch',$req->idBranch)->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+        $n=$product->count();
         if(count($product)>0){
             $data=[];
             $u=0;
@@ -35,7 +37,7 @@ class BranchProductController extends Controller
                 $data[$u]=['id'=>$i->id,'name'=> $i->name];
                 $u++;
             }
-            return response()->json(['errorCode'=> null,'data'=>$data], 200);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);

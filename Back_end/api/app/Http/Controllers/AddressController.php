@@ -10,7 +10,7 @@ use Validator;
 class AddressController extends Controller
 {
     //
-    public function city_select_list(Request $req){
+    public function get_city_select_list(Request $req){
         $city=City::all('matp','name');
         $data=[];
         $u=0;
@@ -21,7 +21,7 @@ class AddressController extends Controller
         return response()->json(['errorCode'=> null,'data'=>$data], 200);
         //echo $city;
     }
-    public function district_select_list(Request $req){
+    public function post_district_select_list(Request $req){
         $validator = Validator::make($req->all(), [
             'idCity' => 'exists:devvn_tinhthanhpho,matp',
         ]);
@@ -37,7 +37,7 @@ class AddressController extends Controller
         }
         return response()->json(['errorCode'=> null,'data'=>$data], 200);
     }
-    public function commune_select_list(Request $req){
+    public function post_commune_select_list(Request $req){
         $validator = Validator::make($req->all(), [
             'idDistrict' => 'exists:devvn_quanhuyen,maqh',
         ]);

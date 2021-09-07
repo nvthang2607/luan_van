@@ -4,7 +4,7 @@ Created on Mon Sep  6 13:41:31 2021
 
 @author: vanth
 """
-
+import pickle 
 import pandas as pd 
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -46,24 +46,22 @@ class CF(object):
         for n in range(self.n_users):
             # chuyển user_id thành số nguyên
             ids = np.where(users == n)[0].astype(np.int32)
-            # Lấy id_item được đánh giá của từng user
-            item_ids = self.Y_data[ids,1]
             # Lấy rating của những đánh giá đó
             ratings = self.Y_data[ids, 2]
             # lấy giá trị R trung bình của user
             self.mu[n] = np.mean(ratings) 
             # print('***',ratings)
             self.Ybar_data[ids, 2] = ratings - self.mu[n]
-        # return  self.Ybar_data
+        # return  self.Ybar_data[:,2]
         self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2],
             (self.Ybar_data[:, 1], self.Ybar_data[:, 0])), (self.n_items, self.n_users))
         # return self.Ybar
         self.Ybar = self.Ybar.tocsr()
-        # return self.Ybar
+        return self.Ybar
         
     def similarity(self):
         self.S = self.dist_func(self.Ybar.T, self.Ybar.T)
-        # return self.S
+        return self.S
         
     def fit(self):
         """
@@ -72,7 +70,7 @@ class CF(object):
         """
         self.normalize_Y()
         self.similarity()
-        # return  self.similarity()
+        return  self.similarity()
         
     def pred(self, u, i):
         """ 
@@ -92,7 +90,7 @@ class CF(object):
         nearest_s = sim[a]
         # How did each of 'near' users rate item i
         r = self.Ybar[i, users_rated_i[a]]
-        # print('bavb: ',1e-8)
+        # print(u,' đánh giá ',i,' là: ',(r*nearest_s)[0]/(np.abs(nearest_s).sum() + 1e-8) + self.mu[u])
         return (r*nearest_s)[0]/(np.abs(nearest_s).sum() + 1e-8) + self.mu[u]
 
         
@@ -105,16 +103,19 @@ class CF(object):
             if i not in items_rated_by_u:
                 rating = self.pred(u, i)
                 if rating > 0: 
-                    recommended_items.append(i)
+                    recommended_items.append([i,rating])
         # print(u)
         # print(recommended_items )
-        return recommended_items 
-    
+        recommended_items = np.array(recommended_items)      
+        recommended_items=recommended_items[np.argsort(recommended_items[:, 1])]
+        recommended_items=recommended_items[::-1]
+        return recommended_items
     def print_recommendation(self):
-        print ('Recommendation: ')
+        # print ('Recommendation: ')
         for u in range(self.n_users):
-            recommended_items = self.recommend(u+185)
-            print ('    for user ', u, ': ', recommended_items)
+            recommended_items = self.recommend(u+1)
+            # for i in recommended_items:
+                # print ('    for user ', u+1, ': ', i[1:2])
             break
     
 r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
@@ -126,18 +127,24 @@ ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
 
 rate_train = ratings_base.values
 rate_test = ratings_test.values
-
-rs = CF(rate_train, k = 30)
-rs.fit()
+n_train = rate_train.shape[0]
 n_tests = rate_test.shape[0]
-a=[]
+rs = CF(rate_train, k = 50)
+rs.fit()
+
+# u=rs.normalize_Y()
+# p=rs.recommend(1)
 # print recommended items for user 4 
-rs.print_recommendation()
-SE = 0 # squared error
+u=rs.recommend(1)
+# SE = 0 # squared error
+
 # for n in range(n_tests):
 #     pred = rs.pred(rate_test[n, 0], rate_test[n, 1])
 #     SE +=((pred - rate_test[n, 2])**2)
-# print(SE)   
 
 # RMSE = np.sqrt(SE/n_tests)
 # print ('User-user CF, RMSE =', RMSE)
+
+object_pi =u[:,0]
+file_pi = open ('rs.pickle', 'wb') 
+pickle.dump (object_pi, file_pi)

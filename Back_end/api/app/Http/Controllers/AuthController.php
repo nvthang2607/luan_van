@@ -28,7 +28,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register','rating']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register']]);
     }
 
 
@@ -38,7 +38,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $req) {
+    public function post_register(Request $req) {
         $validator = Validator::make($req->all(), [
             'name' => 'required|string|between:2,50',
             'gender' => 'required',
@@ -91,7 +91,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request){
+    public function post_login(Request $request){
     	$validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string',
@@ -115,7 +115,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout() {
+    public function post_logout() {
         auth()->logout();
 
         return response()->json(['message' => 'User successfully signed out']);
@@ -126,7 +126,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh() {
+    public function post_refresh() {
         return $this->createNewToken(auth()->refresh());
     }
 
@@ -135,7 +135,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function profile(){
+    public function get_profile(){
         return response()->json(['errorCode'=> null, 'data'=>auth()->user()]);
     }
 
