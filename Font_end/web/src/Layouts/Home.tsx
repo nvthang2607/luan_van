@@ -1,5 +1,6 @@
+import { Box, Grid } from '@material-ui/core';
 import React from 'react';
 const Home: React.FC = (props) => {
-	return <React.Fragment>{props.children}</React.Fragment>;
+	return <Box style={{ backgroundColor: '#fff' }}>{props.children}</Box>;
 };
 export default Home;

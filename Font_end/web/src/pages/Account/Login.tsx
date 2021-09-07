@@ -22,6 +22,7 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import fbIcon from '../../public/images/facebook.svg';
 import ggIcon from '../../public/images/google.webp';
+import FacebookLogin from 'react-facebook-login';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -45,6 +46,7 @@ import { useForm } from 'react-hook-form';
 import { LoginPost } from '../../api/LoginAPI';
 import { toast, ToastContainer } from 'react-toastify';
 import { LoginDTO } from '../../DTO/Login/LoginDTO';
+import GoogleLogin from 'react-google-login';
 interface loginprops {
 	receivePropsLogin?: (result: boolean) => void;
 	resultApiLogin?: (result: any) => void;
@@ -131,6 +133,12 @@ const Login: React.FC<loginprops> = (props) => {
 		setState({ ...state, showPwdLogin: !state.showPwdLogin });
 	};
 	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
+	const responseGoogle = (response: any) => {
+		window.localStorage.setItem('tokenGG', response.Zb.access_token);
+	};
+	const responseFacebook = (response: any) => {
+		console.log(response);
+	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Grid container spacing={3}>
@@ -232,10 +240,17 @@ const Login: React.FC<loginprops> = (props) => {
 							paddingLeft: '42px',
 						}}
 						fullWidth
-						startIcon={<img src={ggIcon} alt="google" width="35px" />}
+						// startIcon={<img src={ggIcon} alt="google" width="35px" />}
 						disabled={isSubmitting}
 					>
-						đăng nhập bằng google
+						<GoogleLogin
+							clientId="4320636860-qpnt1b2pv78gom1eo0lbl95ht27ti28s.apps.googleusercontent.com"
+							//buttonText="Google"
+							onSuccess={responseGoogle}
+							onFailure={responseGoogle}
+							cookiePolicy={'single_host_origin'}
+							style={{ backgroundColor: 'red' }}
+						/>
 					</Button>
 				</Grid>
 				<Grid item xs={12}>
@@ -253,7 +268,14 @@ const Login: React.FC<loginprops> = (props) => {
 						startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
 						disabled={isSubmitting}
 					>
-						đăng nhập bằng facebook
+						<FacebookLogin
+							appId="3110319885910648"
+							autoLoad={true}
+							fields="name,email,picture"
+							//onClick={componentClicked}
+							callback={responseFacebook}
+						/>
+						,
 					</Button>
 				</Grid>
 			</Grid>

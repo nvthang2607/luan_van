@@ -48,6 +48,7 @@ import Login from './Login';
 import Register from './Register';
 import { toast, ToastContainer } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import jwtDecode from 'jwt-decode';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -141,9 +142,21 @@ const Account: React.FC = () => {
 			toast.error('ten tai khoan da ton tai');
 		}
 	};
+	const checkToken = () => {
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
+			} else {
+				return <Redirect to="/" />;
+			}
+		}
+	};
 	return (
 		<div className={classes.grow}>
-			{window.localStorage.getItem('token') && <Redirect to="/" />}
+			{checkToken()}
 			<AppBar position="fixed" className={classes.bgHeader}>
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container>
