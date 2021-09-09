@@ -9,6 +9,9 @@ use File;
 use App\Models\User;
 use App\Models\Rating;
 use App\Models\Product;
+use App\Models\City;
+use App\Models\district;
+use App\Models\commune;
 use Validator;
 use Hash;
 
@@ -166,7 +169,14 @@ class AuthController extends Controller
         $idCommune=$address[0];
         $idDistrict=$address[1];
         $idCity=$address[2];
-        return response()->json(['errorCode'=> null, 'data'=>['name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune]]);
+        $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
+        // $nameCommune=$nameCommune->name;
+        $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
+        // $nameDistrict=$nameDistrict->name;
+        $nameCity=City::where('matp',$idCity)->pluck('name')->first();
+        // $nameCity=$nameCity->name;
+        return response()->json(['errorCode'=> null, 'data'=>['name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,
+            'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune,'nameCommune'=>$nameCommune,'nameDistrict'=>$nameDistrict,'nameCity'=>$nameCity]]);
     }
     public function post_update_profile(request $req){
         
