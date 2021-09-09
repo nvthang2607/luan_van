@@ -22,11 +22,16 @@ import LaptopIcon from '@material-ui/icons/Laptop';
 import TabletAndroidIcon from '@material-ui/icons/TabletAndroid';
 import HeadsetIcon from '@material-ui/icons/Headset';
 import sp1 from './../../public/images/10048267-dien-thoai-samsung-galaxy-a12-128gb-den-1.jpg';
+import sp2 from './../../public/images/iphone-6s-vang-hong_1592643194.jpg';
+import sp3 from './../../public/images/xiaomi-redmi-note-9-xam_1593057875-copy.jpg';
+import watchImg1200 from './../../public/images/10048267-dien-thoai-samsung-galaxy-a12-128gb-den-1.jpg';
+import watchImg300 from './../../public/images/10048267-dien-thoai-samsung-galaxy-a12-128gb-den-1.jpg';
+import SliderImage from 'react-zoom-slider';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Pagination, Rating } from '@material-ui/lab';
 import { useForm } from 'react-hook-form';
-import Product from '../../Components/Product/Product';
+import ReactImageMagnify from 'react-image-magnify';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
@@ -173,6 +178,17 @@ const ProductDetail: React.FC = () => {
 	const onSubmit = (data: any) => {
 		console.log(data);
 	};
+	const data = [
+		{
+			image: sp1,
+		},
+		{
+			image: sp2,
+		},
+		{
+			image: sp3,
+		},
+	];
 	return (
 		<Grid container className={classes.bgHeader}>
 			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
@@ -191,7 +207,7 @@ const ProductDetail: React.FC = () => {
 			</Grid>
 			<Grid container spacing={3}>
 				<Grid item xs={6}>
-					<Card variant="outlined" style={{ paddingTop: '10px' }}>
+					<Box style={{ paddingTop: '10px' }}>
 						<Carousel
 							infiniteLoop
 							stopOnHover
@@ -206,11 +222,12 @@ const ProductDetail: React.FC = () => {
 							<div>
 								<img width="55%" src={sp1} />
 							</div>
-							<div>
-								<img width="55%" src={sp1} />
-							</div>
 						</Carousel>
-					</Card>
+
+						{/* <div style={{ position: 'absolute' }}>
+							<SliderImage data={data} showDescription={true} direction="right" />
+						</div> */}
+					</Box>
 				</Grid>
 				<Grid item xs={6}>
 					<Typography variant="h6" gutterBottom>

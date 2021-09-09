@@ -135,13 +135,21 @@ const Register: React.FC<registerProps> = (props) => {
 		resolver: yupResolver(schema),
 	});
 	const [progress, setProgress] = React.useState(false);
+	const [idCity, setIdCity] = React.useState('');
+	const [idDistrict, setIdDistrict] = React.useState('');
+	const [idCommune, setIdCommune] = React.useState('');
+	const [idCity1, setIdCity1] = React.useState('');
+	const [idDistrict1, setIdDistrict1] = React.useState('');
+	const [idCommue1, setIdCommue1] = React.useState('');
 	const onSubmit = async (data: any) => {
 		const dataRegister = {
 			name: data.name,
 			email: data.email,
 			password: data.password,
 			gender: data.gender,
-			address: data.commune + ' ' + data.district + ' ' + data.address,
+			idCity: idCity1,
+			idDistrict: idDistrict1,
+			idCommue: idCommue1,
 			phone: data.phone,
 		};
 		props?.receivePropsRegister?.(true);
@@ -181,15 +189,14 @@ const Register: React.FC<registerProps> = (props) => {
 	}, []);
 	const [dataDistrict, setDataDistrict] = React.useState<any>([]);
 	const [dataCommune, setDataCommune] = React.useState<any>([]);
-	const [idCity, setIdCity] = React.useState('');
-	const [idDistrict, setIdDistrict] = React.useState('');
-	const [idCommune, setIdCommune] = React.useState('');
+
 	const [openCommune, setOpenCommune] = React.useState(false);
 	const [openDistrict, setOpenDistrict] = React.useState(false);
 	const loadingCommune = openCommune && dataCommune.length === 0;
 	const loadingDistrict = openDistrict && dataDistrict.length === 0;
 	const onChangeCity = async (options: any) => {
 		if (options) {
+			setIdCity1(options.id);
 			setOpenCommune(false);
 			setOpenDistrict(true);
 			setDataDistrict([]);
@@ -201,6 +208,7 @@ const Register: React.FC<registerProps> = (props) => {
 	};
 	const onChangeDistrict = async (options: any) => {
 		if (options) {
+			setIdDistrict1(options.id);
 			setOpenCommune(true);
 			setDataCommune([]);
 			setIdCommune(options.id);
@@ -208,7 +216,11 @@ const Register: React.FC<registerProps> = (props) => {
 			setDataCommune(getCommune.data);
 		}
 	};
-	const onChangeCommune = (options: any) => {};
+	const onChangeCommune = (options: any) => {
+		if (options) {
+			setIdCommue1(options.id);
+		}
+	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Grid container spacing={3}>

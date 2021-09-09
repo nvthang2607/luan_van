@@ -75,13 +75,8 @@ function App() {
 											<Switch>
 												<Route path={AppURL.VIEWS} component={View} />
 												<Route path={AppURL.PRODUCTDETAIL} component={ProductDetail} />
-												<Route path={[AppURL.PROFILE_INFO, AppURL.PROFILE_CHANGEPWD]}>
-													<Profile>
-														<Switch>
-															<Route path={AppURL.PROFILE_INFO} component={ProfileInfo} />
-															<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
-														</Switch>
-													</Profile>
+												<Route path={[AppURL.PROFILE]}>
+													<Profile />
 												</Route>
 											</Switch>
 										</Route>

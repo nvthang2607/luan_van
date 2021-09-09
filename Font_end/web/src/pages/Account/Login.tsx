@@ -61,6 +61,13 @@ const useStyles = makeStyles((theme: Theme) =>
 		grow: {
 			flexGrow: 1,
 		},
+		loginGG: {
+			display: 'contents !important',
+		},
+		loginFB: {
+			padding: 0,
+			display: 'contents',
+		},
 		titleInput: {
 			'&::after': {
 				content: '"*"',
@@ -134,7 +141,7 @@ const Login: React.FC<loginprops> = (props) => {
 	};
 	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
 	const responseGoogle = (response: any) => {
-		window.localStorage.setItem('tokenGG', response.Zb.access_token);
+		console.log(response);
 	};
 	const responseFacebook = (response: any) => {
 		console.log(response);
@@ -228,55 +235,63 @@ const Login: React.FC<loginprops> = (props) => {
 						Hoặc
 					</Typography>
 				</Grid>
-				<Grid item xs={12}>
-					<Button
-						variant="contained"
-						style={{
-							backgroundColor: theme.palette.primary.light,
-							color: '#fff',
-							fontSize: '1.5vw',
-							height: '4vw',
-							justifyContent: 'left',
-							paddingLeft: '42px',
-						}}
-						fullWidth
-						// startIcon={<img src={ggIcon} alt="google" width="35px" />}
-						disabled={isSubmitting}
+				<Grid item xs={12} style={{ paddingLeft: '2px', paddingRight: '23px' }}>
+					<GoogleLogin
+						clientId="4320636860-qpnt1b2pv78gom1eo0lbl95ht27ti28s.apps.googleusercontent.com"
+						buttonText=""
+						onSuccess={responseGoogle}
+						onFailure={responseGoogle}
+						cookiePolicy={'single_host_origin'}
+						style={{ backgroundColor: 'red' }}
+						icon={false}
+						className={classes.loginGG}
 					>
-						<GoogleLogin
-							clientId="4320636860-qpnt1b2pv78gom1eo0lbl95ht27ti28s.apps.googleusercontent.com"
-							//buttonText="Google"
-							onSuccess={responseGoogle}
-							onFailure={responseGoogle}
-							cookiePolicy={'single_host_origin'}
-							style={{ backgroundColor: 'red' }}
-						/>
-					</Button>
+						<Button
+							variant="contained"
+							style={{
+								backgroundColor: theme.palette.primary.light,
+								color: '#fff',
+								fontSize: '1.5vw',
+								height: '4vw',
+								justifyContent: 'left',
+								paddingLeft: '42px',
+							}}
+							fullWidth
+							startIcon={<img src={ggIcon} alt="google" width="35px" />}
+							disabled={isSubmitting}
+						>
+							Dang nhap bang google
+						</Button>
+					</GoogleLogin>
 				</Grid>
 				<Grid item xs={12}>
-					<Button
-						variant="contained"
-						style={{
-							backgroundColor: theme.palette.primary.dark,
-							color: '#fff',
-							fontSize: '1.5vw',
-							height: '4vw',
-							justifyContent: 'left',
-							paddingLeft: '42px',
-						}}
-						fullWidth
-						startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
-						disabled={isSubmitting}
-					>
-						<FacebookLogin
-							appId="3110319885910648"
-							autoLoad={true}
-							fields="name,email,picture"
-							//onClick={componentClicked}
-							callback={responseFacebook}
-						/>
-						,
-					</Button>
+					<FacebookLogin
+						appId="435690581158407"
+						autoLoad={false}
+						//fields="name,email,picture"
+						//onClick={componentClicked}
+						callback={responseFacebook}
+						textButton=""
+						cssClass={classes.loginFB}
+						icon={
+							<Button
+								variant="contained"
+								style={{
+									backgroundColor: theme.palette.primary.dark,
+									color: '#fff',
+									fontSize: '1.5vw',
+									height: '4vw',
+									justifyContent: 'left',
+									paddingLeft: '42px',
+								}}
+								fullWidth
+								startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
+								disabled={isSubmitting}
+							>
+								Dang nhap bang facebook
+							</Button>
+						}
+					></FacebookLogin>
 				</Grid>
 			</Grid>
 		</form>

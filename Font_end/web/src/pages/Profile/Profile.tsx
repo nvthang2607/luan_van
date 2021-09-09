@@ -2,6 +2,7 @@ import {
 	Avatar,
 	Box,
 	Card,
+	CircularProgress,
 	Grid,
 	ListItem,
 	ListItemAvatar,
@@ -11,8 +12,14 @@ import {
 import React from 'react';
 import PersonIcon from '@material-ui/icons/Person';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
+import { UserGet } from '../../api/User';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { getUserProfile, userProfileAPI } from './UserSlice';
+import ProfileInfo from './ProfileInfo';
+import ChangePwd from './ChangePwd';
+import jwtDecode from 'jwt-decode';
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
@@ -36,8 +43,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Profile: React.FC = (props) => {
 	const classes = useStyles();
+	const [profileInfo, setProfileInfo] = React.useState<any>({});
+	const [flag, setFlag] = React.useState(false);
+	React.useEffect(() => {
+		const getData = async () => {
+			const profile = await UserGet();
+			if (profile.errorCode === null) {
+				setProfileInfo(profile.data);
+				setFlag(true);
+			}
+		};
+		getData();
+	}, []);
+	const checkToken = () => {
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
+				return <Redirect to={AppURL.ACCOUNT} />;
+			}
+		} else {
+			return <Redirect to={AppURL.ACCOUNT} />;
+		}
+	};
 	return (
 		<Grid container className={classes.bgHeader2}>
+			{checkToken()}
 			<Grid item xs={3} style={{ backgroundColor: '#f1f4f7' }}>
 				<Card variant="outlined">
 					<Box
@@ -67,7 +100,7 @@ const Profile: React.FC = (props) => {
 									</div>
 									<div style={{ display: 'grid' }}>
 										<Typography variant="h6" style={{ fontSize: '16px' }} noWrap>
-											Tran Sang
+											{profileInfo.name}
 										</Typography>
 									</div>
 								</div>
@@ -111,8 +144,21 @@ const Profile: React.FC = (props) => {
 					</Card>
 				</Card>
 			</Grid>
-			<Grid item xs={9}>
-				{props.children}
+			<Grid item xs={9} style={{ position: 'relative' }}>
+				<Switch>
+					<Route path={[AppURL.PROFILE_INFO, AppURL.PROFILE_CHANGEPWD]}>
+						<Switch>
+							<Route path={AppURL.PROFILE_INFO}>
+								{flag ? (
+									<ProfileInfo profileInfo={profileInfo} />
+								) : (
+									<CircularProgress style={{ position: 'absolute', top: '50%', left: '50%' }} />
+								)}
+							</Route>
+							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
+						</Switch>
+					</Route>
+				</Switch>
 			</Grid>
 		</Grid>
 	);

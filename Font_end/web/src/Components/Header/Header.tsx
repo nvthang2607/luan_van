@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouteLink, useHistory } from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -23,21 +24,25 @@ import icon from '../../public/images/english.svg';
 import iconvn from '../../public/images/vietnamese.svg';
 import CallIcon from '@material-ui/icons/Call';
 import { Close } from '@material-ui/icons';
+import sp1 from './../../public/images/10047676-dien-thoai-vsmart-aris-8gb-128gb-xam-nhat-thuc-1.jpg';
 import {
 	Avatar,
 	Box,
 	Button,
+	ButtonGroup,
 	Card,
 	CardHeader,
 	Chip,
 	DialogContent,
 	DialogTitle,
+	Divider,
 	Fab,
 	Fade,
 	FormControl,
 	Grid,
 	Input,
 	InputAdornment,
+	InputBase,
 	InputLabel,
 	Link,
 	List,
@@ -47,6 +52,7 @@ import {
 	OutlinedInput,
 	Slide,
 	SwipeableDrawer,
+	TextField,
 	useScrollTrigger,
 	Zoom,
 } from '@material-ui/core';
@@ -56,6 +62,8 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import theme from '../../utils/theme';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -291,8 +299,17 @@ const Header: React.FC<Props> = (props) => {
 			setDataUser({ name: '' });
 		}
 		setAnchorElAccount(null);
+		history.push('/');
 	};
+	const handleClickInfo = () => {
+		history.push(AppURL.PROFILE_INFO);
+		setAnchorElAccount(null);
+	};
+
+	const handleClickOrder = () => {};
 	const [openCart, setOpenCart] = React.useState(false);
+	const [count, setCount] = React.useState(0);
+	const [quantity, setQuantity] = React.useState(1);
 	return (
 		<div className={classes.grow}>
 			<AppBar className={classes.bgHeader}>
@@ -656,11 +673,16 @@ const Header: React.FC<Props> = (props) => {
 										open={Boolean(anchorElAccount)}
 										onClose={handleCloseAccount}
 									>
-										<MenuItem onClick={handleCloseAccount}>Profile</MenuItem>
-										<MenuItem onClick={handleCloseAccount}>My account</MenuItem>
+										<MenuItem onClick={handleClickOrder}>
+											<EventNoteIcon /> &nbsp;Quan ly don hang
+										</MenuItem>
+										<MenuItem onClick={handleClickInfo}>
+											<PersonIcon />
+											&nbsp;Quan ly thong tin
+										</MenuItem>
 										<MenuItem onClick={handleClickLogout}>
 											<ExitToAppIcon />
-											&nbsp;Logout
+											&nbsp;Thoat tai khoan
 										</MenuItem>
 									</Menu>
 									{/* <Typography
@@ -709,32 +731,125 @@ const Header: React.FC<Props> = (props) => {
 									open={openCart}
 									onClose={() => setOpenCart(false)}
 									onOpen={() => {}}
+									style={{ position: 'relative' }}
 								>
 									<Box style={{ width: 400 }}>
 										<Box>
-											<DialogTitle id="form-dialog-title">Thong tin thanh toan</DialogTitle>
+											<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
 											<IconButton
 												className={classes.closeButton}
 												onClick={() => setOpenCart(false)}
 											>
 												<Close />
 											</IconButton>
-											<DialogContent>
-												<Typography variant="body2">
-													- Số Tài Khoản: 0501000182310 tên tài khoản: TRAN VAN SANG Ngân hàng TMCP
-													ngoại thương Việt Nam - chi nhánh Bắc Sài Gòn.
-												</Typography>
-												<Typography variant="body2">
-													- Tài khoản Momo: 0904978049 - TRAN VAN SANG.{' '}
-												</Typography>
-												<Typography variant="body2">
-													- Nội dung chuyển tiền các bạn để: ten dang nhap, ten goi license ma ban
-													mua.
-												</Typography>
-												<Typography variant="body2">
-													-Nhận được tiền, Admin sẽ kich hoat goi ma ban da chon!
-												</Typography>
+											<DialogContent style={{ height: `calc(${100}vh - ${250}px)` }}>
+												{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
+													return (
+														<Box style={{ display: 'flex', marginBottom: '35px' }}>
+															<Box style={{ width: '32%' }}>
+																<img width="100%" src={sp1} />
+															</Box>
+															<Box style={{ marginLeft: '4px', width: '78%' }}>
+																<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+																	Apple Watch SE GPS 40mm Vàng Chính HãngApple Watch SE GPS 40mm
+																	Vàng Chính Hãng
+																</Typography>
+																<Box style={{ display: 'contents' }}>
+																	<Box style={{ width: '50%', float: 'left' }}>
+																		<Typography>So luong</Typography>
+																		<ButtonGroup style={{ width: '69px' }}>
+																			<Button
+																				aria-label="reduce"
+																				onClick={() => {
+																					setQuantity(Math.max(Number(quantity) - 1, 1));
+																				}}
+																				size="small"
+																			>
+																				<RemoveIcon fontSize="small" />
+																			</Button>
+																			<InputBase
+																				style={{
+																					paddingLeft: '4px',
+																					paddingRight: '4px',
+																					border: `1px solid rgba(${0}, ${0}, ${0}, ${0.23})`,
+																					borderRight: 'none',
+																				}}
+																				inputProps={{ style: { textAlign: 'center' } }}
+																				value={quantity}
+																				onChange={(event: any) => {
+																					!isNaN(Number(event.target.value))
+																						? setQuantity(Math.max(Number(event.target.value), 1))
+																						: setQuantity(quantity);
+																				}}
+																			/>
+																			<Button
+																				aria-label="increase"
+																				onClick={() => {
+																					setQuantity(Number(quantity) + 1);
+																				}}
+																				size="small"
+																			>
+																				<AddIcon fontSize="small" />
+																			</Button>
+																		</ButtonGroup>
+																	</Box>
+																	<Box style={{ width: '50%', float: 'right', textAlign: 'end' }}>
+																		<Typography
+																			style={{
+																				fontWeight: 'bold',
+																				color: theme.palette.primary.main,
+																			}}
+																		>
+																			19.000.000
+																		</Typography>
+																		<Button
+																			style={{
+																				padding: 0,
+																				color: theme.palette.primary.main,
+																				textTransform: 'inherit',
+																				fontWeight: 'inherit',
+																			}}
+																		>
+																			Xoa san pham
+																		</Button>
+																	</Box>
+																</Box>
+															</Box>
+														</Box>
+													);
+												})}
 											</DialogContent>
+
+											<Box style={{ paddingLeft: '26px', paddingRight: '28px' }}>
+												<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
+												<Box style={{ display: 'contents' }}>
+													<Box style={{ float: 'left' }}>
+														<Typography variant="h6">Tong tien:</Typography>
+													</Box>
+													<Box style={{ float: 'right' }}>
+														<Typography
+															style={{
+																fontWeight: 'bold',
+																color: theme.palette.primary.main,
+															}}
+															variant="h6"
+														>
+															19.000.000d
+														</Typography>
+													</Box>
+												</Box>
+												<Box style={{ marginTop: '70px' }}>
+													<Button
+														variant="contained"
+														color="primary"
+														fullWidth
+														style={{ textTransform: 'initial' }}
+														size="large"
+													>
+														Thanh toan
+													</Button>
+												</Box>
+											</Box>
 										</Box>
 									</Box>
 								</SwipeableDrawer>
