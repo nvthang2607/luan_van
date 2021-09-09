@@ -15,7 +15,7 @@ class RSController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>false],404);
         }
         $id=auth()->user()->id;
-        exec("python C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
+        exec("python ../public/train_model/rs.py $id",$output,$ret_code);
         $output=collect($output);
         $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         $n=$output->count();
@@ -30,6 +30,5 @@ class RSController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
         }
         return response()->json(['errorCode'=> 3,'data'=>null], 401);
-        
    }
 }
