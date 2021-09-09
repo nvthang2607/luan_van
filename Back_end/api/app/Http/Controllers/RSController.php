@@ -16,6 +16,7 @@ class RSController extends Controller
         }
         $id=auth()->user()->id;
         exec("python ../public/train_model/rs.py $id",$output,$ret_code);
+        // exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
         $output=collect($output);
         $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         $n=$output->count();
