@@ -30,9 +30,16 @@ class CF(object):
         
         
     # hàm cập nhật dữ liệu
-    def add(self, new_data):
+    def add(self,new_data):
         # cập nhật khi có thay đổi dữ liệu
-        self.Y_data = np.concatenate((self.Y_data, new_data), axis = 0)
+        self.Y_data=np.concatenate((self.Y_data,new_data))
+        # print(self.Y_data)
+        # print('ok nha')
+        self.Ybar_data = None
+        # id user lớn nhât
+        self.n_users = int(np.max(self.Y_data[:, 0]))+1
+        # id item lớn nhất
+        self.n_items = int(np.max(self.Y_data[:, 1]))+1
 
     # ma trận chuẩn hóa
     def normalize_Y(self):
@@ -117,25 +124,25 @@ class CF(object):
             recommended_items = self.recommend(u)
             # for i in recommended_items:
                 # print ('    for user ', u+1, ': ', i[1:2])
-    
-r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
-ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
-ratings_test = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
-# bắt đầu từ 0
-ratings_base.drop('unix_timestamp',axis='columns', inplace=True)
-ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
 
-rate_train = ratings_base.values
-rate_test = ratings_test.values
-n_train = rate_train.shape[0]
-n_tests = rate_test.shape[0]
-rs = CF(rate_train, k = 50)
-rs.fit()
+#train
+# r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
+# ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
+# ratings_test = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
+# # bắt đầu từ 0
+# ratings_base.drop('unix_timestamp',axis='columns', inplace=True)
+# ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
 
-# u=rs.normalize_Y()
-# u=rs.recommend(50)
-u=rs.recommend(int(sys.argv[1]))
-# print(rs.pred(1,33))
+
+# rate_train = ratings_base.values
+# rate_test = ratings_test.values
+# n_train = rate_train.shape[0]
+# n_tests = rate_test.shape[0]
+
+# rs = CF(rate_train, k = 50)
+# rs.fit()
+# # u=rs.recommend(1)
+# # print(rs.pred(1,33))
 # SE = 0 # squared error
 
 # for n in range(n_tests):
@@ -144,6 +151,18 @@ u=rs.recommend(int(sys.argv[1]))
 
 # RMSE = np.sqrt(SE/n_tests)
 # print ('User-user CF, RMSE =', RMSE)
+
+
+#web
+r_cols = ['user_id', 'item_id', 'rating']
+ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+
+
+rate_train = ratings_base.values
+n_train = rate_train.shape[0]
+rs = CF(rate_train, k = 50)
+rs.fit()
+u=rs.recommend(int(sys.argv[1]))
 object_i =u[:,0]
 for i in object_i:
-    print(i);
+    print(int(i))

@@ -166,6 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -234,8 +235,8 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'ImportExcel' => PhpOffice\PhpSpreadsheet\IOFactory::class
-        
+        'ImportExcel' => PhpOffice\PhpSpreadsheet\IOFactory::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ],
 
 ];

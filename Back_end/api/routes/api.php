@@ -25,14 +25,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/train', [RSController::class, 'get_train']);
-
 Route::group([
     'middleware' => 'api',
     'prefix' => 'insert'
 
 ], function ($router) {
-    Route::get('/users', [UserController::class, 'get_insert']);
+    Route::get('/rating', [UserController::class, 'get_insert']);
+    Route::get('/csv', [UserController::class, 'get_write_rating_to_csv']);
 });
 
 Route::group([
@@ -41,11 +40,14 @@ Route::group([
 
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'post_login']);
+    Route::post('/login/google', [AuthController::class, 'post_login_google']);
+    Route::post('/logout/google', [AuthController::class, 'post_logout_google']);
     Route::post('/register', [AuthController::class, 'post_register']);
     Route::post('/logout', [AuthController::class, 'post_logout']);
     Route::post('/refresh', [AuthController::class, 'post_refresh']);
     Route::get('/profile', [AuthController::class, 'get_profile']);
     Route::post('/update_profile', [AuthController::class, 'post_update_profile']);
+    Route::post('/recommend', [RSController::class, 'post_recommend']);
 });
 Route::group([
     'middleware' => 'api',

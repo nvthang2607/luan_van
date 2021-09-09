@@ -3,25 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use File;
-use App\Models\User;
-use App\Models\Rating;
-use App\Models\Product;
 use Validator;
-use Carbon\Carbon;
-
+use App\Models\Product;
 class RSController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_train']]);
+        $this->middleware('auth:api', ['except' => ['post_recommend']]);
     }
-   public function get_train(){
-
-    $item=50;
-    $o = exec("python C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/rs.py $item",$output,$ret_code);
-    dd($output);
+    public function post_recommend(Request $req){
+        if (!auth()->check()) {
+            return response()->json(['errorCode'=> 4, 'data'=>null],404);
+        }
+        $id=auth()->user()->id;
+        exec("python C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
+        $output=collect($output);
+        $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $n=$output->count();
+        if($n>0){
+            $data=[];
+            $u=0;
+            foreach($output as $i){
+                $product=Product::find($i);
+                $data[$u]=$product;
+                $u++;
+            }
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+        }
+        return response()->json(['errorCode'=> 3,'data'=>false], 401);
+        
    }
 }

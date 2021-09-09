@@ -34,11 +34,10 @@ return [
     | Supported: "session", "token"
     |
     */
-
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'users',1
         ],
 
         'api' => [
@@ -70,7 +69,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

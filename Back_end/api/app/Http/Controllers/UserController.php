@@ -36,12 +36,23 @@ class UserController extends Controller
         $all_data=collect($all_data);
         $chunks = $all_data->chunk(500);
         foreach ($chunks as $chunk){
-            Ratting::insert($chunk->toArray());
+            Rating::insert($chunk->toArray());
            
         }
         $now2=Carbon::now();
         echo 'Xong!<br>';
         echo 't1='.$now1.'<br>';
         echo 't2='.$now2.'<br>';
+    }
+    public function get_write_rating_to_csv()
+    {
+        $rating=Rating::all(['id_user','id_product','ratting']);
+        $handle = fopen('../public/train_model/train_web.csv', 'w');
+        foreach($rating as $i){
+            $row=[$i->id_user,$i->id_product,$i->ratting];
+            fputcsv($handle, $row, ' ');
+        }
+        fclose($handle);
+        echo 'Xong!<br>';
     }
 }

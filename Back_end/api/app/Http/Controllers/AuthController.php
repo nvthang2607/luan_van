@@ -29,7 +29,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_update_profile']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google']]);
     }
 
 
@@ -73,13 +73,10 @@ class AuthController extends Controller
             'old_password' => 'required|string|min:6',
             'new_password' => 'required|string|confirmed|min:6',
         ]);
-
         if($validator->fails()){
             return response()->json($validator->errors()->toJson(), 400);
         }
-
         $id=auth()->user()->id;
-
         $user = User::find($id)->update(
             ['password' => bcrypt($request->new_password)]
         );
@@ -111,7 +108,28 @@ class AuthController extends Controller
         return $this->createNewToken($token);
     }
 
-    
+    public function post_login_google(Request $req){
+    	$validator = Validator::make($req->all(),[
+            'email' => 'required|string|email|max:50',
+        ]);
+        $credentials = $req->only('email');
+        $email=$req->email;
+        if ($validator->fails()) {
+            return response()->json(['errorCode'=> 1, 'data'=>null], 400);
+        }
+        
+        if (! $token = ($user = Auth::getProvider()->retrieveByCredentials($req->only(['email'])))? Auth::login($user): false){
+            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
+        }
+        // try{
+        //     $token = Auth::attempt(['email' => $req->email,'password'=>123]);
+        //     echo $token;
+        // }
+        // catch(Exception  $e){
+        //     echo $e;
+        // }
+        return $this->createNewToken($token);
+    }
 
     /**
      * Log the user out (Invalidate the token).

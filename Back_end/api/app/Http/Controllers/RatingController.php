@@ -29,6 +29,13 @@ class RatingController extends Controller
                 $rating->comment='';
             }
             if($rating->save()){
+                $rating=Rating::all(['id_user','id_product','ratting']);
+                $handle = fopen('../public/train_model/train_web.csv', 'w');
+                foreach($rating as $i){
+                    $row=[$i->id_user,$i->id_product,$i->ratting];
+                    fputcsv($handle, $row, ' ');
+                }
+                fclose($handle);
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
