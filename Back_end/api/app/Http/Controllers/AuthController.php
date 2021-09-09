@@ -32,7 +32,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password']]);
     }
 
 
@@ -179,7 +179,6 @@ class AuthController extends Controller
             'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune,'nameCommune'=>$nameCommune,'nameDistrict'=>$nameDistrict,'nameCity'=>$nameCity]]);
     }
     public function post_update_profile(request $req){
-        
         if(Hash::check($req->password,auth()->user()->password)){
             $user=User::find(auth()->user()->id);
             $user->name=$req->name;
@@ -191,6 +190,24 @@ class AuthController extends Controller
             }
             else{
                 return response()->json(['errorCode'=> 4, 'data'=>$e], 404);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
+        }
+    }
+    public function post_change_password(request $req){
+        if (!auth()->check()) {
+            return response()->json(['errorCode'=> 4, 'data'=>false],401);
+        }
+        if(Hash::check($req->oldPassword,auth()->user()->password)){
+            $user=User::find(auth()->user()->id);
+            $user->password=bcrypt($req->newPassword);
+            if($user->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 3, 'data'=>$e], 404);
             }
         }
         else{

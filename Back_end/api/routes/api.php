@@ -48,6 +48,7 @@ Route::group([
     Route::get('/profile', [AuthController::class, 'get_profile']);
     Route::post('/update_profile', [AuthController::class, 'post_update_profile']);
     Route::post('/recommend', [RSController::class, 'post_recommend']);
+    Route::post('/change_password', [AuthController::class, 'post_change_password']);
 });
 Route::group([
     'middleware' => 'api',

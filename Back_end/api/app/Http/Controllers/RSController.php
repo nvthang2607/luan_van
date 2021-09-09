@@ -12,7 +12,7 @@ class RSController extends Controller
     }
     public function post_recommend(Request $req){
         if (!auth()->check()) {
-            return response()->json(['errorCode'=> 4, 'data'=>false],404);
+            return response()->json(['errorCode'=> 4, 'data'=>false],401);
         }
         $id=auth()->user()->id;
         exec("python ../public/train_model/rs.py $id",$output,$ret_code);
@@ -30,6 +30,6 @@ class RSController extends Controller
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
         }
-        return response()->json(['errorCode'=> 3,'data'=>null], 401);
+        return response()->json(['errorCode'=> 3,'data'=>null], 404);
    }
 }
