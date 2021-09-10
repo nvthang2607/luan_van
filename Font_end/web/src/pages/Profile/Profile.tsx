@@ -20,6 +20,7 @@ import { getUserProfile, userProfileAPI } from './UserSlice';
 import ProfileInfo from './ProfileInfo';
 import ChangePwd from './ChangePwd';
 import jwtDecode from 'jwt-decode';
+import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Profile: React.FC = (props) => {
 	const classes = useStyles();
+	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
 	const [flag, setFlag] = React.useState(false);
 	React.useEffect(() => {
@@ -51,10 +53,11 @@ const Profile: React.FC = (props) => {
 			if (profile.errorCode === null) {
 				setProfileInfo(profile.data);
 				setFlag(true);
+				//console.log(pro);
 			}
 		};
 		getData();
-	}, []);
+	}, [valueRefreshPage]);
 	const checkToken = () => {
 		const token: any = window.localStorage.getItem('token');
 		const date = Date.now();
@@ -84,7 +87,7 @@ const Profile: React.FC = (props) => {
 						<Card variant="outlined" style={{ width: '-webkit-fill-available' }}>
 							<ListItem>
 								<ListItemAvatar style={{ marginRight: '-8px' }}>
-									<Avatar>T</Avatar>
+									<Avatar>{profileInfo.name ? profileInfo.name.charAt(0) : 'A'}</Avatar>
 								</ListItemAvatar>
 								<div
 									style={{
@@ -152,7 +155,10 @@ const Profile: React.FC = (props) => {
 								{flag ? (
 									<ProfileInfo profileInfo={profileInfo} />
 								) : (
-									<CircularProgress style={{ position: 'absolute', top: '50%', left: '50%' }} />
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', top: '50%', left: '50%' }}
+									/>
 								)}
 							</Route>
 							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
