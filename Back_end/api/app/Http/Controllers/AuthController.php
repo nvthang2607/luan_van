@@ -182,7 +182,7 @@ class AuthController extends Controller
         if(Hash::check($req->password,auth()->user()->password)){
             $user=User::find(auth()->user()->id);
             $user->name=$req->name;
-            $user-> address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
+            $user-> address=$req->idCommune.', '.$req->idDistrict.', '.$req->idCity;
             $user->gender=$req->gender;
             $user->phone=$req->phone;
             if($user->save()){
