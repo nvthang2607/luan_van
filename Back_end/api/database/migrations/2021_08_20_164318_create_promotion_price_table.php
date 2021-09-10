@@ -24,9 +24,9 @@ class CreatePromotionPriceTable extends Migration
             ->onUpdate('cascade')
             ->onDelete('cascade');
             $table->integer('id_object');
+            $table->string('code');
             $table->dateTime('time_start');
             $table->dateTime('time_finish');
-            $table->integer('time_total');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
