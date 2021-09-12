@@ -12,6 +12,7 @@ use App\Http\Controllers\RSController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\NewsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -116,4 +117,12 @@ Route::group([
 
 ], function ($router) {
     Route::post('/create', [OrderController::class, 'post_order_create']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'news'
+
+], function ($router) {
+    Route::get('/{id}', [NewsController::class, 'post_news_id']);
 });
