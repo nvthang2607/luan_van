@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RSController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -98,4 +99,13 @@ Route::group([
 
 ], function ($router) {
     Route::post('/', [RatingController::class, 'post_rating']);
+});
+
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'order'
+
+], function ($router) {
+    Route::post('/create', [OrderController::class, 'post_order_create']);
 });
