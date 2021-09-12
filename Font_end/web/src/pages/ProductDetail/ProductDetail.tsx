@@ -26,7 +26,7 @@ import sp2 from './../../public/images/iphone-6s-vang-hong_1592643194.jpg';
 import sp3 from './../../public/images/xiaomi-redmi-note-9-xam_1593057875-copy.jpg';
 import watchImg1200 from './../../public/images/10048267-dien-thoai-samsung-galaxy-a12-128gb-den-1.jpg';
 import watchImg300 from './../../public/images/10048267-dien-thoai-samsung-galaxy-a12-128gb-den-1.jpg';
-import SliderImage from 'react-zoom-slider';
+//import SliderImage from 'react-zoom-slider';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Pagination, Rating } from '@material-ui/lab';

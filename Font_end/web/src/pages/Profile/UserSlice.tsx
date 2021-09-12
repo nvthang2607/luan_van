@@ -17,8 +17,15 @@ const UserSlice = createSlice({
 		idDistrict: '',
 		idCommune: '',
 		email: '',
+		nameCity: '',
+		nameDistrict: '',
+		nameCommune: '',
 	},
-	reducers: {},
+	reducers: {
+		updateProfileUser(state, action: any) {
+			state = action.payload;
+		},
+	},
 	extraReducers: {
 		[userProfileAPI.pending]: (state) => {},
 		[userProfileAPI.rejected]: (state) => {},
@@ -28,5 +35,6 @@ const UserSlice = createSlice({
 		},
 	},
 });
+export const { updateProfileUser } = UserSlice.actions;
 export const getUserProfile = (state: RootState) => state.userProfile;
 export default UserSlice.reducer;

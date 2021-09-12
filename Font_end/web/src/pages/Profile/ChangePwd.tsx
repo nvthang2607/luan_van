@@ -21,6 +21,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { NavLink } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
 import { useForm } from 'react-hook-form';
+import { UpdatePasswordPost } from '../../api/User';
+import { toast, ToastContainer } from 'react-toastify';
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
@@ -66,19 +68,29 @@ const ChangePwd: React.FC = () => {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const onSubmit = (data: any) => {
+	const onSubmit = async (data: any) => {
 		console.log(data);
+		const reqData = {
+			oldPassword: data.oldPassword,
+			newPassword: data.newPassword,
+		};
+		const response = await UpdatePasswordPost(reqData);
+		if (response.errorCode === null) {
+			toast.success('Thay doi mat khau thanh cong');
+		} else if (response.errorCode === 2) {
+			toast.error('Mat khau ko chinh xac');
+		}
 	};
 	return (
 		<Container>
 			<Grid item xs={12}>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form onSubmit={handleSubmit(onSubmit)} style={{ position: 'relative' }}>
 					<Grid container>
 						<Grid item xs={6}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Mat khau hien tai
+										Mat khau cu
 									</Typography>
 									<TextField
 										{...register('oldPassword')}
@@ -93,7 +105,7 @@ const ChangePwd: React.FC = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Mat khau hien tai
+										Nhap mat khau moi
 									</Typography>
 									<TextField
 										{...register('newPassword')}
@@ -108,7 +120,7 @@ const ChangePwd: React.FC = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Mat khau hien tai
+										Nhap lai mat khau moi
 									</Typography>
 									<TextField
 										{...register('retypeNewPassword')}
@@ -127,8 +139,8 @@ const ChangePwd: React.FC = () => {
 										color="primary"
 										size="large"
 										type="submit"
-										//disabled={true}
-										style={{ position: 'relative' }}
+										disabled={isSubmitting}
+										//style={{ position: 'relative' }}
 									>
 										Doi mat khau
 										{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
@@ -141,6 +153,23 @@ const ChangePwd: React.FC = () => {
 					</Grid>
 				</form>
 			</Grid>
+			{isSubmitting && (
+				<CircularProgress
+					color="secondary"
+					style={{ position: 'fixed', top: '50%', left: '50%' }}
+				/>
+			)}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 		</Container>
 	);
 };

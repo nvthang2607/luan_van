@@ -64,6 +64,9 @@ import theme from '../../utils/theme';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { getUserProfile, userProfileAPI } from '../../pages/Profile/UserSlice';
+import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -212,6 +215,7 @@ function ScrollTop(props: Props) {
 	);
 }
 const Header: React.FC<Props> = (props) => {
+	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const classes = useStyles();
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [dataUser, setDataUser] = React.useState({ name: '' });
@@ -258,10 +262,10 @@ const Header: React.FC<Props> = (props) => {
 			}
 		};
 		getDataUser();
-	}, [refresh]);
+	}, [refresh, valueRefreshPage.value]);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
-
+	//setDataUser(profileData);
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
