@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Product;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -14,7 +15,7 @@ class SearchController extends Controller
             $datas=Product::where('name','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
         }
         if($req->type=='news'){
-            $datas=News::where('name','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            $datas=News::where('title','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
         }
         $n=$datas->count();
         if(count($datas)>0){
