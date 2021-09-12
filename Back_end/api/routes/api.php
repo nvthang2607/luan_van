@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RSController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SearchController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -89,8 +90,15 @@ Route::group([
     'prefix' => 'product'
 
 ], function ($router) {
-    Route::get('/search', [ProductController::class, 'get_product_search']);
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
+});    
+
+
+Route::group([
+    'middleware' => 'api',
+
+], function ($router) {
+    Route::get('/search', [SearchController::class, 'get_search_product_news']);
 });
 
 Route::group([
