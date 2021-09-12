@@ -31,7 +31,7 @@ class SearchController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }
         else{
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>null]], 200);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
         }
     }
 }
