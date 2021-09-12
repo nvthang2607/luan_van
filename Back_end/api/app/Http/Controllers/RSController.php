@@ -18,9 +18,9 @@ class RSController extends Controller
         exec("python ../public/train_model/rs.py $id",$output,$ret_code);
         // exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
         $output=collect($output);
-        $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         $n=$output->count();
-        if($n>0){
+        $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        if($output->count()>0){
             $data=[];
             $u=0;
             foreach($output as $i){
