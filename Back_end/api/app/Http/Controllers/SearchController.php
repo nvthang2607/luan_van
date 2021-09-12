@@ -12,12 +12,15 @@ class SearchController extends Controller
     }
     public function get_search_product_news(Request $req){
         if($req->type=='product'){
+            $product=Product::where('name','like','%'.$req->search.'%')->get();
+            $n=$product->count();
             $datas=Product::where('name','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
         }
         if($req->type=='news'){
+            $news=News::where('title','like','%'.$req->search.'%')->get();
+            $n=$news->count();
             $datas=News::where('title','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
         }
-        $n=$datas->count();
         if(count($datas)>0){
             $data=[];
             $u=0;
@@ -28,7 +31,7 @@ class SearchController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }
         else{
-            return response()->json(['errorCode'=> 4, 'data'=>null], 404);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>null]], 200);
         }
     }
 }
