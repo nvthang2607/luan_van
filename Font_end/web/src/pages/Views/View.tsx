@@ -87,16 +87,16 @@ const View: React.FC = () => {
 	//const searchParams = new URLSearchParams(location.search);
 	//searchParams.set('page', '1');
 	//console.log(searchParams.get('page'));
-	const onClick = () => {
-		history.push({
-			pathname: location.pathname,
-			search:
-				new URLSearchParams(location.search).toString() +
-				'&' +
-				new URLSearchParams({ search: 'abc' }).toString(),
-		});
-		console.log(location);
-	};
+	// const onClick = () => {
+	// 	history.push({
+	// 		pathname: location.pathname,
+	// 		search:
+	// 			new URLSearchParams(location.search).toString() +
+	// 			'&' +
+	// 			new URLSearchParams({ search: 'abc' }).toString(),
+	// 	});
+	// 	console.log(location);
+	// };
 	return (
 		<Grid container className={classes.bgHeader}>
 			{/* <Button onClick={onClick}>Click me</Button> */}

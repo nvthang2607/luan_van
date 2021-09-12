@@ -25,7 +25,7 @@ class SearchController extends Controller
             $data=[];
             $u=0;
             foreach($datas as $i){
-                $data[$u]=[$i,'image'=>['source/image/slide/test.png','source/image/slide/test.png']];
+                $data[$u]=[$i,'image'=>['source/image/product/test.png','source/image/product/test.png']];
                 $u++;
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
