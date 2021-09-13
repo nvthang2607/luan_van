@@ -17,7 +17,7 @@ class SearchController extends Controller
         if($req->type=='product'){
             $product=Product::where('name','like','%'.$req->search.'%')->where('active',1)->get();
             $n=$product->count();
-            $datas=Product::where('name','like','%'.$req->search.'%')->where('active',1)->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            $datas=Product::where('name','like','%'.$req->search.'%')->where('active',1)->orderByDesc('id')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
             if(count($datas)>0){
                 $u=0;
                 foreach($datas as $i){

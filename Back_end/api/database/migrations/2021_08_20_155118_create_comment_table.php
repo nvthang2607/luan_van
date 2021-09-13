@@ -4,7 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use App\Models\GroupChat;
 class CreateCommentTable extends Migration
 {
     /**
@@ -16,8 +15,8 @@ class CreateCommentTable extends Migration
     {
         Schema::create('comment', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_group')
-            ->constrained('group_chat')
+            $table->foreignId('id_product')
+            ->constrained('product')
             ->onUpdate('cascade')
             ->onDelete('cascade');
             $table->string('email',50);
@@ -25,19 +24,20 @@ class CreateCommentTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        // $faker=Faker\Factory::create('vi_VN');
-        // $n=50;
-        // for($i=0;$i<$n;$i++){
-        //     $id_g=GroupChat::all()->pluck('id');
-        //     $id_group=$faker->randomElement($id_g);
-        //     DB::table('comment')->insert(
-        //         array(
-        //             'id_group'=>$id_group,
-        //             'email'=>$faker->email,
-        //             'comment'=>'comment'
-        //         )
-        //     );
-        // }
+        $faker=Faker\Factory::create('vi_VN');
+        $n=50;
+        for($i=1;$i<=$n;$i++){
+            for($u=1;$u<=2;$u++){
+                DB::table('comment')->insert(
+                    array(
+                        'id_product'=>$i,
+                        'email'=>$faker->email,
+                        'comment'=>$faker->sentence(10)
+                    )
+                );
+            }
+            
+        }
     }
 
     /**
