@@ -29,29 +29,21 @@ class ProductController extends Controller
             foreach($information as $i){
                 $informations[count($informations)]=['name'=>$i->name,'value'=>$i->content];
             }
-            $rate5=$rate4=$rate3=$rate2=$rate1=0;
             $rate=Rating::where('id_product',$req->id)->get(['ratting']);
+            $rate5=Rating::where('id_product',$req->id)->where('ratting',5)->get();
+            $rate4=Rating::where('id_product',$req->id)->where('ratting',4)->get();
+            $rate3=Rating::where('id_product',$req->id)->where('ratting',3)->get();
+            $rate2=Rating::where('id_product',$req->id)->where('ratting',2)->get();
+            $rate1=Rating::where('id_product',$req->id)->where('ratting',1)->get();
             $rate_number=$rate->count();
             $avg=5;
             if($rate_number>0){
                 $t=0;
                 foreach($rate as $r){
-                    switch($r->ratting){
-                        case '5':
-                            $rate5++;
-                        case '4':
-                            $rate4++;
-                        case '3':
-                            $rate3++;
-                        case '2':
-                            $rate2++;
-                        case '1':
-                            $rate1++;
-                    }
                     $t=$t+$r->ratting;
                 }
                 $avg=$t/$rate_number;
-                $rates=['rate5'=>$rate5,'rate4'=>$rate4,'rate3'=>$rate3,'rate2'=>$rate2,'rate1'=>$rate1];
+                $rates=['rate5'=>$rate5->count(),'rate4'=>$rate4->count(),'rate3'=>$rate3->count(),'rate2'=>$rate2->count(),'rate1'=>$rate1->count()];
             }
             $data=[
                 'item'=>$product,
