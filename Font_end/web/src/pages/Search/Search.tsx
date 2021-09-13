@@ -98,39 +98,17 @@ const Search: React.FC = () => {
 	const idPrice = openPrice ? 'simple-popover' : undefined;
 	const history = useHistory();
 
-	//const searchParams = new URLSearchParams(location.search);
-	//searchParams.set('page', '1');
-	//console.log(searchParams.get('page'));
-	const onClick = () => {
-		history.push({
-			pathname: location.pathname,
-			search:
-				new URLSearchParams(location.search).toString() +
-				'&' +
-				new URLSearchParams({ search: 'abc' }).toString(),
-		});
-		console.log(location);
-	};
 	const [typeSearch, setTypeSearch] = React.useState('product');
-	const searchParams = new URLSearchParams(location.search);
+	const searchParams = new URLSearchParams(window.location.search);
 	const dispatch = useAppDispatch();
 	const handleClickOption = (name: string) => {
 		setDataSearch({});
 		dispatch(updateValueRefreshPage(true));
 		if (searchParams.has('query')) {
 			history.replace({
-				pathname: location.pathname,
+				pathname: window.location.pathname,
 				search: 'query=' + searchParams.get('query')?.toString() + '&type=' + name,
 			});
-			// console.log(location.pathname);
-			// console.log(location.search);
-			// console.log(searchParams.get('query'));
-			// if (searchParams.has('query')) {
-			//     history.replace('?query=' + searchParams.get('query')?.toString() + '&type=' + name);
-			//     console.log(location.pathname);
-			//     console.log(location.search);
-			//     console.log(searchParams.get('query'));
-			// }
 		}
 	};
 	const [dataSearch, setDataSearch] = React.useState<any>({});
@@ -141,7 +119,7 @@ const Search: React.FC = () => {
 	React.useEffect(() => {
 		setProgress(true);
 		window.scrollTo(0, 0);
-		const searchParams = new URLSearchParams(location.search);
+		const searchParams = new URLSearchParams(window.location.search);
 		if (searchParams.has('type')) {
 			searchParams.get('type') === 'news' ? setTypeSearch('news') : setTypeSearch('product');
 			//console.log(searchParams.get('type'));
@@ -152,7 +130,7 @@ const Search: React.FC = () => {
 			setPage(1);
 		}
 		const fetchSearch = async () => {
-			const searchParams = new URLSearchParams(location.search);
+			const searchParams = new URLSearchParams(window.location.search);
 
 			if (searchParams.has('query')) {
 				const getSearch = await SearchPhoneGet({
@@ -263,9 +241,9 @@ const Search: React.FC = () => {
 								defaultPage={page}
 								onChange={(event: object, page: number) => {
 									//console.log(event, page);
-									const searchParams = new URLSearchParams(location.search);
+									const searchParams = new URLSearchParams(window.location.search);
 									history.replace({
-										pathname: location.pathname,
+										pathname: window.location.pathname,
 										search:
 											'query=' +
 											searchParams.get('query')?.toString() +

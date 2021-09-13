@@ -293,7 +293,7 @@ const Header: React.FC<Props> = (props) => {
 			setItem(iconvn);
 			setValueI18n(i18nLng);
 		}
-		const searchParams = new URLSearchParams(location.search);
+		const searchParams = new URLSearchParams(window.location.search);
 		if (searchParams.has('type')) {
 			searchParams.get('type') === 'news' ? setValueType('news') : setValueType('product');
 			//console.log(searchParams.get('type'));
