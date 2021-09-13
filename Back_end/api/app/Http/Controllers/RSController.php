@@ -20,13 +20,18 @@ class RSController extends Controller
         exec("python ../public/train_model/rs.py $id",$output,$ret_code);
         // exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
         $output=collect($output);
-        $n=$output->count();
+        $n=0;
+        foreach($output as $i){
+            if(Product::where('id',$i)->where('active',1)->get('id')){
+                $n+=1;
+            }
+        }
         $output=$output->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         if($output->count()>0){
             $data=[];
             $u=0;
             foreach($output as $i){
-                $product=Product::find($i);
+                $product=Product::where('id',$i)->where('active',1)->get('id');
                 $image=Product::find($i)->image_product()->pluck('image')->first();
                 $rate=Rating::where('id_product',$i)->get(['ratting']);
                 $rate_number=$rate->count();
@@ -42,6 +47,7 @@ class RSController extends Controller
                 $u++;
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+            
         }
         return response()->json(['errorCode'=> 3,'data'=>null], 404);
    }
