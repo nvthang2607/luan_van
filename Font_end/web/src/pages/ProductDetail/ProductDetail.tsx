@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -31,11 +31,18 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Pagination, Rating } from '@material-ui/lab';
 import { useForm } from 'react-hook-form';
-import ReactImageMagnify from 'react-image-magnify';
+//import ReactImageMagnify from 'react-image-magnify';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import ProductCarousel from '../../Components/Product/ProductCarousel';
+import { useAppDispatch } from '../../app/hooks';
+import { updateProfileUser } from '../Profile/UserSlice';
+import {
+	getValueRefreshPage,
+	updateValueRefreshPage,
+} from '../../features/refresh/RefreshPageSlice';
+import { ProductIdGet } from '../../api/Product';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -189,6 +196,27 @@ const ProductDetail: React.FC = () => {
 			image: sp3,
 		},
 	];
+	const dispatch = useAppDispatch();
+	React.useEffect(() => {
+		dispatch(updateValueRefreshPage(true));
+		window.scrollTo(0, 0);
+	});
+	const { idProduct } = useParams<{ idProduct?: string }>();
+	const [dataProduct, setDataProduct] = React.useState<any>({});
+	React.useEffect(() => {
+		const fetchProductId = async () => {
+			const getProductId = await ProductIdGet(idProduct);
+			console.log(getProductId);
+			if (getProductId) {
+				if (getProductId.errorCode === null) {
+					console.log(getProductId);
+				}
+			}
+		};
+		console.log(idProduct);
+
+		fetchProductId();
+	}, [idProduct]);
 	return (
 		<Grid container className={classes.bgHeader}>
 			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
@@ -444,7 +472,7 @@ const ProductDetail: React.FC = () => {
 										style={{ textTransform: 'initial', padding: '8px 25px' }}
 										onClick={() => {
 											setCollapse(!collapse);
-											collapse && setCollapseForm(false);
+											collapse ? setCollapseForm(false) : setCollapseForm(true);
 											setValue(3);
 										}}
 									>
@@ -471,6 +499,8 @@ const ProductDetail: React.FC = () => {
 										size="large"
 										onChange={(event, newValue) => {
 											setValue(newValue);
+											console.log(newValue);
+
 											if (newValue === null) {
 												setCollapseForm(false);
 											} else {

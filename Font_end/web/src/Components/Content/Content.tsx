@@ -31,6 +31,8 @@ import clsx from 'clsx';
 import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
+import { PhoneBranch, SearchPhoneGet } from '../../api/Product';
+import { AppURL } from '../../utils/const';
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -45,6 +47,21 @@ const useStyles = makeStyles((theme) => ({
 		borderRight: '0.5px solid #8c8c8c4f',
 	},
 	button: {},
+	stylePhoneBranch: {
+		textDecoration: 'none',
+		color: 'black',
+		fontWeight: 'bold',
+		'&:hover': {
+			color: '#ff6600',
+		},
+	},
+	styleViewAll: {
+		color: '#ff6600',
+		textDecoration: 'none',
+		'&:hover': {
+			color: 'red',
+		},
+	},
 	titles: {
 		textDecoration: 'none',
 		padding: '12px',
@@ -79,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
 			boxShadow: `rgb(${0} ${0} ${0} / ${20}%) ${0}px ${3}px ${5}px ${-1}px, rgb(${0} ${0} ${0} / ${14}%) ${0}px ${5}px ${8}px ${0}px, rgb(${0} ${0} ${0} / ${12}%) ${0}px ${1}px ${14}px ${0}px`,
 		},
 	},
+
 	borderTitle: {
 		borderBottom: `4px solid ${theme.palette.primary.main}`,
 		marginTop: '20px',
@@ -107,6 +125,34 @@ const Content: React.FC = () => {
 	};
 	const onMouseOutProduct = () => {
 		setHoverProduct(false);
+	};
+	const [dataPhoneBranch, setDataPhoneBranch] = React.useState<any>([]);
+	React.useEffect(() => {
+		const fetchPhoneBranch = async () => {
+			const getPhoneBranch = await PhoneBranch();
+			if (getPhoneBranch) {
+				if (getPhoneBranch.errorCode === null) {
+					//console.log(getPhoneBranch);
+					setDataPhoneBranch(getPhoneBranch.data);
+				}
+			}
+		};
+		fetchPhoneBranch();
+	}, []);
+	const toURL = (str: string) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
 	};
 	return (
 		<Grid container className={classes.bgHeader}>
@@ -141,36 +187,41 @@ const Content: React.FC = () => {
 					</Grid>
 					<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 						<List style={{ display: 'flex' }}>
-							<ListItem
-								style={{
-									padding: 0,
-
-									paddingRight: '10px',
-									paddingLeft: '10px',
-								}}
-							>
-								<Typography variant="body1">Xiaomi</Typography>
-							</ListItem>
-							<ListItem
-								style={{
-									padding: 0,
-
-									paddingRight: '10px',
-									paddingLeft: '10px',
-								}}
-							>
-								<Typography variant="body1">Xiaomi</Typography>
-							</ListItem>
-							<ListItem
-								style={{
-									padding: 0,
-
-									paddingRight: '10px',
-									paddingLeft: '10px',
-								}}
-							>
-								<Typography variant="body1">Xiaomi</Typography>
-							</ListItem>
+							{dataPhoneBranch?.listData?.map((item: any, index: number) => {
+								return (
+									<Link
+										to={`/views/${toURL(item.name)}-${item.id}.html`}
+										className={classes.stylePhoneBranch}
+									>
+										<ListItem
+											style={{
+												padding: 0,
+												fontWeight: 'bold',
+												paddingRight: '10px',
+												paddingLeft: '10px',
+											}}
+										>
+											<Typography variant="body1" style={{ fontWeight: 500 }}>
+												{item.name}
+											</Typography>
+										</ListItem>
+									</Link>
+								);
+							})}
+							<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+								<ListItem
+									style={{
+										padding: 0,
+										fontWeight: 'bold',
+										paddingRight: '10px',
+										paddingLeft: '10px',
+									}}
+								>
+									<Typography variant="body1" style={{ fontWeight: 500 }}>
+										Xem tat ca
+									</Typography>
+								</ListItem>
+							</Link>
 						</List>
 					</Grid>
 				</Grid>

@@ -22,6 +22,9 @@ import Profile from './pages/Profile/Profile';
 import ProfileInfo from './pages/Profile/ProfileInfo';
 import ChangePwd from './pages/Profile/ChangePwd';
 import { profile } from 'console';
+import Checkout from './pages/Checkout/Checkout';
+import MainLayoutCheckout from './pages/Checkout/MainLayoutCheckout';
+import Search from './pages/Search/Search';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -56,6 +59,8 @@ function App() {
 									AppURL.PRODUCTDETAIL,
 									AppURL.PROFILE_INFO,
 									AppURL.PROFILE_CHANGEPWD,
+									AppURL.CHECKOUT,
+									AppURL.SEARCH,
 								]}
 							>
 								<Home>
@@ -70,11 +75,15 @@ function App() {
 												AppURL.PRODUCTDETAIL,
 												AppURL.PROFILE_INFO,
 												AppURL.PROFILE_CHANGEPWD,
+												AppURL.CHECKOUT,
+												AppURL.SEARCH,
 											]}
 										>
 											<Switch>
 												<Route path={AppURL.VIEWS} component={View} />
 												<Route path={AppURL.PRODUCTDETAIL} component={ProductDetail} />
+												<Route path={AppURL.CHECKOUT} component={MainLayoutCheckout} />
+												<Route path={AppURL.SEARCH} component={Search} />
 												<Route path={[AppURL.PROFILE]}>
 													<Profile />
 												</Route>

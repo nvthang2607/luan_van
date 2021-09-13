@@ -5,8 +5,8 @@ Created on Mon Sep  6 13:41:31 2021
 @author: vanth
 """
 import sys
-import pickle 
-import pandas as pd 
+import pickle
+import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy import sparse
@@ -19,7 +19,7 @@ class CF(object):
         # dữ liệu đầu vào:
         self.Y_data = Y_data
         # số lượng K láng giềng
-        self.k = k 
+        self.k = k
         # hàm tính độ tương tự là hàm cosine_similarity
         self.dist_func = cosine_similarity
         self.Ybar_data = None
@@ -27,8 +27,8 @@ class CF(object):
         self.n_users = int(np.max(self.Y_data[:, 0]))+1
         # id item lớn nhất
         self.n_items = int(np.max(self.Y_data[:, 1]))+1
-        
-        
+
+
     # hàm cập nhật dữ liệu
     def add(self,new_data):
         # cập nhật khi có thay đổi dữ liệu
@@ -57,7 +57,7 @@ class CF(object):
             # Lấy rating của những đánh giá đó
             ratings = self.Y_data[ids, 2]
             # lấy giá trị R trung bình của user
-            self.mu[n] = np.mean(ratings) 
+            self.mu[n] = np.mean(ratings)
             # print('***',ratings)
             self.Ybar_data[ids, 2] = ratings - self.mu[n]
         # return  self.Ybar_data[:,2]
@@ -66,11 +66,11 @@ class CF(object):
         # return self.Ybar
         self.Ybar = self.Ybar.tocsr()
         return self.Ybar
-        
+
     def similarity(self):
         self.S = self.dist_func(self.Ybar.T, self.Ybar.T)
         return self.S
-        
+
     def fit(self):
         """
         Normalize data and calculate similarity matrix again (after
@@ -79,21 +79,21 @@ class CF(object):
         self.normalize_Y()
         self.similarity()
         return  self.similarity()
-        
+
     def pred(self, u, i):
-        """ 
+        """
         predict the rating of user u for item i (normalized)
         if you need the un
         """
         # Step 1: find all users who rated i
         ids = np.where(self.Y_data[:, 1] == i)[0].astype(np.int32)
-        # Step 2: 
+        # Step 2:
         users_rated_i = (self.Y_data[ids, 0]).astype(np.int32)
-        # Step 3: find similarity btw the current user and others 
+        # Step 3: find similarity btw the current user and others
         # who already rated i
         sim = self.S[u, users_rated_i]
         # Step 4: find the k most similarity users
-        a = np.argsort(sim)[-self.k:] 
+        a = np.argsort(sim)[-self.k:]
         # and the corresponding similarity levels
         nearest_s = sim[a]
         # How did each of 'near' users rate item i
@@ -101,20 +101,20 @@ class CF(object):
         # print(u,' đánh giá ',i,' là: ',(r*nearest_s)[0]/(np.abs(nearest_s).sum() + 1e-8) + self.mu[u])
         return (r*nearest_s)[0]/(np.abs(nearest_s).sum() + 1e-8) + self.mu[u]
 
-        
+
     def recommend(self, u):
         # Find all rows corresponding to user u
         ids = np.where(rate_train[:, 0] == u)[0]
-        items_rated_by_u = self.Y_data[ids, 1].tolist() 
+        items_rated_by_u = self.Y_data[ids, 1].tolist()
         recommended_items = []
         for i in range(self.n_items):
             if i not in items_rated_by_u:
                 rating = self.pred(u, i)
-                if rating > 0: 
+                if rating > 0:
                     recommended_items.append([i,rating])
         # print(u)
         # print(recommended_items )
-        recommended_items = np.array(recommended_items)      
+        recommended_items = np.array(recommended_items)
         recommended_items=recommended_items[np.argsort(recommended_items[:, 1])]
         recommended_items=recommended_items[::-1]
         return recommended_items
@@ -161,8 +161,8 @@ class CF(object):
 
 #web
 r_cols = ['user_id', 'item_id', 'rating']
-ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
-# ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+#ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
 
 rate_train = ratings_base.values
 n_train = rate_train.shape[0]

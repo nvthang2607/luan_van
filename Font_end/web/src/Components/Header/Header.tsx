@@ -1,5 +1,5 @@
 import React from 'react';
-import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { fade, makeStyles, Theme, createStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -39,6 +39,7 @@ import {
 	Fab,
 	Fade,
 	FormControl,
+	FormHelperText,
 	Grid,
 	Input,
 	InputAdornment,
@@ -65,8 +66,11 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getUserProfile, userProfileAPI } from '../../pages/Profile/UserSlice';
-import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
+import { getUserProfile, updateProfileUser, userProfileAPI } from '../../pages/Profile/UserSlice';
+import {
+	getValueRefreshPage,
+	updateValueRefreshPage,
+} from '../../features/refresh/RefreshPageSlice';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -75,6 +79,38 @@ interface Props {
 	window?: () => Window;
 	children?: React.ReactElement;
 }
+
+const StyledBadge = withStyles((theme: Theme) =>
+	createStyles({
+		badge: {
+			right: '3px',
+			top: '8px',
+			border: `2px solid ${theme.palette.background.paper}`,
+			padding: '0 0',
+			'&::after': {
+				position: 'absolute',
+				top: -1,
+				left: 0,
+				width: '100%',
+				height: '100%',
+				borderRadius: '50%',
+				animation: '$ripple 1.2s infinite ease-in-out',
+				border: '1px solid currentColor',
+				content: '""',
+			},
+		},
+		'@keyframes ripple': {
+			'0%': {
+				transform: 'scale(.8)',
+				opacity: 1,
+			},
+			'100%': {
+				transform: 'scale(2.4)',
+				opacity: 0,
+			},
+		},
+	})
+)(Badge);
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		bgHeader: {
@@ -84,6 +120,12 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		grow: {
 			flexGrow: 1,
+		},
+		badge: {
+			right: -3,
+			top: 13,
+			border: `2px solid ${theme.palette.background.paper}`,
+			padding: '0 4px',
 		},
 		root: {
 			position: 'fixed',
@@ -98,6 +140,7 @@ const useStyles = makeStyles((theme: Theme) =>
 				color: '#2196f3',
 			},
 		},
+		styleSearch: { height: '7px !important' },
 		menuButton: {
 			marginRight: theme.spacing(2),
 		},
@@ -237,6 +280,10 @@ const Header: React.FC<Props> = (props) => {
 	};
 	const [refresh, setRefresh] = React.useState(-1);
 	const [showBoxContact, setShowBoxContact] = React.useState(false);
+	const dispatch = useAppDispatch();
+	const [valueQuery, setValueQuery] = React.useState('');
+	const [valueType, setValueType] = React.useState('product');
+	const [valueSearch, setValueSearch] = React.useState('');
 	React.useEffect(() => {
 		const i18nLng = window.localStorage.getItem('i18nextLng') || 'en';
 		if (i18nLng === 'en') {
@@ -245,6 +292,21 @@ const Header: React.FC<Props> = (props) => {
 		} else {
 			setItem(iconvn);
 			setValueI18n(i18nLng);
+		}
+		const searchParams = new URLSearchParams(location.search);
+		if (searchParams.has('type')) {
+			searchParams.get('type') === 'news' ? setValueType('news') : setValueType('product');
+			//console.log(searchParams.get('type'));
+		} else {
+			setValueType('product');
+		}
+
+		if (searchParams.has('query')) {
+			setValueSearch(searchParams.get('query') || '');
+			//console.log(searchParams.get('type'));
+			//console.log('sanggggggggggggggggggggg');
+		} else {
+			setValueSearch('');
 		}
 		const getDataUser = async () => {
 			const token: any = window.localStorage.getItem('token');
@@ -256,13 +318,16 @@ const Header: React.FC<Props> = (props) => {
 				} else {
 					const response = await UserGet();
 					if (response.errorCode === null) {
+						//dispatch(updateValueRefreshPage(true));
 						setDataUser(response.data);
+						//dispatch(updateProfileUser(response.data));
 					}
 				}
 			}
 		};
 		getDataUser();
-	}, [refresh, valueRefreshPage.value]);
+	}, [refresh, valueRefreshPage.value, dispatch]);
+
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	//setDataUser(profileData);
@@ -301,6 +366,7 @@ const Header: React.FC<Props> = (props) => {
 		if (window.localStorage.getItem('token')) {
 			window.localStorage.removeItem('token');
 			setDataUser({ name: '' });
+			dispatch(updateValueRefreshPage(true));
 		}
 		setAnchorElAccount(null);
 		history.push('/');
@@ -314,13 +380,24 @@ const Header: React.FC<Props> = (props) => {
 	const [openCart, setOpenCart] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
+
 	return (
 		<div className={classes.grow}>
 			<AppBar className={classes.bgHeader}>
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container spacing={2}>
 						<Grid item xs={2} style={{ display: 'grid', alignItems: 'center' }}>
-							<img src={Logo} alt="logo" width="85%" />
+							<img
+								src={Logo}
+								alt="logo"
+								width="85%"
+								onClick={() => {
+									history.push('/');
+									setValueSearch('');
+									setValueType('product');
+								}}
+								style={{ cursor: 'pointer' }}
+							/>
 						</Grid>
 						<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
 							<FormControl style={{ width: '100%' }}>
@@ -328,10 +405,20 @@ const Header: React.FC<Props> = (props) => {
 									className={classes.inputSearch}
 									id="standard-adornment-password"
 									placeholder="Search..."
+									value={valueSearch}
+									onChange={(event: any) => {
+										setValueSearch(event?.target.value);
+									}}
+									inputProps={{ className: classes.styleSearch }}
 									endAdornment={
 										<InputAdornment position="end">
-											<IconButton style={{}}>
-												<SearchIcon style={{}} />
+											<IconButton
+												onClick={() => {
+													history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
+													dispatch(updateValueRefreshPage(true));
+												}}
+											>
+												<SearchIcon />
 											</IconButton>
 										</InputAdornment>
 									}
@@ -707,7 +794,9 @@ const Header: React.FC<Props> = (props) => {
 									>
 										<ListItemAvatar style={{ marginRight: '-8px' }}>
 											<Avatar style={{ backgroundColor: '#fff' }}>
-												<ShoppingCartIcon className={classes.colorIcon} />
+												<StyledBadge color="secondary" badgeContent={2}>
+													<ShoppingCartIcon className={classes.colorIcon} />
+												</StyledBadge>
 											</Avatar>
 										</ListItemAvatar>
 										<div
@@ -796,6 +885,7 @@ const Header: React.FC<Props> = (props) => {
 																				<AddIcon fontSize="small" />
 																			</Button>
 																		</ButtonGroup>
+																		<FormHelperText error>Khong du so luong</FormHelperText>
 																	</Box>
 																	<Box style={{ width: '50%', float: 'right', textAlign: 'end' }}>
 																		<Typography
@@ -849,6 +939,10 @@ const Header: React.FC<Props> = (props) => {
 														fullWidth
 														style={{ textTransform: 'initial' }}
 														size="large"
+														onClick={() => {
+															history.push(AppURL.CHECKOUT);
+															setOpenCart(false);
+														}}
 													>
 														Thanh toan
 													</Button>

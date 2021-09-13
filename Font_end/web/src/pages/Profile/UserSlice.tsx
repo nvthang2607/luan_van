@@ -24,6 +24,7 @@ const UserSlice = createSlice({
 	reducers: {
 		updateProfileUser(state, action: any) {
 			state = action.payload;
+			return state;
 		},
 	},
 	extraReducers: {

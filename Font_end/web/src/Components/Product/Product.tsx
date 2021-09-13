@@ -33,6 +33,18 @@ import clsx from 'clsx';
 import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { getCartData, updataCartData } from './CartSlice';
+interface ProductProps {
+	unit_price?: number;
+	name?: any;
+	id?: number;
+	rate_number?: number;
+	link?: string;
+	avg?: number;
+	promotion_price?: number;
+	quantity?: number;
+}
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -76,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	hoverProduct: {
-		cursor: 'pointer',
 		'&:hover': {
 			boxShadow: `rgb(${0} ${0} ${0} / ${20}%) ${0}px ${3}px ${5}px ${-1}px, rgb(${0} ${0} ${0} / ${14}%) ${0}px ${5}px ${8}px ${0}px, rgb(${0} ${0} ${0} / ${12}%) ${0}px ${1}px ${14}px ${0}px`,
 		},
@@ -100,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const Product: React.FC = () => {
+const Product: React.FC<ProductProps> = (props) => {
 	const classes = useStyles();
 	const [hoverProduct, setHoverProduct] = React.useState(false);
 	const onMouseOverProduct = () => {
@@ -108,6 +119,38 @@ const Product: React.FC = () => {
 	};
 	const onMouseOutProduct = () => {
 		setHoverProduct(false);
+	};
+	const toURL = (str: any) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
+	};
+	const history = useHistory();
+	//const cartData: any = [];
+	const cartData = useAppSelector(getCartData);
+	const dispatch = useAppDispatch();
+	const buyNow = () => {
+		dispatch(
+			updataCartData({
+				id: props.id,
+				name: props.name,
+				quantity: props.quantity,
+				link: props.link,
+				unit_price: props.unit_price,
+				promotion_price: props.promotion_price,
+			})
+		);
+		console.log(cartData);
 	};
 
 	return (
@@ -125,10 +168,20 @@ const Product: React.FC = () => {
 					style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
 				/>
 				<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-					<img width="90%" src={sp1} />
+					<img
+						width="100%"
+						src={`http://localhost:8000/${props.link}`}
+						onClick={() => {
+							history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
+						}}
+						style={{ cursor: 'pointer' }}
+					/>
 				</Box>
 				<Box style={{ marginBottom: '10px' }}>
-					<Link to="/" className={classes.nameProduct}>
+					<Link
+						to={`/product_detail/${toURL(props?.name)}-${props?.id}.html`}
+						className={classes.nameProduct}
+					>
 						<Typography
 							style={{
 								height: '55px',
@@ -142,7 +195,7 @@ const Product: React.FC = () => {
 							}}
 							variant="h6"
 						>
-							Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+							{props.name}
 						</Typography>
 					</Link>
 				</Box>
@@ -156,7 +209,7 @@ const Product: React.FC = () => {
 							paddingRight: '15px',
 						}}
 					>
-						19.000.000đ
+						{Intl.NumberFormat('en-US').format(Number(props.promotion_price))}đ
 					</Typography>
 					<Typography
 						style={{
@@ -165,13 +218,14 @@ const Product: React.FC = () => {
 							display: 'inline-block',
 						}}
 					>
-						19.000.000đ
+						{Intl.NumberFormat('en-US').format(Number(props.unit_price))}đ
 					</Typography>
 				</Box>
 				<Box style={{ display: 'flex', alignItems: 'center' }}>
 					<Rating
 						name="read-only"
-						value={3}
+						value={Number(Number(props.avg).toFixed(1))}
+						precision={0.04}
 						readOnly
 						style={{
 							paddingRight: '10px',
@@ -185,17 +239,38 @@ const Product: React.FC = () => {
 							color: 'grey',
 						}}
 					>
-						1 đánh giá
+						{props.rate_number} đánh giá
 					</Typography>
 				</Box>
 				<Zoom in={hoverProduct}>
 					<Box style={{ marginTop: '10px' }}>
-						<Button variant="contained" color="primary" style={{ width: '48%' }}>
+						<Button
+							variant="contained"
+							color="primary"
+							style={{ width: '48%' }}
+							onClick={() => {
+								history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
+							}}
+						>
 							Chi tiet
 						</Button>
-						<Button variant="contained" style={{ float: 'right', width: '48%', color: 'grey' }}>
-							Mua ngay
-						</Button>
+						{props.quantity === 0 ? (
+							<Button
+								disabled
+								variant="contained"
+								style={{ float: 'right', width: '48%', color: 'grey' }}
+							>
+								Het hang
+							</Button>
+						) : (
+							<Button
+								variant="contained"
+								style={{ float: 'right', width: '48%', color: 'grey' }}
+								onClick={buyNow}
+							>
+								Mua ngay
+							</Button>
+						)}
 					</Box>
 				</Zoom>
 			</Box>

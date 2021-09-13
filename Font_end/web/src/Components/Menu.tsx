@@ -20,6 +20,7 @@ import LaptopIcon from '@material-ui/icons/Laptop';
 import TabletAndroidIcon from '@material-ui/icons/TabletAndroid';
 import HeadsetIcon from '@material-ui/icons/Headset';
 import clsx from 'clsx';
+import { TypeBranch } from '../api/Product';
 const useStyles = makeStyles((theme: Theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -70,41 +71,20 @@ const Menu: React.FC = () => {
 	const classes = useStyles();
 	const [dataMenu, setDataMenu] = React.useState<any>({
 		errorCode: null,
-		data: [
-			{
-				id: 1,
-				name: 'Dien thoai',
-				branch: [
-					{ id: 10, name: 'Samsung' },
-					{ id: 11, name: 'Iphone' },
-					{ id: 12, name: 'Oppo' },
-				],
-			},
-			{
-				id: 2,
-				name: 'May tinh bang',
-				branch: [
-					{ id: 10, name: 'Xiaomi1' },
-					{ id: 10, name: 'Xiaomi1' },
-					{ id: 10, name: 'Xiaomi1' },
-				],
-			},
-			{
-				id: 3,
-				name: 'Laptop',
-				branch: [
-					{ id: 10, name: 'Iphone1' },
-					{ id: 10, name: 'Iphone2' },
-					{ id: 10, name: 'Iphone3' },
-				],
-			},
-			{
-				id: 4,
-				name: 'Phu kien',
-				branch: [],
-			},
-		],
+		data: [],
 	});
+	React.useEffect(() => {
+		const fetchTypeBranch = async () => {
+			const getTypeBranch = await TypeBranch();
+			if (getTypeBranch) {
+				if (getTypeBranch.errorCode === null) {
+					//	console.log(getTypeBranch);
+					setDataMenu(getTypeBranch);
+				}
+			}
+		};
+		fetchTypeBranch();
+	}, []);
 	const [showBoxBranch, setShowBoxBranch] = React.useState(false);
 	const [showBoxCategories, setShowBoxCategories] = React.useState(false);
 	const [idProduct, setIdProduct] = React.useState(0);
@@ -263,7 +243,7 @@ const Menu: React.FC = () => {
 							width: '-webkit-fill-available',
 							left: 0,
 							top: '96%',
-							minHeight: '299px',
+							//minHeight: '299px',
 							cursor: 'default',
 						}}
 					>
