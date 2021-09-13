@@ -12,4 +12,7 @@ class Product extends Model
     public function image_product(){
         return $this->hasMany('App\Models\ImageProduct','id_product','id');
     }
+    public function information_product(){
+        return $this->hasMany('App\Models\InformationProduct','id_product','id');
+    }
 }
