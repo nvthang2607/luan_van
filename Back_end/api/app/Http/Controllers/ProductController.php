@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
+use App\Models\ImageProduct;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,7 +14,12 @@ class ProductController extends Controller
     public function get_product_id(request $req){
         $product=Product::find($req->id);
         if($product){
-            $data=$product;
+            $images=[];
+            $image=ImageProduct::where('id_product',$req->id)->get('image');
+            foreach($image as $i){
+                $images[count($images)]=$i->image;
+            }
+            $data=[$product,'image'=>$images];
             return response()->json(['errorCode'=> null,'data'=>$data], 200);
             }
         else{

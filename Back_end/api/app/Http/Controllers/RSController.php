@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Product;
+use App\Models\Rating;
+use App\Models\ImageProduct;
 class RSController extends Controller
 {
     public function __construct() {
@@ -25,7 +27,18 @@ class RSController extends Controller
             $u=0;
             foreach($output as $i){
                 $product=Product::find($i);
-                $data[$u]=$product;
+                $image=Product::find($i)->image_product()->pluck('image')->first();
+                $rate=Rating::where('id_product',$i)->get(['ratting']);
+                $rate_number=$rate->count();
+                $avg=5;
+                if($rate_number>0){
+                    $t=0;
+                    foreach($rate as $r){
+                        $t=$t+$r->ratting;
+                    }
+                    $avg=$t/$rate_number;
+                }
+                $data[$u]=[$product,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image];
                 $u++;
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
