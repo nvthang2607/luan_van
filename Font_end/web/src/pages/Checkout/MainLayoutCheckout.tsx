@@ -10,11 +10,47 @@ const MainLayoutCheckout: React.FC = () => {
 	const [flag, setFlag] = React.useState(false);
 	React.useEffect(() => {
 		const getData = async () => {
-			const profile = await UserGet();
-			if (profile.errorCode === null) {
-				setProfileInfo(profile.data);
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (window.localStorage.getItem('token')) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					setProfileInfo({
+						phone: '',
+						name: '',
+						gender: '',
+						idCity: '',
+						idDistrict: '12',
+						idCommune: '',
+						email: '',
+						nameCity: '',
+						nameDistrict: '',
+						nameCommune: '',
+					});
+					setFlag(true);
+				} else {
+					const profile = await UserGet();
+					if (profile.errorCode === null) {
+						setProfileInfo(profile.data);
+						setFlag(true);
+						console.log(profile);
+					}
+				}
+			} else {
+				setProfileInfo({
+					phone: '',
+					name: '',
+					gender: '',
+					idCity: '',
+					idDistrict: '',
+					idCommune: '',
+					email: '',
+					nameCity: '',
+					nameDistrict: '',
+					nameCommune: '',
+				});
 				setFlag(true);
-				//console.log(pro);
 			}
 		};
 		getData();
@@ -34,7 +70,7 @@ const MainLayoutCheckout: React.FC = () => {
 	};
 	return (
 		<Box>
-			{checkToken()}
+			{/* {checkToken()} */}
 			{flag ? (
 				<Checkout profileInfo={profileInfo} />
 			) : (

@@ -35,6 +35,8 @@ import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getCartData, updataCartData } from './CartSlice';
+import { toast, ToastContainer } from 'react-toastify';
+import { AppURL } from '../../utils/const';
 interface ProductProps {
 	unit_price?: number;
 	name?: any;
@@ -43,7 +45,8 @@ interface ProductProps {
 	link?: string;
 	avg?: number;
 	promotion_price?: number;
-	quantity?: number;
+	storeQuantity?: number;
+	addToCart?: (boolean: boolean) => void;
 }
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
@@ -135,24 +138,43 @@ const Product: React.FC<ProductProps> = (props) => {
 		str = str.replace(/-+$/g, '');
 		return str;
 	};
+	const dispatch = useAppDispatch();
 	const history = useHistory();
 	//const cartData: any = [];
 	const cartData = useAppSelector(getCartData);
-	const dispatch = useAppDispatch();
-	const buyNow = () => {
-		dispatch(
-			updataCartData({
-				id: props.id,
-				name: props.name,
-				quantity: props.quantity,
-				link: props.link,
-				unit_price: props.unit_price,
-				promotion_price: props.promotion_price,
-			})
-		);
-		console.log(cartData);
+	const storeQuantity = () => {
+		let result = 1;
+		cartData.map((item: any) => {
+			//console.log(item.quantity);
+			//console.log(dataProduct);
+			if (item.id === props.id) {
+				if (item.quantity >= Number(props.storeQuantity)) result = -1;
+			}
+		});
+		return result;
 	};
-
+	const buyNow = () => {
+		//setPrefresh(refresh + 1);
+		if (storeQuantity() === -1) {
+			props.addToCart?.(false);
+		} else {
+			dispatch(
+				updataCartData({
+					id: props.id,
+					name: props.name,
+					storeQuantity: props.storeQuantity,
+					link: props.link,
+					unit_price: props.unit_price,
+					promotion_price: props.promotion_price,
+					quantity: 1,
+				})
+			);
+			//window.scrollTo(0, 0);
+			//history.push(AppURL.CHECKOUT);
+			//toast.success('Da them san pham vao gio hang');
+			props.addToCart?.(true);
+		}
+	};
 	return (
 		<Grid item xs={3}>
 			<Box
@@ -254,7 +276,7 @@ const Product: React.FC<ProductProps> = (props) => {
 						>
 							Chi tiet
 						</Button>
-						{props.quantity === 0 ? (
+						{props.storeQuantity === 0 ? (
 							<Button
 								disabled
 								variant="contained"

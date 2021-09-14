@@ -8,7 +8,7 @@ export const palette = {
 	black: '#000000',
 	darkBlue: '#263238',
 	lightWhite: '#D9E3F0',
-	yellow: '#FCCB00',
+	yellow: '#ffb400',
 	grey: '#808080',
 	red: '#B80000',
 	dark: '#4c70ba',
@@ -30,6 +30,7 @@ const theme = createMuiTheme({
 		},
 		error: {
 			main: palette.red,
+			dark: palette.yellow,
 		},
 	},
 });

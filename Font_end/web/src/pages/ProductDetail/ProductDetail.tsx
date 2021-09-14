@@ -4,6 +4,7 @@ import {
 	Breadcrumbs,
 	Button,
 	Card,
+	CircularProgress,
 	Collapse,
 	Divider,
 	Grid,
@@ -13,7 +14,7 @@ import {
 	Typography,
 } from '@material-ui/core';
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -36,13 +37,16 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
 import ProductCarousel from '../../Components/Product/ProductCarousel';
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { updateProfileUser } from '../Profile/UserSlice';
 import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
 import { ProductIdGet } from '../../api/Product';
+import { getCartData, updataCartData } from '../../Components/Product/CartSlice';
+import { toast, ToastContainer } from 'react-toastify';
+import { AppURL } from '../../utils/const';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -198,25 +202,81 @@ const ProductDetail: React.FC = () => {
 	];
 	const dispatch = useAppDispatch();
 	React.useEffect(() => {
-		dispatch(updateValueRefreshPage(true));
 		window.scrollTo(0, 0);
-	});
+		dispatch(updateValueRefreshPage(true));
+		setProgress(true);
+	}, [dispatch]);
+	const [progress, setProgress] = React.useState(false);
 	const { idProduct } = useParams<{ idProduct?: string }>();
 	const [dataProduct, setDataProduct] = React.useState<any>({});
+	const [refresh, setPrefresh] = React.useState(1);
 	React.useEffect(() => {
+		//window.scrollTo(0, 0);
 		const fetchProductId = async () => {
 			const getProductId = await ProductIdGet(idProduct);
-			console.log(getProductId);
 			if (getProductId) {
 				if (getProductId.errorCode === null) {
-					console.log(getProductId);
+					setDataProduct(getProductId.data);
+					console.log(getProductId.data);
+					setProgress(false);
 				}
 			}
 		};
-		console.log(idProduct);
 
 		fetchProductId();
-	}, [idProduct]);
+	}, [idProduct, refresh]);
+	const cartData = useAppSelector(getCartData);
+	const storeQuantity = () => {
+		let result = 1;
+		cartData.map((item: any) => {
+			console.log(item.quantity);
+			console.log(dataProduct);
+			if (item.id === dataProduct.item.id) {
+				if (item.quantity >= dataProduct.item.quantity) result = -1;
+			}
+		});
+		return result;
+	};
+	const history = useHistory();
+	const buyNow = () => {
+		//setPrefresh(refresh + 1);
+		if (storeQuantity() === -1) {
+			toast.error('ko du so luong');
+		} else {
+			dispatch(
+				updataCartData({
+					id: dataProduct.item.id,
+					name: dataProduct.item.name,
+					storeQuantity: dataProduct.item.quantity,
+					link: dataProduct.image_key,
+					unit_price: dataProduct.item.unit_price,
+					promotion_price: dataProduct.item.promotion_price,
+					quantity: 1,
+				})
+			);
+			// history.push(AppURL.CHECKOUT);
+			toast.success('Da them san pham vao gio hang');
+		}
+	};
+	const addToCart = () => {
+		//setPrefresh(refresh + 1);
+		if (storeQuantity() === -1) {
+			toast.error('ko du so luong');
+		} else {
+			dispatch(
+				updataCartData({
+					id: dataProduct.item.id,
+					name: dataProduct.item.name,
+					storeQuantity: dataProduct.item.quantity,
+					link: dataProduct.image_key,
+					unit_price: dataProduct.item.unit_price,
+					promotion_price: dataProduct.item.promotion_price,
+					quantity: 1,
+				})
+			);
+			toast.success('Da them san pham vao gio hang');
+		}
+	};
 	return (
 		<Grid container className={classes.bgHeader}>
 			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
@@ -233,536 +293,68 @@ const ProductDetail: React.FC = () => {
 					</Link> */}
 				</Breadcrumbs>
 			</Grid>
-			<Grid container spacing={3}>
-				<Grid item xs={6}>
-					<Box style={{ paddingTop: '10px' }}>
-						<Carousel
-							infiniteLoop
-							stopOnHover
-							showThumbs={true}
-							showStatus={false}
-							showArrows={false}
-							showIndicators={false}
-						>
-							<div>
-								<img width="55%" src={sp1} />
-							</div>
-							<div>
-								<img width="55%" src={sp1} />
-							</div>
-						</Carousel>
 
-						{/* <div style={{ position: 'absolute' }}>
+			{progress ? (
+				<CircularProgress
+					color="secondary"
+					style={{ position: 'fixed', top: '100px', left: '50%' }}
+				/>
+			) : (
+				<React.Fragment>
+					<Grid container spacing={3}>
+						<Grid item xs={6}>
+							<Box style={{ paddingTop: '10px' }}>
+								<Carousel
+									infiniteLoop
+									stopOnHover
+									showThumbs={true}
+									showStatus={false}
+									showArrows={false}
+									showIndicators={false}
+								>
+									{dataProduct.image?.map((item: any) => {
+										return (
+											<div>
+												<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+											</div>
+										);
+									})}
+								</Carousel>
+
+								{/* <div style={{ position: 'absolute' }}>
 							<SliderImage data={data} showDescription={true} direction="right" />
 						</div> */}
-					</Box>
-				</Grid>
-				<Grid item xs={6}>
-					<Typography variant="h6" gutterBottom>
-						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
-					</Typography>
-					<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
-						<Typography component="span">3.0 </Typography>
-						<Rating style={{ fontSize: '20px' }} name="read-only" value={3.2} readOnly />
-						<Typography component="span">Co 1 danh gia</Typography>
-					</Typography>
-					<Divider />
-					<Typography variant="h4" style={{ fontWeight: 'bold', paddingTop: '20px' }}>
-						19.000.000đ
-					</Typography>
-					<Typography component="span" className={classes.discount_percent}>
-						-6%
-					</Typography>
-					&nbsp;&nbsp;
-					<Typography component="span" style={{ color: 'grey', textDecoration: 'line-through' }}>
-						19.000.000đ
-					</Typography>
-					<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
-						<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
+							</Box>
+						</Grid>
+						<Grid item xs={6}>
+							<Typography variant="h5" gutterBottom>
+								{dataProduct?.item?.name}
+							</Typography>
+							<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
+								<Typography component="span">{Number(dataProduct?.avg).toFixed(1)}</Typography>
+								<Rating
+									style={{ fontSize: '20px' }}
+									name="read-only"
+									value={Number(Number(dataProduct?.avg).toFixed(1))}
+									precision={0.04}
+									readOnly
+								/>
+								<Typography component="span">Co {dataProduct.rate_number} danh gia</Typography>
+							</Typography>
+							<Divider />
+							<Typography variant="h4" style={{ fontWeight: 'bold', paddingTop: '20px' }}>
+								{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
+							</Typography>
+							<Typography component="span" className={classes.discount_percent}>
+								-6%
+							</Typography>
+							&nbsp;&nbsp;
 							<Typography
 								component="span"
-								className={classes.discount_percent}
-								style={{
-									position: 'absolute',
-									top: '-4px',
-									left: '10px',
-								}}
+								style={{ color: 'grey', textDecoration: 'line-through' }}
 							>
-								Khuyen mai
+								{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.unit_price))}đ
 							</Typography>
-							<Typography>
-								Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae fuga dolorum,
-								rerum soluta porro quisquam? Odio magni doloremque explicabo. Doloribus sint
-								asperiores a officia aperiam neque unde, libero excepturi magni.
-							</Typography>
-						</Card>
-					</Box>
-					<Button
-						variant="contained"
-						color="primary"
-						style={{ display: 'block', marginTop: '10px' }}
-						fullWidth
-						size="large"
-					>
-						<Typography component="h6" style={{ fontSize: '1.5rem' }}>
-							Mua ngay
-						</Typography>
-						<Typography variant="body1" style={{ textTransform: 'initial' }}>
-							Giao hang tan noi
-						</Typography>
-					</Button>
-					<Button
-						variant="outlined"
-						color="primary"
-						style={{ display: 'block', marginTop: '10px' }}
-						fullWidth
-						size="large"
-					>
-						<Typography component="h6" style={{ fontSize: '1.2rem' }}>
-							Them vao gio hang
-						</Typography>
-					</Button>
-				</Grid>
-			</Grid>
-			<Grid item xs={12}>
-				<Grid container spacing={3}>
-					<Grid item xs={9}>
-						<Typography variant="h5" className={classes.titleText} gutterBottom>
-							Thong so ly thuuat
-						</Typography>
-						{configuration.map((item: any, index: number) => {
-							return (
-								<Box style={{ backgroundColor: index % 2 === 0 ? '#ededed' : 'inherit' }}>
-									<Typography
-										variant="body1"
-										style={{
-											fontWeight: 'bold',
-
-											display: 'inline-block',
-											padding: '10px',
-											paddingRight: '162px',
-										}}
-									>
-										{item.name}
-									</Typography>
-									<Typography variant="body1" style={{ display: 'inline-block', padding: '10px' }}>
-										{item.value}
-									</Typography>
-								</Box>
-							);
-						})}
-						<Typography
-							variant="h5"
-							className={classes.titleText}
-							gutterBottom
-							style={{ marginTop: '10px' }}
-						>
-							Bai viet danh gia
-						</Typography>
-						<Typography
-							variant="h5"
-							className={classes.titleText}
-							gutterBottom
-							style={{ marginTop: '10px' }}
-						>
-							Nhan xet va danh gia
-						</Typography>
-						<Card variant="outlined" style={{ padding: '10px' }}>
-							<Box style={{ display: 'flex' }}>
-								<Box style={{ width: '50%' }}>
-									<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
-										<Typography variant="h5" style={{ color: '#ffb400', fontWeight: 'bold' }}>
-											3.0
-										</Typography>
-										&nbsp;&nbsp;
-										<Rating
-											style={{ fontSize: '27px' }}
-											name="read-only"
-											value={4.6}
-											precision={0.04}
-											readOnly
-										/>
-										&nbsp;&nbsp;
-										<Typography variant="body1" style={{ display: 'flex', alignItems: 'center' }}>
-											Co 1 danh gia
-										</Typography>
-									</Typography>
-									<Typography
-										gutterBottom
-										style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
-									>
-										<Typography component="span">5.0 </Typography>&nbsp;&nbsp;
-										<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
-										<Box width="100%">
-											<LinearProgress variant="determinate" value={3} />
-										</Box>
-										&nbsp;&nbsp;
-										<Box minWidth={35}>
-											<Typography variant="body1">22%</Typography>
-										</Box>
-									</Typography>
-									<Typography
-										gutterBottom
-										style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
-									>
-										<Typography component="span">4.0 </Typography>&nbsp;&nbsp;
-										<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
-										<Box width="100%">
-											<LinearProgress variant="determinate" value={3} />
-										</Box>
-										&nbsp;&nbsp;
-										<Box minWidth={35}>
-											<Typography variant="body1">22%</Typography>
-										</Box>
-									</Typography>
-									<Typography
-										gutterBottom
-										style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
-									>
-										<Typography component="span">3.0 </Typography>&nbsp;&nbsp;
-										<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
-										<Box width="100%">
-											<LinearProgress variant="determinate" value={3} />
-										</Box>
-										&nbsp;&nbsp;
-										<Box minWidth={35}>
-											<Typography variant="body1">22%</Typography>
-										</Box>
-									</Typography>
-									<Typography
-										gutterBottom
-										style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
-									>
-										<Typography component="span">2.0 </Typography>&nbsp;&nbsp;
-										<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
-										<Box width="100%">
-											<LinearProgress variant="determinate" value={3} />
-										</Box>
-										&nbsp;&nbsp;
-										<Box minWidth={35}>
-											<Typography variant="body1">22%</Typography>
-										</Box>
-									</Typography>
-									<Typography
-										gutterBottom
-										style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
-									>
-										<Typography component="span">1.0 </Typography>&nbsp;&nbsp;
-										<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
-										<Box width="100%">
-											<LinearProgress variant="determinate" value={3} />
-										</Box>
-										&nbsp;&nbsp;
-										<Box minWidth={35}>
-											<Typography variant="body1">22%</Typography>
-										</Box>
-									</Typography>
-								</Box>
-								<Box
-									style={{
-										width: '50%',
-										justifyContent: 'center',
-										alignItems: 'center',
-										display: 'flex',
-									}}
-								>
-									<Button
-										variant="contained"
-										color="primary"
-										style={{ textTransform: 'initial', padding: '8px 25px' }}
-										onClick={() => {
-											setCollapse(!collapse);
-											collapse ? setCollapseForm(false) : setCollapseForm(true);
-											setValue(3);
-										}}
-									>
-										{collapse ? 'Dong lai' : 'Gui danh gia cua ban'}
-									</Button>
-								</Box>
-							</Box>
-							<Collapse in={collapse} timeout="auto" unmountOnExit>
-								<Box
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-										marginTop: '25px',
-										marginBottom: '25px',
-									}}
-								>
-									<Typography variant="body1" style={{ paddingRight: '20px' }}>
-										Chon danh gia cua ban
-									</Typography>
-
-									<Rating
-										name="size-large"
-										defaultValue={3}
-										size="large"
-										onChange={(event, newValue) => {
-											setValue(newValue);
-											console.log(newValue);
-
-											if (newValue === null) {
-												setCollapseForm(false);
-											} else {
-												setCollapseForm(true);
-											}
-										}}
-										onChangeActive={(event, newHover) => {
-											setHover(newHover);
-										}}
-									/>
-									{value !== null && (
-										<Box className={classes.discount_percent1}>
-											{labels[hover !== -1 ? hover : value]}
-										</Box>
-									)}
-								</Box>
-							</Collapse>
-							<Collapse in={collapseForm} timeout="auto" unmountOnExit>
-								<Box style={{ display: 'flex' }}>
-									<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-										<Box style={{ display: 'inline-block', width: '60%' }}>
-											<TextField
-												id="rate_content"
-												{...register('rate_content')}
-												multiline
-												name="rate_content"
-												rows={4}
-												placeholder="Nhập đánh giá về sản phẩm"
-												variant="outlined"
-												fullWidth
-											/>
-										</Box>
-										<Box style={{ display: 'inline-block', width: '40%', marginLeft: '10px' }}>
-											<TextField
-												{...register('name')}
-												id="name"
-												label="Ho ten *"
-												name="name"
-												variant="outlined"
-												fullWidth
-												error={errors.name ? true : false}
-												helperText={errors.name?.message}
-												style={{ marginBottom: '10px' }}
-											/>
-											<TextField
-												{...register('email')}
-												id="email"
-												name="email"
-												label="Email *"
-												variant="outlined"
-												fullWidth
-												error={errors.email ? true : false}
-												helperText={errors.email?.message}
-												style={{ marginBottom: '10px' }}
-											/>
-											<Button variant="contained" color="primary" type="submit">
-												gui danh gia
-											</Button>
-										</Box>
-									</form>
-								</Box>
-							</Collapse>
-						</Card>
-						<Divider style={{ marginTop: '10px', marginBottom: '10px' }} />
-						<Box style={{ marginBottom: '10px' }}>
-							<Box style={{ display: 'flex', alignItems: 'center' }}>
-								<Avatar>S</Avatar> &nbsp;&nbsp;
-								<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-									Sang tran
-								</Typography>
-							</Box>
-							<Box style={{ marginLeft: '39px' }}>
-								<Typography variant="h6">
-									<Rating
-										style={{ fontSize: '20px', display: 'flex' }}
-										name="read-only"
-										value={3.2}
-										readOnly
-									/>
-									<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
-								</Typography>
-								<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-							</Box>
-						</Box>
-						<Box style={{ marginBottom: '10px' }}>
-							<Box style={{ display: 'flex', alignItems: 'center' }}>
-								<Avatar>T</Avatar> &nbsp;&nbsp;
-								<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-									Thang nguyen
-								</Typography>
-							</Box>
-							<Box style={{ marginLeft: '39px' }}>
-								<Typography variant="h6">
-									<Rating
-										style={{ fontSize: '20px', display: 'flex' }}
-										name="read-only"
-										value={3.2}
-										readOnly
-									/>
-									<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
-								</Typography>
-								<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-							</Box>
-						</Box>
-						{/* <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-							<Pagination count={10} color="primary" />
-						</Box> */}
-						<Box>
-							<Typography
-								variant="h5"
-								className={classes.titleText}
-								gutterBottom
-								style={{ marginTop: '10px' }}
-							>
-								Hoi & Dap{' '}
-								<Typography component="span" className={classes.discount_percent}>
-									co 123 binh luan
-								</Typography>
-							</Typography>
-
-							<Box>
-								<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-									<Box style={{ display: 'inline-block', width: '100%' }}>
-										<TextField
-											id="rate_content"
-											{...register('rate_content')}
-											multiline
-											name="rate_content"
-											rows={3}
-											placeholder="Nhập đánh giá về sản phẩm"
-											variant="outlined"
-											fullWidth
-											style={{ marginBottom: '10px' }}
-										/>
-										<Button variant="contained" color="primary" type="submit">
-											gui cau hoi
-										</Button>
-									</Box>
-								</form>
-							</Box>
-
-							<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
-							<Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Box style={{ display: 'flex', alignItems: 'center' }}>
-										<Avatar>T</Avatar> &nbsp;&nbsp;
-										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-											Thang nguyen
-										</Typography>{' '}
-										&nbsp;&nbsp;
-										<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-									</Box>
-									<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
-										<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-										<Typography
-											className={classes.reply}
-											onClick={() => setCollapseReply(!collapseReply)}
-										>
-											Tra loi
-										</Typography>
-									</Box>
-									<Box
-										style={{
-											marginLeft: '60px',
-											borderLeft: '5px solid #dee2e6',
-											paddingLeft: '10px',
-											marginBottom: '10px',
-										}}
-									>
-										<Typography style={{ display: 'flex', alignItems: 'center' }}>
-											<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
-											<Typography
-												component="span"
-												className={classes.discount_percent}
-												style={{ fontSize: '11px' }}
-											>
-												Quan tri vien
-											</Typography>
-											&nbsp;&nbsp;
-											<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-										</Typography>
-										<Typography>
-											Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
-										</Typography>
-									</Box>
-									<Box
-										style={{
-											marginLeft: '60px',
-											borderLeft: '5px solid #dee2e6',
-											paddingLeft: '10px',
-											marginBottom: '10px',
-										}}
-									>
-										<Typography style={{ display: 'flex', alignItems: 'center' }}>
-											<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
-											<Typography
-												component="span"
-												className={classes.discount_percent}
-												style={{ fontSize: '11px' }}
-											>
-												Quan tri vien
-											</Typography>
-											&nbsp;&nbsp;
-											<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-										</Typography>
-										<Typography>
-											Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
-										</Typography>
-									</Box>
-									<Box
-										style={{
-											marginLeft: '60px',
-
-											paddingLeft: '10px',
-											marginBottom: '10px',
-										}}
-									>
-										<Collapse in={collapseReply} timeout="auto" unmountOnExit>
-											<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-												<Box style={{ display: 'inline-block', width: '100%' }}>
-													<TextField
-														id="rate_content"
-														{...register('rate_content')}
-														multiline
-														name="rate_content"
-														rows={3}
-														placeholder="Nhập đánh giá về sản phẩm"
-														variant="outlined"
-														fullWidth
-														style={{ marginBottom: '10px' }}
-													/>
-													<Button variant="contained" color="primary" type="submit">
-														gui cau hoi
-													</Button>
-												</Box>
-											</form>
-										</Collapse>
-									</Box>
-								</Box>
-							</Box>
-							<Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-								<Pagination count={10} color="primary" />
-							</Box>
-						</Box>
-					</Grid>
-					<Grid item xs={3} style={{ paddingRight: '10px' }}>
-						<Card variant="outlined" style={{ padding: '10px', position: 'sticky', top: '86px' }}>
-							<Box style={{ textAlign: 'center' }}>
-								<Typography variant="h6" style={{ lineHeight: 1 }}>
-									Apple Watch SE GPS 40mm Vàng Chính Hãng
-								</Typography>
-								<Typography
-									variant="h5"
-									style={{
-										fontWeight: 'bold',
-										paddingTop: '10px',
-										color: 'red',
-									}}
-								>
-									19.000.000đ
-								</Typography>
-							</Box>
 							<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
 								<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
 									<Typography
@@ -789,9 +381,13 @@ const ProductDetail: React.FC = () => {
 								style={{ display: 'block', marginTop: '10px' }}
 								fullWidth
 								size="large"
+								onClick={buyNow}
 							>
-								<Typography component="h6" style={{ fontSize: '1.1rem' }}>
+								<Typography component="h6" style={{ fontSize: '1.5rem' }}>
 									Mua ngay
+								</Typography>
+								<Typography variant="body1" style={{ textTransform: 'initial' }}>
+									Giao hang tan noi
 								</Typography>
 							</Button>
 							<Button
@@ -800,35 +396,586 @@ const ProductDetail: React.FC = () => {
 								style={{ display: 'block', marginTop: '10px' }}
 								fullWidth
 								size="large"
+								onClick={addToCart}
 							>
-								<Typography component="h6" style={{ fontSize: '1rem' }}>
+								<Typography component="h6" style={{ fontSize: '1.2rem' }}>
 									Them vao gio hang
 								</Typography>
 							</Button>
-						</Card>
+						</Grid>
 					</Grid>
-				</Grid>
-			</Grid>
+					<Grid item xs={12}>
+						<Grid container spacing={3}>
+							<Grid item xs={9}>
+								<Typography variant="h5" className={classes.titleText} gutterBottom>
+									Thong so ly thuuat
+								</Typography>
+								{dataProduct.information?.map((item: any, index: number) => {
+									return (
+										<Box style={{ backgroundColor: index % 2 === 0 ? '#ededed' : 'inherit' }}>
+											<Typography
+												variant="body1"
+												style={{
+													fontWeight: 'bold',
 
-			<Grid item xs={12}>
-				<Typography
-					variant="h5"
-					className={classes.titleText}
-					gutterBottom
-					style={{ marginTop: '10px' }}
-				>
-					San pham cung loai
-				</Typography>
-				<Slider {...settings}>
-					<ProductCarousel />
-					<ProductCarousel />
-					<ProductCarousel />
-					<ProductCarousel />
-					<ProductCarousel />
-					<ProductCarousel />
-					<ProductCarousel />
-				</Slider>
-			</Grid>
+													display: 'inline-block',
+													padding: '10px',
+													paddingRight: '162px',
+												}}
+											>
+												{item.name}
+											</Typography>
+											<Typography
+												variant="body1"
+												style={{ display: 'inline-block', padding: '10px' }}
+											>
+												{item.value}
+											</Typography>
+										</Box>
+									);
+								})}
+								<Typography
+									variant="h5"
+									className={classes.titleText}
+									gutterBottom
+									style={{ marginTop: '10px' }}
+								>
+									Bai viet danh gia
+								</Typography>
+								<Typography
+									variant="h5"
+									className={classes.titleText}
+									gutterBottom
+									style={{ marginTop: '10px' }}
+								>
+									Nhan xet va danh gia
+								</Typography>
+								<Card variant="outlined" style={{ padding: '10px' }}>
+									<Box style={{ display: 'flex' }}>
+										<Box style={{ width: '50%' }}>
+											<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
+												<Typography variant="h5" style={{ color: '#ffb400', fontWeight: 'bold' }}>
+													{Number(dataProduct?.avg).toFixed(1)}
+												</Typography>
+												&nbsp;&nbsp;
+												<Rating
+													style={{ fontSize: '27px' }}
+													name="read-only"
+													value={Number(Number(dataProduct?.avg).toFixed(1))}
+													precision={0.04}
+													readOnly
+												/>
+												&nbsp;&nbsp;
+												<Typography
+													variant="body1"
+													style={{ display: 'flex', alignItems: 'center' }}
+												>
+													Co {dataProduct.rate_number} danh gia
+												</Typography>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">5.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={50}
+														//style={{ color: '#ffb400 !important' }}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+														)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">4.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress variant="determinate" value={3} />
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+														)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">3.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress variant="determinate" value={3} />
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+														)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">2.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress variant="determinate" value={3} />
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+														)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">1.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress variant="determinate" value={3} />
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+														)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+										</Box>
+										<Box
+											style={{
+												width: '50%',
+												justifyContent: 'center',
+												alignItems: 'center',
+												display: 'flex',
+											}}
+										>
+											<Button
+												variant="contained"
+												color="primary"
+												style={{ textTransform: 'initial', padding: '8px 25px' }}
+												onClick={() => {
+													setCollapse(!collapse);
+													collapse ? setCollapseForm(false) : setCollapseForm(true);
+													setValue(3);
+												}}
+											>
+												{collapse ? 'Dong lai' : 'Gui danh gia cua ban'}
+											</Button>
+										</Box>
+									</Box>
+									<Collapse in={collapse} timeout="auto" unmountOnExit>
+										<Box
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												marginTop: '25px',
+												marginBottom: '25px',
+											}}
+										>
+											<Typography variant="body1" style={{ paddingRight: '20px' }}>
+												Chon danh gia cua ban
+											</Typography>
+
+											<Rating
+												name="size-large"
+												defaultValue={3}
+												size="large"
+												onChange={(event, newValue) => {
+													setValue(newValue);
+													console.log(newValue);
+
+													if (newValue === null) {
+														setCollapseForm(false);
+													} else {
+														setCollapseForm(true);
+													}
+												}}
+												onChangeActive={(event, newHover) => {
+													setHover(newHover);
+												}}
+											/>
+											{value !== null && (
+												<Box className={classes.discount_percent1}>
+													{labels[hover !== -1 ? hover : value]}
+												</Box>
+											)}
+										</Box>
+									</Collapse>
+									<Collapse in={collapseForm} timeout="auto" unmountOnExit>
+										<Box style={{ display: 'flex' }}>
+											<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+												<Box style={{ display: 'inline-block', width: '60%' }}>
+													<TextField
+														id="rate_content"
+														{...register('rate_content')}
+														multiline
+														name="rate_content"
+														rows={4}
+														placeholder="Nhập đánh giá về sản phẩm"
+														variant="outlined"
+														fullWidth
+													/>
+												</Box>
+												<Box style={{ display: 'inline-block', width: '40%', marginLeft: '10px' }}>
+													<TextField
+														{...register('name')}
+														id="name"
+														label="Ho ten *"
+														name="name"
+														variant="outlined"
+														fullWidth
+														error={errors.name ? true : false}
+														helperText={errors.name?.message}
+														style={{ marginBottom: '10px' }}
+													/>
+													<TextField
+														{...register('email')}
+														id="email"
+														name="email"
+														label="Email *"
+														variant="outlined"
+														fullWidth
+														error={errors.email ? true : false}
+														helperText={errors.email?.message}
+														style={{ marginBottom: '10px' }}
+													/>
+													<Button variant="contained" color="primary" type="submit">
+														gui danh gia
+													</Button>
+												</Box>
+											</form>
+										</Box>
+									</Collapse>
+								</Card>
+								<Divider style={{ marginTop: '10px', marginBottom: '10px' }} />
+								<Box style={{ marginBottom: '10px' }}>
+									<Box style={{ display: 'flex', alignItems: 'center' }}>
+										<Avatar>S</Avatar> &nbsp;&nbsp;
+										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+											Sang tran
+										</Typography>
+									</Box>
+									<Box style={{ marginLeft: '39px' }}>
+										<Typography variant="h6">
+											<Rating
+												style={{ fontSize: '20px', display: 'flex' }}
+												name="read-only"
+												value={3.2}
+												readOnly
+											/>
+											<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
+										</Typography>
+										<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
+									</Box>
+								</Box>
+								<Box style={{ marginBottom: '10px' }}>
+									<Box style={{ display: 'flex', alignItems: 'center' }}>
+										<Avatar>T</Avatar> &nbsp;&nbsp;
+										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+											Thang nguyen
+										</Typography>
+									</Box>
+									<Box style={{ marginLeft: '39px' }}>
+										<Typography variant="h6">
+											<Rating
+												style={{ fontSize: '20px', display: 'flex' }}
+												name="read-only"
+												value={3.2}
+												readOnly
+											/>
+											<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
+										</Typography>
+										<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
+									</Box>
+								</Box>
+								{/* <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+							<Pagination count={10} color="primary" />
+						</Box> */}
+								<Box>
+									<Typography
+										variant="h5"
+										className={classes.titleText}
+										gutterBottom
+										style={{ marginTop: '10px' }}
+									>
+										Hoi & Dap{' '}
+										<Typography component="span" className={classes.discount_percent}>
+											co 123 binh luan
+										</Typography>
+									</Typography>
+
+									<Box>
+										<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+											<Box style={{ display: 'inline-block', width: '100%' }}>
+												<TextField
+													id="rate_content"
+													{...register('rate_content')}
+													multiline
+													name="rate_content"
+													rows={3}
+													placeholder="Nhập đánh giá về sản phẩm"
+													variant="outlined"
+													fullWidth
+													style={{ marginBottom: '10px' }}
+												/>
+												<Button variant="contained" color="primary" type="submit">
+													gui cau hoi
+												</Button>
+											</Box>
+										</form>
+									</Box>
+
+									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
+									<Box>
+										<Box style={{ marginBottom: '10px' }}>
+											<Box style={{ display: 'flex', alignItems: 'center' }}>
+												<Avatar>T</Avatar> &nbsp;&nbsp;
+												<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+													Thang nguyen
+												</Typography>{' '}
+												&nbsp;&nbsp;
+												<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+											</Box>
+											<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
+												<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
+												<Typography
+													className={classes.reply}
+													onClick={() => setCollapseReply(!collapseReply)}
+												>
+													Tra loi
+												</Typography>
+											</Box>
+											<Box
+												style={{
+													marginLeft: '60px',
+													borderLeft: '5px solid #dee2e6',
+													paddingLeft: '10px',
+													marginBottom: '10px',
+												}}
+											>
+												<Typography style={{ display: 'flex', alignItems: 'center' }}>
+													<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
+													<Typography
+														component="span"
+														className={classes.discount_percent}
+														style={{ fontSize: '11px' }}
+													>
+														Quan tri vien
+													</Typography>
+													&nbsp;&nbsp;
+													<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+												</Typography>
+												<Typography>
+													Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
+												</Typography>
+											</Box>
+											<Box
+												style={{
+													marginLeft: '60px',
+													borderLeft: '5px solid #dee2e6',
+													paddingLeft: '10px',
+													marginBottom: '10px',
+												}}
+											>
+												<Typography style={{ display: 'flex', alignItems: 'center' }}>
+													<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
+													<Typography
+														component="span"
+														className={classes.discount_percent}
+														style={{ fontSize: '11px' }}
+													>
+														Quan tri vien
+													</Typography>
+													&nbsp;&nbsp;
+													<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+												</Typography>
+												<Typography>
+													Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
+												</Typography>
+											</Box>
+											<Box
+												style={{
+													marginLeft: '60px',
+
+													paddingLeft: '10px',
+													marginBottom: '10px',
+												}}
+											>
+												<Collapse in={collapseReply} timeout="auto" unmountOnExit>
+													<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+														<Box style={{ display: 'inline-block', width: '100%' }}>
+															<TextField
+																id="rate_content"
+																{...register('rate_content')}
+																multiline
+																name="rate_content"
+																rows={3}
+																placeholder="Nhập đánh giá về sản phẩm"
+																variant="outlined"
+																fullWidth
+																style={{ marginBottom: '10px' }}
+															/>
+															<Button variant="contained" color="primary" type="submit">
+																gui cau hoi
+															</Button>
+														</Box>
+													</form>
+												</Collapse>
+											</Box>
+										</Box>
+									</Box>
+									<Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+										<Pagination count={10} color="primary" />
+									</Box>
+								</Box>
+							</Grid>
+							<Grid item xs={3} style={{ paddingRight: '10px' }}>
+								<Card
+									variant="outlined"
+									style={{ padding: '10px', position: 'sticky', top: '86px' }}
+								>
+									<Box style={{ textAlign: 'center' }}>
+										<Typography variant="h6" style={{ lineHeight: 1 }}>
+											Apple Watch SE GPS 40mm Vàng Chính Hãng
+										</Typography>
+										<Typography
+											variant="h5"
+											style={{
+												fontWeight: 'bold',
+												paddingTop: '10px',
+												color: 'red',
+											}}
+										>
+											19.000.000đ
+										</Typography>
+									</Box>
+									<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
+										<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
+											<Typography
+												component="span"
+												className={classes.discount_percent}
+												style={{
+													position: 'absolute',
+													top: '-4px',
+													left: '10px',
+												}}
+											>
+												Khuyen mai
+											</Typography>
+											<Typography>
+												Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae fuga
+												dolorum, rerum soluta porro quisquam? Odio magni doloremque explicabo.
+												Doloribus sint asperiores a officia aperiam neque unde, libero excepturi
+												magni.
+											</Typography>
+										</Card>
+									</Box>
+									<Button
+										variant="contained"
+										color="primary"
+										style={{ display: 'block', marginTop: '10px' }}
+										fullWidth
+										size="large"
+									>
+										<Typography component="h6" style={{ fontSize: '1.1rem' }}>
+											Mua ngay
+										</Typography>
+									</Button>
+									<Button
+										variant="outlined"
+										color="primary"
+										style={{ display: 'block', marginTop: '10px' }}
+										fullWidth
+										size="large"
+									>
+										<Typography component="h6" style={{ fontSize: '1rem' }}>
+											Them vao gio hang
+										</Typography>
+									</Button>
+								</Card>
+							</Grid>
+						</Grid>
+					</Grid>
+
+					<Grid item xs={12}>
+						<Typography
+							variant="h5"
+							className={classes.titleText}
+							gutterBottom
+							style={{ marginTop: '10px' }}
+						>
+							San pham cung loai
+						</Typography>
+						<Slider {...settings}>
+							<ProductCarousel />
+							<ProductCarousel />
+							<ProductCarousel />
+							<ProductCarousel />
+							<ProductCarousel />
+							<ProductCarousel />
+							<ProductCarousel />
+						</Slider>
+					</Grid>
+				</React.Fragment>
+			)}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 		</Grid>
 	);
 };

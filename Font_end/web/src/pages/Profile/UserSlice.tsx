@@ -10,7 +10,7 @@ export const userProfileAPI: any = createAsyncThunk('/user/name', async () => {
 const UserSlice = createSlice({
 	name: 'UserSlice',
 	initialState: {
-		phone: 0,
+		phone: '',
 		name: '',
 		gender: '',
 		idCity: '',
