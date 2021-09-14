@@ -50,16 +50,21 @@ class RatingController extends Controller
         if($product){
             $data=[];
             $rating=Rating::where('id_product',$req->id)->get();
-            foreach($rating as $i){
-                $data[count($data)]=[
-                    'id'=>$i->id,
-                    'id_user'=>$i->id_user,
-                    'rating'=>$i->ratting,
-                    'comment'=>$i->comment,
-                ];
+            if($rating){
+                foreach($rating as $i){
+                    $data[count($data)]=[
+                        'id'=>$i->id,
+                        'id_user'=>$i->id_user,
+                        'rating'=>$i->ratting,
+                        'comment'=>$i->comment,
+                    ];
+                }
+                return response()->json(['errorCode'=> null,'data'=>$data], 200);
             }
-            return response()->json(['errorCode'=> null,'data'=>$data], 200);
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null], 404);
             }
+        }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
         }
