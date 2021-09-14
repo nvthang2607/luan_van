@@ -50,7 +50,7 @@ class RatingController extends Controller
         if($product){
             $data=[];
             $rating=Rating::where('id_product',$req->id)->get();
-            if($rating){
+            if($rating->count()>0){
                 foreach($rating as $i){
                     $data[count($data)]=[
                         'id'=>$i->id,

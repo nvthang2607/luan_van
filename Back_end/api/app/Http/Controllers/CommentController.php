@@ -17,7 +17,7 @@ class CommentController extends Controller
         if($product){
             $data=[];
             $comment=Comment::where('id_product',$req->id)->get();
-            if($comment){
+            if($comment->count()>0){
                 foreach($comment as $i){
                     $feedbacks=[];
                     $feedback=$i->feedback()->get();
