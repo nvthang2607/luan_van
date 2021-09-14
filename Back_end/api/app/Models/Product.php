@@ -15,4 +15,7 @@ class Product extends Model
     public function information_product(){
         return $this->hasMany('App\Models\InformationProduct','id_product','id');
     }
+    public function comment(){
+        return $this->hasMany('App\Models\Comment','id_product','id');
+    }
 }

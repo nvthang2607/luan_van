@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Rating;
+use App\Models\Product;
 
 class RatingController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_rating']]);
+        $this->middleware('auth:api', ['except' => ['post_rating','get_product_rating_id']]);
     }
     public function post_rating(request $req){
         if (!auth()->check()) {
@@ -43,6 +44,25 @@ class RatingController extends Controller
             }    
             
         }        
+    }
+    public function get_product_rating_id(request $req){
+        $product=Product::find($req->id);
+        if($product){
+            $data=[];
+            $rating=Rating::where('id_product',$req->id)->get();
+            foreach($rating as $i){
+                $data[count($data)]=[
+                    'id'=>$i->id,
+                    'id_user'=>$i->id_user,
+                    'rating'=>$i->ratting,
+                    'comment'=>$i->comment,
+                ];
+            }
+            return response()->json(['errorCode'=> null,'data'=>$data], 200);
+            }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null], 404);
+        }
     }
     
 }

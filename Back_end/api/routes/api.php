@@ -13,6 +13,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\CommentController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -92,6 +93,8 @@ Route::group([
 
 ], function ($router) {
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
+    Route::get('/rating/{id}', [RatingController::class, 'get_product_rating_id']);
+    Route::get('/comment/{id}', [CommentController::class, 'get_product_comment_id']);
 });    
 
 
