@@ -11,7 +11,7 @@ class RatingController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_rating','get_product_rating_id']]);
+        $this->middleware('auth:api', ['except' => ['post_rating','post_product_rating']]);
     }
     public function post_rating(request $req){
         if (!auth()->check()) {
@@ -45,12 +45,14 @@ class RatingController extends Controller
             
         }        
     }
-    public function get_product_rating_id(request $req){
+    public function post_product_rating(request $req){
         $product=Product::find($req->id);
         if($product){
             $data=[];
-            $rating=Rating::where('id_product',$req->id)->get();
-            if($rating->count()>0){
+            $rating=Rating::where('id_product',$req->id);
+            $n=$rating->count();
+            $rating=$rating->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            if($n>0){
                 foreach($rating as $i){
                     $data[count($data)]=[
                         'id'=>$i->id,
@@ -59,10 +61,10 @@ class RatingController extends Controller
                         'comment'=>$i->comment,
                     ];
                 }
-                return response()->json(['errorCode'=> null,'data'=>$data], 200);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
             }
             else{
-                return response()->json(['errorCode'=> 4, 'data'=>null], 404);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
             }
         }
         else{

@@ -10,14 +10,16 @@ class CommentController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_product_comment_id']]);
+        $this->middleware('auth:api', ['except' => ['post_product_comment']]);
     }
-    public function get_product_comment_id(request $req){
+    public function post_product_comment(request $req){
         $product=Product::find($req->id);
         if($product){
             $data=[];
-            $comment=Comment::where('id_product',$req->id)->get();
-            if($comment->count()>0){
+            $comment=Comment::where('id_product',$req->id);
+            $n=$comment->count();
+            $comment=$comment->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            if($n>0){
                 foreach($comment as $i){
                     $feedbacks=[];
                     $feedback=$i->feedback()->get();
@@ -40,10 +42,10 @@ class CommentController extends Controller
                         'feedback'=>$feedbacks,
                     ];
                 }
-                return response()->json(['errorCode'=> null,'data'=>$data], 200);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
             }
             else{
-                return response()->json(['errorCode'=> 4, 'data'=>null], 404);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
             }
         }
         else{

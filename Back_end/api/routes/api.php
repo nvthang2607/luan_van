@@ -93,8 +93,8 @@ Route::group([
 
 ], function ($router) {
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
-    Route::get('/rating/{id}', [RatingController::class, 'get_product_rating_id']);
-    Route::get('/comment/{id}', [CommentController::class, 'get_product_comment_id']);
+    Route::post('/rating', [RatingController::class, 'post_product_rating']);
+    Route::post('/comment', [CommentController::class, 'post_product_comment']);
 });    
 
 
