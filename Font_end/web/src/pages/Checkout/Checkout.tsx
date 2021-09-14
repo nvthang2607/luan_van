@@ -4,6 +4,7 @@ import {
 	Button,
 	Card,
 	CircularProgress,
+	Collapse,
 	Container,
 	Dialog,
 	DialogActions,
@@ -43,6 +44,7 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
+import { getCartData } from '../../Components/Product/CartSlice';
 interface ProfileInfoProps {
 	profileInfo?: any;
 }
@@ -119,30 +121,36 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const [flagRefresh, setFlagRefresh] = React.useState(1);
 	const [valueDistrict, setValueDistrict] = React.useState<any>({ id: '', name: '' });
 	const [valueCommune, setValueCommnune] = React.useState<any>({ id: '', name: '' });
+
 	React.useEffect(() => {
 		const getData = async () => {
 			//dispatch(userProfileAPI());
-			const profile = await UserGet();
-			if (profile.errorCode === null) {
-				setProfileInfo(profile.data);
-			}
+			// const profile = await UserGet();
+			// if (profile.errorCode === null) {
+			// 	setProfileInfo(profile.data);
+			// }
 			setOpenCity(true);
-			setOpenDistrict(true);
-			setOpenCommune(true);
+
 			const response = await CityGet();
 			if (response.errorCode === null) {
 				setData(response.data);
 			}
 
-			const getDistrict = await DistrictPost({ idCity: props.profileInfo.idCity });
-			if (getDistrict.errorCode === null) {
-				setDataDistrict(getDistrict.data);
+			if (props.profileInfo.idCity !== '') {
+				setOpenDistrict(true);
+				const getDistrict = await DistrictPost({ idCity: props.profileInfo.idCity });
+				if (getDistrict.errorCode === null) {
+					setDataDistrict(getDistrict.data);
+				}
 			}
 
-			const getCommune = await CommunePost({ idDistrict: props.profileInfo.idDistrict });
-			//console.log(getCommune);
-			if (getCommune.errorCode === null) {
-				setDataCommune(getCommune.data);
+			if (props.profileInfo.idDistrict !== '') {
+				setOpenCommune(true);
+				const getCommune = await CommunePost({ idDistrict: props.profileInfo.idDistrict });
+				//console.log(getCommune);
+				if (getCommune.errorCode === null) {
+					setDataCommune(getCommune.data);
+				}
 			}
 		};
 		getData();
@@ -210,7 +218,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		}
 	};
 	const [open, setOpen] = React.useState(false);
-
+	const [showInforOrder, setShowInforOrder] = React.useState(true);
 	const handleClickOpen = () => {
 		setOpen(true);
 	};
@@ -218,6 +226,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const handleClose = () => {
 		setOpen(false);
 	};
+
 	const onChangeCommune = (options: any) => {
 		if (options) {
 			setFlagOnchangeDistrict(false);
@@ -243,6 +252,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const dispatch = useAppDispatch();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const [valueSubmit, setValueSubmit] = React.useState<any>();
+	const [dataInforOrder, setDataInforOrder] = React.useState<any>({});
 	const onSubmit = async (data: any) => {
 		let resultIdCity = '';
 		let resultIdDistrict = '';
@@ -286,11 +296,42 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		// }
 		setOpen(true);
 		//dispatch(updateProfileUser(reqData));
+		console.log(data);
+		//console.log(reqData);
+		setDataInforOrder({
+			name: data.name,
+			password: data.password,
+			gender: data.gender,
+			phone: data.phone,
+			idCity: resultIdCity,
+			idDistrict: resultIdDistrict,
+			idCommune: resultIdCommune,
+			address: data.nameCommune + ', ' + data.nameDistrict + ', ' + data.nameCity,
+			note: data.note,
+		});
+		setShowInforOrder(false);
+		window.scrollTo(0, 0);
 	};
 	const action: (result: boolean) => void = (result) => {
 		if (result) {
 			setOpen(false);
 		}
+	};
+	const [shippingMethod, setShippingMethod] = React.useState('cod');
+	const cartData = useAppSelector(getCartData);
+	const countQuantity = () => {
+		let count = 0;
+		cartData.map((item: any) => {
+			count = count + item.quantity;
+		});
+		return count;
+	};
+	const totalPrice = () => {
+		let total = 0;
+		cartData.map((item: any) => {
+			total += item.quantity * item.promotion_price;
+		});
+		return total;
 	};
 	return (
 		<Container>
@@ -298,28 +339,167 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Grid container spacing={3}>
 						<Grid item xs={7} style={{ paddingRight: '66px', borderRight: '1px solid #ededed' }}>
-							<Grid container spacing={3}>
-								<Grid item xs={12}>
-									<Typography variant="h5">Thong tin mua hang</Typography>
-									<Divider style={{ marginTop: '20px' }} />
+							<Collapse in={!showInforOrder} timeout="auto" unmountOnExit>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<Card variant="outlined" style={{ padding: '10px' }}>
+											<Typography variant="body1" gutterBottom style={{ display: 'flow-root' }}>
+												<Typography component="span" style={{ float: 'left', fontStyle: 'italic' }}>
+													Thong tin nhan hang:
+												</Typography>
+												<Typography component="span" style={{ float: 'right' }}>
+													<Button
+														style={{
+															padding: 0,
+
+															textTransform: 'inherit',
+														}}
+														onClick={() => setShowInforOrder(true)}
+													>
+														Thay doi
+													</Button>
+												</Typography>
+											</Typography>
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													Ho ten:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.name}</Typography>
+											</Typography>
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													Gioi tinh:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.gender}</Typography>
+											</Typography>
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													So dien thoai:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.phone}</Typography>
+											</Typography>
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													Dia chi:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.address}</Typography>
+											</Typography>
+
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													Ghi chu:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.note}</Typography>
+											</Typography>
+										</Card>
+									</Grid>
+									<Grid item xs={12} style={{ paddingBottom: 0 }}>
+										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+											Thanh toán
+										</Typography>
+									</Grid>
+									<Grid item xs={12}>
+										<Card variant="outlined" style={{ padding: '10px' }}>
+											<RadioGroup
+												//name="gender"
+												value={shippingMethod}
+												row
+												onChange={(e) => {
+													setShippingMethod(e.target.value);
+												}}
+											>
+												<FormControlLabel
+													value="cod"
+													control={<Radio color="secondary" />}
+													label="Thanh toán khi giao hàng (COD)"
+												/>
+												<FormControlLabel
+													value="bankTransfer"
+													control={<Radio color="secondary" />}
+													label="Chuyển khoản qua ngân hàng"
+												/>
+											</RadioGroup>
+											<Collapse
+												in={shippingMethod === 'bankTransfer' ? true : false}
+												timeout="auto"
+												unmountOnExit
+											>
+												<Grid item xs={12}>
+													<Box style={{ paddingTop: '30px' }}>
+														<Typography variant="body1">
+															🎁 Tặng Cable Sạc Nhanh VEGER 3.0A 1 Đổi 1 36 Tháng Khi Quý Khách
+															Chuyển Khoản 100% Qua Ngân Hàng.
+														</Typography>
+
+														<Typography variant="body1">💵 Tài khoản nhận:</Typography>
+														<Typography variant="body1">⚜️ Tran Van Sang</Typography>
+														<Typography variant="body1">⚜️ 019282172127221</Typography>
+														<Typography variant="body1">⚜️ Agribank, Chi nhanh Can Tho</Typography>
+														<Typography variant="body1">🛒 Thủ tục:</Typography>
+														<Typography variant="body1">
+															☑️ Ghi chú chuyển khoản: Tên Khách Hàng + SĐT
+														</Typography>
+														<Typography variant="body1">
+															☑️ Nhan vien sẽ xác nhận đã nhận tiền trong 60 phút qua điện thoại
+														</Typography>
+														<Typography variant="body1">
+															⛔ Trong tình huống không thể giao hàng, chúng tôi sẽ hoàn tiền cho
+															quý khách.
+														</Typography>
+													</Box>
+												</Grid>
+											</Collapse>
+										</Card>
+									</Grid>
+									<Grid item xs={12}>
+										<Button variant="contained" size="large" color="primary">
+											Thanh toan
+										</Button>
+									</Grid>
 								</Grid>
-								<Grid item xs={12}>
-									<Typography variant="body1" gutterBottom>
-										Email
-									</Typography>
-									<TextField
-										id="email"
-										name="email"
-										defaultValue={props.profileInfo.email}
-										InputProps={{
-											readOnly: true,
-										}}
-										variant="outlined"
-										fullWidth
-									/>
-								</Grid>
-								{flagOnchangeName ? (
-									<React.Fragment>
+							</Collapse>
+
+							<Collapse in={showInforOrder} timeout="auto" unmountOnExit>
+								<Grid container spacing={3}>
+									<Grid item xs={12}>
+										<Typography variant="h5">Thong tin mua hang</Typography>
+										<Divider style={{ marginTop: '20px' }} />
+									</Grid>
+
+									{flagOnchangeName ? (
+										<React.Fragment>
+											<Grid item xs={12}>
+												<Typography variant="body1" gutterBottom>
+													Họ và tên
+												</Typography>
+												<Controller
+													control={control}
+													name="name"
+													defaultValue={valueAddress.name}
+													render={({ field: { onChange } }) => (
+														<TextField
+															id="name"
+															name="name"
+															defaultValue={valueAddress.name}
+															variant="outlined"
+															fullWidth
+															error={errors.name ? true : false}
+															helperText={errors.name?.message}
+															onChange={(e) => {
+																onChange(e.target.value);
+																setValueAddress({ ...valueAddress, name: e.target.value });
+															}}
+														/>
+													)}
+												/>
+											</Grid>
+										</React.Fragment>
+									) : (
 										<Grid item xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Họ và tên
@@ -337,6 +517,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 														fullWidth
 														error={errors.name ? true : false}
 														helperText={errors.name?.message}
+														//onChange={(e) => }
 														onChange={(e) => {
 															onChange(e.target.value);
 															setValueAddress({ ...valueAddress, name: e.target.value });
@@ -345,37 +526,36 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 												)}
 											/>
 										</Grid>
-									</React.Fragment>
-								) : (
-									<Grid item xs={12}>
-										<Typography variant="body1" gutterBottom>
-											Họ và tên
-										</Typography>
-										<Controller
-											control={control}
-											name="name"
-											defaultValue={valueAddress.name}
-											render={({ field: { onChange } }) => (
-												<TextField
-													id="name"
-													name="name"
-													defaultValue={valueAddress.name}
-													variant="outlined"
-													fullWidth
-													error={errors.name ? true : false}
-													helperText={errors.name?.message}
-													//onChange={(e) => }
-													onChange={(e) => {
-														onChange(e.target.value);
-														setValueAddress({ ...valueAddress, name: e.target.value });
-													}}
+									)}
+									{flagOnchangePhone ? (
+										<React.Fragment>
+											<Grid item xs={12}>
+												<Typography variant="body1" gutterBottom>
+													Số điện thoại
+												</Typography>
+												<Controller
+													control={control}
+													name="phone"
+													defaultValue={valueAddress.phone}
+													render={({ field: { onChange } }) => (
+														<TextField
+															id="phone"
+															name="phone"
+															variant="outlined"
+															defaultValue={valueAddress.phone}
+															fullWidth
+															error={errors.phone ? true : false}
+															helperText={errors.phone?.message}
+															onChange={(e) => {
+																onChange(e.target.value);
+																setValueAddress({ ...valueAddress, phone: e.target.value });
+															}}
+														/>
+													)}
 												/>
-											)}
-										/>
-									</Grid>
-								)}
-								{flagOnchangePhone ? (
-									<React.Fragment>
+											</Grid>
+										</React.Fragment>
+									) : (
 										<Grid item xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Số điện thoại
@@ -401,93 +581,113 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 												)}
 											/>
 										</Grid>
-									</React.Fragment>
-								) : (
-									<Grid item xs={12}>
+									)}
+									<Grid item xs={4}>
 										<Typography variant="body1" gutterBottom>
-											Số điện thoại
+											Thành phố/Tỉnh
 										</Typography>
-										<Controller
-											control={control}
-											name="phone"
-											defaultValue={valueAddress.phone}
-											render={({ field: { onChange } }) => (
-												<TextField
-													id="phone"
-													name="phone"
-													variant="outlined"
-													defaultValue={valueAddress.phone}
-													fullWidth
-													error={errors.phone ? true : false}
-													helperText={errors.phone?.message}
-													onChange={(e) => {
-														onChange(e.target.value);
-														setValueAddress({ ...valueAddress, phone: e.target.value });
-													}}
-												/>
-											)}
-										/>
-									</Grid>
-								)}
-								<Grid item xs={4}>
-									<Typography variant="body1" gutterBottom>
-										Thành phố/Tỉnh
-									</Typography>
-									{/* <Controller
+										{/* <Controller
 										control={control}
 										name="nameCity"
 										defaultValue={valueAddress.nameCity}
 										render={({ field: { onChange } }) => ( */}
-									<Autocomplete
-										{...register('address')}
-										options={data}
-										onChange={(e, options: any) => onChangeCity(options)}
-										getOptionLabel={(option: any) => option.name}
-										loading={loadingCity}
-										defaultValue={{
-											name: valueAddress.nameCity,
-										}}
-										getOptionSelected={(option, value) => option.id === option.id}
-										renderInput={(params) => (
-											<TextField
-												{...params}
-												variant="outlined"
-												name="nameCity"
-												fullWidth
-												error={errors.nameCity ? true : false}
-												helperText={errors.nameCity?.message}
-												//onChange={(e) => onChange(e.target.value)}
-												//defaultValue={valueAddress.nameCity}
-												InputProps={{
-													...params.InputProps,
-													endAdornment: (
-														<React.Fragment>
-															{loadingCity ? <CircularProgress color="inherit" size={20} /> : null}
-															{params.InputProps.endAdornment}
-														</React.Fragment>
-													),
-												}}
-											/>
-										)}
-									/>
-									{/* )}
+										<Autocomplete
+											{...register('address')}
+											options={data}
+											onChange={(e, options: any) => onChangeCity(options)}
+											getOptionLabel={(option: any) => option.name}
+											loading={loadingCity}
+											defaultValue={{
+												name: valueAddress.nameCity,
+											}}
+											getOptionSelected={(option, value) => option.id === option.id}
+											renderInput={(params) => (
+												<TextField
+													{...params}
+													variant="outlined"
+													name="nameCity"
+													fullWidth
+													error={errors.nameCity ? true : false}
+													helperText={errors.nameCity?.message}
+													//onChange={(e) => onChange(e.target.value)}
+													//defaultValue={valueAddress.nameCity}
+													InputProps={{
+														...params.InputProps,
+														endAdornment: (
+															<React.Fragment>
+																{loadingCity ? (
+																	<CircularProgress color="inherit" size={20} />
+																) : null}
+																{params.InputProps.endAdornment}
+															</React.Fragment>
+														),
+													}}
+												/>
+											)}
+										/>
+										{/* )}
 									/> */}
-								</Grid>
-								{flagOnChangeCity ? (
-									<React.Fragment>
+									</Grid>
+									{flagOnChangeCity ? (
+										<React.Fragment>
+											<Grid item xs={4}>
+												<Typography variant="body1" gutterBottom>
+													Quận/Huyện
+												</Typography>
+												{/* <Controller
+									control={control}
+									name="nameDistrict"
+									defaultValue={valueAddress.nameDistrict}
+									render={({ field: { onChange } }) => ( */}
+												<Autocomplete
+													options={dataDistrict}
+													{...register('district')}
+													defaultValue={{ name: '' }}
+													onChange={(e, options: any) => onChangeDistrict(options)}
+													getOptionLabel={(option: any) => option.name}
+													loading={loadingDistrict}
+													getOptionSelected={(option, value) => option.id === option.id}
+													renderInput={(params) => (
+														<TextField
+															{...params}
+															variant="outlined"
+															name="nameDistrict"
+															fullWidth
+															//defaultValue={valueDistrict.name}
+															error={errors.nameDistrict ? true : false}
+															helperText={errors.nameDistrict?.message}
+															InputProps={{
+																...params.InputProps,
+																endAdornment: (
+																	<React.Fragment>
+																		{loadingDistrict ? (
+																			<CircularProgress color="inherit" size={20} />
+																		) : null}
+																		{params.InputProps.endAdornment}
+																	</React.Fragment>
+																),
+															}}
+														/>
+													)}
+												/>
+												{/* )}
+								/> */}
+											</Grid>
+										</React.Fragment>
+									) : (
 										<Grid item xs={4}>
 											<Typography variant="body1" gutterBottom>
 												Quận/Huyện
 											</Typography>
 											{/* <Controller
-									control={control}
-									name="nameDistrict"
-									defaultValue={valueAddress.nameDistrict}
-									render={({ field: { onChange } }) => ( */}
+										control={control}
+										name="nameDistrict"
+										defaultValue={valueAddress.nameDistrict}
+										render={({ field: { onChange } }) => ( */}
 											<Autocomplete
 												options={dataDistrict}
 												{...register('district')}
-												defaultValue={{ name: '' }}
+												defaultValue={{ name: valueAddress.nameDistrict }}
 												onChange={(e, options: any) => onChangeDistrict(options)}
 												getOptionLabel={(option: any) => option.name}
 												loading={loadingDistrict}
@@ -516,57 +716,64 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 												)}
 											/>
 											{/* )}
-								/> */}
-										</Grid>
-									</React.Fragment>
-								) : (
-									<Grid item xs={4}>
-										<Typography variant="body1" gutterBottom>
-											Quận/Huyện
-										</Typography>
-										{/* <Controller
-										control={control}
-										name="nameDistrict"
-										defaultValue={valueAddress.nameDistrict}
-										render={({ field: { onChange } }) => ( */}
-										<Autocomplete
-											options={dataDistrict}
-											{...register('district')}
-											defaultValue={{ name: valueAddress.nameDistrict }}
-											onChange={(e, options: any) => onChangeDistrict(options)}
-											getOptionLabel={(option: any) => option.name}
-											loading={loadingDistrict}
-											getOptionSelected={(option, value) => option.id === option.id}
-											renderInput={(params) => (
-												<TextField
-													{...params}
-													variant="outlined"
-													name="nameDistrict"
-													fullWidth
-													//defaultValue={valueDistrict.name}
-													error={errors.nameDistrict ? true : false}
-													helperText={errors.nameDistrict?.message}
-													InputProps={{
-														...params.InputProps,
-														endAdornment: (
-															<React.Fragment>
-																{loadingDistrict ? (
-																	<CircularProgress color="inherit" size={20} />
-																) : null}
-																{params.InputProps.endAdornment}
-															</React.Fragment>
-														),
-													}}
-												/>
-											)}
-										/>
-										{/* )}
 									/> */}
-									</Grid>
-								)}
+										</Grid>
+									)}
 
-								{flagOnChangeDistrict ? (
-									<React.Fragment>
+									{flagOnChangeDistrict ? (
+										<React.Fragment>
+											<Grid item xs={4}>
+												<Typography variant="body1" gutterBottom>
+													Phường/Xã
+												</Typography>
+												{/* <Controller
+										control={control}
+										name="nameCommune"
+										defaultValue={valueAddress.nameCommune}
+										render={({ field: { onChange } }) => ( */}
+												<Autocomplete
+													options={dataCommune}
+													{...register('commune')}
+													defaultValue={{ name: '' }}
+													onChange={(e, options: any) => onChangeCommune(options)}
+													getOptionLabel={(option: any) => option.name}
+													getOptionSelected={(option, value) => option.id === option.id}
+													// open={open}
+													// onOpen={() => {
+													// 	setOpen(true);
+													// }}
+													// onClose={() => {
+													// 	setOpen(false);
+													// }}
+													loading={loadingCommune}
+													renderInput={(params) => (
+														<TextField
+															{...params}
+															variant="outlined"
+															name="nameCommune"
+															fullWidth
+															//defaultValue={valueCommune.name}
+															error={errors.nameCommune ? true : false}
+															helperText={errors.nameCommune?.message}
+															InputProps={{
+																...params.InputProps,
+																endAdornment: (
+																	<React.Fragment>
+																		{loadingCommune ? (
+																			<CircularProgress color="inherit" size={20} />
+																		) : null}
+																		{params.InputProps.endAdornment}
+																	</React.Fragment>
+																),
+															}}
+														/>
+													)}
+												/>
+												{/* )}
+									/> */}
+											</Grid>
+										</React.Fragment>
+									) : (
 										<Grid item xs={4}>
 											<Typography variant="body1" gutterBottom>
 												Phường/Xã
@@ -579,7 +786,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											<Autocomplete
 												options={dataCommune}
 												{...register('commune')}
-												defaultValue={{ name: '' }}
+												defaultValue={{ name: valueAddress.nameCommune }}
 												onChange={(e, options: any) => onChangeCommune(options)}
 												getOptionLabel={(option: any) => option.name}
 												getOptionSelected={(option, value) => option.id === option.id}
@@ -617,172 +824,149 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											{/* )}
 									/> */}
 										</Grid>
-									</React.Fragment>
-								) : (
-									<Grid item xs={4}>
-										<Typography variant="body1" gutterBottom>
-											Phường/Xã
-										</Typography>
-										{/* <Controller
-										control={control}
-										name="nameCommune"
-										defaultValue={valueAddress.nameCommune}
-										render={({ field: { onChange } }) => ( */}
-										<Autocomplete
-											options={dataCommune}
-											{...register('commune')}
-											defaultValue={{ name: valueAddress.nameCommune }}
-											onChange={(e, options: any) => onChangeCommune(options)}
-											getOptionLabel={(option: any) => option.name}
-											getOptionSelected={(option, value) => option.id === option.id}
-											// open={open}
-											// onOpen={() => {
-											// 	setOpen(true);
-											// }}
-											// onClose={() => {
-											// 	setOpen(false);
-											// }}
-											loading={loadingCommune}
-											renderInput={(params) => (
-												<TextField
-													{...params}
-													variant="outlined"
-													name="nameCommune"
-													fullWidth
-													//defaultValue={valueCommune.name}
-													error={errors.nameCommune ? true : false}
-													helperText={errors.nameCommune?.message}
-													InputProps={{
-														...params.InputProps,
-														endAdornment: (
-															<React.Fragment>
-																{loadingCommune ? (
-																	<CircularProgress color="inherit" size={20} />
-																) : null}
-																{params.InputProps.endAdornment}
-															</React.Fragment>
-														),
-													}}
-												/>
-											)}
-										/>
-										{/* )}
-									/> */}
-									</Grid>
-								)}
-							</Grid>
-							{flagOnchangGender ? (
-								<React.Fragment>
+									)}
 									<Grid item xs={12}>
 										<Typography variant="body1" gutterBottom>
-											Giới tính
+											Ghi chu
 										</Typography>
 										<Controller
 											control={control}
-											name="gender"
-											defaultValue={valueAddress.gender}
-											render={({ field: { onChange, value } }) => (
-												<RadioGroup
-													name="gender"
-													value={value}
-													row
+											name="note"
+											defaultValue={dataInforOrder.note}
+											render={({ field: { onChange } }) => (
+												<TextField
+													defaultValue={dataInforOrder.note}
+													id="note"
+													name="note"
+													variant="outlined"
+													fullWidth
 													onChange={(e) => {
 														onChange(e.target.value);
-														setValueAddress({ ...valueAddress, gender: e.target.value });
 													}}
-												>
-													<FormControlLabel
-														value="Nam"
-														control={<Radio color="primary" />}
-														label="Nam"
-													/>
-													<FormControlLabel
-														value="Nữ"
-														control={<Radio color="primary" />}
-														label="Nữ"
-													/>
-												</RadioGroup>
+												/>
 											)}
 										/>
-										{errors.gender && (
-											<FormHelperText error>{errors.gender.message}</FormHelperText>
-										)}
 									</Grid>
-								</React.Fragment>
-							) : (
-								<Grid item xs={12}>
-									<Typography variant="body1" gutterBottom>
-										Giới tính
-									</Typography>
-									<Controller
-										control={control}
-										name="gender"
-										defaultValue={valueAddress.gender}
-										render={({ field: { onChange, value } }) => (
-											<RadioGroup
+									{flagOnchangGender ? (
+										<React.Fragment>
+											<Grid item xs={12}>
+												<Typography variant="body1" gutterBottom>
+													Giới tính
+												</Typography>
+												<Controller
+													control={control}
+													name="gender"
+													defaultValue={valueAddress.gender}
+													render={({ field: { onChange, value } }) => (
+														<RadioGroup
+															name="gender"
+															value={value}
+															row
+															onChange={(e) => {
+																onChange(e.target.value);
+																setValueAddress({ ...valueAddress, gender: e.target.value });
+															}}
+														>
+															<FormControlLabel
+																value="Nam"
+																control={<Radio color="primary" />}
+																label="Nam"
+															/>
+															<FormControlLabel
+																value="Nữ"
+																control={<Radio color="primary" />}
+																label="Nữ"
+															/>
+														</RadioGroup>
+													)}
+												/>
+												{errors.gender && (
+													<FormHelperText error>{errors.gender.message}</FormHelperText>
+												)}
+											</Grid>
+										</React.Fragment>
+									) : (
+										<Grid item xs={12}>
+											<Typography variant="body1" gutterBottom>
+												Giới tính
+											</Typography>
+											<Controller
+												control={control}
 												name="gender"
-												value={value}
-												row
-												onChange={(e) => {
-													onChange(e.target.value);
-													setValueAddress({ ...valueAddress, gender: e.target.value });
-												}}
-											>
-												<FormControlLabel
-													value="Nam"
-													control={<Radio color="primary" />}
-													label="Nam"
-												/>
-												<FormControlLabel
-													value="Nữ"
-													control={<Radio color="primary" />}
-													label="Nữ"
-												/>
-											</RadioGroup>
-										)}
-									/>
-									{errors.gender && <FormHelperText error>{errors.gender.message}</FormHelperText>}
+												defaultValue={valueAddress.gender}
+												render={({ field: { onChange, value } }) => (
+													<RadioGroup
+														name="gender"
+														value={value}
+														row
+														onChange={(e) => {
+															onChange(e.target.value);
+															setValueAddress({ ...valueAddress, gender: e.target.value });
+														}}
+													>
+														<FormControlLabel
+															value="Nam"
+															control={<Radio color="primary" />}
+															label="Nam"
+														/>
+														<FormControlLabel
+															value="Nữ"
+															control={<Radio color="primary" />}
+															label="Nữ"
+														/>
+													</RadioGroup>
+												)}
+											/>
+											{errors.gender && (
+												<FormHelperText error>{errors.gender.message}</FormHelperText>
+											)}
+										</Grid>
+									)}
+									<Grid item xs={12}>
+										<Button
+											variant="contained"
+											color="primary"
+											size="large"
+											type="submit"
+											//disabled={true}
+											style={{ position: 'relative' }}
+										>
+											xac nhan thong tin
+											{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
+										</Button>
+									</Grid>
 								</Grid>
-							)}
-							<Grid item xs={12}>
-								<Button
-									variant="contained"
-									color="primary"
-									size="large"
-									type="submit"
-									//disabled={true}
-									style={{ position: 'relative' }}
-								>
-									cap nhat thong tin
-									{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
-								</Button>
-							</Grid>
+							</Collapse>
 						</Grid>
 						<Grid item xs={5} style={{ paddingLeft: '64px', backgroundColor: '##fafafa' }}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
-									<Typography variant="h5">Don hang (2 san pham)</Typography>
+									<Typography variant="h5">Don hang ({countQuantity()} san pham)</Typography>
 									<Divider style={{ marginTop: '20px' }} />
 								</Grid>
 								<Grid item xs={12}>
 									<DialogContent style={{ height: `calc(${100}vh - ${400}px)` }}>
-										{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
+										{cartData.map((item: any) => {
 											return (
 												<Box style={{ display: 'flex', marginBottom: '35px' }}>
 													<Box style={{ width: '20%' }}>
-														<img width="100%" src={sp1} />
+														<img width="100%" src={`http://localhost:8000/${item.link}`} />
 													</Box>
 													<Box style={{ marginLeft: '4px', width: '80%' }}>
 														<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-															Apple Watch SE GPS 40mm Vàng Chính HãngApple Watch SE GPS 40mm Vàng
-															Chính Hãng
+															{item.name}
 														</Typography>
 														<Box style={{ display: 'contents' }}>
 															<Box style={{ width: '50%', float: 'left' }}>
-																<Typography>So luong: 3</Typography>
+																<Typography>So luong: {item.quantity}</Typography>
 															</Box>
 															<Box style={{ width: '50%', float: 'right' }}>
-																<Typography>12.000.000d</Typography>
+																<Typography>
+																	{Intl.NumberFormat('en-US').format(
+																		Number(item.quantity * item.promotion_price)
+																	)}
+																	đ
+																</Typography>
 															</Box>
 														</Box>
 													</Box>
@@ -816,7 +1000,9 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										<Box style={{ float: 'left' }}>
 											<Typography>Tam tinh</Typography>
 										</Box>
-										<Box style={{ float: 'right' }}>12.000.000d</Box>
+										<Box style={{ float: 'right' }}>
+											{Intl.NumberFormat('en-US').format(Number(totalPrice()))}đ
+										</Box>
 									</Box>
 								</Grid>
 								<Grid item xs={12}>

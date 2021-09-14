@@ -1,31 +1,60 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { stat } from 'fs';
 import { RootState } from '../../app/store';
 const data: any = localStorage.getItem('cart');
-const initialState = data ? data : [];
-// const findIndex = (data: any, id: any) => {
-// 	const result = data?.map((item: any, index: number) => {
-// 		if (item.id === id) {
-// 			return index;
-// 		} else return -1;
-// 	});
-// 	return result;
-// };
+const initialState = data ? JSON.parse(data) : [];
+const findIndex = (data: any, id: any) => {
+	let result = -1;
+	data?.map((item: any, index: number) => {
+		if (item.id === id) {
+			result = index;
+			return result;
+		}
+	});
+
+	return result;
+};
 const CartSlice = createSlice({
 	name: 'CartSlice',
 	initialState,
 	reducers: {
 		updataCartData(state, action: any) {
-			//state = action.payload;
-			//console.log(action.payload);
-			//const index = findIndex(state, action.payload.id);
-			//console.log(index);
+			const index = findIndex(state, action.payload.id);
+			if (index === -1) {
+				state.push(action.payload);
+				window.localStorage.setItem('cart', JSON.stringify(state));
+			} else {
+				state[index].quantity++;
+				window.localStorage.setItem('cart', JSON.stringify(state));
+			}
+		},
+		updateQuantity(state, action: any) {
+			const index = findIndex(state, action.payload.id);
 
-			state.push(action.payload);
-			window.localStorage.setItem('cart', JSON.stringify(state));
+			if (index === -1) {
+				//state.push(action.payload);
+				//window.localStorage.setItem('cart', JSON.stringify(state));
+			} else {
+				if (action.payload.status === 'increase') state[index].quantity += action.payload.quantity;
+				else if (action.payload.status === 'decrease')
+					state[index].quantity -= action.payload.quantity;
+				else if (action.payload.status === 'replace')
+					state[index].quantity = action.payload.quantity;
+				window.localStorage.setItem('cart', JSON.stringify(state));
+			}
+		},
+		deleteProduct(state, action: any) {
+			const index = findIndex(state, action.payload.id);
+
+			if (index === -1) {
+				//state.push(action.payload);
+				//window.localStorage.setItem('cart', JSON.stringify(state));
+			} else {
+				state.splice(index, 1);
+				window.localStorage.setItem('cart', JSON.stringify(state));
+			}
 		},
 	},
 });
-export const { updataCartData } = CartSlice.actions;
+export const { updataCartData, updateQuantity, deleteProduct } = CartSlice.actions;
 export const getCartData = (state: RootState) => state.CartData;
 export default CartSlice.reducer;

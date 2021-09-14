@@ -32,6 +32,7 @@ import {
 } from '../../features/refresh/RefreshPageSlice';
 import img from 'http://localhost:8000/source/image/product/test.png';
 import Pagination from '@material-ui/lab/Pagination';
+import { toast, ToastContainer } from 'react-toastify';
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -97,7 +98,13 @@ const Search: React.FC = () => {
 	const openPrice = Boolean(anchorElPrice);
 	const idPrice = openPrice ? 'simple-popover' : undefined;
 	const history = useHistory();
-
+	const addToCart: (result: boolean) => void = (result) => {
+		if (result) {
+			toast.success('Da them san pham vao gio hang');
+		} else {
+			toast.error('ko du so luong');
+		}
+	};
 	const [typeSearch, setTypeSearch] = React.useState('product');
 	const searchParams = new URLSearchParams(window.location.search);
 	const dispatch = useAppDispatch();
@@ -224,7 +231,8 @@ const Search: React.FC = () => {
 										link={item.image}
 										avg={item.avg}
 										rate_number={item.rate_number}
-										quantity={item[0].quantity}
+										storeQuantity={item[0].quantity}
+										addToCart={addToCart}
 									/>
 								);
 							})}
@@ -259,6 +267,17 @@ const Search: React.FC = () => {
 					)}
 				</React.Fragment>
 			)}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 		</Grid>
 	);
 };

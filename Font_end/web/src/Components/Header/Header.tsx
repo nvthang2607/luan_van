@@ -71,6 +71,8 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
+import Cart from '../Cart/Cart';
+import { getCartData } from '../Product/CartSlice';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -380,7 +382,20 @@ const Header: React.FC<Props> = (props) => {
 	const [openCart, setOpenCart] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
-
+	const cartData = useAppSelector(getCartData);
+	const countQuantity = () => {
+		let count = 0;
+		cartData.map((item: any) => {
+			count = count + item.quantity;
+		});
+		return count;
+	};
+	const receiveCart: (result: boolean) => void = (result) => {
+		setOpenCart(result);
+	};
+	React.useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 	return (
 		<div className={classes.grow}>
 			<AppBar className={classes.bgHeader}>
@@ -794,7 +809,7 @@ const Header: React.FC<Props> = (props) => {
 									>
 										<ListItemAvatar style={{ marginRight: '-8px' }}>
 											<Avatar style={{ backgroundColor: '#fff' }}>
-												<StyledBadge color="secondary" badgeContent={2}>
+												<StyledBadge color="secondary" badgeContent={countQuantity()}>
 													<ShoppingCartIcon className={classes.colorIcon} />
 												</StyledBadge>
 											</Avatar>
@@ -826,130 +841,10 @@ const Header: React.FC<Props> = (props) => {
 									onOpen={() => {}}
 									style={{ position: 'relative' }}
 								>
-									<Box style={{ width: 400 }}>
-										<Box>
-											<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
-											<IconButton
-												className={classes.closeButton}
-												onClick={() => setOpenCart(false)}
-											>
-												<Close />
-											</IconButton>
-											<DialogContent style={{ height: `calc(${100}vh - ${250}px)` }}>
-												{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
-													return (
-														<Box style={{ display: 'flex', marginBottom: '35px' }}>
-															<Box style={{ width: '32%' }}>
-																<img width="100%" src={sp1} />
-															</Box>
-															<Box style={{ marginLeft: '4px', width: '78%' }}>
-																<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-																	Apple Watch SE GPS 40mm Vàng Chính HãngApple Watch SE GPS 40mm
-																	Vàng Chính Hãng
-																</Typography>
-																<Box style={{ display: 'contents' }}>
-																	<Box style={{ width: '50%', float: 'left' }}>
-																		<Typography>So luong</Typography>
-																		<ButtonGroup style={{ width: '69px' }}>
-																			<Button
-																				aria-label="reduce"
-																				onClick={() => {
-																					setQuantity(Math.max(Number(quantity) - 1, 1));
-																				}}
-																				size="small"
-																			>
-																				<RemoveIcon fontSize="small" />
-																			</Button>
-																			<InputBase
-																				style={{
-																					paddingLeft: '4px',
-																					paddingRight: '4px',
-																					border: `1px solid rgba(${0}, ${0}, ${0}, ${0.23})`,
-																					borderRight: 'none',
-																				}}
-																				inputProps={{ style: { textAlign: 'center' } }}
-																				value={quantity}
-																				onChange={(event: any) => {
-																					!isNaN(Number(event.target.value))
-																						? setQuantity(Math.max(Number(event.target.value), 1))
-																						: setQuantity(quantity);
-																				}}
-																			/>
-																			<Button
-																				aria-label="increase"
-																				onClick={() => {
-																					setQuantity(Number(quantity) + 1);
-																				}}
-																				size="small"
-																			>
-																				<AddIcon fontSize="small" />
-																			</Button>
-																		</ButtonGroup>
-																		<FormHelperText error>Khong du so luong</FormHelperText>
-																	</Box>
-																	<Box style={{ width: '50%', float: 'right', textAlign: 'end' }}>
-																		<Typography
-																			style={{
-																				fontWeight: 'bold',
-																				color: theme.palette.primary.main,
-																			}}
-																		>
-																			19.000.000
-																		</Typography>
-																		<Button
-																			style={{
-																				padding: 0,
-																				color: theme.palette.primary.main,
-																				textTransform: 'inherit',
-																				fontWeight: 'inherit',
-																			}}
-																		>
-																			Xoa san pham
-																		</Button>
-																	</Box>
-																</Box>
-															</Box>
-														</Box>
-													);
-												})}
-											</DialogContent>
-
-											<Box style={{ paddingLeft: '26px', paddingRight: '28px' }}>
-												<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
-												<Box style={{ display: 'contents' }}>
-													<Box style={{ float: 'left' }}>
-														<Typography variant="h6">Tong tien:</Typography>
-													</Box>
-													<Box style={{ float: 'right' }}>
-														<Typography
-															style={{
-																fontWeight: 'bold',
-																color: theme.palette.primary.main,
-															}}
-															variant="h6"
-														>
-															19.000.000d
-														</Typography>
-													</Box>
-												</Box>
-												<Box style={{ marginTop: '70px' }}>
-													<Button
-														variant="contained"
-														color="primary"
-														fullWidth
-														style={{ textTransform: 'initial' }}
-														size="large"
-														onClick={() => {
-															history.push(AppURL.CHECKOUT);
-															setOpenCart(false);
-														}}
-													>
-														Thanh toan
-													</Button>
-												</Box>
-											</Box>
-										</Box>
-									</Box>
+									<IconButton className={classes.closeButton} onClick={() => setOpenCart(false)}>
+										<Close />
+									</IconButton>
+									<Cart receiveCart={receiveCart} />
 								</SwipeableDrawer>
 							</Grid>
 						</Grid>
