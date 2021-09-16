@@ -5,6 +5,8 @@ use App\Models\Product;
 use App\Models\News;
 use App\Models\Rating;
 use App\Models\ImageProduct;
+use App\Models\Promotion;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -21,6 +23,7 @@ class SearchController extends Controller
             if(count($datas)>0){
                 $u=0;
                 foreach($datas as $i){
+                    $promotions=[];
                     $image=Product::find($i->id)->image_product()->pluck('image')->first();
                     $rate=Rating::where('id_product',$i->id)->get(['ratting']);
                     $rate_number=$rate->count();
@@ -32,7 +35,11 @@ class SearchController extends Controller
                         }
                         $avg=$t/$rate_number;
                     }
-                    $data[$u]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image];
+                    $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                    foreach($promotion as $m){
+                        $promotions[count($promotions)]=$m;
+                    }
+                    $data[$u]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
                     $u++;
                 }
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);

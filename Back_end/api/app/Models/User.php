@@ -23,6 +23,9 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password'
     ];
+    public function status(){
+        return $this->hasMany('App\Models\Status','id_user','id');
+    }
 
     /**
      * The attributes that should be hidden for arrays.

@@ -158,6 +158,7 @@ class ProductController extends Controller
             $data1=$data1->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             $data2=[];
             foreach($data1 as $i){
+                $promotions=[];
                 $image=Product::find($i->id)->image_product()->pluck('image')->first();
                 $rate=Rating::where('id_product',$i->id)->get(['ratting']);
                 $rate_number=$rate->count();
@@ -169,7 +170,11 @@ class ProductController extends Controller
                     }
                     $avg=$t/$rate_number;
                 }
-                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image];
+                $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                foreach($promotion as $u){
+                    $promotions[count($promotions)]=$u;
+                }
+                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }
@@ -177,6 +182,7 @@ class ProductController extends Controller
             $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             $data2=[];
             foreach($datas as $i){
+                $promotions=[];
                 $image=Product::find($i->id)->image_product()->pluck('image')->first();
                 $rate=Rating::where('id_product',$i->id)->get(['ratting']);
                 $rate_number=$rate->count();
@@ -189,7 +195,11 @@ class ProductController extends Controller
                     $avg=$t/$rate_number;
                     
                 }
-                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image];
+                $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                foreach($promotion as $u){
+                    $promotions[count($promotions)]=$u;
+                }
+                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }

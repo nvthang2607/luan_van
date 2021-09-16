@@ -24,4 +24,7 @@ class Product extends Model
     public function promotion(){
         return $this->hasMany('App\Models\Promotion','id_product','id');
     }
+    public function billdetail(){
+        return $this->hasMany('App\Models\BillDetail','id_product','id');
+    }
 }

@@ -20,10 +20,6 @@ class CreateBillTable extends Migration
             ->constrained('customer')
             ->onUpdate('cascade')
             ->onDelete('cascade');
-            $table->foreignId('id_user')
-            ->constrained('users')
-            ->onUpdate('cascade')
-            ->onDelete('cascade');
             $table->bigInteger('total');
             $table->string('payment',50);
             $table->longText('note');

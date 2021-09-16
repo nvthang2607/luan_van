@@ -115,7 +115,6 @@ Route::group([
     Route::post('/', [RatingController::class, 'post_rating']);
 });
 
-
 Route::group([
     'middleware' => 'api',
     'prefix' => 'order'
@@ -137,4 +136,12 @@ Route::group([
 
 ], function ($router) {
     Route::post('/check', [PromotionController::class, 'post_promotion_check']);
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'bill'
+
+], function ($router) {
+    Route::post('/create', [RatingController::class, 'post_bill_create']);
 });

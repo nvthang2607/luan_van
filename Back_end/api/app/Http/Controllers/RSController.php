@@ -7,6 +7,8 @@ use Validator;
 use App\Models\Product;
 use App\Models\Rating;
 use App\Models\ImageProduct;
+use App\Models\Promotion;
+use Carbon\Carbon;
 class RSController extends Controller
 {
     public function __construct() {
@@ -36,6 +38,7 @@ class RSController extends Controller
             $data=[];
             $u=0;
             foreach($item as $i){
+                $promotions=[];
                 $product=Product::find($i);
                 $image=Product::find($i)->image_product()->pluck('image')->first();
                 $rate=Rating::where('id_product',$i)->get(['ratting']);
@@ -48,7 +51,11 @@ class RSController extends Controller
                     }
                     $avg=$t/$rate_number;
                 }
-                $data[$u]=[$product,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image];
+                $promotion=Promotion::where('id_product',$i)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                foreach($promotion as $m){
+                    $promotions[count($promotions)]=$m;
+                }
+                $data[$u]=[$product,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
                 $u++;
             }
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
