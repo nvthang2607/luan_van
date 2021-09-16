@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BranchProduct extends Model
+class Promotion extends Model
 {
     use HasFactory;
-    protected $table ="branch_product";
+    protected $table ="promotion";
     public function product(){
-        return $this->hasMany('App\Models\Product','id_branch','id');
+        return $this->belongsTo('App\Models\Product','id_product','id');
     }
 }

@@ -20,6 +20,7 @@ class CreateNewsTable extends Migration
             ->constrained('users')
             ->onUpdate('cascade')
             ->onDelete('cascade');
+            $table->string('image',100);
             $table->longText('title',100);
             $table->text('content');
             $table->timestamp('created_at')->useCurrent();
@@ -30,9 +31,11 @@ class CreateNewsTable extends Migration
         for($i=0;$i<$n;$i++){
             $id_u=User::where('isadmin','manager')->pluck('id');
             $id_user=$faker->randomElement($id_u);
+            $t=mt_rand(1,3);
             DB::table('news')->insert(
                 array(
                     'id_user'=>5,
+                    'image'=>'source/image/product/news'.$t.'.png',
                     'title' => $faker->paragraph,
                     'content'=>'content'
                 )

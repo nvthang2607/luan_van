@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+use Carbon\Carbon;
 Route::get('/', function () {
     return view('welcome');
+});
+Route::get('test', function () {
+    $date=Carbon::now('Asia/Ho_Chi_Minh');
+    echo $date.'<br>';
+    $date=$date->addDays(5);
+    echo $date;
 });

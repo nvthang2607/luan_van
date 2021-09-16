@@ -61,10 +61,10 @@ class RatingController extends Controller
                         'comment'=>$i->comment,
                     ];
                 }
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
             }
             else{
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
             }
         }
         else{

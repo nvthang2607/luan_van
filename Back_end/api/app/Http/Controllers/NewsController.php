@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 class NewsController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_news_id']]);
+        $this->middleware('auth:api', ['except' => ['get_news_id']]);
     }
-    public function post_news_id(request $req){
+    public function get_news_id(request $req){
         $news=News::find($req->id);
         if($news){
             $data=$news;

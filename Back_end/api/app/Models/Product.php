@@ -9,6 +9,9 @@ class Product extends Model
 {
     use HasFactory;
     protected $table ="product";
+    public function branch(){
+        return $this->belongsTo('App\Models\BranchProduct','id_branch','id');
+    }
     public function image_product(){
         return $this->hasMany('App\Models\ImageProduct','id_product','id');
     }
@@ -17,5 +20,8 @@ class Product extends Model
     }
     public function comment(){
         return $this->hasMany('App\Models\Comment','id_product','id');
+    }
+    public function promotion(){
+        return $this->hasMany('App\Models\Promotion','id_product','id');
     }
 }

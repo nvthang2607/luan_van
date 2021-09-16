@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\Comment;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
@@ -25,15 +26,26 @@ class CommentController extends Controller
                     $feedback=$i->feedback()->get();
                     if($feedback->count()>0){
                         foreach($feedback as $u){
+                            $user=User::where('email',$u->email)->pluck('isadmin')->first();
+                            $t='';
+                            if($user){
+                                if($user=='user'){
+                                    $t='user';
+                                }
+                                else{
+                                    $t='admin';
+                                }
+                            }
+                            else{
+                                $t='traveler';
+                            }
                             $feedbacks[count($feedbacks)]=[
                                 'id_feedback'=>$u->id,
+                                'isadmin'=>$t,
                                 'email_feedback'=>$u->email,
                                 'comment_feedback'=>$u->comment,
                             ];
                         }
-                    }
-                    else{
-                        $feedbacks=null;
                     }
                     $data[count($data)]=[
                         'id_comment'=>$i->id,
@@ -42,10 +54,10 @@ class CommentController extends Controller
                         'feedback'=>$feedbacks,
                     ];
                 }
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
             }
             else{
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]]);
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
             }
         }
         else{

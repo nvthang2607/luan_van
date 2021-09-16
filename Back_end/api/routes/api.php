@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PromotionController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -95,6 +96,7 @@ Route::group([
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
     Route::post('/rating', [RatingController::class, 'post_product_rating']);
     Route::post('/comment', [CommentController::class, 'post_product_comment']);
+    Route::post('/filter', [ProductController::class, 'post_product_filter']);
 });    
 
 
@@ -127,5 +129,12 @@ Route::group([
     'prefix' => 'news'
 
 ], function ($router) {
-    Route::get('/{id}', [NewsController::class, 'post_news_id']);
+    Route::get('/{id}', [NewsController::class, 'get_news_id']);
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'promotion'
+
+], function ($router) {
+    Route::post('/check', [PromotionController::class, 'post_promotion_check']);
 });
