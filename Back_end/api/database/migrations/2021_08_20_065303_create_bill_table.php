@@ -22,7 +22,7 @@ class CreateBillTable extends Migration
             ->onDelete('cascade');
             $table->bigInteger('total');
             $table->string('payment',50);
-            $table->longText('note');
+            $table->longText('note')->nullable();
             $table->string('status',50);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

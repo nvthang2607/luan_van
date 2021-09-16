@@ -99,7 +99,7 @@ class ProductController extends Controller
         $data1=collect();
         $i=0;
         $result=collect();
-        if(isset($pice)){
+        if(count($pice)>0){
             while(isset($pice[$i])){
                 $str = $pice[$i];
                 $t=strpos($str,'-');
