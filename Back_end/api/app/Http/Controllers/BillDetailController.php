@@ -65,7 +65,7 @@ class BillDetailController extends Controller
             return response()->json(['errorCode'=> null, 'data'=>$data], 200);
         }
         else{
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi xác thực hoặc sản phẩm cầm tìm không hợp lệ'], 404);
+            return response()->json(['errorCode'=> 4, 'data'=>[],'error'=>'Có lỗi xác thực hoặc sản phẩm cầm tìm không hợp lệ'], 404);
         }
     }
 }
