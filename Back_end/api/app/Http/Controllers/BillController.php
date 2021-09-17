@@ -70,6 +70,7 @@ class BillController extends Controller
                     return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi xảy ra khi tạo chi tiết đơn hàng'], 500);
                 }
             }
+            return response()->json(['errorCode'=> 4, 'data'=>$id_bill], 200);
         }
         else{
             $customer=Customer::find($id);
