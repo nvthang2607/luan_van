@@ -23,7 +23,6 @@ class CreateBillTable extends Migration
             $table->bigInteger('total');
             $table->string('payment',50);
             $table->longText('note')->nullable();
-            $table->string('status',50);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

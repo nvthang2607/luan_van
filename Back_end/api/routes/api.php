@@ -15,6 +15,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\BillController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -143,5 +144,5 @@ Route::group([
     'prefix' => 'bill'
 
 ], function ($router) {
-    Route::post('/create', [RatingController::class, 'post_bill_create']);
+    Route::post('/create', [BillController::class, 'post_bill_create']);
 });

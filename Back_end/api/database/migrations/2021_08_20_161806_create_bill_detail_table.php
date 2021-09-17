@@ -26,7 +26,6 @@ class CreateBillDetailTable extends Migration
             ->onDelete('cascade');
             $table->integer('quantity');
             $table->bigInteger('price');
-            $table->integer('rating')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
