@@ -145,4 +145,6 @@ Route::group([
 
 ], function ($router) {
     Route::post('/create', [BillController::class, 'post_bill_create']);
+    Route::post('/user_list_bill', [BillController::class, 'post_bill_user_list_bill']);
+    
 });

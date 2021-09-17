@@ -79,4 +79,22 @@ class BillController extends Controller
         }
         
     }
+    public function post_bill_user_list_bill(request $req){
+        $email=auth()->user()->email;
+        $id=Customer::where('email',$email)->pluck('id')->first();
+        $bill=Bill::where('id_customer',$id)->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+        $bills=[];
+        $n=$bill->count();
+        foreach($bill as $i){
+            $items=[];
+            $product=BillDetail::where('id_bill',$i->id)->get();
+            foreach($product as $item){
+                $items[count($items)]=$item->product->name;
+            }
+            $stt=$i->status->last();
+            $stt=$stt['status'];
+            $bills[count($bills)]=['bill'=>$i,'item'=>$items,'status'=>$stt];
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
+    }
 }
