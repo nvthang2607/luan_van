@@ -16,6 +16,8 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\BillDetailController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -146,5 +148,5 @@ Route::group([
 ], function ($router) {
     Route::post('/create', [BillController::class, 'post_bill_create']);
     Route::post('/user_list_bill', [BillController::class, 'post_bill_user_list_bill']);
-    
+    Route::get('/user_list_billdetail/{id_bill}', [BillDetailController::class, 'get_billdetail_user_list_billdetail']);
 });

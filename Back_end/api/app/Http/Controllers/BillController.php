@@ -92,7 +92,12 @@ class BillController extends Controller
                 $items[count($items)]=$item->product->name;
             }
             $stt=$i->status->last();
-            $stt=$stt['status'];
+            if($stt!=null){
+                $stt=$stt['status'];
+            }
+            else{
+                $stt=1;
+            }
             $bills[count($bills)]=['bill'=>$i,'item'=>$items,'status'=>$stt];
         }
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
