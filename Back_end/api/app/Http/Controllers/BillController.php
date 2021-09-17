@@ -82,9 +82,10 @@ class BillController extends Controller
     public function post_bill_user_list_bill(request $req){
         $email=auth()->user()->email;
         $id=Customer::where('email',$email)->pluck('id')->first();
-        $bill=Bill::where('id_customer',$id)->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+        $bill=Bill::where('id_customer',$id)->get();
         $bills=[];
         $n=$bill->count();
+        $bill=$bill->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         foreach($bill as $i){
             $items=[];
             $product=BillDetail::where('id_bill',$i->id)->get();
