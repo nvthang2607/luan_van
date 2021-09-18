@@ -3,6 +3,7 @@ import CartSlice from '../Components/Product/CartSlice';
 import counterReducer from '../features/counter/counterSlice';
 import RefreshPageSlice from '../features/refresh/RefreshPageSlice';
 import UserSlice from '../pages/Profile/UserSlice';
+import FilterSlice from '../pages/Views/FilterSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
 		userProfile: UserSlice,
 		valueRefreshPage: RefreshPageSlice,
 		CartData: CartSlice,
+		dataFilter: FilterSlice,
 	},
 });
 

@@ -378,7 +378,10 @@ const Header: React.FC<Props> = (props) => {
 		setAnchorElAccount(null);
 	};
 
-	const handleClickOrder = () => {};
+	const handleClickOrder = () => {
+		history.push(AppURL.ORDER_ALL);
+		setAnchorElAccount(null);
+	};
 	const [openCart, setOpenCart] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
@@ -393,9 +396,7 @@ const Header: React.FC<Props> = (props) => {
 	const receiveCart: (result: boolean) => void = (result) => {
 		setOpenCart(result);
 	};
-	React.useEffect(() => {
-		window.scrollTo(0, 0);
-	}, []);
+
 	return (
 		<div className={classes.grow}>
 			<AppBar className={classes.bgHeader}>

@@ -44,7 +44,11 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
-import { getCartData } from '../../Components/Product/CartSlice';
+import { deleteCart, getCartData, updateVoucher } from '../../Components/Product/CartSlice';
+import theme from '../../utils/theme';
+import { iteratorSymbol } from '@reduxjs/toolkit/node_modules/immer/dist/internal';
+import Swal from 'sweetalert2';
+import { OrderPost } from '../../api/Product';
 interface ProfileInfoProps {
 	profileInfo?: any;
 }
@@ -81,6 +85,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 
 	const schema = yup.object().shape({
 		name: yup.string().required('Name không để trống'),
+		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
 		nameCity: yup.string().required('nameCity không để trống'),
 		nameDistrict: yup.string().required('district không để trống'),
 		nameCommune: yup.string().required('commune không để trống'),
@@ -160,6 +165,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const [flagOnchangeName, setFlagOnchangeName] = React.useState(false);
 	const [flagOnchangGender, setFlagOnchangeGender] = React.useState(false);
 	const [flagOnchangePhone, setFlagOnchangePhone] = React.useState(false);
+	const [flagOnchangeEmail, setFlagOnchangeEmail] = React.useState(false);
 	const [refresh, setRefresh] = React.useState(1);
 	const onChangeCity = async (options: any) => {
 		if (options) {
@@ -170,10 +176,12 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 				name: valueAddress.name,
 				phone: valueAddress.phone,
 				gender: valueAddress.gender,
+				email: valueAddress.email,
 			});
 			setFlagOnchangeName(true);
 			setFlagOnchangePhone(true);
 			setFlagOnchangeGender(true);
+			setFlagOnchangeEmail(true);
 			//setValue('valueAddress', { nameDistrict: '', nameCommune: '' });
 			setFlagOnchangeCity(true);
 			setFlagOnchangeDistrict(true);
@@ -193,7 +201,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const onChangeDistrict = async (options: any) => {
 		if (options) {
 			setFlagOnchangeCity(false);
-
+			setFlagOnchangeEmail(true);
 			setFlagOnchangeName(true);
 			setFlagOnchangePhone(true);
 			setFlagOnchangeGender(true);
@@ -205,6 +213,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 				nameDistrict: options.name,
 				phone: valueAddress.phone,
 				gender: valueAddress.gender,
+				email: valueAddress.email,
 			});
 			setFlagOnchangeDistrict(true);
 			setOpenCommune(true);
@@ -238,11 +247,13 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 				name: valueAddress.name,
 				phone: valueAddress.phone,
 				gender: valueAddress.gender,
+				email: valueAddress.email,
 			});
 			setValueAddress({ ...valueAddress, nameCommune: options.name });
 			setFlagOnchangeName(true);
 			setFlagOnchangePhone(true);
 			setFlagOnchangeGender(true);
+			setFlagOnchangeEmail(true);
 		} else {
 			setValueAddress({ ...valueAddress, nameCommune: '' });
 			//console.log('sanggg');
@@ -274,6 +285,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		}
 
 		const reqData = {
+			email: data.email,
 			name: data.name,
 			password: data.password,
 			gender: data.gender,
@@ -285,6 +297,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		setFlagOnchangeName(false);
 		setFlagOnchangePhone(false);
 		setFlagOnchangeGender(false);
+		setFlagOnchangeEmail(false);
 		setValueSubmit(reqData);
 		// const response = await UpdateProfilePost(reqData);
 		// if (response.errorCode === null) {
@@ -296,13 +309,14 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		// }
 		setOpen(true);
 		//dispatch(updateProfileUser(reqData));
-		console.log(data);
+
 		//console.log(reqData);
 		setDataInforOrder({
 			name: data.name,
 			password: data.password,
 			gender: data.gender,
 			phone: data.phone,
+			email: data.email,
 			idCity: resultIdCity,
 			idDistrict: resultIdDistrict,
 			idCommune: resultIdCommune,
@@ -326,12 +340,118 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		});
 		return count;
 	};
-	const totalPrice = () => {
+	const totalPriceTmp = () => {
 		let total = 0;
 		cartData.map((item: any) => {
 			total += item.quantity * item.promotion_price;
 		});
 		return total;
+	};
+	const promotionTotal = () => {
+		let total = 0;
+		cartData.map((item: any) => {
+			total += item.voucher;
+		});
+		return total;
+	};
+	const totalPrice = () => {
+		let price = 0;
+		cartData.map((item: any) => {
+			price += item.quantity * item.promotion_price;
+		});
+		return price - valuePromotion();
+	};
+	const [voucher, setVoucher] = React.useState('');
+	const [progressCheckOrder, setProgressCheckOrder] = React.useState(false);
+	const handlePayment = async () => {
+		//console.log(dataInforOrder);
+		//console.log(shippingMethod);
+		//console.log(totalPrice());
+
+		const cartProduct: any[] = [];
+		cartData.map((item: any) => {
+			cartProduct.push(`${item.id}-${item.promotion_price}-${item.quantity}`);
+		});
+
+		const dataPayment = {
+			name: dataInforOrder.name,
+			gender: dataInforOrder.gender,
+			email: dataInforOrder.email,
+			phone: dataInforOrder.phone,
+			address:
+				dataInforOrder.idCommune + ',' + dataInforOrder.idDistrict + ',' + dataInforOrder.idCity,
+			total: totalPrice(),
+			payment: shippingMethod,
+			note: dataInforOrder.note,
+			item: cartProduct,
+		};
+		//console.log(dataPayment);
+		setProgressCheckOrder(true);
+		const response = await OrderPost(dataPayment);
+		if (response) {
+			if (response.errorCode === null) {
+				Swal.fire({
+					icon: 'success',
+					title: 'Dat hang thanh cong!',
+					text: 'Cảm ơn bạn đã mua hàng tại SangTV.VN',
+				});
+				dispatch(deleteCart());
+				history.push('/');
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Dat hang khong thanh cong!',
+				});
+				setProgressCheckOrder(false);
+			}
+		}
+	};
+
+	const [valueCode, setValueCode] = React.useState('');
+	const valuePromotion = () => {
+		let result = 0;
+		cartData.map((item: any) => {
+			item.promotion.map((itemPromotion: any) => {
+				if (itemPromotion.code === valueCode) {
+					result = itemPromotion.value;
+				}
+			});
+		});
+		return result;
+	};
+
+	const checkVoucher = () => {
+		let nofi = -1;
+		let price = 0;
+
+		cartData.map((item: any) => {
+			item.promotion.map((itemPromotion: any) => {
+				if (itemPromotion.code === voucher) {
+					price = itemPromotion.value;
+					nofi = 1;
+				}
+			});
+		});
+		if (nofi === 1) {
+			Swal.fire({
+				icon: 'success',
+				title: 'Ma giam gia hop le!',
+				text: `Ban duoc giam ${Intl.NumberFormat('en-US').format(Number(price))}
+				đ`,
+			});
+			setValueCode(voucher);
+		} else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Ma giam gia da het han!',
+				//text: 'Something went wrong!',
+			});
+		}
+	};
+	const handleCheckVoucher = () => {
+		if (voucher.trim() !== '') {
+			checkVoucher();
+		}
 	};
 	return (
 		<Container>
@@ -359,6 +479,13 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 														Thay doi
 													</Button>
 												</Typography>
+											</Typography>
+											<Typography variant="body1" gutterBottom>
+												<Typography component="span" style={{ fontWeight: 'bold' }}>
+													Email:
+												</Typography>
+												&nbsp;
+												<Typography component="span">{dataInforOrder.email}</Typography>
 											</Typography>
 											<Typography variant="body1" gutterBottom>
 												<Typography component="span" style={{ fontWeight: 'bold' }}>
@@ -457,8 +584,28 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										</Card>
 									</Grid>
 									<Grid item xs={12}>
-										<Button variant="contained" size="large" color="primary">
+										<Button
+											variant="contained"
+											size="large"
+											color="primary"
+											onClick={handlePayment}
+											disabled={progressCheckOrder}
+											style={{ position: 'relative' }}
+										>
 											Thanh toan
+											{progressCheckOrder && (
+												<CircularProgress
+													size={24}
+													style={{
+														position: 'absolute',
+														top: '50%',
+														left: '50%',
+														marginTop: '-12px',
+														marginLeft: '-12px',
+														color: theme.palette.secondary.main,
+													}}
+												/>
+											)}
 										</Button>
 									</Grid>
 								</Grid>
@@ -470,7 +617,61 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										<Typography variant="h5">Thong tin mua hang</Typography>
 										<Divider style={{ marginTop: '20px' }} />
 									</Grid>
-
+									{flagOnchangeEmail ? (
+										<React.Fragment>
+											<Grid item xs={12}>
+												<Typography variant="body1" gutterBottom>
+													Email
+												</Typography>
+												<Controller
+													control={control}
+													name="email"
+													defaultValue={valueAddress.email}
+													render={({ field: { onChange } }) => (
+														<TextField
+															id="email"
+															name="email"
+															variant="outlined"
+															fullWidth
+															defaultValue={valueAddress.email}
+															error={errors.email ? true : false}
+															helperText={errors.email?.message}
+															onChange={(e) => {
+																setValueAddress({ ...valueAddress, email: e.target.value });
+																onChange(e.target.value);
+															}}
+														/>
+													)}
+												/>
+											</Grid>
+										</React.Fragment>
+									) : (
+										<Grid item xs={12}>
+											<Typography variant="body1" gutterBottom>
+												Email
+											</Typography>
+											<Controller
+												control={control}
+												name="email"
+												defaultValue={valueAddress.email}
+												render={({ field: { onChange } }) => (
+													<TextField
+														id="email"
+														name="email"
+														variant="outlined"
+														defaultValue={valueAddress.email}
+														fullWidth
+														error={errors.email ? true : false}
+														helperText={errors.email?.message}
+														onChange={(e) => {
+															setValueAddress({ ...valueAddress, email: e.target.value });
+															onChange(e.target.value);
+														}}
+													/>
+												)}
+											/>
+										</Grid>
+									)}
 									{flagOnchangeName ? (
 										<React.Fragment>
 											<Grid item xs={12}>
@@ -985,10 +1186,16 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 												variant="outlined"
 												fullWidth
 												size="small"
+												onChange={(e) => setVoucher(e.target.value)}
 											/>
 										</Grid>
 										<Grid item xs={4}>
-											<Button variant="contained" color="primary">
+											<Button
+												variant="contained"
+												color="primary"
+												onClick={handleCheckVoucher}
+												disabled={false}
+											>
 												Ap dung
 											</Button>
 										</Grid>
@@ -1001,7 +1208,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											<Typography>Tam tinh</Typography>
 										</Box>
 										<Box style={{ float: 'right' }}>
-											{Intl.NumberFormat('en-US').format(Number(totalPrice()))}đ
+											{Intl.NumberFormat('en-US').format(Number(totalPriceTmp()))}đ
 										</Box>
 									</Box>
 								</Grid>
@@ -1010,7 +1217,9 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										<Box style={{ float: 'left' }}>
 											<Typography>Giam gia</Typography>
 										</Box>
-										<Box style={{ float: 'right' }}>12.000.000d</Box>
+										<Box style={{ float: 'right' }}>
+											{Intl.NumberFormat('en-US').format(Number(valuePromotion()))}đ
+										</Box>
 									</Box>
 								</Grid>
 								<Grid item xs={12}>
@@ -1026,7 +1235,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											}}
 											variant="h6"
 										>
-											19.000.000d
+											{Intl.NumberFormat('en-US').format(Number(totalPrice()))}đ
 										</Typography>
 									</Box>
 								</Grid>

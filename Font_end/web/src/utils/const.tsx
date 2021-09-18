@@ -7,5 +7,11 @@ export const AppURL = {
 	CHECKOUT: '/checkout',
 	PROFILE_CHANGEPWD: '/profile/changepwd',
 	PRODUCTDETAIL: '/product_detail/*-:idProduct.*',
+	NEWSDETAIL: '/news_detail/*-:idNews.*',
 	SEARCH: '/search',
+	ORDER: '/order/*',
+	ORDER_WAITING: '/order/waiting',
+	ORDER_SHIPPING: '/order/shipping',
+	ORDER_ALL: '/order/all',
+	ORDER_DETAIL: '/order/:id',
 };

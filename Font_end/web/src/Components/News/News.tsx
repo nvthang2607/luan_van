@@ -34,19 +34,14 @@ import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getCartData, updataCartData } from './CartSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
 interface ProductProps {
-	unit_price?: number;
-	name?: any;
+	date?: Date;
 	id?: number;
-	rate_number?: number;
 	link?: string;
-	avg?: number;
-	promotion_price?: number;
-	storeQuantity?: number;
-	promotion?: any;
+	title?: string;
+	content?: any;
 	addToCart?: (boolean: boolean) => void;
 }
 const useStyles = makeStyles((theme) => ({
@@ -92,9 +87,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	hoverProduct: {
-		'&:hover': {
-			boxShadow: `rgb(${0} ${0} ${0} / ${20}%) ${0}px ${3}px ${5}px ${-1}px, rgb(${0} ${0} ${0} / ${14}%) ${0}px ${5}px ${8}px ${0}px, rgb(${0} ${0} ${0} / ${12}%) ${0}px ${1}px ${14}px ${0}px`,
-		},
+		color: theme.palette.primary.main + ' !important',
 	},
 	borderTitle: {
 		borderBottom: `4px solid ${theme.palette.primary.main}`,
@@ -115,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const Product: React.FC<ProductProps> = (props) => {
+const News: React.FC<ProductProps> = (props) => {
 	const classes = useStyles();
 	const [hoverProduct, setHoverProduct] = React.useState(false);
 	const onMouseOverProduct = () => {
@@ -141,164 +134,80 @@ const Product: React.FC<ProductProps> = (props) => {
 	};
 	const dispatch = useAppDispatch();
 	const history = useHistory();
-	//const cartData: any = [];
-	const cartData = useAppSelector(getCartData);
-	const storeQuantity = () => {
-		let result = 1;
-		cartData.map((item: any) => {
-			//console.log(item.quantity);
-			//console.log(dataProduct);
-			if (item.id === props.id) {
-				if (item.quantity >= Number(props.storeQuantity)) result = -1;
-			}
-		});
-		return result;
-	};
-	const buyNow = () => {
-		//setPrefresh(refresh + 1);
-		if (storeQuantity() === -1) {
-			props.addToCart?.(false);
-		} else {
-			dispatch(
-				updataCartData({
-					id: props.id,
-					name: props.name,
-					storeQuantity: props.storeQuantity,
-					link: props.link,
-					unit_price: props.unit_price,
-					promotion_price: props.promotion_price,
-					quantity: 1,
-					promotion: props.promotion,
-				})
-			);
-			//window.scrollTo(0, 0);
-			//history.push(AppURL.CHECKOUT);
-			//toast.success('Da them san pham vao gio hang');
-			props.addToCart?.(true);
-		}
-	};
+
 	return (
-		<Grid item xs={3}>
+		<Grid item xs={4}>
 			<Box
-				boxShadow={hoverProduct && 5}
+				//boxShadow={hoverProduct && 5}
 				style={{ padding: '20px', position: 'relative' }}
-				onMouseOver={onMouseOverProduct}
-				onMouseOut={onMouseOutProduct}
-				className={classes.hoverProduct}
+				//onMouseOver={onMouseOverProduct}
+				//onMouseOut={onMouseOutProduct}
+				//className={classes.hoverProduct}
 			>
-				<Chip
-					label="-6%"
-					color="primary"
-					style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-				/>
-				<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
+				<Box
+					style={{ textAlign: 'center', marginBottom: '20px' }}
+					onMouseOver={onMouseOverProduct}
+					onMouseOut={onMouseOutProduct}
+					//className={classes.hoverProduct}
+				>
 					<img
 						width="100%"
 						src={`http://localhost:8000/${props.link}`}
 						onClick={() => {
-							history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
+							history.push(`/news_detail/${toURL(props?.title)}-${props?.id}.html`);
 						}}
 						style={{ cursor: 'pointer' }}
 					/>
 				</Box>
+				<Box style={{ marginBottom: '20px' }}>
+					<Typography variant="body2">{props.date}</Typography>
+				</Box>
 				<Box style={{ marginBottom: '10px' }}>
 					<Link
-						to={`/product_detail/${toURL(props?.name)}-${props?.id}.html`}
-						className={classes.nameProduct}
+						to={`/news_detail/${toURL(props?.title)}-${props?.id}.html`}
+						className={clsx(classes.nameProduct, { [classes.hoverProduct]: hoverProduct })}
 					>
 						<Typography
 							style={{
-								height: '55px',
+								height: '66px',
 								overflow: 'hidden',
 								display: '-webkit-box',
 								textOverflow: 'ellipsis',
 								WebkitLineClamp: 2,
 								WebkitBoxOrient: 'vertical',
 
-								fontSize: '1.1rem',
+								fontSize: '1.3rem',
 							}}
 							variant="h6"
 						>
-							{props.name}
+							{props.title}
 						</Typography>
 					</Link>
 				</Box>
+
 				<Box>
 					<Typography
-						variant="h6"
+						variant="body1"
 						style={{
-							color: 'red',
-							fontWeight: 'bold',
-							display: 'inline-block',
-							paddingRight: '15px',
+							height: '70px',
+							overflow: 'hidden',
+							display: '-webkit-box',
+							textOverflow: 'ellipsis',
+							WebkitLineClamp: 3,
+							WebkitBoxOrient: 'vertical',
 						}}
 					>
-						{Intl.NumberFormat('en-US').format(Number(props.promotion_price))}đ
-					</Typography>
-					<Typography
-						style={{
-							textDecoration: 'line-through',
-							color: 'grey',
-							display: 'inline-block',
-						}}
-					>
-						{Intl.NumberFormat('en-US').format(Number(props.unit_price))}đ
+						Đi cùng dòng chảy của công nghệ hiện nay thì việc thay đổi diện mạo trên các mẫu
+						smartphone vẫn luôn là xu hướng tất yếu. Điều này vừa mang lại cái nhìn mới Đi cùng dòng
+						chảy của công nghệ hiện nay thì việc thay đổi diện mạo trên các mẫu smartphone vẫn luôn
+						là xu hướng tất yếu. Điều này vừa mang lại cái nhìn mới
 					</Typography>
 				</Box>
-				<Box style={{ display: 'flex', alignItems: 'center' }}>
-					<Rating
-						name="read-only"
-						value={Number(Number(props.avg).toFixed(1))}
-						precision={0.04}
-						readOnly
-						style={{
-							paddingRight: '10px',
-							borderRight: '1px solid grey',
-						}}
-					/>
-					<Typography
-						component="span"
-						style={{
-							paddingLeft: '10px',
-							color: 'grey',
-						}}
-					>
-						{props.rate_number} đánh giá
-					</Typography>
+				<Box>
+					<Button color="secondary">Doc tiep</Button>
 				</Box>
-				<Zoom in={hoverProduct}>
-					<Box style={{ marginTop: '10px' }}>
-						<Button
-							variant="contained"
-							color="primary"
-							style={{ width: '48%' }}
-							onClick={() => {
-								history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
-							}}
-						>
-							Chi tiet
-						</Button>
-						{props.storeQuantity === 0 ? (
-							<Button
-								disabled
-								variant="contained"
-								style={{ float: 'right', width: '48%', color: 'grey' }}
-							>
-								Het hang
-							</Button>
-						) : (
-							<Button
-								variant="contained"
-								style={{ float: 'right', width: '48%', color: 'grey' }}
-								onClick={buyNow}
-							>
-								Mua ngay
-							</Button>
-						)}
-					</Box>
-				</Zoom>
 			</Box>
 		</Grid>
 	);
 };
-export default Product;
+export default News;

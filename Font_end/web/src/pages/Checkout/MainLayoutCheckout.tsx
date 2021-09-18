@@ -3,12 +3,16 @@ import jwtDecode from 'jwt-decode';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { UserGet } from '../../api/User';
+import { useAppDispatch } from '../../app/hooks';
+import { updateValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
 import { AppURL } from '../../utils/const';
 import Checkout from './Checkout';
 const MainLayoutCheckout: React.FC = () => {
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
 	const [flag, setFlag] = React.useState(false);
+	const dispatch = useAppDispatch();
 	React.useEffect(() => {
+		dispatch(updateValueRefreshPage(true));
 		const getData = async () => {
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();
@@ -54,7 +58,7 @@ const MainLayoutCheckout: React.FC = () => {
 			}
 		};
 		getData();
-	}, []);
+	}, [dispatch]);
 	const checkToken = () => {
 		const token: any = window.localStorage.getItem('token');
 		const date = Date.now();
@@ -68,6 +72,7 @@ const MainLayoutCheckout: React.FC = () => {
 			return <Redirect to={AppURL.ACCOUNT} />;
 		}
 	};
+
 	return (
 		<Box>
 			{/* {checkToken()} */}
