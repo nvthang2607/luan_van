@@ -45,31 +45,6 @@ class RatingController extends Controller
             
         }        
     }
-    public function post_product_rating(request $req){
-        $product=Product::find($req->id);
-        if($product){
-            $data=[];
-            $rating=Rating::where('id_product',$req->id);
-            $n=$rating->count();
-            $rating=$rating->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
-            if($n>0){
-                foreach($rating as $i){
-                    $data[count($data)]=[
-                        'id'=>$i->id,
-                        'id_user'=>$i->id_user,
-                        'rating'=>$i->ratting,
-                        'comment'=>$i->comment,
-                    ];
-                }
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
-            }
-            else{
-                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
-            }
-        }
-        else{
-            return response()->json(['errorCode'=> 4, 'data'=>null], 404);
-        }
-    }
+    
     
 }

@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Rating;
 use App\Models\ImageProduct;
 use App\Models\Promotion;
+use App\Models\BillDetail;
 use Carbon\Carbon;
 class RSController extends Controller
 {
@@ -41,13 +42,13 @@ class RSController extends Controller
                 $promotions=[];
                 $product=Product::find($i);
                 $image=Product::find($i)->image_product()->pluck('image')->first();
-                $rate=Rating::where('id_product',$i)->get(['ratting']);
+                $rate=BillDetail::where('id_product',$i)->where('rate','>',0)->get(['rate']);
                 $rate_number=$rate->count();
                 $avg=5;
                 if($rate_number>0){
                     $t=0;
                     foreach($rate as $r){
-                        $t=$t+$r->ratting;
+                        $t=$t+$r->rate;
                     }
                     $avg=$t/$rate_number;
                 }

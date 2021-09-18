@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\BranchProduct;
-use App\Models\Rating;
 use App\Models\ImageProduct;
 use App\Models\InformationProduct;
 use App\Models\Promotion;
+use App\Models\BillDetail;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -14,7 +15,7 @@ class ProductController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter']]);
+        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating']]);
     }
     public function get_product_id(request $req){
         $product=Product::find($req->id);
@@ -33,18 +34,18 @@ class ProductController extends Controller
             foreach($information as $i){
                 $informations[count($informations)]=['name'=>$i->name,'value'=>$i->content];
             }
-            $rate=Rating::where('id_product',$req->id)->get(['ratting']);
-            $rate5=Rating::where('id_product',$req->id)->where('ratting',5)->get();
-            $rate4=Rating::where('id_product',$req->id)->where('ratting',4)->get();
-            $rate3=Rating::where('id_product',$req->id)->where('ratting',3)->get();
-            $rate2=Rating::where('id_product',$req->id)->where('ratting',2)->get();
-            $rate1=Rating::where('id_product',$req->id)->where('ratting',1)->get();
+            $rate=BillDetail::where('id_product',$req->id)->where('rate','>',0)->get(['rate']);
+            $rate5=BillDetail::where('id_product',$req->id)->where('rate',5)->get();
+            $rate4=BillDetail::where('id_product',$req->id)->where('rate',4)->get();
+            $rate3=BillDetail::where('id_product',$req->id)->where('rate',3)->get();
+            $rate2=BillDetail::where('id_product',$req->id)->where('rate',2)->get();
+            $rate1=BillDetail::where('id_product',$req->id)->where('rate',1)->get();
             $rate_number=$rate->count();
             $avg=5;
             if($rate_number>0){
                 $t=0;
                 foreach($rate as $r){
-                    $t=$t+$r->ratting;
+                    $t=$t+$r->rate;
                 }
                 $avg=$t/$rate_number;
                 $rates=['rate5'=>$rate5->count(),'rate4'=>$rate4->count(),'rate3'=>$rate3->count(),'rate2'=>$rate2->count(),'rate1'=>$rate1->count()];
@@ -160,13 +161,13 @@ class ProductController extends Controller
             foreach($data1 as $i){
                 $promotions=[];
                 $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                $rate=Rating::where('id_product',$i->id)->get(['ratting']);
+                $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
                 $rate_number=$rate->count();
                 $avg=5;
                 if($rate_number>0){
                     $t=0;
                     foreach($rate as $r){
-                        $t=$t+$r->ratting;
+                        $t=$t+$r->rate;
                     }
                     $avg=$t/$rate_number;
                 }
@@ -184,13 +185,13 @@ class ProductController extends Controller
             foreach($datas as $i){
                 $promotions=[];
                 $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                $rate=Rating::where('id_product',$i->id)->get(['ratting']);
+                $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
                 $rate_number=$rate->count();
                 $avg=5;
                 if($rate_number>0){
                     $t=0;
                     foreach($rate as $r){
-                        $t=$t+$r->ratting;
+                        $t=$t+$r->rate;
                     }
                     $avg=$t/$rate_number;
                     
@@ -204,5 +205,38 @@ class ProductController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }
         
+    }
+
+
+    public function post_product_rating(request $req){
+        $product=Product::find($req->id);
+        if($product){
+            $data=[];
+            $rating=BillDetail::where('id_product',$req->id)->where('rate','>',0);
+            $n=$rating->count();
+            $rating=$rating->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            if($n>0){
+                foreach($rating as $i){
+                    $id=$i->id;
+                    $email=$i->bill->customer->email;
+                    $id_user=User::where('email',$email)->pluck('id')->first();
+                    $rating=$i->rate;
+                    $comment=$i->comment;
+                    $data[count($data)]=[
+                        'id'=>$id,
+                        'id_user'=>$id_user,
+                        'rating'=>$rating,
+                        'comment'=>$comment,
+                    ];
+                }
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
+            }
+            else{
+                return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null], 404);
+        }
     }
 }

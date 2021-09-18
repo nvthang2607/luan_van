@@ -28,7 +28,7 @@ class CreatePromotionTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=1682;
+        $n=300;
         for($i=1;$i<=$n;$i++){
             for($u=1;$u<4;$u++){
                 $t=mt_rand(1,4);

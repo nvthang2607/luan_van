@@ -29,7 +29,7 @@ class CreateProductTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=1682;
+        $n=300;
         for($i=0;$i<$n;$i++){
             $branch= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng','phụ kiện','']);
             $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512','']);

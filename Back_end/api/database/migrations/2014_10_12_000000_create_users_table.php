@@ -27,33 +27,6 @@ class CreateUsersTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        $faker=Faker\Factory::create('vi_VN');
-        $n=943;
-        for($i=0;$i<$n;$i++){
-            $name=$faker->name;
-            $a = explode(".", $name);
-            if (str_contains($name, '.')) {
-                $name=$a[1];
-            }
-            else{
-                $name=$a[0];
-            }
-            
-            $gender=$faker->randomElement(['Nam', 'Nữ']);
-            $active=$faker->randomElement([0,1]);
-            DB::table('users')->insert(
-                array(
-                    'name' => $name,
-                    'gender'=>$gender,
-                    'email'=>$faker->unique()->email,
-                    'password'=>bcrypt(12345678),
-                    'phone' => $faker->phoneNumber,
-                    'address' => $faker->address,
-                    'isadmin' => 'user',
-                    'active'=>$active,
-                )
-            );
-        }
         
         
     }

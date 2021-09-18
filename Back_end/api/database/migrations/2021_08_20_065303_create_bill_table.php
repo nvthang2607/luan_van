@@ -26,22 +26,18 @@ class CreateBillTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        // $faker=Faker\Factory::create('vi_VN');
-        // $n=50;
-        // for($i=0;$i<$n;$i++){
-        //     $id_u=User::where('isadmin','manager')->pluck('id');
-        //     $id_user=$faker->randomElement($id_u);
-        //     DB::table('bill')->insert(
-        //         array(
-        //             'id_customer' => mt_rand(1, $n),
-        //             'id_user'=>$id_user,
-        //             'total'=>mt_rand(1, $n),
-        //             'payment' => $faker->randomElement(['Tiền mặt', 'Chuyển khoản']),
-        //             'note' => $faker->paragraph,
-        //             'status' => 'Đang chờ duyệt',
-        //         )
-        //     );
-        // }
+        $faker=Faker\Factory::create('vi_VN');
+        $n=100;
+        for($i=1;$i<=$n;$i++){
+            DB::table('bill')->insert(
+                array(
+                    'id_customer' => $i,
+                    'total'=>0,
+                    'payment' => $faker->randomElement(['Tiền mặt', 'Chuyển khoản']),
+                    'note' => $faker->paragraph,
+                )
+            );
+        }
     }
 
     /**

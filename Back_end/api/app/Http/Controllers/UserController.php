@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use DB;
-use App\Models\Rating;
+use App\Models\BillDetail;
+use App\Models\Bill;
+use App\Models\User;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -15,30 +17,28 @@ class UserController extends Controller
     public function get_insert(){
         $now1=Carbon::now();
         $filePath = getcwd().'/ua_base.xlsx';
- 
         $reader = ReaderEntityFactory::createReaderFromFile($filePath);
-    
         $reader->open($filePath);
         $all_data = array();
         foreach ($reader->getSheetIterator() as $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 $cells = $row->getCells();
                 $item = $row->toArray();
-                $all_data[]= [
-                    'id_user'=>$item[0],
-                    'id_product'=>$item[1],
-                    'ratting'=>$item[2],
-                ];
+                if($item[0]<=100&&$item[1]<=300){
+                    // echo $item[0].'<br>';
+                    $a=new BillDetail;
+                    $a->id_bill = $item[0];
+                    $a->id_product = $item[1];
+                    $a->rate=$item[2];
+                    $a->quantity=1;
+                    $a->price=1000000;
+                    $a->comment='abc';
+                    $a->save();
+                }
+                
             }
         }
         $reader->close();
-        //dd($all_data);
-        $all_data=collect($all_data);
-        $chunks = $all_data->chunk(500);
-        foreach ($chunks as $chunk){
-            Rating::insert($chunk->toArray());
-           
-        }
         $now2=Carbon::now();
         echo 'Xong!<br>';
         echo 't1='.$now1.'<br>';
@@ -46,10 +46,12 @@ class UserController extends Controller
     }
     public function get_write_rating_to_csv()
     {
-        $rating=Rating::all(['id_user','id_product','ratting']);
+        $rating=BillDetail::all();
         $handle = fopen('../public/train_model/train_web.csv', 'w');
         foreach($rating as $i){
-            $row=[$i->id_user,$i->id_product,$i->ratting];
+            $email=$i->bill->customer->email;
+            $user=User::where('email',$email)->pluck('id')->first();
+            $row=[$user,$i->id_product,$i->rate];
             fputcsv($handle, $row, ' ');
         }
         fclose($handle);

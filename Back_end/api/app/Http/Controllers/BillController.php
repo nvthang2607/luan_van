@@ -56,6 +56,8 @@ class BillController extends Controller
                 $bill_detail->id_product=$str[0];
                 $bill_detail->price=$str[1];
                 $bill_detail->quantity=$str[2];
+                $bill_detail->rate=0;
+                $bill_detail->comment='';
                 if(!($bill_detail->save())){
                     $bill_detail=BillDetail::where('id_bill',$id_bill)->get();
                     if($bill_detail->count()>0){

@@ -3,16 +3,20 @@
 namespace App\Http\Controllers;
 use App\Models\Bill;
 use App\Models\Customer;
+use App\Models\BillDetail;
+use App\Models\User;
+use League\Csv\Writer;
 use Illuminate\Http\Request;
 
 class BillDetailController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_billdetail_user_list_billdetail','get_branch_product_select_list']]);
+        $this->middleware('auth:api', ['except' => ['post_rating']]);
     }
     public function get_billdetail_user_list_billdetail(request $req){
         $email=auth()->user()->email;
+        $id_user=auth()->user()->id;
         $id_customer=Customer::where('email',$email)->pluck('id')->first();
         $bill=Bill::where('id',$req->id_bill)->where('id_customer',$id_customer)->get();
         if($bill->count()>0){
@@ -38,6 +42,8 @@ class BillDetailController extends Controller
                     $name_product=$i->product->name;
                     $quantity=$i->quantity;
                     $price=$i->price;
+                    $rate=$i->rate;
+                    $comment=$i->comment;
                     $image=$i->product->image_product->first();
                     $image=$image['image'];
                     $details[count($details)]=[
@@ -47,6 +53,8 @@ class BillDetailController extends Controller
                         'quantity'=>$quantity,
                         'price'=>$price,
                         'image'=>$image,
+                        'rate'=>$rate,
+                        'comment'=>$comment,
                     ];
                     
                 }
@@ -58,7 +66,7 @@ class BillDetailController extends Controller
                     'total'=>$total,
                     'payment'=>$payment,
                     'note'=>$note,
-                    'stt'=>$stt,
+                    'status'=>$stt,
                 ],
                 'billdetail'=>$details,
             ];
@@ -67,5 +75,45 @@ class BillDetailController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>[],'error'=>'Có lỗi xác thực hoặc sản phẩm cầm tìm không hợp lệ'], 404);
         }
+    }
+
+
+    public function post_rating(request $req){
+        if (!auth()->check()) {
+            return response()->json(['errorCode'=> 4, 'data'=>null],404);
+        }
+        else{
+            $id_detail=$req->Id_billdetail;
+            $detail=BillDetail::find($id_detail);
+            $id_product=$detail->id_product;
+            $id=auth()->user()->id;
+            // echo $id_detail.'-<br>';
+            // echo $id.'--<br>';
+            // echo $id_product.'---<br>';
+            // echo $req->rating.'----<br>';
+            $detail->rate=$req->rating;
+            if($req->has('comment')){
+                $detail->comment=$req->comment;
+            }
+            else{
+                $detail->comment='';
+            }
+            if($detail->save()){
+                $rating=BillDetail::all();
+                $handle = fopen('../public/train_model/train_web.csv', 'w');
+                foreach($rating as $i){
+                    $email=$i->bill->customer->email;
+                    $user=User::where('email',$email)->pluck('id')->first();
+                    $row=[$user,$i->id_product,$i->rate];
+                    fputcsv($handle, $row, ' ');
+                }
+                fclose($handle);
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4,'data'=>false], 401);
+            }    
+            
+        }        
     }
 }

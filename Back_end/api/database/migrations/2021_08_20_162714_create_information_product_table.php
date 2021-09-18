@@ -25,7 +25,7 @@ class CreateInformationProductTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=1682;
+        $n=300;
         for($i=1;$i<=$n;$i++){
             for($u=0;$u<5;$u++){
                 DB::table('information_product')->insert(

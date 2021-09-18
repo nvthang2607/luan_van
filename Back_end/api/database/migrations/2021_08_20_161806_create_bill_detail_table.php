@@ -26,6 +26,8 @@ class CreateBillDetailTable extends Migration
             ->onDelete('cascade');
             $table->integer('quantity');
             $table->bigInteger('price');
+            $table->integer('rate');
+            $table->string('comment',255)->nullable();;
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

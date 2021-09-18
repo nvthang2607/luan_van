@@ -23,31 +23,44 @@ class CreateCustomerTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        // $faker=Faker\Factory::create('vi_VN');
-        // $n=50;
-        // for($i=0;$i<$n;$i++){
-        //     $name=$faker->name;
-        //     $a = explode(".", $name);
-        //     if (str_contains($name, '.')) {
-        //         $name=$a[1];
-        //     }
-        //     else{
-        //         $name=$a[0];
-        //     }
-            
-        //     $gender=$faker->randomElement(['Nam', 'Nữ']);
-        //     $admin=$faker->randomElement(['user', 'manager']);
-        //     $active=$faker->randomElement([0,1]);
-        //     DB::table('customer')->insert(
-        //         array(
-        //             'name' => $name,
-        //             'gender'=>$gender,
-        //             'email'=>$faker->unique()->email,
-        //             'phone' => $faker->phoneNumber,
-        //             'address' => $faker->address,
-        //         )
-        //     );
-        // }
+        $faker=Faker\Factory::create('vi_VN');
+        $n=100;
+        for($i=1;$i<=$n;$i++){
+            $name=$faker->name;
+            $a = explode(".", $name);
+            if (str_contains($name, '.')) {
+                $name=$a[1];
+            }
+            else{
+                $name=$a[0];
+            }
+            $email=$faker->unique()->email;
+            $gender=$faker->randomElement(['Nam', 'Nữ']);
+            $active=$faker->randomElement([0,1]);
+            $phoneNumber=$faker->phoneNumber;
+            $address=$faker->address;
+            DB::table('users')->insert(
+                array(
+                    'name' => $name,
+                    'gender'=>$gender,
+                    'email'=>$email,
+                    'password'=>bcrypt(12345678),
+                    'phone' => $phoneNumber,
+                    'address' => $address,
+                    'isadmin' => 'user',
+                    'active'=>$active,
+                )
+            );
+            DB::table('customer')->insert(
+                array(
+                    'name' => $name,
+                    'gender'=>$gender,
+                    'email'=>$email,
+                    'phone' => $phoneNumber,
+                    'address' => $address,
+                )
+            );
+        }
         
     }
 

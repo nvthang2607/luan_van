@@ -97,7 +97,7 @@ Route::group([
 
 ], function ($router) {
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
-    Route::post('/rating', [RatingController::class, 'post_product_rating']);
+    Route::post('/rating', [ProductController::class, 'post_product_rating']);
     Route::post('/comment', [CommentController::class, 'post_product_comment']);
     Route::post('/filter', [ProductController::class, 'post_product_filter']);
 });    
@@ -115,7 +115,7 @@ Route::group([
     'prefix' => 'rating'
 
 ], function ($router) {
-    Route::post('/', [RatingController::class, 'post_rating']);
+    Route::post('/', [BillDetailController::class, 'post_rating']);
 });
 
 Route::group([

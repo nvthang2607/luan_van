@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\News;
-use App\Models\Rating;
 use App\Models\ImageProduct;
 use App\Models\Promotion;
+use App\Models\BillDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,13 +25,13 @@ class SearchController extends Controller
                 foreach($datas as $i){
                     $promotions=[];
                     $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                    $rate=Rating::where('id_product',$i->id)->get(['ratting']);
+                    $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
                     $rate_number=$rate->count();
                     $avg=5;
                     if($rate_number>0){
                         $t=0;
                         foreach($rate as $r){
-                            $t=$t+$r->ratting;
+                            $t=$t+$r->rate;
                         }
                         $avg=$t/$rate_number;
                     }
