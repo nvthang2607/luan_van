@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\BillDetail;
 use App\Models\User;
 use League\Csv\Writer;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BillDetailController extends Controller
@@ -23,9 +24,21 @@ class BillDetailController extends Controller
             foreach($bill as $bill){
                 $id_customer=$bill->customer->id;
                 $name_customer=$bill->customer->name;
+                $gender_customer=$bill->customer->gender;
+                $email_customer=$bill->customer->email;
+                $phone_customer=$bill->customer->phone;
+                $address_customer=$bill->customer->address;
                 $total=$bill->total;
                 $payment=$bill->payment;
                 $note=$bill->note;
+                $date= $bill->created_at;
+                $date = Carbon::parse($date);
+                $minute=$date->minute;
+                $hour=$date->hour;
+                $day=$date->day;
+                $month=$date->month;
+                $year=$date->year;
+                $date=$hour.':'.$minute.' '.$day.'/'.$month.'/'.$year;
                 $status=$bill->status->last();
                 if($status!=null){
                     $stt=$status['status'];
@@ -62,10 +75,15 @@ class BillDetailController extends Controller
                 'bill'=>[
                     'id_customer'=>$id_customer,
                     'name_customer'=>$name_customer,
+                    'gender_customer'=>$gender_customer,
+                    'email_customer'=>$email_customer,
+                    'phone_customer'=>$phone_customer,
+                    'address_customer'=>$address_customer,
                     'total'=>$total,
                     'payment'=>$payment,
                     'note'=>$note,
                     'status'=>$stt,
+                    'created_at'=>$date,
                 ],
                 'billdetail'=>$details,
             ];
