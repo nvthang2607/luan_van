@@ -8,9 +8,11 @@ import {
 	Collapse,
 	Divider,
 	Grid,
+	IconButton,
 	LinearProgress,
 	makeStyles,
 	TextField,
+	Tooltip,
 	Typography,
 } from '@material-ui/core';
 import React from 'react';
@@ -47,6 +49,9 @@ import { ProductIdGet } from '../../api/Product';
 import { getCartData, updataCartData } from '../../Components/Product/CartSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CommentPost } from '../../api/comment';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -189,17 +194,7 @@ const ProductDetail: React.FC = () => {
 	const onSubmit = (data: any) => {
 		console.log(data);
 	};
-	const data = [
-		{
-			image: sp1,
-		},
-		{
-			image: sp2,
-		},
-		{
-			image: sp3,
-		},
-	];
+
 	const dispatch = useAppDispatch();
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
@@ -209,22 +204,121 @@ const ProductDetail: React.FC = () => {
 	const [progress, setProgress] = React.useState(false);
 	const { idProduct } = useParams<{ idProduct?: string }>();
 	const [dataProduct, setDataProduct] = React.useState<any>({});
+	const [dataComment, setDataComment] = React.useState<any>({});
 	const [refresh, setPrefresh] = React.useState(1);
+	const [txtCopy, setTxtCopy] = React.useState('Copy');
+	const [rate, setRate] = React.useState({
+		idRate: 0,
+		value: 0,
+	});
 	React.useEffect(() => {
 		//window.scrollTo(0, 0);
 		const fetchProductId = async () => {
+			const getComment = await CommentPost({ id: 1, page: 1, pageSize: 10 });
+			console.log(getComment);
+
+			if (getComment) {
+				if (getComment.errorCode === null) {
+					console.log(getComment);
+					setDataComment(getComment.data);
+				}
+			}
 			const getProductId = await ProductIdGet(idProduct);
 			if (getProductId) {
 				if (getProductId.errorCode === null) {
 					setDataProduct(getProductId.data);
 					console.log(getProductId.data);
 					setProgress(false);
+
+					const valueRate =
+						Math.round(
+							Number((getProductId.data?.rate?.rate1 / getProductId.data.rate_number) * 100)
+						) +
+						Math.round(
+							Number((getProductId.data?.rate?.rate2 / getProductId.data.rate_number) * 100)
+						) +
+						Math.round(
+							Number((getProductId.data?.rate?.rate3 / getProductId.data.rate_number) * 100)
+						) +
+						Math.round(
+							Number((getProductId.data?.rate?.rate4 / getProductId.data.rate_number) * 100)
+						) +
+						Math.round(
+							Number((getProductId.data?.rate?.rate5 / getProductId.data.rate_number) * 100)
+						);
+					if (100 - valueRate > 0) {
+						if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate5 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 5, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate4 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 4, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate3 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 3, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate2 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 2, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate1 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 1, value: 100 - valueRate });
+						}
+					} else if (100 - valueRate < 0) {
+						if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate1 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 1, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate2 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 2, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate3 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 3, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate4 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 4, value: 100 - valueRate });
+						} else if (
+							Math.round(
+								Number((getProductId.data?.rate?.rate5 / getProductId.data.rate_number) * 100)
+							) > 0
+						) {
+							setRate({ idRate: 5, value: 100 - valueRate });
+						}
+					}
 				}
 			}
 		};
 
 		fetchProductId();
-	}, [idProduct, refresh]);
+	}, [idProduct, refresh, dataProduct?.item?.id]);
+	console.log(rate);
+
 	const cartData = useAppSelector(getCartData);
 	const storeQuantity = () => {
 		let result = 1;
@@ -252,6 +346,7 @@ const ProductDetail: React.FC = () => {
 					unit_price: dataProduct.item.unit_price,
 					promotion_price: dataProduct.item.promotion_price,
 					quantity: 1,
+					promotion: dataProduct.promotion,
 				})
 			);
 			// history.push(AppURL.CHECKOUT);
@@ -277,6 +372,7 @@ const ProductDetail: React.FC = () => {
 			toast.success('Da them san pham vao gio hang');
 		}
 	};
+	const [idcmt, setIdCmt] = React.useState(-1);
 	return (
 		<Grid container className={classes.bgHeader}>
 			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
@@ -355,6 +451,33 @@ const ProductDetail: React.FC = () => {
 							>
 								{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.unit_price))}đ
 							</Typography>
+							{dataProduct?.item?.quantity === 0 ? (
+								<Typography
+									variant="body1"
+									gutterBottom
+									style={{ marginTop: '20px', fontWeight: 'bold' }}
+								>
+									Tinh trang: het hang&nbsp;&nbsp;
+									<i
+										className="fa fa-times-circle"
+										aria-hidden="true"
+										style={{ color: '#ff0000', fontSize: '20px' }}
+									></i>
+								</Typography>
+							) : (
+								<Typography
+									variant="body1"
+									gutterBottom
+									style={{ marginTop: '20px', fontWeight: 'bold' }}
+								>
+									Tinh trang: con hang&nbsp;&nbsp;
+									<i
+										className="fa fa-check-circle"
+										aria-hidden="true"
+										style={{ color: '#4caf50', fontSize: '20px' }}
+									></i>
+								</Typography>
+							)}
 							<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
 								<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
 									<Typography
@@ -369,28 +492,120 @@ const ProductDetail: React.FC = () => {
 										Khuyen mai
 									</Typography>
 									<Typography>
-										Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae fuga
-										dolorum, rerum soluta porro quisquam? Odio magni doloremque explicabo. Doloribus
-										sint asperiores a officia aperiam neque unde, libero excepturi magni.
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50' }}
+										></i>
+										&nbsp;&nbsp;
+										<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+											Tặng sạc cáp Deimark chính hãng bảo hành 1 đổi 1 trong 12 tháng
+										</Typography>
+									</Typography>
+									<Typography>
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50' }}
+										></i>
+										&nbsp;&nbsp;
+										<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+											Đổi sạc nhanh 20W MIỄN PHÍ khi nâng cấp BH 12 tháng
+										</Typography>
+									</Typography>
+									{dataProduct?.promotion?.map((item: any) => {
+										return (
+											<Typography>
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+													{item.name}&nbsp;
+													{/* <Typography
+														component="span"
+														style={{ fontSize: '12px', fontWeight: 600 }}
+													>
+														(chi áp dụng cho san pham nay)
+													</Typography>
+													&nbsp; */}
+													<i
+														className="fa fa-hand-o-right"
+														aria-hidden="true"
+														style={{ color: 'indigo' }}
+													></i>
+													&nbsp; &nbsp;&nbsp;
+													<CopyToClipboard text={item.code} onCopy={() => setTxtCopy('Copied')}>
+														<Tooltip title={txtCopy} onOpen={() => setTxtCopy('Copy')}>
+															<i
+																className="fa fa-clone"
+																aria-hidden="true"
+																style={{ fontSize: '22px', color: 'black', cursor: 'pointer' }}
+															></i>
+														</Tooltip>
+													</CopyToClipboard>
+												</Typography>
+											</Typography>
+										);
+									})}
+									<Typography>
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50' }}
+										></i>
+										&nbsp;&nbsp;
+										<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+											Bảo hành quốc tế trọn đời, đổi mới nếu bị Relock
+										</Typography>
+									</Typography>
+									<Typography>
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50' }}
+										></i>
+										&nbsp;&nbsp;
+										<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+											Hỗ trợ cài đặt, tạo tài khoản iCloud miễn phí
+										</Typography>
+									</Typography>
+									<Typography>
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50' }}
+										></i>
+										&nbsp;&nbsp;
+										<Typography component="span">
+											Mua Online: Giao hàng tận nhà- Nhận hàng thanh toán
+										</Typography>
 									</Typography>
 								</Card>
 							</Box>
 							<Button
 								variant="contained"
 								color="primary"
-								style={{ display: 'block', marginTop: '10px' }}
+								style={{ display: 'flex', marginTop: '10px' }}
 								fullWidth
 								size="large"
 								onClick={buyNow}
 							>
-								<Typography component="h6" style={{ fontSize: '1.5rem' }}>
-									Mua ngay
-								</Typography>
-								<Typography variant="body1" style={{ textTransform: 'initial' }}>
-									Giao hang tan noi
-								</Typography>
+								<Box style={{ display: 'contents' }}>
+									<AddShoppingCartIcon style={{ fontSize: '50px' }} />
+								</Box>
+								<Box>
+									<Typography component="h6" style={{ fontSize: '1.5rem' }}>
+										Mua ngay
+									</Typography>
+									<Typography variant="body1" style={{ textTransform: 'initial' }}>
+										Giao hang tan noi
+									</Typography>
+								</Box>
 							</Button>
-							<Button
+							{/* <Button
 								variant="outlined"
 								color="primary"
 								style={{ display: 'block', marginTop: '10px' }}
@@ -401,7 +616,7 @@ const ProductDetail: React.FC = () => {
 								<Typography component="h6" style={{ fontSize: '1.2rem' }}>
 									Them vao gio hang
 								</Typography>
-							</Button>
+							</Button> */}
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>
@@ -482,7 +697,11 @@ const ProductDetail: React.FC = () => {
 												<Box width="100%">
 													<LinearProgress
 														variant="determinate"
-														value={50}
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate == 5 ? rate.value : 0)
+														}
 														//style={{ color: '#ffb400 !important' }}
 													/>
 												</Box>
@@ -494,7 +713,7 @@ const ProductDetail: React.FC = () => {
 													>
 														{Math.round(
 															Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
-														)}
+														) + Number(rate.idRate == 5 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -506,7 +725,14 @@ const ProductDetail: React.FC = () => {
 												<Typography component="span">4.0 </Typography>&nbsp;&nbsp;
 												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
 												<Box width="100%">
-													<LinearProgress variant="determinate" value={3} />
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 4 ? rate.value : 0)
+														}
+													/>
 												</Box>
 												&nbsp;&nbsp;
 												<Box minWidth={35}>
@@ -516,7 +742,7 @@ const ProductDetail: React.FC = () => {
 													>
 														{Math.round(
 															Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
-														)}
+														) + Number(rate.idRate === 4 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -528,7 +754,14 @@ const ProductDetail: React.FC = () => {
 												<Typography component="span">3.0 </Typography>&nbsp;&nbsp;
 												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
 												<Box width="100%">
-													<LinearProgress variant="determinate" value={3} />
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 3 ? rate.value : 0)
+														}
+													/>
 												</Box>
 												&nbsp;&nbsp;
 												<Box minWidth={35}>
@@ -538,7 +771,7 @@ const ProductDetail: React.FC = () => {
 													>
 														{Math.round(
 															Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
-														)}
+														) + Number(rate.idRate === 3 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -550,7 +783,14 @@ const ProductDetail: React.FC = () => {
 												<Typography component="span">2.0 </Typography>&nbsp;&nbsp;
 												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
 												<Box width="100%">
-													<LinearProgress variant="determinate" value={3} />
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 2 ? rate.value : 0)
+														}
+													/>
 												</Box>
 												&nbsp;&nbsp;
 												<Box minWidth={35}>
@@ -560,7 +800,7 @@ const ProductDetail: React.FC = () => {
 													>
 														{Math.round(
 															Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
-														)}
+														) + Number(rate.idRate === 2 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -572,7 +812,14 @@ const ProductDetail: React.FC = () => {
 												<Typography component="span">1.0 </Typography>&nbsp;&nbsp;
 												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
 												<Box width="100%">
-													<LinearProgress variant="determinate" value={3} />
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 1 ? rate.value : 0)
+														}
+													/>
 												</Box>
 												&nbsp;&nbsp;
 												<Box minWidth={35}>
@@ -582,7 +829,7 @@ const ProductDetail: React.FC = () => {
 													>
 														{Math.round(
 															Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
-														)}
+														) + Number(rate.idRate === 1 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -747,7 +994,7 @@ const ProductDetail: React.FC = () => {
 									>
 										Hoi & Dap{' '}
 										<Typography component="span" className={classes.discount_percent}>
-											co 123 binh luan
+											co {dataComment.total} binh luan
 										</Typography>
 									</Typography>
 
@@ -773,104 +1020,105 @@ const ProductDetail: React.FC = () => {
 									</Box>
 
 									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
-									<Box>
-										<Box style={{ marginBottom: '10px' }}>
-											<Box style={{ display: 'flex', alignItems: 'center' }}>
-												<Avatar>T</Avatar> &nbsp;&nbsp;
-												<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-													Thang nguyen
-												</Typography>{' '}
-												&nbsp;&nbsp;
-												<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-											</Box>
-											<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
-												<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-												<Typography
-													className={classes.reply}
-													onClick={() => setCollapseReply(!collapseReply)}
-												>
-													Tra loi
-												</Typography>
-											</Box>
-											<Box
-												style={{
-													marginLeft: '60px',
-													borderLeft: '5px solid #dee2e6',
-													paddingLeft: '10px',
-													marginBottom: '10px',
-												}}
-											>
-												<Typography style={{ display: 'flex', alignItems: 'center' }}>
-													<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
-													<Typography
-														component="span"
-														className={classes.discount_percent}
-														style={{ fontSize: '11px' }}
-													>
-														Quan tri vien
-													</Typography>
-													&nbsp;&nbsp;
-													<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-												</Typography>
-												<Typography>
-													Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
-												</Typography>
-											</Box>
-											<Box
-												style={{
-													marginLeft: '60px',
-													borderLeft: '5px solid #dee2e6',
-													paddingLeft: '10px',
-													marginBottom: '10px',
-												}}
-											>
-												<Typography style={{ display: 'flex', alignItems: 'center' }}>
-													<Typography variant="h6">Hoan Dung</Typography>&nbsp;&nbsp;
-													<Typography
-														component="span"
-														className={classes.discount_percent}
-														style={{ fontSize: '11px' }}
-													>
-														Quan tri vien
-													</Typography>
-													&nbsp;&nbsp;
-													<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-												</Typography>
-												<Typography>
-													Chao ban,Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?
-												</Typography>
-											</Box>
-											<Box
-												style={{
-													marginLeft: '60px',
+									{dataComment?.listdata?.map((item: any) => {
+										return (
+											<Box>
+												<Box style={{ marginBottom: '10px' }}>
+													<Box style={{ display: 'flex', alignItems: 'center' }}>
+														<Avatar>{item?.email_comment?.charAt(0)}</Avatar> &nbsp;&nbsp;
+														<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+															{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
+														</Typography>
+														&nbsp;&nbsp;
+														<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+													</Box>
+													<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
+														<Typography>{item.comment_comment}</Typography>
+														<Typography
+															className={classes.reply}
+															onClick={() => {
+																setCollapseReply(!collapseReply);
+																setIdCmt(item.id_comment);
+															}}
+														>
+															Tra loi
+														</Typography>
+													</Box>
+													{item?.feedback?.map((itemFeedback: any) => {
+														return (
+															<Box
+																style={{
+																	marginLeft: '60px',
+																	borderLeft: '5px solid #dee2e6',
+																	paddingLeft: '10px',
+																	marginBottom: '10px',
+																}}
+															>
+																<Typography style={{ display: 'flex', alignItems: 'center' }}>
+																	<Typography variant="h6">
+																		{itemFeedback.email_feedback.slice(
+																			0,
+																			itemFeedback.email_feedback.indexOf('@')
+																		)}
+																	</Typography>
+																	&nbsp;&nbsp;
+																	{itemFeedback.isadmin === 'admin' && (
+																		<Typography
+																			component="span"
+																			className={classes.discount_percent}
+																			style={{ fontSize: '11px', marginRight: '10px' }}
+																		>
+																			Quan tri vien
+																		</Typography>
+																	)}
+																	<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+																</Typography>
+																<Typography>{itemFeedback.comment_feedback}</Typography>
+															</Box>
+														);
+													})}
 
-													paddingLeft: '10px',
-													marginBottom: '10px',
-												}}
-											>
-												<Collapse in={collapseReply} timeout="auto" unmountOnExit>
-													<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
-														<Box style={{ display: 'inline-block', width: '100%' }}>
-															<TextField
-																id="rate_content"
-																{...register('rate_content')}
-																multiline
-																name="rate_content"
-																rows={3}
-																placeholder="Nhập đánh giá về sản phẩm"
-																variant="outlined"
-																fullWidth
-																style={{ marginBottom: '10px' }}
-															/>
-															<Button variant="contained" color="primary" type="submit">
-																gui cau hoi
-															</Button>
-														</Box>
-													</form>
-												</Collapse>
+													<Box
+														style={{
+															marginLeft: '60px',
+
+															paddingLeft: '10px',
+															marginBottom: '10px',
+														}}
+													>
+														<Collapse
+															in={collapseReply && idcmt === item.id_comment}
+															timeout="auto"
+															unmountOnExit
+														>
+															<form
+																onSubmit={handleSubmit(onSubmit)}
+																style={{ display: 'contents' }}
+															>
+																<Box style={{ display: 'inline-block', width: '100%' }}>
+																	<TextField
+																		id="rate_content"
+																		{...register('rate_content')}
+																		multiline
+																		name="rate_content"
+																		rows={3}
+																		placeholder="Nhập đánh giá về sản phẩm"
+																		variant="outlined"
+																		fullWidth
+																		style={{ marginBottom: '10px' }}
+																	/>
+																	<Button variant="contained" color="primary" type="submit">
+																		gui cau hoi
+																	</Button>
+																</Box>
+															</form>
+														</Collapse>
+													</Box>
+												</Box>
 											</Box>
-										</Box>
-									</Box>
+										);
+									})}
+
 									<Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
 										<Pagination count={10} color="primary" />
 									</Box>

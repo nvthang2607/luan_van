@@ -29,3 +29,15 @@ export const ProductIdGet = (idProduct: any) => {
 	});
 	return response;
 };
+export const FilterPost = (data: any) => {
+	const response = callApi('POST', `/api/product/filter`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const OrderPost = (data: any) => {
+	const response = callApi('POST', `/api/bill/create`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};

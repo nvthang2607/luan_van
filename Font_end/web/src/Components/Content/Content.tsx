@@ -190,7 +190,7 @@ const Content: React.FC = () => {
 							{dataPhoneBranch?.listData?.map((item: any, index: number) => {
 								return (
 									<Link
-										to={`/views/${toURL(item.name)}-${item.id}.html`}
+										to={`/views/${toURL(item.name)}-${item.id}`}
 										className={classes.stylePhoneBranch}
 									>
 										<ListItem

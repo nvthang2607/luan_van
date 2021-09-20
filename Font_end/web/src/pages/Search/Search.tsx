@@ -33,6 +33,7 @@ import {
 import img from 'http://localhost:8000/source/image/product/test.png';
 import Pagination from '@material-ui/lab/Pagination';
 import { toast, ToastContainer } from 'react-toastify';
+import News from '../../Components/News/News';
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -138,7 +139,6 @@ const Search: React.FC = () => {
 		}
 		const fetchSearch = async () => {
 			const searchParams = new URLSearchParams(window.location.search);
-
 			if (searchParams.has('query')) {
 				const getSearch = await SearchPhoneGet({
 					page: page,
@@ -230,6 +230,7 @@ const Search: React.FC = () => {
 										promotion_price={item[0].promotion_price}
 										link={item.image}
 										avg={item.avg}
+										promotion={item.promotion}
 										rate_number={item.rate_number}
 										storeQuantity={item[0].quantity}
 										addToCart={addToCart}
@@ -238,7 +239,20 @@ const Search: React.FC = () => {
 							})}
 						</Grid>
 					) : (
-						<h1>news</h1>
+						<Grid container spacing={3} style={{ marginTop: '10px' }}>
+							{dataSearch?.listData?.map((item: any, index: number) => {
+								return (
+									<News
+										key={index}
+										title={item.title}
+										id={item.id}
+										link={item.image}
+										content={item.content}
+										date={item.created_at}
+									/>
+								);
+							})}
+						</Grid>
 					)}
 					{dataSearch.totalCount > 24 && (
 						<Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>

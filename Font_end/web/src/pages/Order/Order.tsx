@@ -3,7 +3,9 @@ import {
 	Box,
 	Card,
 	CircularProgress,
+	Collapse,
 	Grid,
+	List,
 	ListItem,
 	ListItemAvatar,
 	makeStyles,
@@ -12,18 +14,18 @@ import {
 import React from 'react';
 import PersonIcon from '@material-ui/icons/Person';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink, Redirect, Route, Switch } from 'react-router-dom';
+import { NavLink, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
 import { UserGet } from '../../api/User';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { getUserProfile, userProfileAPI } from './UserSlice';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import ProfileInfo from './ProfileInfo';
-import ChangePwd from './ChangePwd';
 import jwtDecode from 'jwt-decode';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
-import OrderStatus from '../Order/OrderStatus';
-import OrderDetail from '../Order/OrderDetail';
+import Shipping from './Shipping';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import OrderStatus from './OrderStatus';
+import OrderDetail from './OrderDetail';
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
@@ -45,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 		display: 'block',
 	},
 }));
-const Profile: React.FC = (props) => {
+const Order: React.FC = (props) => {
 	const classes = useStyles();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
@@ -74,6 +76,8 @@ const Profile: React.FC = (props) => {
 			return <Redirect to={AppURL.ACCOUNT} />;
 		}
 	};
+	const history = useHistory();
+	const [showOrderStatus, setShowOrderStatus] = React.useState(true);
 	return (
 		<Grid container className={classes.bgHeader2}>
 			{checkToken()}
@@ -122,32 +126,6 @@ const Profile: React.FC = (props) => {
 						}}
 					>
 						<Box style={{ display: 'flex', alignItems: 'center', paddingLeft: '13px' }}>
-							<PersonIcon style={{ fontSize: '34px' }} /> &nbsp;
-							<ListItem style={{ paddingLeft: 0, textTransform: 'uppercase' }}>
-								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-									quan ly thong tin
-								</Typography>
-							</ListItem>
-							<ChevronRightIcon />
-						</Box>
-						<Box>
-							<NavLink
-								to={AppURL.PROFILE_INFO}
-								className={classes.tagLi}
-								activeClassName={classes.activeTagLi}
-							>
-								<Typography style={{ paddingLeft: '36px' }}>Thong tin tai khoan</Typography>
-							</NavLink>
-
-							<NavLink
-								to={AppURL.PROFILE_CHANGEPWD}
-								className={classes.tagLi}
-								activeClassName={classes.activeTagLi}
-							>
-								<Typography style={{ paddingLeft: '36px' }}>Doi mat khau</Typography>
-							</NavLink>
-						</Box>
-						<Box style={{ display: 'flex', alignItems: 'center', paddingLeft: '13px' }}>
 							<EventNoteIcon style={{ fontSize: '34px' }} /> &nbsp;
 							<ListItem style={{ paddingLeft: 0, textTransform: 'uppercase' }}>
 								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
@@ -171,6 +149,67 @@ const Profile: React.FC = (props) => {
 							>
 								<Typography style={{ paddingLeft: '36px' }}>Don hang dang cho duyet</Typography>
 							</NavLink>
+
+							{/* <NavLink
+								to={AppURL.PROFILE_CHANGEPWD}
+								className={classes.tagLi}
+								activeClassName={classes.activeTagLi}
+							>
+								<Typography style={{ paddingLeft: '36px' }}>Doi mat khau</Typography>
+							</NavLink> */}
+							{/* <Box style={{ marginTop: '10px' }}>
+								<ListItem
+									className={classes.activeTagLi}
+									button
+									onClick={() => {
+										setShowOrderStatus(!showOrderStatus);
+									}}
+								>
+									<Typography style={{ paddingLeft: '36px', display: 'flex', fontWeight: 'bold' }}>
+										Trang trai don hang
+										{showOrderStatus ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+									</Typography>
+								</ListItem>
+								<Collapse in={showOrderStatus} timeout="auto" unmountOnExit>
+									<ListItem
+										button
+										onClick={() => {
+											history.push(AppURL.ORDER_ALL);
+										}}
+									>
+										<Typography style={{ paddingLeft: '55px' }}>Tat ca don hang</Typography>
+									</ListItem>
+									<ListItem
+										button
+										onClick={() => {
+											history.push(AppURL.ORDER_WAITING);
+										}}
+									>
+										<Typography style={{ paddingLeft: '55px' }}>Dang cho duyet</Typography>
+									</ListItem>
+									<ListItem button>
+										<Typography style={{ paddingLeft: '55px' }}>
+											Da duyet va dang cho giao hang
+										</Typography>
+									</ListItem>
+									<ListItem button>
+										<Typography style={{ paddingLeft: '55px' }}>Dang cho thanh toan</Typography>
+									</ListItem>
+									<ListItem button>
+										<Typography style={{ paddingLeft: '55px' }}>Don hang da hoan thanh</Typography>
+									</ListItem>
+									<ListItem button>
+										<Typography style={{ paddingLeft: '55px' }}>Da huy</Typography>
+									</ListItem>
+								</Collapse>
+							</Box>
+							<Box>
+								<ListItem className={classes.tagLi} button>
+									<Typography style={{ paddingLeft: '36px', display: 'flex' }}>
+										Lich su mua hang
+									</Typography>
+								</ListItem>
+							</Box> */}
 						</Box>
 					</Card>
 				</Card>
@@ -179,17 +218,16 @@ const Profile: React.FC = (props) => {
 				<Switch>
 					<Route
 						path={[
-							AppURL.PROFILE_INFO,
-							AppURL.PROFILE_CHANGEPWD,
-							AppURL.ORDER_DETAIL,
+							AppURL.ORDER_SHIPPING,
 							AppURL.ORDER_WAITING,
 							AppURL.ORDER_ALL,
+							AppURL.ORDER_DETAIL,
 						]}
 					>
 						<Switch>
-							<Route path={AppURL.PROFILE_INFO}>
+							<Route path={AppURL.ORDER_SHIPPING}>
 								{flag ? (
-									<ProfileInfo profileInfo={profileInfo} />
+									<Shipping />
 								) : (
 									<CircularProgress
 										color="secondary"
@@ -197,7 +235,6 @@ const Profile: React.FC = (props) => {
 									/>
 								)}
 							</Route>
-							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
 							<Route path={AppURL.ORDER_WAITING}>
 								<OrderStatus title="Don hang dang cho duyet" name="waiting" />
 							</Route>
@@ -214,4 +251,4 @@ const Profile: React.FC = (props) => {
 		</Grid>
 	);
 };
-export default Profile;
+export default Order;
