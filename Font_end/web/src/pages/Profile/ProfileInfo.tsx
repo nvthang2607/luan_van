@@ -121,6 +121,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 	const [valueCommune, setValueCommnune] = React.useState<any>({ id: '', name: '' });
 	React.useEffect(() => {
 		const getData = async () => {
+			window.scrollTo(0, 0);
 			//dispatch(userProfileAPI());
 			const profile = await UserGet();
 			if (profile.errorCode === null) {

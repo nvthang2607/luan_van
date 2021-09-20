@@ -31,6 +31,7 @@ import { UpdatePasswordPost } from '../../api/User';
 import { toast, ToastContainer } from 'react-toastify';
 import { OrderPostAll } from '../../api/Order';
 import { Pagination } from '@material-ui/lab';
+import { TryRounded } from '@mui/icons-material';
 interface OrderStatusProps {
 	listData?: any;
 	title?: string;
@@ -57,110 +58,121 @@ const useStyles = makeStyles((theme) => ({
 		display: 'block',
 	},
 }));
+
 const OrderStatus: React.FC<OrderStatusProps> = (props) => {
+	const [dataOrder, setDataOrder] = React.useState<any>({});
+	const [progressOrder, setProgressOrder] = React.useState(false);
+	const [page, setPage] = React.useState(1);
 	const classes = useStyles();
+
 	React.useEffect(() => {
+		setProgressOrder(true);
+		window.scrollTo(0, 0);
 		const fetchOrderAll = async () => {
-			const responseOrderAll = await OrderPostAll({ page: 1, pageSize: 5 });
+			const responseOrderAll = await OrderPostAll({ page: page, pageSize: 5 });
 			if (responseOrderAll) {
 				if (responseOrderAll.errorCode === null) {
 					console.log(responseOrderAll.data);
+					setProgressOrder(false);
+					setDataOrder(responseOrderAll.data);
 				}
 			}
 		};
 		fetchOrderAll();
-	}, []);
+	}, [page]);
 	const history = useHistory();
+	const contenStatus = (item: any) => {
+		let result = '';
+		if (item?.status === 1) {
+			result = 'Dang cho duyet';
+		}
+		return result;
+	};
 	return (
-		// <Container>
-		// 	<Grid item xs={12}>
-		// 		<Typography variant="h5">Don hang dang cho duyet</Typography>
-		// 	</Grid>
-		// 	<Grid container>
-		// 		<Grid item xs={12} style={{ display: 'flex' }}>
-		// 			<Grid item xs={2}>
-		// 				<Typography variant="body1" gutterBottom>
-		// 					Mã đơn hàng
-		// 				</Typography>
-		// 				<Typography variant="body1">774868856</Typography>
-		// 			</Grid>
-		// 			<Grid item xs={2}>
-		// 				<Typography variant="body1" gutterBottom>
-		// 					Ngày mua
-		// 				</Typography>
-
-		// 				<Typography variant="body1">18/01/2021</Typography>
-		// 			</Grid>
-		// 			<Grid item xs={3}>
-
-		//                 <Typography variant="body1" gutterBottom>
-		//                 Sản phẩm
-		// 				</Typography>
-
-		// 				<Typography variant="body1"> USB 3.0 SanDisk Ultra CZ48 64GB - Hàng Chính Hãng</Typography>
-
-		// 			</Grid>
-		// 			<Grid item xs={2}>
-
-		//                 <Typography variant="body1" gutterBottom>
-		//                 Tổng tiền
-		// 				</Typography>
-
-		// 				<Typography variant="body1">233.000.000d</Typography>
-		// 			</Grid>
-		// 			<Grid item xs={3}>
-
-		//                 <Typography variant="body1" gutterBottom>
-		//                 Trạng thái đơn hàng
-		// 				</Typography>
-
-		// 				<Typography variant="body1">233.000.000d</Typography>
-		//                 Giao hàng thành công
-		// 			</Grid>
-		// 		</Grid>
-		// 	</Grid>
-		// </Container>
 		<Container>
-			<Typography variant="h5">{props.title}</Typography>
-			<TableContainer>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>Mã đơn hàng</TableCell>
-							<TableCell>Ngày mua</TableCell>
-							<TableCell>Sản phẩm</TableCell>
-							<TableCell>Tổng tiền</TableCell>
-							<TableCell>Trạng thái đơn hàng</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						<TableRow>
-							<TableCell
-								style={{ color: 'blue', cursor: 'pointer' }}
-								onClick={() => {
-									history.push('/order/123456');
+			{progressOrder ? (
+				<CircularProgress
+					color="secondary"
+					style={{ position: 'fixed', top: '150px', left: '900px' }}
+				/>
+			) : (
+				<React.Fragment>
+					<Typography variant="h5" gutterBottom>
+						{props.title}
+					</Typography>
+					<TableContainer>
+						<Table style={{ backgroundColor: '#fff' }}>
+							<TableHead>
+								<TableRow>
+									<TableCell>Mã đơn hàng</TableCell>
+									<TableCell>Ngày mua</TableCell>
+									<TableCell>Sản phẩm</TableCell>
+									<TableCell>Tổng tiền</TableCell>
+									<TableCell>Trạng thái đơn hàng</TableCell>
+								</TableRow>
+							</TableHead>
+							<TableBody>
+								{dataOrder.listData?.map((item: any) => {
+									return (
+										<TableRow>
+											<TableCell
+												style={{ color: 'blue', cursor: 'pointer' }}
+												onClick={() => {
+													history.push(`/order/${item.bill.id}`);
+												}}
+											>
+												<Typography>{item.bill.id}</Typography>
+											</TableCell>
+											<TableCell>{item.bill.created_at}</TableCell>
+											<TableCell>
+												{item.item.length > 1 ? (
+													<React.Fragment>
+														<Typography
+															component="span"
+															style={{
+																//height: '50px',
+																overflow: 'hidden',
+																display: '-webkit-box',
+																textOverflow: 'ellipsis',
+																WebkitLineClamp: 1,
+																WebkitBoxOrient: 'vertical',
+															}}
+														>
+															{item.item[0]}
+														</Typography>
+														<Typography component="span">
+															&nbsp;va {item.item.length - 1} san pham khac
+														</Typography>
+													</React.Fragment>
+												) : (
+													item.item[0]
+												)}
+											</TableCell>
+											<TableCell>
+												{Intl.NumberFormat('en-US').format(Number(item.bill.total))}đ
+											</TableCell>
+											<TableCell>{contenStatus(item)}</TableCell>
+										</TableRow>
+									);
+								})}
+							</TableBody>
+						</Table>
+					</TableContainer>
+					{dataOrder.totalCount > 5 && (
+						<Box style={{ display: 'flex', justifyContent: 'flex-end', marginTop: ' 30px' }}>
+							<Pagination
+								count={Math.ceil(dataOrder.totalCount / 5)}
+								variant="outlined"
+								color="primary"
+								defaultPage={page}
+								onChange={(event: object, page: number) => {
+									setPage(page);
 								}}
-							>
-								774868856
-							</TableCell>
-							<TableCell>18/01/2021</TableCell>
-							<TableCell>USB 3.0 SanDisk Ultra CZ48 64GB - Hàng Chính Hãng</TableCell>
-							<TableCell>233.000.000 ₫</TableCell>
-							<TableCell>Giao hàng thành công</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell style={{ color: 'blue', cursor: 'pointer' }}>774868856</TableCell>
-							<TableCell>18/01/2021</TableCell>
-							<TableCell>USB 3.0 SanDisk Ultra CZ48 64GB - Hàng Chính Hãng</TableCell>
-							<TableCell>233.000.000 ₫</TableCell>
-							<TableCell>Giao hàng thành công</TableCell>
-						</TableRow>
-					</TableBody>
-				</Table>
-			</TableContainer>
-			<Box style={{ display: 'flex', justifyContent: 'flex-end', marginTop: ' 30px' }}>
-				<Pagination count={10} variant="outlined" color="primary" />
-			</Box>
+							/>
+						</Box>
+					)}
+				</React.Fragment>
+			)}
 		</Container>
 	);
 };
