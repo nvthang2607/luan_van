@@ -15,6 +15,7 @@ class UserController extends Controller
 {
     //
     public function get_insert(){
+        ini_set('max_execution_time', 180);
         $now1=Carbon::now();
         $filePath = getcwd().'/ua_base.xlsx';
         $reader = ReaderEntityFactory::createReaderFromFile($filePath);
@@ -46,6 +47,7 @@ class UserController extends Controller
     }
     public function get_write_rating_to_csv()
     {
+        ini_set('max_execution_time', 180);
         $rating=BillDetail::all();
         $handle = fopen('../public/train_model/train_web.csv', 'w');
         foreach($rating as $i){
