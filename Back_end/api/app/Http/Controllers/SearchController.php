@@ -15,6 +15,7 @@ class SearchController extends Controller
         $this->middleware('auth:api', ['except' => ['get_search_product_news']]);
     }
     public function get_search_product_news(Request $req){
+        Carbon::setLocale('vi');
         $data=[];
         if($req->type=='product'){
             $product=Product::where('name','like','%'.$req->search.'%')->where('active',1)->get();
@@ -55,7 +56,21 @@ class SearchController extends Controller
             if(count($datas)>0){
                 $u=0;
                 foreach($datas as $i){
-                    $data[$u]=$i;
+                    $date= $i->created_at;
+                    $date = Carbon::parse($date);
+                    $thu=$date->dayOfWeek;
+                    if($thu==0){
+                        $t='Chủ nhật, ';
+                    }
+                    else{
+                        $thu=$thu+1;
+                        $t='Thứ '.$thu.', ';
+                    }
+                    $day=$date->day;
+                    $month=$date->month;
+                    $year=$date->year;
+                    $date=$t.$day.'/'.$month.'/'.$year;
+                    $data[$u]=['id'=>$i->id,'id_user'=>$i->id_user,'image'=>$i->image,'title'=>$i->title,'created_at'=>$date];
                     $u++;
                 }
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);

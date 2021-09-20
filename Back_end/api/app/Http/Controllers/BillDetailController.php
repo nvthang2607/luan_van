@@ -56,7 +56,6 @@ class BillDetailController extends Controller
                         'rate'=>$rate,
                         'comment'=>$comment,
                     ];
-                    
                 }
             }
             $data=[
