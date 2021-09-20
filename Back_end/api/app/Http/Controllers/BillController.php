@@ -17,27 +17,17 @@ class BillController extends Controller
         $this->middleware('auth:api', ['except' => ['post_bill_create']]);
     }
     public function post_bill_create(request $req){
-        $id=0;
-        $validator = Validator::make($req->all(), [
-            'email' => 'exists:customer',
-        ]);
-        if($validator->fails()){
+        $customer=new Customer;
+        $customer->name=$req->name;
+        $customer->gender=$req->gender;
+        $customer->email=$req->email;
+        $customer->phone=$req->phone;
+        $customer->address=$req->address;
+        if($customer->save()){
             $id=Customer::max('id');
-            $customer=new Customer;
-            $customer->name=$req->name;
-            $customer->gender=$req->gender;
-            $customer->email=$req->email;
-            $customer->phone=$req->phone;
-            $customer->address=$req->address;
-            if($customer->save()){
-                $id=Customer::max('id');
-            }
-            else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi xảy ra khi tạo khách hàng'], 500);
-            }
         }
         else{
-            $id=Customer::where('email',$req->email)->pluck('id')->first();
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi xảy ra khi tạo khách hàng'], 500);
         }
         $items=$req->item;
         $n=count($items);
@@ -84,25 +74,24 @@ class BillController extends Controller
     }
     public function post_bill_user_list_bill(request $req){
         $email=auth()->user()->email;
-        $id=Customer::where('email',$email)->pluck('id')->first();
-        $bill=Bill::where('id_customer',$id)->get();
-        $bills=[];
-        $n=$bill->count();
-        $bill=$bill->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-        foreach($bill as $i){
+        $customer=Customer::where('email',$email)->get();
+        $bills=collect();
+        foreach($customer as $customer){
+            // $bill=$customer->bill;
+            // echo $bill;
             $items=[];
-            $product=BillDetail::where('id_bill',$i->id)->get();
+            $product=BillDetail::where('id_bill',$customer->bill->id)->get();
             foreach($product as $item){
                 $items[count($items)]=$item->product->name;
             }
-            $stt=$i->status->last();
+            $stt=$customer->bill->status->last();
             if($stt!=null){
                 $stt=$stt['status'];
             }
             else{
                 $stt=1;
             }
-            $date= $i->created_at;
+            $date= $customer->bill->created_at;
             $date = Carbon::parse($date);
             $thu=$date->dayOfWeek;
             if($thu==0){
@@ -116,18 +105,27 @@ class BillController extends Controller
             $month=$date->month;
             $year=$date->year;
             $date=$t.$day.'/'.$month.'/'.$year;
-            $bills[count($bills)]=[
+
+            $bills[]=[
                 'bill'=>[
-                    'id'=>$i->id,
-                    'id_customer'=>$i->id_customer,
-                    'note'=>$i->note,
-                    'payment'=>$i->payment,
+                    'id'=>$customer->bill->id,
+                    'id_customer'=>$customer->id,
+                    'name_customer'=>$customer->name,
+                    'email_customer'=>$customer->email,
+                    'phone_customer'=>$customer->phone,
+                    'address_customer'=>$customer->address,
+                    'note'=>$customer->bill->note,
+                    'total'=>$customer->bill->total,
+                    'payment'=>$customer->bill->payment,
                     'created_at'=>$date,
                 ],
                 'item'=>$items,
                 'status'=>$stt
             ];
         }
+        $n=$bills->count();
+        $bills=$bills->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
     }
 }

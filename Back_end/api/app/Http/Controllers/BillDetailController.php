@@ -18,10 +18,15 @@ class BillDetailController extends Controller
     public function get_billdetail_user_list_billdetail(request $req){
         $email=auth()->user()->email;
         $id_user=auth()->user()->id;
-        $id_customer=Customer::where('email',$email)->pluck('id')->first();
-        $bill=Bill::where('id',$req->id_bill)->where('id_customer',$id_customer)->get();
-        if($bill->count()>0){
-            foreach($bill as $bill){
+        $id_customer=Customer::where('email',$email)->get();
+        $custom=collect();
+        foreach($id_customer as $id_customer){
+            if($id_customer->bill->id==$req->id_bill){
+                $custom[]=$id_customer->bill->id;
+            }
+        }
+        if($custom->count()>0){
+            $bill=Bill::find($custom[0]);
                 $id_customer=$bill->customer->id;
                 $name_customer=$bill->customer->name;
                 $gender_customer=$bill->customer->gender;
@@ -70,7 +75,6 @@ class BillDetailController extends Controller
                         'comment'=>$comment,
                     ];
                 }
-            }
             $data=[
                 'bill'=>[
                     'id_customer'=>$id_customer,

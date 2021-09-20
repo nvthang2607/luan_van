@@ -10,6 +10,6 @@ class Customer extends Model
     use HasFactory;
     protected $table ="customer";
     public function bill(){
-        return $this->hasMany('App\Models\Bill','id_customer','id');
+        return $this->hasOne('App\Models\Bill','id_customer','id');
     }
 }
