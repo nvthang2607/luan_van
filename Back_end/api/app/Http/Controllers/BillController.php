@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Status;
 use App\Models\BillDetail;
 use Validator;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class BillController extends Controller
@@ -101,7 +102,31 @@ class BillController extends Controller
             else{
                 $stt=1;
             }
-            $bills[count($bills)]=['bill'=>$i,'item'=>$items,'status'=>$stt];
+            $date= $i->created_at;
+            $date = Carbon::parse($date);
+            $thu=$date->dayOfWeek;
+            if($thu==0){
+                $t='Chủ nhật, ';
+            }
+            else{
+                $thu=$thu+1;
+                $t='Thứ '.$thu.', ';
+            }
+            $day=$date->day;
+            $month=$date->month;
+            $year=$date->year;
+            $date=$t.$day.'/'.$month.'/'.$year;
+            $bills[count($bills)]=[
+                'bill'=>[
+                    'id'=>$i->id,
+                    'id_customer'=>$i->id_customer,
+                    'note'=>$i->note,
+                    'payment'=>$i->payment,
+                    'created_at'=>$date,
+                ],
+                'item'=>$items,
+                'status'=>$stt
+            ];
         }
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
     }
