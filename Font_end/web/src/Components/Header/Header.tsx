@@ -541,7 +541,6 @@ const Header: React.FC<Props> = (props) => {
 											<Box pb={3}>
 												<Chip
 													label="BÁN HÀNG ONLINE(8H - 21H HÀNG NGÀY)"
-													clickable
 													color="primary"
 													variant="outlined"
 													size="medium"

@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
 		paddingLeft: theme.spacing(13),
-		backgroundColor: '#fff',
+		backgroundColor: '#f4f4f4',
 		marginTop: '20px',
 		marginBottom: '10px',
 	},

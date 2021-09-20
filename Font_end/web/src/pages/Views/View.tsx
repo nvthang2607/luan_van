@@ -477,7 +477,7 @@ const View: React.FC = () => {
 					</Grid>
 				)}
 
-				<Grid item xs={12}>
+				<Grid item xs={12} style={{ backgroundColor: '#fff', marginBottom: '20px' }}>
 					<Box>
 						<List>
 							<ListItem>
@@ -587,6 +587,7 @@ const View: React.FC = () => {
 										display: 'flex',
 										alignItems: 'center',
 										cursor: 'pointer',
+										paddingRight: '20px',
 									}}
 									aria-describedby={idSort}
 									onClick={handleClickSort}
@@ -635,66 +636,74 @@ const View: React.FC = () => {
 					</Box>
 				</Grid>
 
-				{progress ? (
-					<CircularProgress
-						color="secondary"
-						style={{ position: 'fixed', top: '100px', left: '50%' }}
-					/>
-				) : (
-					<React.Fragment>
-						<Grid container spacing={3} style={{ marginTop: '10px' }}>
-							{dataFilter?.listData?.map((item: any, index: number) => {
-								return (
-									<Product
-										key={index}
-										unit_price={item[0].unit_price}
-										name={item[0].name}
-										id={item[0].id}
-										promotion_price={item[0].promotion_price}
-										link={item.image}
-										avg={item.avg}
-										rate_number={item.rate_number}
-										storeQuantity={item[0].quantity}
-										addToCart={addToCart}
-									/>
-								);
-							})}
-						</Grid>
-						{dataFilter.totalCount > 24 && (
-							<Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
-								<Pagination
-									count={Math.ceil(dataFilter.totalCount / 24)}
-									color="primary"
-									size="large"
-									defaultPage={page}
-									onChange={(event: object, page: number) => {
-										//console.log(event, page);
-										const searchParams = new URLSearchParams(window.location.search);
-										let pathName = `page=${page}`;
-										if (searchParams.has('sortBy')) {
-											const valueSortBy = searchParams.get('sortBy');
-											pathName = `page=${page}&sortBy=${valueSortBy}`;
-										}
-										if (searchParams.has('filter')) {
-											const valueFilter = searchParams.get('filter');
-											pathName = `page=${page}&filter=${valueFilter}`;
-										}
-										if (searchParams.has('sortBy') && searchParams.has('filter')) {
-											const valueSortBy = searchParams.get('sortBy');
-											const valueFilter = searchParams.get('filter');
-											pathName = `page=${page}&sortBy=${valueSortBy}&filter=${valueFilter}`;
-										}
-										history.replace({
-											pathname: window.location.pathname,
-											search: pathName,
-										});
-										setPage(page);
-									}}
-								/>
-							</Grid>
+				<Grid item xs={12} style={{ backgroundColor: '#fff' }}>
+					<Grid container>
+						{progress ? (
+							<CircularProgress
+								color="secondary"
+								style={{ position: 'fixed', top: '100px', left: '50%' }}
+							/>
+						) : (
+							<React.Fragment>
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataFilter?.listData?.map((item: any, index: number) => {
+										return (
+											<Product
+												key={index}
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												addToCart={addToCart}
+											/>
+										);
+									})}
+								</Grid>
+								{dataFilter.totalCount > 24 && (
+									<Grid
+										item
+										xs={12}
+										style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#fff' }}
+									>
+										<Pagination
+											count={Math.ceil(dataFilter.totalCount / 24)}
+											color="primary"
+											size="large"
+											defaultPage={page}
+											onChange={(event: object, page: number) => {
+												//console.log(event, page);
+												const searchParams = new URLSearchParams(window.location.search);
+												let pathName = `page=${page}`;
+												if (searchParams.has('sortBy')) {
+													const valueSortBy = searchParams.get('sortBy');
+													pathName = `page=${page}&sortBy=${valueSortBy}`;
+												}
+												if (searchParams.has('filter')) {
+													const valueFilter = searchParams.get('filter');
+													pathName = `page=${page}&filter=${valueFilter}`;
+												}
+												if (searchParams.has('sortBy') && searchParams.has('filter')) {
+													const valueSortBy = searchParams.get('sortBy');
+													const valueFilter = searchParams.get('filter');
+													pathName = `page=${page}&sortBy=${valueSortBy}&filter=${valueFilter}`;
+												}
+												history.replace({
+													pathname: window.location.pathname,
+													search: pathName,
+												});
+												setPage(page);
+											}}
+										/>
+									</Grid>
+								)}
+							</React.Fragment>
 						)}
-					</React.Fragment>
-				)}
+					</Grid>
+				</Grid>
 			</React.Fragment>
 
 			{/* <Button onClick={onClick}>Click me</Button> */}

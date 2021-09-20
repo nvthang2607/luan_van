@@ -184,7 +184,7 @@ const Search: React.FC = () => {
 					</Link> */}
 						</Breadcrumbs>
 					</Grid>
-					<Grid item xs={12}>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', paddingLeft: '20px' }}>
 						<RadioGroup
 							name="optionSearch"
 							value={typeSearch}
@@ -206,7 +206,11 @@ const Search: React.FC = () => {
 							/>
 						</RadioGroup>
 					</Grid>
-					<Grid item xs={12}>
+					<Grid
+						item
+						xs={12}
+						style={{ backgroundColor: '#fff', marginBottom: '20px', paddingLeft: '20px' }}
+					>
 						<Typography variant="h5" style={{ display: 'contents' }}>
 							Tìm thấy&nbsp;
 							<Typography variant="h5" style={{ fontWeight: 'bold', display: 'contents' }}>
@@ -218,44 +222,53 @@ const Search: React.FC = () => {
 							</Typography>
 						</Typography>
 					</Grid>
-					{typeSearch === 'product' ? (
-						<Grid container spacing={3} style={{ marginTop: '10px' }}>
-							{dataSearch?.listData?.map((item: any, index: number) => {
-								return (
-									<Product
-										key={index}
-										unit_price={item[0].unit_price}
-										name={item[0].name}
-										id={item[0].id}
-										promotion_price={item[0].promotion_price}
-										link={item.image}
-										avg={item.avg}
-										promotion={item.promotion}
-										rate_number={item.rate_number}
-										storeQuantity={item[0].quantity}
-										addToCart={addToCart}
-									/>
-								);
-							})}
+					<Grid item xs={12} style={{ backgroundColor: '#fff' }}>
+						<Grid container>
+							{typeSearch === 'product' ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataSearch?.listData?.map((item: any, index: number) => {
+										return (
+											<Product
+												key={index}
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												addToCart={addToCart}
+											/>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataSearch?.listData?.map((item: any, index: number) => {
+										return (
+											<News
+												key={index}
+												title={item.title}
+												id={item.id}
+												link={item.image}
+												content={item.content}
+												date={item.created_at}
+											/>
+										);
+									})}
+								</Grid>
+							)}{' '}
 						</Grid>
-					) : (
-						<Grid container spacing={3} style={{ marginTop: '10px' }}>
-							{dataSearch?.listData?.map((item: any, index: number) => {
-								return (
-									<News
-										key={index}
-										title={item.title}
-										id={item.id}
-										link={item.image}
-										content={item.content}
-										date={item.created_at}
-									/>
-								);
-							})}
-						</Grid>
-					)}
+					</Grid>
+
 					{dataSearch.totalCount > 24 && (
-						<Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+						<Grid
+							item
+							xs={12}
+							style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#fff' }}
+						>
 							<Pagination
 								count={Math.ceil(dataSearch.totalCount / 24)}
 								color="primary"

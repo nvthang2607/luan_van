@@ -266,6 +266,7 @@ const Product: React.FC<ProductProps> = (props) => {
 						{props.rate_number} đánh giá
 					</Typography>
 				</Box>
+
 				<Zoom in={hoverProduct}>
 					<Box style={{ marginTop: '10px' }}>
 						<Button

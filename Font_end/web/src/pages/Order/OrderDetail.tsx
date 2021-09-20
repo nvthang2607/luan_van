@@ -5,7 +5,11 @@ import {
 	Card,
 	CircularProgress,
 	Container,
+	Dialog,
+	DialogContent,
+	DialogTitle,
 	Grid,
+	IconButton,
 	LinearProgress,
 	ListItem,
 	ListItemAvatar,
@@ -24,7 +28,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import PersonIcon from '@material-ui/icons/Person';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory, useParams } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
 import { useForm } from 'react-hook-form';
 import { UpdatePasswordPost } from '../../api/User';
@@ -39,67 +43,14 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
+import { Close } from '@material-ui/icons';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { StepIconProps } from '@mui/material/StepIcon';
-
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-	[`&.${stepConnectorClasses.alternativeLabel}`]: {
-		top: 10,
-		left: 'calc(-50% + 16px)',
-		right: 'calc(50% + 16px)',
-	},
-	[`&.${stepConnectorClasses.active}`]: {
-		[`& .${stepConnectorClasses.line}`]: {
-			borderColor: '#784af4',
-		},
-	},
-	[`&.${stepConnectorClasses.completed}`]: {
-		[`& .${stepConnectorClasses.line}`]: {
-			borderColor: '#784af4',
-		},
-	},
-	[`& .${stepConnectorClasses.line}`]: {
-		borderColor: theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
-		borderTopWidth: 3,
-		borderRadius: 1,
-	},
-}));
-
-const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
-	({ theme, ownerState }) => ({
-		color: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#eaeaf0',
-		display: 'flex',
-		height: 22,
-		alignItems: 'center',
-		...(ownerState.active && {
-			color: '#784af4',
-		}),
-		'& .QontoStepIcon-completedIcon': {
-			color: '#784af4',
-			zIndex: 1,
-			fontSize: 18,
-		},
-		'& .QontoStepIcon-circle': {
-			width: 8,
-			height: 8,
-			borderRadius: '50%',
-			backgroundColor: 'currentColor',
-		},
-	})
-);
-
-function QontoStepIcon(props: StepIconProps) {
-	const { active, completed, className } = props;
-
-	return (
-		<QontoStepIconRoot ownerState={{ active }} className={className}>
-			{completed ? (
-				<Check className="QontoStepIcon-completedIcon" />
-			) : (
-				<div className="QontoStepIcon-circle" />
-			)}
-		</QontoStepIconRoot>
-	);
-}
+import RatingComponent from './RatingComponent';
+import { OrderGetId } from '../../api/Order';
+import CheckIcon from '@mui/icons-material/Check';
+import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -152,10 +103,10 @@ function ColorlibStepIcon(props: StepIconProps) {
 	const { active, completed, className } = props;
 
 	const icons: { [index: string]: React.ReactElement } = {
-		1: <SettingsIcon />,
-		2: <GroupAddIcon />,
-		3: <VideoLabelIcon />,
-		4: <SettingsIcon />,
+		1: <InsertInvitationIcon />,
+		2: <BusinessCenterIcon />,
+		3: <LocalShippingIcon />,
+		4: <CheckIcon />,
 	};
 
 	return (
@@ -165,12 +116,7 @@ function ColorlibStepIcon(props: StepIconProps) {
 	);
 }
 
-const steps = [
-	'Dat hang thanh cong',
-	'Da duyet va dangg cho d cho giao hang',
-	'Dang cho thanh toan',
-	'Don hang da hoan thanh',
-];
+const steps = ['Đang xử lý', 'Đã đóng gói', 'Đang vận chuyển', 'Đã giao hàng'];
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
@@ -184,6 +130,13 @@ const useStyles = makeStyles((theme) => ({
 		borderLeft: `4px solid ${theme.palette.primary.main}`,
 		color: `${theme.palette.primary.main} !important`,
 	},
+	closeButton: {
+		position: 'absolute',
+		top: theme.spacing(1),
+		right: theme.spacing(1),
+		color: theme.palette.grey[500],
+		zIndex: 1,
+	},
 	tagLi: {
 		textDecoration: 'none',
 		cursor: 'pointer',
@@ -193,102 +146,272 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 const OrderDetail: React.FC = () => {
+	const [refresh, setRefresh] = React.useState(1);
 	const classes = useStyles();
+	const [open, setOpen] = React.useState(false);
+	const [dataOrderId, setDataOrderId] = React.useState<any>({});
+	const handleClose = () => {
+		setOpen(false);
+	};
+	const action: (result: boolean) => void = (result) => {
+		if (result === false) {
+			setOpen(false);
+		} else {
+			setRefresh(refresh + 1);
+			setOpen(false);
+		}
+	};
+	const { id } = useParams<{ id?: string }>();
+	const [progressOrderId, setProgressOrderId] = React.useState(false);
+	const [dataDialog, setDataDialog] = React.useState<any>({
+		idBill: id,
+		idBillDetail: 0,
+		idProduct: 0,
+		link: '',
+		name: '',
+		price: 0,
+	});
 
+	React.useEffect(() => {
+		const fetchOrderDetail = async () => {
+			setProgressOrderId(true);
+			window.scrollTo(0, 0);
+			const responseOrderId = await OrderGetId(id);
+			if (responseOrderId) {
+				if (responseOrderId.errorCode === null) {
+					console.log(responseOrderId);
+					setDataOrderId(responseOrderId.data);
+					setProgressOrderId(false);
+				}
+			}
+		};
+		fetchOrderDetail();
+	}, [id, refresh]);
+	const contentStatus = () => {
+		let result = '';
+		if (dataOrderId?.bill?.status === '1') {
+			result = 'Dang cho duyet';
+		} else if (dataOrderId?.bill?.status === '4') {
+			result = 'Da hoan thanh';
+		} else if (dataOrderId?.bill?.status === '2') {
+			result = 'Đã đóng gói';
+		} else if (dataOrderId?.bill?.status === '3') {
+			result = 'Đang vận chuyển';
+		}
+		return result;
+	};
+	const contentPayment = () => {
+		let result = '';
+		if (dataOrderId?.bill?.payment === 'cod') {
+			result = 'Thanh toán khi giao hàng (COD)';
+		}
+		return result;
+	};
+	const history = useHistory();
+	const toURL = (str: any) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
+	};
+	const numberStatus = () => {
+		let result = -1;
+		if (dataOrderId.bill?.status === '1') {
+			result = 0;
+		} else if (dataOrderId.bill?.status === '2') {
+			result = 1;
+		} else if (dataOrderId.bill?.status === '3') {
+			result = 2;
+		} else if (dataOrderId.bill?.status === '4') {
+			result = 3;
+		} else if (dataOrderId.bill?.status === '5') {
+			result = -1;
+		}
+		return result;
+	};
 	return (
 		<Container>
-			<Grid container spacing={4}>
-				<Grid item xs={12}>
-					<Typography variant="h5">Chi tiết đơn hàng #123435 - Giao hang thah cog</Typography>
-				</Grid>
-				<Grid item xs={12}>
-					<Stack sx={{ width: '100%' }} spacing={4}>
-						<Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>
-							{steps.map((label) => (
-								<Step key={label}>
-									<StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
-								</Step>
-							))}
-						</Stepper>
-					</Stack>
-				</Grid>
-				<Grid item xs={12}>
-					<Grid container>
-						<Grid item xs={6}>
-							<Typography variant="body1">ĐỊA CHỈ NGƯỜI NHẬN</Typography>
+			{progressOrderId ? (
+				<CircularProgress
+					color="secondary"
+					style={{ position: 'fixed', top: '150px', left: '900px' }}
+				/>
+			) : (
+				<React.Fragment>
+					<Grid container spacing={4}>
+						<Grid item xs={12}>
+							<Typography variant="h5">
+								Chi tiết đơn hàng #{id} - {contentStatus()}
+							</Typography>
 						</Grid>
-						<Grid item xs={6}>
-							<Typography variant="body1">HÌNH THỨC GIAO HÀNG</Typography>
+						<Grid item xs={12}>
+							<Typography variant="body1" style={{ textAlign: 'end' }}>
+								Ngày đặt hàng: 18:02 08/01/2020
+							</Typography>
 						</Grid>
-					</Grid>
-				</Grid>
-				<Grid item xs={12}>
-					<TableContainer>
-						<Table>
-							<TableHead>
-								<TableRow>
-									<TableCell colSpan={2}>Sản phẩm</TableCell>
-									<TableCell>Gia</TableCell>
-									<TableCell>So luong</TableCell>
-									<TableCell align="right">Tam tinh</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								<TableRow>
-									<TableCell>Anh</TableCell>
-									<TableCell>USB 3.0 SanDisk Ultra CZ48 64GB - Hàng Chính Hãng</TableCell>
-									<TableCell>233.000.000 ₫</TableCell>
-									<TableCell>12</TableCell>
-									<TableCell align="right">233.000.000 ₫</TableCell>
-								</TableRow>
-								<TableRow>
-									<TableCell>Anh</TableCell>
-									<TableCell>
-										<Typography gutterBottom>
-											USB 3.0 SanDisk Ultra CZ48 64GB - Hàng Chính Hãng
-										</Typography>
-										<Typography>
-											<Button
-												variant="outlined"
-												color="secondary"
-												style={{ textTransform: 'inherit' }}
-											>
-												Danh gia
-											</Button>
-											&nbsp;&nbsp;
-											<Button
-												variant="outlined"
-												color="secondary"
-												style={{ textTransform: 'inherit' }}
-											>
-												Mua lai
-											</Button>
-										</Typography>
-									</TableCell>
-									<TableCell>233.000.000 ₫</TableCell>
-									<TableCell>12</TableCell>
-									<TableCell align="right">233.000.000 ₫</TableCell>
-								</TableRow>
-								<TableRow>
-									<TableCell rowSpan={2} colSpan={3} />
-									<TableCell>Tổng cộng</TableCell>
-									<TableCell
-										align="right"
-										style={{ color: `rgb(${255}, ${59}, ${39})`, fontSize: '16px' }}
+						<Grid item xs={12}>
+							<Stack sx={{ width: '100%' }} spacing={4}>
+								<Stepper
+									alternativeLabel
+									activeStep={numberStatus()}
+									connector={<ColorlibConnector />}
+								>
+									{steps.map((label) => (
+										<Step key={label}>
+											<StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+										</Step>
+									))}
+								</Stepper>
+							</Stack>
+						</Grid>
+						<Grid item xs={12}>
+							<Grid container spacing={3}>
+								<Grid item xs={6}>
+									<Typography variant="body1">ĐỊA CHỈ NGƯỜI NHẬN</Typography>
+								</Grid>
+								<Grid item xs={6}>
+									<Typography variant="body1">HÌNH THỨC GIAO HÀNG</Typography>
+									<Typography
+										style={{ marginLeft: '10px', marginTop: '30px', backgroundColor: '#fff' }}
 									>
-										233.000.000 ₫
-									</TableCell>
-								</TableRow>
-							</TableBody>
-						</Table>
-					</TableContainer>
-				</Grid>
-				<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-					<Button color="secondary" variant="contained">
-						Huy don hang
-					</Button>
-				</Grid>
-			</Grid>
+										{contentPayment()}
+									</Typography>
+								</Grid>
+							</Grid>
+						</Grid>
+						<Grid item xs={12}>
+							<TableContainer style={{ backgroundColor: '#fff' }}>
+								<Table>
+									<TableHead>
+										<TableRow>
+											<TableCell colSpan={2}>
+												<Typography style={{ fontWeight: 'bold' }} variant="body1">
+													Sản phẩm
+												</Typography>
+											</TableCell>
+											<TableCell>
+												<Typography style={{ fontWeight: 'bold' }} variant="body1">
+													Gia
+												</Typography>
+											</TableCell>
+											<TableCell>
+												<Typography style={{ fontWeight: 'bold' }} variant="body1">
+													So luong
+												</Typography>
+											</TableCell>
+											<TableCell style={{ fontWeight: 'bold' }} align="right">
+												<Typography variant="body1">Tam tinh</Typography>
+											</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{dataOrderId.billdetail?.map((item: any) => {
+											return (
+												<TableRow>
+													<TableCell style={{ paddingRight: 0 }}>
+														<img width="71px" src={`http://localhost:8000/${item.image}`} />
+													</TableCell>
+													<TableCell>
+														<Typography gutterBottom>{item.name_product}</Typography>
+														{dataOrderId.bill?.status === '4' && (
+															<Typography>
+																{item.rate === 0 && (
+																	<Button
+																		variant="outlined"
+																		color="secondary"
+																		style={{ textTransform: 'inherit', marginRight: '5px' }}
+																		onClick={() => {
+																			setOpen(true);
+																			setDataDialog({
+																				...dataDialog,
+																				idBillDetail: item.id_detail,
+																				idProduct: item.id_product,
+																				link: item.image,
+																				name: item.name_product,
+																				price: item.price,
+																			});
+																		}}
+																	>
+																		Danh gia
+																	</Button>
+																)}
+
+																<Button
+																	variant="outlined"
+																	color="secondary"
+																	style={{ textTransform: 'inherit' }}
+																	onClick={() => {
+																		history.push(
+																			`/product_detail/${toURL(item?.name_product)}-${
+																				item.id_product
+																			}.html`
+																		);
+																	}}
+																>
+																	Mua lai
+																</Button>
+															</Typography>
+														)}
+													</TableCell>
+													<TableCell>
+														<Typography variant="body1">
+															{Intl.NumberFormat('en-US').format(Number(item.price))}đ
+														</Typography>
+													</TableCell>
+													<TableCell>
+														<Typography variant="body1">{item.quantity}</Typography>
+													</TableCell>
+													<TableCell align="right">
+														<Typography variant="body1">
+															{Intl.NumberFormat('en-US').format(
+																Number(item.quantity * item.price)
+															)}
+															đ
+														</Typography>
+													</TableCell>
+												</TableRow>
+											);
+										})}
+										<TableRow>
+											<TableCell rowSpan={2} colSpan={3} />
+											<TableCell>
+												<Typography variant="body1">Tổng cộng</Typography>
+											</TableCell>
+											<TableCell
+												align="right"
+												style={{ color: `rgb(${255}, ${59}, ${39})`, fontSize: '16px' }}
+											>
+												<Typography variant="body1">
+													{Intl.NumberFormat('en-US').format(Number(dataOrderId.bill?.total))}đ
+												</Typography>
+											</TableCell>
+										</TableRow>
+									</TableBody>
+								</Table>
+							</TableContainer>
+						</Grid>
+						{dataOrderId.bill?.status === '1' && (
+							<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+								<Button color="secondary" variant="contained">
+									Huy don hang
+								</Button>
+							</Grid>
+						)}
+					</Grid>
+					<Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth>
+						<RatingComponent action={action} data={dataDialog} />
+					</Dialog>
+				</React.Fragment>
+			)}
 		</Container>
 	);
 };

@@ -57,7 +57,7 @@ function SampleNextArrow(props: any) {
 	return (
 		<div
 			className={className}
-			style={{ ...style, display: 'block', background: 'grey' }}
+			style={{ ...style, display: 'block', background: '#cacaca' }}
 			onClick={onClick}
 		/>
 	);
@@ -67,7 +67,7 @@ function SamplePrevArrow(props: any) {
 	return (
 		<div
 			className={className}
-			style={{ ...style, display: 'block', background: 'grey' }}
+			style={{ ...style, display: 'block', background: '#cacaca' }}
 			onClick={onClick}
 		/>
 	);
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
 		paddingLeft: theme.spacing(13),
-		backgroundColor: '#fff',
+		backgroundColor: '#f4f4f4',
 
 		// marginBottom: '10px',
 	},
@@ -157,7 +157,7 @@ const ProductDetail: React.FC = () => {
 		5: 'Tuyệt vời quá',
 	};
 	const settings = {
-		dots: true,
+		//dots: true,
 		infinite: true,
 		speed: 500,
 		slidesToShow: 5,
