@@ -108,12 +108,12 @@ class AuthController extends Controller
         $user=User::where('email',$request->email)->pluck('isadmin')->first();
         if($user=='user'){
             $payloadable = [
-                'isAdmin'=>true
+                'isAdmin'=>false
             ];
         }
         else{
             $payloadable = [
-                'isAdmin'=>false
+                'isAdmin'=>'admin'
             ];
         }
         $credentials = $request->only('email', 'password');
