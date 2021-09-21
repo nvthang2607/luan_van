@@ -109,12 +109,20 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($validator->validated())) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
-        $payload = JWTFactory::sub('555')
-        ->isadmin('tao nè sang')
-        ->make();
-        $payload = JWTFactory::isadmin('tao nè sang')->make();
-        $token = JWTAuth::encode($payload);
-        return $this->createNewToken($token);
+        $payloadable = [
+            'is_admin'=>'5555'
+        ];
+
+        // Generate the token.
+        $token = jwtAuth::encode( JWTFactory::make( $payloadable ));
+        return response()->json([
+            'errorCode'=> null,
+            'data' => ['accessToken'=>$token->get()],
+            //'token_type' => 'bearer',
+            //'expires_in' => auth()->factory()->getTTL() * 60,
+            //'user' => auth()->user()
+        ]);
+        //return $this->createNewToken($token);
     }
 
     public function post_login_google(Request $req){
@@ -137,6 +145,7 @@ class AuthController extends Controller
         // catch(Exception  $e){
         //     echo $e;
         // }
+        
         return $this->createNewToken($token);
     }
 
@@ -231,7 +240,7 @@ class AuthController extends Controller
     protected function createNewToken($token){
         return response()->json([
             'errorCode'=> null,
-            'data' => ['accessToken'=>$token->get()],
+            'data' => ['accessToken'=>$token],
             //'token_type' => 'bearer',
             //'expires_in' => auth()->factory()->getTTL() * 60,
             //'user' => auth()->user()
