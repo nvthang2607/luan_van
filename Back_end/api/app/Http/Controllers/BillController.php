@@ -77,8 +77,6 @@ class BillController extends Controller
         $customer=Customer::where('email',$email)->get();
         $bills=collect();
         foreach($customer as $customer){
-            // $bill=$customer->bill;
-            // echo $bill;
             $items=[];
             $product=BillDetail::where('id_bill',$customer->bill->id)->get();
             foreach($product as $item){
@@ -105,7 +103,7 @@ class BillController extends Controller
             $month=$date->month;
             $year=$date->year;
             $date=$t.$day.'/'.$month.'/'.$year;
-
+            
             $bills[]=[
                 'bill'=>[
                     'id'=>$customer->bill->id,
@@ -123,9 +121,15 @@ class BillController extends Controller
                 'status'=>$stt
             ];
         }
+        if($req->status!=0){
+            foreach($bills as $key=>$value){
+                if($value['status']!=$req->status){
+                    $bills->forget($key);
+                }
+            }
+        }
         $n=$bills->count();
         $bills=$bills->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
     }
 }

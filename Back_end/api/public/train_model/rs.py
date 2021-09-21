@@ -122,27 +122,27 @@ class CF(object):
                 # print ('    for user ', u+1, ': ', i[1:2])
 
 #train
-r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
+# r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
 
 
 # #2 dòng dưới của thắng chạy
-ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
-ratings_test = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
-# #2 dòng dưới của sang chạy
-# # ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
-# # ratings_test = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
-# # # bắt đầu từ 0
-ratings_base.drop('unix_timestamp',axis='columns', inplace=True)
-ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
+# ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
+# ratings_test = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
+# # #2 dòng dưới của sang chạy
+# # # ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/ua.base', sep='\t', names=r_cols, encoding='latin-1')
+# # # ratings_test = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/ua.test', sep='\t', names=r_cols, encoding='latin-1')
+# # # # bắt đầu từ 0
+# ratings_base.drop('unix_timestamp',axis='columns', inplace=True)
+# ratings_test.drop('unix_timestamp',axis='columns', inplace=True)
 
 
-rate_train = ratings_base.values
-rate_test = ratings_test.values
-# # n_train = rate_train.shape[0]
-# # n_tests = rate_test.shape[0]
+# rate_train = ratings_base.values
+# rate_test = ratings_test.values
+# # # n_train = rate_train.shape[0]
+# # # n_tests = rate_test.shape[0]
 
-rs = CF(rate_train, k = 50)
-rs.fit()
+# rs = CF(rate_train, k = 50)
+# rs.fit()
 # # # u=rs.recommend(1)
 # # # print(rs.pred(1,33))
 # # SE = 0 # squared error
@@ -157,8 +157,8 @@ rs.fit()
 
 #web
 r_cols = ['user_id', 'item_id', 'rating']
-# ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
-ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+# ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
 
 rate_train = ratings_base.values
 n_train = rate_train.shape[0]
