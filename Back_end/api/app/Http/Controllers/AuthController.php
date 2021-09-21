@@ -98,16 +98,24 @@ class AuthController extends Controller
      */
     public function post_login(Request $request){
     	$validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
-        $payloadable = [
-            'is_admin'=>'5555'
-        ];
+        $user=User::where('email',$req->email)->pluck('isadmin')->first();
+        if($user=='user'){
+            $payloadable = [
+                'isAdmin'=>true
+            ];
+        }
+        else{
+            $payloadable = [
+                'isAdmin'=>false
+            ];
+        }
         $credentials = $request->only('email', 'password');
         if (! $token = auth::claims($payloadable)->attempt($credentials)) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
