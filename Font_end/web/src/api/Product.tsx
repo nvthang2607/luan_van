@@ -41,3 +41,9 @@ export const OrderPost = (data: any) => {
 	});
 	return response;
 };
+export const RecommendPost = (data: any) => {
+	const response = callApi('POST', `/api/users/recommend`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};

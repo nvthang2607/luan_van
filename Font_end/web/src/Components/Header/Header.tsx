@@ -306,7 +306,6 @@ const Header: React.FC<Props> = (props) => {
 		if (searchParams.has('query')) {
 			setValueSearch(searchParams.get('query') || '');
 			//console.log(searchParams.get('type'));
-			//console.log('sanggggggggggggggggggggg');
 		} else {
 			setValueSearch('');
 		}
@@ -315,6 +314,8 @@ const Header: React.FC<Props> = (props) => {
 			const date = Date.now();
 			if (token) {
 				const checkToken: any = jwtDecode(token);
+				console.log(checkToken);
+
 				if (checkToken.exp < date / 1000) {
 					localStorage.removeItem('token');
 				} else {

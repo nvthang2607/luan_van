@@ -169,9 +169,9 @@ const ProductSale: React.FC = () => {
 		}
 	};
 	const now = new Date().getTime();
-	const countdownTime = new Date('24 Sep, 2021 17:30:00').getTime();
+	const countdownTime = new Date('24 Sep, 2021 20:35:00').getTime();
 	const distance = countdownTime - now;
-	const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	//const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 	const seconds = Math.floor((distance % (1000 * 60)) / 1000);
@@ -289,8 +289,10 @@ const ProductSale: React.FC = () => {
 									textAlign: 'center',
 								}}
 							>
-								<Typography component="span">Ket thuc trong</Typography>
-								{days > 0 && (
+								<Typography component="span" style={{ marginRight: '10px' }}>
+									Ket thuc trong
+								</Typography>
+								{/* {days > 0 && (
 									<React.Fragment>
 										<Typography
 											component="span"
@@ -307,7 +309,7 @@ const ProductSale: React.FC = () => {
 											ngay
 										</Typography>
 									</React.Fragment>
-								)}
+								)} */}
 								<Box>
 									<Typography className={classes.coutdown}>
 										<Typography
@@ -318,7 +320,7 @@ const ProductSale: React.FC = () => {
 												fontWeight: 'bold',
 											}}
 										>
-											{hours}
+											{hours < 10 ? '0' + hours : hours}
 										</Typography>
 										<Divider style={{ backgroundColor: 'red' }} />
 										<Typography
@@ -354,7 +356,7 @@ const ProductSale: React.FC = () => {
 												fontWeight: 'bold',
 											}}
 										>
-											{minutes}
+											{minutes < 10 ? '0' + minutes : minutes}
 										</Typography>
 										<Divider style={{ backgroundColor: 'red' }} />
 										<Typography
@@ -390,6 +392,7 @@ const ProductSale: React.FC = () => {
 												fontWeight: 'bold',
 											}}
 										>
+											{/* {seconds < 10 ? '0' + seconds : seconds} */}
 											{seconds}
 										</Typography>
 										<Divider style={{ backgroundColor: 'red' }} />

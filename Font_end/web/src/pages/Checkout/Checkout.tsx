@@ -378,8 +378,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 			gender: dataInforOrder.gender,
 			email: dataInforOrder.email,
 			phone: dataInforOrder.phone,
-			address:
-				dataInforOrder.idCommune + ',' + dataInforOrder.idDistrict + ',' + dataInforOrder.idCity,
+			address: dataInforOrder.address,
 			total: totalPrice(),
 			payment: shippingMethod,
 			note: dataInforOrder.note,

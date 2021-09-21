@@ -27,6 +27,9 @@ import MainLayoutCheckout from './pages/Checkout/MainLayoutCheckout';
 import Search from './pages/Search/Search';
 import Order from './pages/Order/Order';
 import NewsDetail from './pages/NewsDetail/NewsDetail';
+import MainView from './pages/Views/MainView';
+import Login from './pages/Login/Login';
+import LoginLayout from './Layouts/LoginLayout';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -86,7 +89,9 @@ function App() {
 											]}
 										>
 											<Switch>
-												<Route path={AppURL.VIEWS} component={View} />
+												<Route path={AppURL.VIEWS}>
+													<MainView />
+												</Route>
 												<Route path={AppURL.PRODUCTDETAIL} component={ProductDetail} />
 												<Route path={AppURL.CHECKOUT} component={MainLayoutCheckout} />
 												<Route path={AppURL.SEARCH} component={Search} />
@@ -102,6 +107,16 @@ function App() {
 								</Home>
 							</Route>
 							<Route exact path="/account" component={Account} />
+							<Route exact path="/admin" component={() => <Redirect to={AppURL.LOGIN} />} />
+							<Route path={[AppURL.LOGIN]}>
+								<Switch>
+									<Route path={AppURL.LOGIN}>
+										<LoginLayout>
+											<Login />
+										</LoginLayout>
+									</Route>
+								</Switch>
+							</Route>
 							<Route path="*" component={NotFound} />
 						</Switch>
 					</ClientLayout>

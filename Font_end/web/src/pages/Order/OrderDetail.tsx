@@ -189,13 +189,13 @@ const OrderDetail: React.FC = () => {
 	}, [id, refresh]);
 	const contentStatus = () => {
 		let result = '';
-		if (dataOrderId?.bill?.status === '1') {
+		if (dataOrderId?.bill?.status == '1') {
 			result = 'Dang cho duyet';
-		} else if (dataOrderId?.bill?.status === '4') {
+		} else if (dataOrderId?.bill?.status == '4') {
 			result = 'Da hoan thanh';
-		} else if (dataOrderId?.bill?.status === '2') {
+		} else if (dataOrderId?.bill?.status == '2') {
 			result = 'Đã đóng gói';
-		} else if (dataOrderId?.bill?.status === '3') {
+		} else if (dataOrderId?.bill?.status == '3') {
 			result = 'Đang vận chuyển';
 		}
 		return result;
@@ -225,15 +225,15 @@ const OrderDetail: React.FC = () => {
 	};
 	const numberStatus = () => {
 		let result = -1;
-		if (dataOrderId.bill?.status === '1') {
+		if (dataOrderId.bill?.status == '1') {
 			result = 0;
-		} else if (dataOrderId.bill?.status === '2') {
+		} else if (dataOrderId.bill?.status == '2') {
 			result = 1;
-		} else if (dataOrderId.bill?.status === '3') {
+		} else if (dataOrderId.bill?.status == '3') {
 			result = 2;
-		} else if (dataOrderId.bill?.status === '4') {
+		} else if (dataOrderId.bill?.status == '4') {
 			result = 3;
-		} else if (dataOrderId.bill?.status === '5') {
+		} else if (dataOrderId.bill?.status == '5') {
 			result = -1;
 		}
 		return result;
@@ -255,7 +255,7 @@ const OrderDetail: React.FC = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<Typography variant="body1" style={{ textAlign: 'end' }}>
-								Ngày đặt hàng: 18:02 08/01/2020
+								Ngày đặt hàng: {dataOrderId.bill?.created_at}
 							</Typography>
 						</Grid>
 						<Grid item xs={12}>
@@ -277,6 +277,46 @@ const OrderDetail: React.FC = () => {
 							<Grid container spacing={3}>
 								<Grid item xs={6}>
 									<Typography variant="body1">ĐỊA CHỈ NGƯỜI NHẬN</Typography>
+									<Typography
+										style={{ marginLeft: '10px', marginTop: '30px', backgroundColor: '#fff' }}
+									>
+										<Typography variant="body1" gutterBottom>
+											<Typography component="span" style={{ fontWeight: 'bold' }}>
+												Ho ten:
+											</Typography>
+											&nbsp;
+											<Typography component="span">{dataOrderId.bill?.name_customer}</Typography>
+										</Typography>
+										<Typography variant="body1" gutterBottom>
+											<Typography component="span" style={{ fontWeight: 'bold' }}>
+												Gioi tinh:
+											</Typography>
+											&nbsp;
+											<Typography component="span">{dataOrderId.bill?.gender_customer}</Typography>
+										</Typography>
+										<Typography variant="body1" gutterBottom>
+											<Typography component="span" style={{ fontWeight: 'bold' }}>
+												So dien thoai:
+											</Typography>
+											&nbsp;
+											<Typography component="span">{dataOrderId.bill?.phone_customer}</Typography>
+										</Typography>
+										<Typography variant="body1" gutterBottom>
+											<Typography component="span" style={{ fontWeight: 'bold' }}>
+												Dia chi:
+											</Typography>
+											&nbsp;
+											<Typography component="span">{dataOrderId.bill?.address_customer}</Typography>
+										</Typography>
+
+										<Typography variant="body1" gutterBottom>
+											<Typography component="span" style={{ fontWeight: 'bold' }}>
+												Ghi chu:
+											</Typography>
+											&nbsp;
+											<Typography component="span">{dataOrderId.bill?.note}</Typography>
+										</Typography>
+									</Typography>
 								</Grid>
 								<Grid item xs={6}>
 									<Typography variant="body1">HÌNH THỨC GIAO HÀNG</Typography>
@@ -322,7 +362,7 @@ const OrderDetail: React.FC = () => {
 													</TableCell>
 													<TableCell>
 														<Typography gutterBottom>{item.name_product}</Typography>
-														{dataOrderId.bill?.status === '4' && (
+														{dataOrderId.bill?.status == '4' && (
 															<Typography>
 																{item.rate === 0 && (
 																	<Button
@@ -399,7 +439,7 @@ const OrderDetail: React.FC = () => {
 								</Table>
 							</TableContainer>
 						</Grid>
-						{dataOrderId.bill?.status === '1' && (
+						{dataOrderId.bill?.status == '1' && (
 							<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 								<Button color="secondary" variant="contained">
 									Huy don hang

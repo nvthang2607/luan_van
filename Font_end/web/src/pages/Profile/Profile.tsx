@@ -165,11 +165,39 @@ const Profile: React.FC = (props) => {
 								<Typography style={{ paddingLeft: '36px' }}>Tat ca don hang</Typography>
 							</NavLink>
 							<NavLink
-								to={AppURL.ORDER_WAITING}
+								to={AppURL.ORDER_PENDING}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
 								<Typography style={{ paddingLeft: '36px' }}>Don hang dang cho duyet</Typography>
+							</NavLink>
+							<NavLink
+								to={AppURL.ORDER_PROCESSING}
+								className={classes.tagLi}
+								activeClassName={classes.activeTagLi}
+							>
+								<Typography style={{ paddingLeft: '36px' }}>Don hang da dong goi</Typography>
+							</NavLink>
+							<NavLink
+								to={AppURL.ORDER_SHIPPING}
+								className={classes.tagLi}
+								activeClassName={classes.activeTagLi}
+							>
+								<Typography style={{ paddingLeft: '36px' }}>Don hang dang van chuyen</Typography>
+							</NavLink>
+							<NavLink
+								to={AppURL.ORDER_COMPLETED}
+								className={classes.tagLi}
+								activeClassName={classes.activeTagLi}
+							>
+								<Typography style={{ paddingLeft: '36px' }}>Don hang da hoan thanh</Typography>
+							</NavLink>
+							<NavLink
+								to={AppURL.ORDER_CANCELLED}
+								className={classes.tagLi}
+								activeClassName={classes.activeTagLi}
+							>
+								<Typography style={{ paddingLeft: '36px' }}>Don hang da hoan thanh</Typography>
 							</NavLink>
 						</Box>
 					</Card>
@@ -182,8 +210,11 @@ const Profile: React.FC = (props) => {
 							AppURL.PROFILE_INFO,
 							AppURL.PROFILE_CHANGEPWD,
 							AppURL.ORDER_DETAIL,
-							AppURL.ORDER_WAITING,
+							AppURL.ORDER_CANCELLED,
 							AppURL.ORDER_ALL,
+							AppURL.ORDER_COMPLETED,
+							AppURL.ORDER_PENDING,
+							AppURL.ORDER_SHIPPING,
 						]}
 					>
 						<Switch>
@@ -198,11 +229,24 @@ const Profile: React.FC = (props) => {
 								)}
 							</Route>
 							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
-							<Route path={AppURL.ORDER_WAITING}>
-								<OrderStatus title="Don hang dang cho duyet" name="waiting" />
+							<Route path={AppURL.ORDER_COMPLETED}>
+								<OrderStatus title="Don hang da hoan thanh" name={AppURL.ORDER_COMPLETED} />
 							</Route>
+
 							<Route path={AppURL.ORDER_ALL}>
-								<OrderStatus title="Tat ca don hang" name="all" />
+								<OrderStatus title="Tat ca don hang" name={AppURL.ORDER_ALL} />
+							</Route>
+							<Route path={AppURL.ORDER_PENDING}>
+								<OrderStatus title="Don hang dang cho duyet" name={AppURL.ORDER_PENDING} />
+							</Route>
+							<Route path={AppURL.ORDER_SHIPPING}>
+								<OrderStatus title="Don hang dang van chuyen" name={AppURL.ORDER_SHIPPING} />
+							</Route>
+							<Route path={AppURL.ORDER_PROCESSING}>
+								<OrderStatus title="Don hang da dong goi" name={AppURL.ORDER_PROCESSING} />
+							</Route>
+							<Route path={AppURL.ORDER_CANCELLED}>
+								<OrderStatus title="Don hang da huy" name={AppURL.ORDER_CANCELLED} />
 							</Route>
 							<Route path={AppURL.ORDER_DETAIL}>
 								<OrderDetail />

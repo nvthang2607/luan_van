@@ -26,7 +26,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import { Pagination } from '@material-ui/lab';
 import clsx from 'clsx';
 import { getDataFilter, updateDataFilter } from './FilterSlice';
-
+import { ShowChart } from '@material-ui/icons';
+import { AppURL } from '../../utils/const';
+interface ViewProps {
+	name?: string;
+}
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -68,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const View: React.FC = () => {
+const View: React.FC<ViewProps> = (props) => {
 	const classes = useStyles();
 	const [anchorElSort, setAnchorElSort] = React.useState<HTMLButtonElement | null>(null);
 
@@ -145,6 +149,7 @@ const View: React.FC = () => {
 	// getValueFilter();
 
 	const [option, setOpion] = React.useState(searchParams.get('sortBy'));
+	console.log(window.location.pathname);
 
 	React.useEffect(() => {
 		setProgress(true);
@@ -364,6 +369,9 @@ const View: React.FC = () => {
 			toast.error('ko du so luong');
 		}
 	};
+	const ShowFilter = (element: any) => {
+		if (props.name === AppURL.VIEWS_PHONE) return element;
+	};
 	return (
 		<Grid container className={classes.bgHeader}>
 			<React.Fragment>
@@ -476,165 +484,175 @@ const View: React.FC = () => {
 						</Box>
 					</Grid>
 				)}
+				{ShowFilter(
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginBottom: '20px' }}>
+						<Box>
+							<List>
+								<ListItem>
+									<Card
+										variant="outlined"
+										style={{
+											padding: '10px',
+											display: 'flex',
+											cursor: 'pointer',
+											alignItems: 'center',
+										}}
+									>
+										<i className="fa fa-filter" aria-hidden="true"></i>&nbsp;
+										<Typography variant="body1">Bo loc</Typography>
+									</Card>
+									&nbsp;&nbsp;
+									<Card
+										variant="outlined"
+										style={{ padding: '10px', display: 'flex', cursor: 'pointer' }}
+										onClick={handleClickPrice}
+									>
+										<Typography variant="body1">Gia san pham</Typography>
 
-				<Grid item xs={12} style={{ backgroundColor: '#fff', marginBottom: '20px' }}>
-					<Box>
-						<List>
-							<ListItem>
-								<Card
-									variant="outlined"
-									style={{
-										padding: '10px',
-										display: 'flex',
-										cursor: 'pointer',
-										alignItems: 'center',
-									}}
-								>
-									<i className="fa fa-filter" aria-hidden="true"></i>&nbsp;
-									<Typography variant="body1">Bo loc</Typography>
-								</Card>
-								&nbsp;&nbsp;
-								<Card
-									variant="outlined"
-									style={{ padding: '10px', display: 'flex', cursor: 'pointer' }}
-									onClick={handleClickPrice}
-								>
-									<Typography variant="body1">Gia san pham</Typography>
-
-									<ArrowDropDownIcon />
-								</Card>
-								<Popover
-									id={idPrice}
-									open={openPrice}
-									anchorEl={anchorElPrice}
-									onClose={handleClosePrice}
-									anchorOrigin={{
-										vertical: 'bottom',
-										horizontal: 'center',
-									}}
-									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'center',
-									}}
-								>
-									<List>
-										<ListItem>
-											<Button
-												variant="outlined"
-												style={{ textTransform: 'inherit' }}
-												onClick={() => handlePriceAbout('1_3', '1000000-3000000')}
-												className={clsx(classes.button, {
-													[classes.stylePriceAbout]: priceAbout1_3,
-												})}
-											>
-												1.000.000d - 3.000.000d
-											</Button>
-											&nbsp;&nbsp;
-											<Button
-												variant="outlined"
-												style={{ textTransform: 'inherit' }}
-												onClick={() => handlePriceAbout('3_5', '3000000-5000000')}
-												className={clsx(classes.button, {
-													[classes.stylePriceAbout]: priceAbout3_5,
-												})}
-											>
-												3.000.000d - 5.000.000d
-											</Button>
-										</ListItem>
-										<ListItem>
-											<Button
-												variant="outlined"
-												style={{ textTransform: 'inherit' }}
-												onClick={() => handlePriceAbout('5_7', '5000000-7000000')}
-												className={clsx(classes.button, {
-													[classes.stylePriceAbout]: priceAbout5_7,
-												})}
-											>
-												5.000.000d - 7.000.000d
-											</Button>
-											&nbsp;&nbsp;
-											<Button
-												variant="outlined"
-												style={{ textTransform: 'inherit' }}
-												onClick={() => handlePriceAbout('7_', 'tren7trieu')}
-												className={clsx(classes.button, {
-													[classes.stylePriceAbout]: priceAboutTren7,
-												})}
-											>
-												Tren 7 trieu
-											</Button>
-										</ListItem>
-									</List>
-								</Popover>
-							</ListItem>
-							<ListItem style={{ display: 'contents' }}>
-								{!progress && (
-									<Box style={{ float: 'left', marginLeft: '16px' }}>
-										{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										<ArrowDropDownIcon />
+									</Card>
+									<Popover
+										id={idPrice}
+										open={openPrice}
+										anchorEl={anchorElPrice}
+										onClose={handleClosePrice}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'center',
+										}}
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'center',
+										}}
+									>
+										<List>
+											<ListItem>
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('1_3', '1000000-3000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout1_3,
+													})}
+												>
+													1.000.000d - 3.000.000d
+												</Button>
+												&nbsp;&nbsp;
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('3_5', '3000000-5000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout3_5,
+													})}
+												>
+													3.000.000d - 5.000.000d
+												</Button>
+											</ListItem>
+											<ListItem>
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('5_7', '5000000-7000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout5_7,
+													})}
+												>
+													5.000.000d - 7.000.000d
+												</Button>
+												&nbsp;&nbsp;
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('7_', 'tren7trieu')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAboutTren7,
+													})}
+												>
+													Tren 7 trieu
+												</Button>
+											</ListItem>
+										</List>
+									</Popover>
+								</ListItem>
+								<ListItem style={{ display: 'contents' }}>
+									{!progress && (
+										<Box style={{ float: 'left', marginLeft: '16px' }}>
+											{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
 											 san pham duoc tim thay
 										</Typography> */}
-										<Typography variant="h6" style={{ display: 'contents' }}>
-											<Typography variant="h6" style={{ fontWeight: 'bold', display: 'contents' }}>
-												{dataFilter.totalCount}
+											<Typography variant="h6" style={{ display: 'contents' }}>
+												<Typography
+													variant="h6"
+													style={{ fontWeight: 'bold', display: 'contents' }}
+												>
+													{dataFilter.totalCount}
+												</Typography>
+												&nbsp;san pham duoc tim thay
 											</Typography>
-											&nbsp;san pham duoc tim thay
-										</Typography>
+										</Box>
+									)}
+									<Box
+										style={{
+											float: 'right',
+											display: 'flex',
+											alignItems: 'center',
+											cursor: 'pointer',
+											paddingRight: '20px',
+										}}
+										aria-describedby={idSort}
+										onClick={handleClickSort}
+									>
+										<i className="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+										&nbsp;
+										<Typography variant="body1">Xep theo</Typography>
 									</Box>
-								)}
-								<Box
-									style={{
-										float: 'right',
-										display: 'flex',
-										alignItems: 'center',
-										cursor: 'pointer',
-										paddingRight: '20px',
-									}}
-									aria-describedby={idSort}
-									onClick={handleClickSort}
-								>
-									<i className="fa fa-sort-alpha-desc" aria-hidden="true"></i>
-									&nbsp;
-									<Typography variant="body1">Xep theo</Typography>
-								</Box>
-								<Popover
-									id={idSort}
-									open={openSort}
-									anchorEl={anchorElSort}
-									onClose={handleCloseSort}
-									anchorOrigin={{
-										vertical: 'bottom',
-										horizontal: 'center',
-									}}
-									transformOrigin={{
-										vertical: 'top',
-										horizontal: 'center',
-									}}
-								>
-									<List>
-										<ListItem button divider onClick={() => handleSortBy('nameASC')}>
-											<Typography variant="body1">Ten A-Z</Typography>
-											{option === 'nameASC' && <i className="fa fa-check" aria-hidden="true"></i>}
-										</ListItem>
-										<ListItem button divider>
-											<Typography variant="body1" onClick={() => handleSortBy('nameDESC')}>
-												Ten Z-A
-											</Typography>
-											{option === 'nameDESC' && <i className="fa fa-check" aria-hidden="true"></i>}
-										</ListItem>
-										<ListItem button divider onClick={() => handleSortBy('priceDESC')}>
-											<Typography variant="body1">Gia thap den cao</Typography>
-											{option === 'priceDESC' && <i className="fa fa-check" aria-hidden="true"></i>}
-										</ListItem>
-										<ListItem button onClick={() => handleSortBy('priceASC')}>
-											<Typography variant="body1">Gia cao xuong thap</Typography>
-											{option === 'priceASC' && <i className="fa fa-check" aria-hidden="true"></i>}
-										</ListItem>
-									</List>
-								</Popover>
-							</ListItem>
-						</List>
-					</Box>
-				</Grid>
+									<Popover
+										id={idSort}
+										open={openSort}
+										anchorEl={anchorElSort}
+										onClose={handleCloseSort}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'center',
+										}}
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'center',
+										}}
+									>
+										<List>
+											<ListItem button divider onClick={() => handleSortBy('nameASC')}>
+												<Typography variant="body1">Ten A-Z</Typography>
+												{option === 'nameASC' && <i className="fa fa-check" aria-hidden="true"></i>}
+											</ListItem>
+											<ListItem button divider>
+												<Typography variant="body1" onClick={() => handleSortBy('nameDESC')}>
+													Ten Z-A
+												</Typography>
+												{option === 'nameDESC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+											<ListItem button divider onClick={() => handleSortBy('priceDESC')}>
+												<Typography variant="body1">Gia thap den cao</Typography>
+												{option === 'priceDESC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+											<ListItem button onClick={() => handleSortBy('priceASC')}>
+												<Typography variant="body1">Gia cao xuong thap</Typography>
+												{option === 'priceASC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+										</List>
+									</Popover>
+								</ListItem>
+							</List>
+						</Box>
+					</Grid>
+				)}
 
 				<Grid item xs={12} style={{ backgroundColor: '#fff' }}>
 					<Grid container>
