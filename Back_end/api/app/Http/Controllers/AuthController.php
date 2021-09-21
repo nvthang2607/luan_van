@@ -105,19 +105,17 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
-        $credentials = $request->only('email', 'password');
-        if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
-        }
         $payloadable = [
             'is_admin'=>'5555'
         ];
-
-        // Generate the token.
-        $token = jwtAuth::encode( JWTFactory::make( $payloadable ));
+        $credentials = $request->only('email', 'password');
+        if (! $token = auth::claims($payloadable)->attempt($credentials)) {
+            return response()->json(['errorCode'=> 2, 'data'=>null], 422);
+        }
+        
         return response()->json([
             'errorCode'=> null,
-            'data' => ['accessToken'=>$token->get()],
+            'data' => ['accessToken'=>$token],
             //'token_type' => 'bearer',
             //'expires_in' => auth()->factory()->getTTL() * 60,
             //'user' => auth()->user()
