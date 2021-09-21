@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 use File;
 use App\Models\User;
 use App\Models\Rating;
@@ -103,11 +104,11 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
-
-        if (! $token = auth()->attempt($validator->validated())) {
+        $credentials = $request->only('email', 'password');
+        $customClaims = ['isadmin' => 'bà nội cha mày'];
+        if (! $token = auth()->attempt($credentials,$customClaims)) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
-
         return $this->createNewToken($token);
     }
 
