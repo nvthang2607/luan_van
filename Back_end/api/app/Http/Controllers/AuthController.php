@@ -111,8 +111,6 @@ class AuthController extends Controller
         }
         $payload = JWTFactory::isadmin('tao nè sang')->make();
         $token = JWTAuth::encode($payload);
-        // $customClaims = ['isadmin'=>'tao nè sang'];
-        // $token = auth()->encode( JWTFactory::make( $customClaims ) );
         return $this->createNewToken($token);
     }
 
