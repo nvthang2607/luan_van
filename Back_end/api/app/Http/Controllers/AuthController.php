@@ -109,6 +109,9 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($validator->validated())) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
+        $payload = JWTFactory::sub('555')
+        ->isadmin('tao nè sang')
+        ->make();
         $payload = JWTFactory::isadmin('tao nè sang')->make();
         $token = JWTAuth::encode($payload);
         return $this->createNewToken($token);
