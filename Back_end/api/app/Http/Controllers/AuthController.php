@@ -105,7 +105,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
-        $user=User::where('email',$req->email)->pluck('isadmin')->first();
+        $user=User::where('email',$request->email)->pluck('isadmin')->first();
         if($user=='user'){
             $payloadable = [
                 'isAdmin'=>true
