@@ -423,8 +423,8 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		let nofi = -1;
 		let price = 0;
 
-		cartData.map((item: any) => {
-			item.promotion.map((itemPromotion: any) => {
+		cartData?.map((item: any) => {
+			item.promotion?.map((itemPromotion: any) => {
 				if (itemPromotion.code === voucher) {
 					price = itemPromotion.value;
 					nofi = 1;
