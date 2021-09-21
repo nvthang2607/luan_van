@@ -121,14 +121,7 @@ class AuthController extends Controller
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
         
-        return response()->json([
-            'errorCode'=> null,
-            'data' => ['accessToken'=>$token],
-            //'token_type' => 'bearer',
-            //'expires_in' => auth()->factory()->getTTL() * 60,
-            //'user' => auth()->user()
-        ]);
-        //return $this->createNewToken($token);
+        return $this->createNewToken($token);
     }
 
     public function post_login_google(Request $req){
