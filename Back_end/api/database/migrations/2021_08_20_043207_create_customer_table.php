@@ -17,7 +17,7 @@ class CreateCustomerTable extends Migration
             $table->id();
             $table->string('name',50);
             $table->string('gender',10);
-            $table->string('email',50)->unique();
+            $table->string('email',50);
             $table->string('phone',255);
             $table->string('address',255);
             $table->timestamp('created_at')->useCurrent();
