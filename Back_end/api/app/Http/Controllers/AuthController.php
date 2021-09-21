@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use File;
@@ -105,10 +106,13 @@ class AuthController extends Controller
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
         $credentials = $request->only('email', 'password');
-        $customClaims = ['isadmin' => 'bà nội cha mày'];
-        if (! $token = auth()->attempt($credentials,$customClaims)) {
+        if (! $token = auth()->attempt($validator->validated())) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
+        $payload = JWTFactory::isadmin('tao nè sang')->make();
+        $token = JWTAuth::encode($payload);
+        // $customClaims = ['isadmin'=>'tao nè sang'];
+        // $token = auth()->encode( JWTFactory::make( $customClaims ) );
         return $this->createNewToken($token);
     }
 
@@ -226,7 +230,7 @@ class AuthController extends Controller
     protected function createNewToken($token){
         return response()->json([
             'errorCode'=> null,
-            'data' => ['accessToken'=>$token],
+            'data' => ['accessToken'=>$token->get()],
             //'token_type' => 'bearer',
             //'expires_in' => auth()->factory()->getTTL() * 60,
             //'user' => auth()->user()
