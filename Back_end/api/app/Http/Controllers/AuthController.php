@@ -66,7 +66,7 @@ class AuthController extends Controller
         $user->password=bcrypt($req->password);
         $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
         $user->phone=$req->phone;
-        $user->isadmin=0;
+        $user->isadmin='user';
         $user->active=1;
         if($user->Save()){
             return response()->json(['errorCode'=> null,'data'=>true], 200);
@@ -128,16 +128,24 @@ class AuthController extends Controller
     	$validator = Validator::make($req->all(),[
             'email' => 'required|string|email|max:50',
         ]);
-        $credentials = $req->only('email');
-        $email=$req->email;
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
-        
+        $validator = Validator::make($req->all(),[
+            'email' => 'exists:users,email',
+        ]);
+        if ($validator->fails()) {
+            $user=new User;
+            $user->email=$req->email;
+            $user->name=$req->name;
+            $user->isadmin='user';
+            $user->active=1;
+            $user->password=bcrypt('1');
+            $user->save();
+        }
         if (! $token = ($user = Auth::getProvider()->retrieveByCredentials($req->only(['email'])))? Auth::login($user): false){
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
-        
         return $this->createNewToken($token);
     }
 
@@ -169,19 +177,44 @@ class AuthController extends Controller
     public function get_profile(){
         $name=auth()->user()->name;
         $email=auth()->user()->email;
-        $gender=auth()->user()->gender;
-        $phone =auth()->user()->phone ;
-        $address=auth()->user()->address;
-        $address = explode(", ", $address);
-        $idCommune=$address[0];
-        $idDistrict=$address[1];
-        $idCity=$address[2];
-        $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
-        // $nameCommune=$nameCommune->name;
-        $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
-        // $nameDistrict=$nameDistrict->name;
-        $nameCity=City::where('matp',$idCity)->pluck('name')->first();
-        // $nameCity=$nameCity->name;
+        if(!auth()->user()->gender){
+            $gender='';
+        }
+        else{
+            $gender=auth()->user()->gender;
+        }
+        
+        if(!auth()->user()->phone){
+            $phone='';
+        }
+        else{
+            $phone=auth()->user()->phone;
+        }
+        if(auth()->user()->address){
+            $address=auth()->user()->address;
+            $address = explode(", ", $address);
+            $idCommune=$address[0];
+            $idDistrict=$address[1];
+            $idCity=$address[2];
+            $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
+            // $nameCommune=$nameCommune->name;
+            $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
+            // $nameDistrict=$nameDistrict->name;
+            $nameCity=City::where('matp',$idCity)->pluck('name')->first();
+            // $nameCity=$nameCity->name;
+        }
+        else{
+            $idCommune='';
+            $idDistrict='';
+            $idCity='';
+            $nameCommune='';
+            // $nameCommune=$nameCommune->name;
+            $nameDistrict='';
+            // $nameDistrict=$nameDistrict->name;
+            $nameCity='';
+            // $nameCity=$nameCity->name;
+        }
+        
         return response()->json(['errorCode'=> null, 'data'=>['name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,
             'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune,'nameCommune'=>$nameCommune,'nameDistrict'=>$nameDistrict,'nameCity'=>$nameCity]]);
     }

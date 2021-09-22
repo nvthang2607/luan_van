@@ -18,7 +18,8 @@ Route::get('/', function () {
 });
 Route::get('test', function () {
     $date=Carbon::now('Asia/Ho_Chi_Minh');
-    echo $date.'<br>';
-    $date=$date->addDays(5);
-    echo $date;
+    // echo $date.'<br>';
+    // $date=$date->addDays(5);
+    // echo $date;
+
 });
