@@ -96,6 +96,7 @@ Route::group([
     'prefix' => 'product'
 
 ], function ($router) {
+    Route::get('/', [ProductController::class, 'get_product']);
     Route::get('/{id}', [ProductController::class, 'get_product_id']);
     Route::post('/rating', [ProductController::class, 'post_product_rating']);
     Route::post('/comment', [CommentController::class, 'post_product_comment']);

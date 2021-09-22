@@ -15,7 +15,7 @@ class ProductController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating']]);
+        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating','get_product']]);
     }
     public function get_product_id(request $req){
         $product=Product::find($req->id);
@@ -239,4 +239,39 @@ class ProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
         }
     }
+
+    public function get_product(request $req){
+        $product=Product::all()->sortByDesc("id");
+        $n=$product->count();
+        $data=[];
+        $datas=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        if(count($datas)>0){
+            $u=0;
+            foreach($datas as $i){
+                $promotions=[];
+                $image=Product::find($i->id)->image_product()->pluck('image')->first();
+                $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
+                $rate_number=$rate->count();
+                $avg=5;
+                if($rate_number>0){
+                    $t=0;
+                    foreach($rate as $r){
+                        $t=$t+$r->rate;
+                    }
+                    $avg=$t/$rate_number;
+                }
+                $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                foreach($promotion as $m){
+                    $promotions[count($promotions)]=$m;
+                }
+                $data[$u]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+                $u++;
+            }
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+            }
+        else{
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>[]]], 200);
+        }
+    }
+
 }
