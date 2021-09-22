@@ -47,3 +47,15 @@ export const RecommendPost = (data: any) => {
 	});
 	return response;
 };
+export const ProductNewPost = (data: any) => {
+	const response = callApi('POST', `/api/product`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const ProductSellPost = (data: any) => {
+	const response = callApi('POST', `/api/product`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};

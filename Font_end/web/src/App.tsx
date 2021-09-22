@@ -30,6 +30,7 @@ import NewsDetail from './pages/NewsDetail/NewsDetail';
 import MainView from './pages/Views/MainView';
 import Login from './pages/Login/Login';
 import LoginLayout from './Layouts/LoginLayout';
+import AdminLayout from './Layouts/AdminLayout';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -114,6 +115,13 @@ function App() {
 										<LoginLayout>
 											<Login />
 										</LoginLayout>
+									</Route>
+								</Switch>
+							</Route>
+							<Route path={[AppURL.ORDER_ALL_ADMIN]}>
+								<Switch>
+									<Route path={AppURL.ORDER_ALL_ADMIN}>
+										<AdminLayout />
 									</Route>
 								</Switch>
 							</Route>

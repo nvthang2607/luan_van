@@ -17,9 +17,15 @@ import {
 import React from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import HomeIcon from '@material-ui/icons/Home';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, Redirect, useHistory, useParams } from 'react-router-dom';
 import Product from '../../Components/Product/Product';
-import { FilterPost, SearchPhoneGet } from '../../api/Product';
+import {
+	FilterPost,
+	ProductNewPost,
+	ProductSellPost,
+	RecommendPost,
+	SearchPhoneGet,
+} from '../../api/Product';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
 import { toast, ToastContainer } from 'react-toastify';
@@ -28,6 +34,7 @@ import clsx from 'clsx';
 import { getDataFilter, updateDataFilter } from './FilterSlice';
 import { ShowChart } from '@material-ui/icons';
 import { AppURL } from '../../utils/const';
+import jwtDecode from 'jwt-decode';
 interface ViewProps {
 	name?: string;
 }
@@ -113,6 +120,7 @@ const View: React.FC<ViewProps> = (props) => {
 	const [priceAbout3_5, setPriceAbout3_5] = React.useState(false);
 	const [priceAbout5_7, setPriceAbout5_7] = React.useState(false);
 	const [priceAboutTren7, setPriceAboutTren7] = React.useState(false);
+	const [redirect, setRedirect] = React.useState(false);
 	const { phoneBranchId } = useParams<{ phoneBranchId?: string }>();
 	React.useEffect(() => {
 		const searchParams = new URLSearchParams(window.location.search);
@@ -198,25 +206,87 @@ const View: React.FC<ViewProps> = (props) => {
 		if (priceAboutTren7) {
 			valueFilter.push('>7000000');
 		}
-
-		const fetchFilter = async () => {
-			const getDataFilter = await FilterPost({
-				page: page,
-				pageSize: 24,
-				type: 'branch',
-				id: phoneBranchId,
-				piceAbout: valueFilter,
-			});
-			if (getDataFilter) {
-				if (getDataFilter.errorCode === null) {
-					console.log(getDataFilter);
-					setDataFilter(getDataFilter.data);
-					//dispatch(updateDataFilter(getDataFilter.data));
-					setProgress(false);
+		if (props.name === AppURL.RECOMMEND) {
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (window.localStorage.getItem('token')) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					setRedirect(true);
+				} else {
+					const fetchRecommend = async () => {
+						const getDataRecommend = await RecommendPost({
+							page: page,
+							pageSize: 24,
+						});
+						if (getDataRecommend) {
+							if (getDataRecommend.errorCode === null) {
+								console.log(getDataRecommend);
+								setDataFilter(getDataRecommend.data);
+								setProgress(false);
+							}
+						}
+					};
+					fetchRecommend();
 				}
+			} else {
+				setRedirect(true);
 			}
-		};
-		fetchFilter();
+		} else if (props.name === AppURL.NEW_PHONE) {
+			const fetchSellPhone = async () => {
+				const getDataSellPhone = await ProductNewPost({
+					page: page,
+					pageSize: 24,
+					type: 'new',
+				});
+				if (getDataSellPhone) {
+					if (getDataSellPhone.errorCode === null) {
+						console.log(getDataSellPhone);
+						setDataFilter(getDataSellPhone.data);
+						//dispatch(updateDataFilter(getDataFilter.data));
+						setProgress(false);
+					}
+				}
+			};
+			fetchSellPhone();
+		} else if (props.name === AppURL.SELL_PHONE) {
+			const fetchSellPhone = async () => {
+				const getDataSellPhone = await ProductSellPost({
+					page: page,
+					pageSize: 24,
+					type: 'sell',
+				});
+				if (getDataSellPhone) {
+					if (getDataSellPhone.errorCode === null) {
+						console.log(getDataSellPhone);
+						setDataFilter(getDataSellPhone.data);
+						//dispatch(updateDataFilter(getDataFilter.data));
+						setProgress(false);
+					}
+				}
+			};
+			fetchSellPhone();
+		} else {
+			const fetchFilter = async () => {
+				const getDataFilter = await FilterPost({
+					page: page,
+					pageSize: 24,
+					type: 'branch',
+					id: phoneBranchId,
+					piceAbout: valueFilter,
+				});
+				if (getDataFilter) {
+					if (getDataFilter.errorCode === null) {
+						console.log(getDataFilter);
+						setDataFilter(getDataFilter.data);
+						//dispatch(updateDataFilter(getDataFilter.data));
+						setProgress(false);
+					}
+				}
+			};
+			fetchFilter();
+		}
 	}, [
 		valueRefreshPage.value,
 		page,
@@ -225,6 +295,7 @@ const View: React.FC<ViewProps> = (props) => {
 		priceAbout3_5,
 		priceAbout5_7,
 		priceAboutTren7,
+		props.name,
 	]);
 
 	const handleSortBy = (name: string) => {
@@ -371,9 +442,34 @@ const View: React.FC<ViewProps> = (props) => {
 	};
 	const ShowFilter = (element: any) => {
 		if (props.name === AppURL.VIEWS_PHONE) return element;
+		else
+			return (
+				<Grid item xs={12} style={{ backgroundColor: '#fff', marginBottom: '20px' }}>
+					<Box>
+						<List>
+							<ListItem style={{ display: 'contents' }}>
+								{!progress && (
+									<Box style={{ float: 'left', marginLeft: '16px' }}>
+										{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
+							 san pham duoc tim thay
+						</Typography> */}
+										<Typography variant="h6" style={{ display: 'contents' }}>
+											<Typography variant="h6" style={{ fontWeight: 'bold', display: 'contents' }}>
+												{dataFilter.totalCount}
+											</Typography>
+											&nbsp;san pham duoc tim thay
+										</Typography>
+									</Box>
+								)}
+							</ListItem>
+						</List>
+					</Box>
+				</Grid>
+			);
 	};
 	return (
 		<Grid container className={classes.bgHeader}>
+			{redirect && <Redirect to={AppURL.ACCOUNT} />}
 			<React.Fragment>
 				<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
 					<Breadcrumbs aria-label="breadcrumb">
@@ -384,9 +480,7 @@ const View: React.FC<ViewProps> = (props) => {
 						<Link to="/" className={classes.link}>
 							Dien thoai
 						</Link>
-						<Link to="/" className={classes.link}>
-							oppo
-						</Link>
+
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
 					</Link> */}
