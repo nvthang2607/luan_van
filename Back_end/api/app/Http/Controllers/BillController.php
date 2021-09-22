@@ -14,7 +14,7 @@ class BillController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_bill_create']]);
+        $this->middleware('auth:api', ['except' => ['post_bill_create','post_bill_user_cancel_bill']]);
     }
     public function post_bill_create(request $req){
         $customer=new Customer;
@@ -130,5 +130,38 @@ class BillController extends Controller
         $n=$bills->count();
         $bills=$bills->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
+    }
+
+
+    public function post_bill_user_cancel_bill(request $req){
+        $email=Bill::find($req->id_bill)->customer->email;
+        if(!$email){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy hóa đơn!'], 500);
+        }
+        if(!auth()->user()){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không phải là người mua đơn hàng có id: '.$req->id_bill.'!'], 500);
+        }
+        else{
+            $email2=auth()->user()->email;
+            if($email!=$email2){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không phải là người mua đơn hàng có id: '.$req->id_bill.'!'], 500);
+            }
+        }
+        $stt=Bill::find($req->id_bill)->status->last();
+        if($stt){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không thể hủy đơn hàng có id: '.$req->id_bill.'!'], 500);
+        }
+        else{
+            $status=new Status;
+            $status->id_bill=$req->id_bill;
+            $status->id_user=auth()->user()->id;
+            $status->status=5;
+            
+            if($status->save()){
+                return response()->json(['errorCode'=> null, 'data'=>true], 200);
+            }else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);
+            }
+        }
     }
 }
