@@ -156,8 +156,11 @@ class BillController extends Controller
             $status->id_bill=$req->id_bill;
             $status->id_user=auth()->user()->id;
             $status->status=5;
-            
             if($status->save()){
+                $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
+                foreach($bill_detail as $item){
+                    
+                }
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
             }else{
                 return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);

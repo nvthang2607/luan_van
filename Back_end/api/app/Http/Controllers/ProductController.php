@@ -15,7 +15,7 @@ class ProductController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating','get_product_new']]);
+        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating','post_product']]);
     }
     public function get_product_id(request $req){
         $product=Product::find($req->id);
@@ -240,8 +240,13 @@ class ProductController extends Controller
         }
     }
 
-    public function get_product_new(request $req){
-        $product=Product::all()->sortByDesc("id");
+    public function post_product(request $req){
+        if($req->type=='new'){
+            $product=Product::all()->sortByDesc("id");
+        }
+        else{
+            $product=Product::all()->sortByDesc("count");
+        }
         $n=$product->count();
         $data=[];
         $datas=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
