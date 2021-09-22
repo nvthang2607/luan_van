@@ -26,7 +26,7 @@ class AddressController extends Controller
             'idCity' => 'exists:devvn_tinhthanhpho,matp',
         ]);
         if($validator->fails()){
-            return response()->json(['errorCode'=> 1], 400);
+            return response()->json(['errorCode'=> null,'data'=>[]], 200);
         }
         $district=District::where('matp',$req->idCity)->get(['name','maqh']);
         $data=[];
@@ -43,7 +43,7 @@ class AddressController extends Controller
         ]);
         
         if($validator->fails()){
-            return response()->json(['errorCode'=> 1], 400);
+            return response()->json(['errorCode'=> null,'data'=>[]], 200);
         }
         $commune=Commune::where('maqh',$req->idDistrict)->get(['xaid','name']);
         $data=[];
