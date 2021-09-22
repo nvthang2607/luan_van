@@ -132,7 +132,7 @@ Route::group([
     'prefix' => 'news'
 
 ], function ($router) {
-    Route::get('/', [NewsController::class, 'get_news']);
+    Route::post('/', [NewsController::class, 'post_news']);
     Route::get('/{id}', [NewsController::class, 'get_news_id']);
 });
 Route::group([

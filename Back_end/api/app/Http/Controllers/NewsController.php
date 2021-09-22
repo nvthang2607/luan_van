@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class NewsController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_news_id','get_news']]);
+        $this->middleware('auth:api', ['except' => ['get_news_id','post_news']]);
     }
     public function get_news_id(request $req){
         $news=News::find($req->id);
@@ -20,7 +20,7 @@ class NewsController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
         }
     }
-    public function get_news(request $req){
+    public function post_news(request $req){
         $news=News::all()->sortByDesc("id");
         $n=$news->count();
         $data=[];
