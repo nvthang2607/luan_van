@@ -89,6 +89,11 @@ class BillController extends Controller
             else{
                 $stt=1;
             }
+            if($req->status!=0){
+                if($req->status!=$stt){
+                    continue;
+                }
+            }
             $date= $customer->bill->created_at;
             $date = Carbon::parse($date);
             $thu=$date->dayOfWeek;
@@ -121,13 +126,7 @@ class BillController extends Controller
                 'status'=>$stt
             ];
         }
-        if($req->status!=0){
-            foreach($bills as $key=>$value){
-                if($value['status']!=$req->status){
-                    $bills->forget($key);
-                }
-            }
-        }
+
         $n=$bills->count();
         $bills=$bills->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
