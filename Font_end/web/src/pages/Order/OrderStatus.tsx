@@ -24,7 +24,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import PersonIcon from '@material-ui/icons/Person';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, Redirect, useHistory } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
 import { useForm } from 'react-hook-form';
 import { UpdatePasswordPost } from '../../api/User';
@@ -32,10 +32,12 @@ import { toast, ToastContainer } from 'react-toastify';
 import { OrderPostAll } from '../../api/Order';
 import { Pagination } from '@material-ui/lab';
 import { TryRounded } from '@mui/icons-material';
+import jwtDecode from 'jwt-decode';
 interface OrderStatusProps {
 	listData?: any;
 	title?: string;
 	name?: string;
+	status?: number;
 }
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
@@ -68,30 +70,31 @@ const OrderStatus: React.FC<OrderStatusProps> = (props) => {
 	React.useEffect(() => {
 		setProgressOrder(true);
 		window.scrollTo(0, 0);
-		const fetchOrderAll = async () => {
-			if (props.name === AppURL.ORDER_ALL) {
-				const responseOrderAll = await OrderPostAll({ page: page, pageSize: 5 });
-				if (responseOrderAll) {
-					if (responseOrderAll.errorCode === null) {
-						console.log(responseOrderAll.data);
-						setProgressOrder(false);
-						setDataOrder(responseOrderAll.data);
-					}
-				}
-			} else if (props.name === AppURL.ORDER_PENDING) {
-				setProgressOrder(false);
-			} else if (props.name === AppURL.ORDER_PROCESSING) {
-				setProgressOrder(false);
-			} else if (props.name === AppURL.ORDER_SHIPPING) {
-				setProgressOrder(false);
-			} else if (props.name === AppURL.ORDER_CANCELLED) {
-				setProgressOrder(false);
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
 			} else {
-				setProgressOrder(false);
+				const fetchOrderAll = async () => {
+					const responseOrderAll = await OrderPostAll({
+						page: page,
+						pageSize: 5,
+						status: props.status,
+					});
+					if (responseOrderAll) {
+						if (responseOrderAll.errorCode === null) {
+							console.log(responseOrderAll.data);
+							setProgressOrder(false);
+							setDataOrder(responseOrderAll.data);
+						}
+					}
+				};
+				fetchOrderAll();
 			}
-		};
-		fetchOrderAll();
-	}, [page, props.name]);
+		}
+	}, [page, props.name, props.status]);
 	const history = useHistory();
 	const contenStatus = (item: any) => {
 		let result = '';
@@ -103,12 +106,27 @@ const OrderStatus: React.FC<OrderStatusProps> = (props) => {
 			result = 'Đã đóng gói';
 		} else if (item?.status == '3') {
 			result = 'Đang vận chuyển';
+		} else if (item?.status == '5') {
+			result = 'Da huy';
 		}
 		return result;
 	};
-
+	const checkToken = () => {
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
+				return <Redirect to={AppURL.ACCOUNT} />;
+			}
+		} else {
+			return <Redirect to={AppURL.ACCOUNT} />;
+		}
+	};
 	return (
 		<Container>
+			{checkToken()}
 			{progressOrder ? (
 				<CircularProgress
 					color="secondary"

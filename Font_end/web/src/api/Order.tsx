@@ -12,3 +12,9 @@ export const OrderGetId = (id: any) => {
 	});
 	return response;
 };
+export const OrderCancelPost = (data: any) => {
+	const response = callApi('POST', '/api/bill/user_cancel_bill', data).catch((res) => {
+		return res;
+	});
+	return response;
+};

@@ -20,5 +20,8 @@ export const AppURL = {
 	ORDER_CANCELLED: '/order/cancelled',
 	ORDER_PENDING: '/order/pending',
 	RECOMMEND: '/views/san-pham-goi-y',
+	SELL_PHONE: '/views/dien-thoai-ban-chay',
+	NEW_PHONE: '/views/dien-thoai-moi-nhat',
 	LOGIN: '/admin/login',
+	ORDER_ALL_ADMIN: '/admin/order/all',
 };

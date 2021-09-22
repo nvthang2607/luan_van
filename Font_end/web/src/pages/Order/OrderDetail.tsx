@@ -28,7 +28,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import PersonIcon from '@material-ui/icons/Person';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { NavLink, useHistory, useParams } from 'react-router-dom';
+import { NavLink, Redirect, useHistory, useParams } from 'react-router-dom';
 import { AppURL } from '../../utils/const';
 import { useForm } from 'react-hook-form';
 import { UpdatePasswordPost } from '../../api/User';
@@ -47,10 +47,12 @@ import { Close } from '@material-ui/icons';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { StepIconProps } from '@mui/material/StepIcon';
 import RatingComponent from './RatingComponent';
-import { OrderGetId } from '../../api/Order';
+import { OrderCancelPost, OrderGetId } from '../../api/Order';
 import CheckIcon from '@mui/icons-material/Check';
 import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import Swal from 'sweetalert2';
+import jwtDecode from 'jwt-decode';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -197,6 +199,8 @@ const OrderDetail: React.FC = () => {
 			result = 'Đã đóng gói';
 		} else if (dataOrderId?.bill?.status == '3') {
 			result = 'Đang vận chuyển';
+		} else if (dataOrderId?.bill?.status == '5') {
+			result = 'Da huy';
 		}
 		return result;
 	};
@@ -238,8 +242,58 @@ const OrderDetail: React.FC = () => {
 		}
 		return result;
 	};
+	const handleCancel = () => {
+		Swal.fire({
+			title: 'Are you sure?',
+			text: "You won't be able to revert this!",
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Yes, delete it!',
+			reverseButtons: true,
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				const token: any = window.localStorage.getItem('token');
+				const date = Date.now();
+				if (window.localStorage.getItem('token')) {
+					const checkToken: any = jwtDecode(token);
+					if (checkToken.exp < date / 1000) {
+						localStorage.removeItem('token');
+					} else {
+						const response = await OrderCancelPost({ id_bill: id });
+						if (response) {
+							if (response.errorCode === null) {
+								Swal.fire('Huy don hang thanh cong!', 'Your file has been deleted.', 'success');
+								setRefresh(refresh + 1);
+							} else {
+								Swal.fire({
+									icon: 'error',
+									title: 'Co loi xay ra!',
+								});
+							}
+						}
+					}
+				}
+			}
+		});
+	};
+	const checkToken = () => {
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
+				return <Redirect to={AppURL.ACCOUNT} />;
+			}
+		} else {
+			return <Redirect to={AppURL.ACCOUNT} />;
+		}
+	};
 	return (
 		<Container>
+			{checkToken()}
 			{progressOrderId ? (
 				<CircularProgress
 					color="secondary"
@@ -441,7 +495,7 @@ const OrderDetail: React.FC = () => {
 						</Grid>
 						{dataOrderId.bill?.status == '1' && (
 							<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-								<Button color="secondary" variant="contained">
+								<Button color="secondary" variant="contained" onClick={handleCancel}>
 									Huy don hang
 								</Button>
 							</Grid>
