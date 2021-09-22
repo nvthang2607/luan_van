@@ -137,13 +137,6 @@ class AuthController extends Controller
         if (! $token = ($user = Auth::getProvider()->retrieveByCredentials($req->only(['email'])))? Auth::login($user): false){
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
-        // try{
-        //     $token = Auth::attempt(['email' => $req->email,'password'=>123]);
-        //     echo $token;
-        // }
-        // catch(Exception  $e){
-        //     echo $e;
-        // }
         
         return $this->createNewToken($token);
     }

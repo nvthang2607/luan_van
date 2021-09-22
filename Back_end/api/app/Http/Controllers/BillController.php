@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Status;
 use App\Models\BillDetail;
+use App\Models\Product;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -159,7 +160,12 @@ class BillController extends Controller
             if($status->save()){
                 $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
                 foreach($bill_detail as $item){
-                    
+                    $qty=$item->quantity;
+                    $id_product=$item->id_product;
+                    $product=Product::find($id_product);
+                    $n=$product->quantity+$qty;
+                    $product->quantity=$n;
+                    $product->save();
                 }
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
             }else{
