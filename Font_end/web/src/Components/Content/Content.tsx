@@ -33,7 +33,13 @@ import clsx from 'clsx';
 import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
-import { PhoneBranch, RecommendPost, SearchPhoneGet } from '../../api/Product';
+import {
+	PhoneBranch,
+	ProductNewPost,
+	ProductSellPost,
+	RecommendPost,
+	SearchPhoneGet,
+} from '../../api/Product';
 import { AppURL } from '../../utils/const';
 import theme from './../../utils/theme/index';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
@@ -44,6 +50,15 @@ import ad1_1 from './../../public/images/feature_banner_1.jpg';
 import ad1_2 from './../../public/images/feature_banner_2.png';
 import ad2_1 from './../../public/images/feature_banner.jpg';
 import jwtDecode from 'jwt-decode';
+import NewsSmall from '../News/NewsSmall';
+import { NewsGet } from '../../api/News';
+import Product from '../Product/Product';
+import { toast, ToastContainer } from 'react-toastify';
+import {
+	getValueRefreshPage,
+	updateValueRefreshPage,
+} from '../../features/refresh/RefreshPageSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: '30px',
@@ -181,6 +196,11 @@ const Content: React.FC = () => {
 	};
 	const [dataProductRecommend, setDataProductRecommend] = React.useState<any>([]);
 	const [dataPhoneBranch, setDataPhoneBranch] = React.useState<any>([]);
+	const [dataNews, setDataNews] = React.useState<any>({});
+	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
+	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
+	const dispatch = useAppDispatch();
+	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	React.useEffect(() => {
 		const fetchPhoneBranch = async () => {
 			const getPhoneBranch = await PhoneBranch();
@@ -190,7 +210,29 @@ const Content: React.FC = () => {
 					setDataPhoneBranch(getPhoneBranch.data);
 				}
 			}
+			const responseNewsGet = await NewsGet({ page: 1, pageSize: 9 });
+			if (responseNewsGet) {
+				if (responseNewsGet.errorCode === null) {
+					setDataNews(responseNewsGet.data);
+					console.log(responseNewsGet.data);
+				}
+			}
+			const responseProductSell = await ProductSellPost({ page: 1, pageSize: 4, type: 'sell' });
+			if (responseProductSell) {
+				if (responseProductSell.errorCode === null) {
+					setDataProductSell(responseProductSell.data.listData);
+					console.log(responseProductSell.data.listData);
+				}
+			}
+			const responseProductNew = await ProductNewPost({ page: 1, pageSize: 4, type: 'new' });
+			if (responseProductNew) {
+				if (responseProductNew.errorCode === null) {
+					setDataProductNew(responseProductNew.data.listData);
+					console.log(responseProductNew.data.listData);
+				}
+			}
 		};
+
 		const getDataRecommend = async () => {
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();
@@ -198,6 +240,8 @@ const Content: React.FC = () => {
 				const checkToken: any = jwtDecode(token);
 				if (checkToken.exp < date / 1000) {
 					localStorage.removeItem('token');
+					dispatch(updateValueRefreshPage(true));
+					setDataProductRecommend([]);
 				} else {
 					const response = await RecommendPost({ page: 1, pageSize: 4 });
 					if (response.errorCode === null) {
@@ -206,12 +250,13 @@ const Content: React.FC = () => {
 						//dispatch(updateProfileUser(response.data));
 					}
 				}
+			} else {
+				setDataProductRecommend([]);
 			}
 		};
 		getDataRecommend();
 		fetchPhoneBranch();
-	}, []);
-	console.log('dataProductRecommend', dataProductRecommend);
+	}, [dispatch, valueRefreshPage]);
 
 	const toURL = (str: string) => {
 		str = str.toLowerCase();
@@ -227,6 +272,13 @@ const Content: React.FC = () => {
 		str = str.replace(/^-+/g, '');
 		str = str.replace(/-+$/g, '');
 		return str;
+	};
+	const addToCart: (result: boolean) => void = (result) => {
+		if (result) {
+			toast.success('Da them san pham vao gio hang');
+		} else {
+			toast.error('ko du so luong');
+		}
 	};
 	const [countSale, setCountSale] = React.useState(2);
 	const settings = {
@@ -320,18 +372,19 @@ const Content: React.FC = () => {
 					</Grid>
 				</Grid>
 			</Grid>
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<Grid container>
-					<Grid item xs={12} className={classes.borderTitle}>
-						<Grid container style={{ alignItems: 'baseline' }}>
-							<Grid item xs={3}>
-								<Link to="/views/san-pham-goi-y" className={classes.titles}>
-									SAN PHAM GOI Y<div className={classes.title}></div>
-								</Link>
-							</Grid>
-							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-								<List style={{ display: 'flex' }}>
-									{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+			{dataProductRecommend.length > 0 && (
+				<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+					<Grid container>
+						<Grid item xs={12} className={classes.borderTitle}>
+							<Grid container style={{ alignItems: 'baseline' }}>
+								<Grid item xs={3}>
+									<Link to={AppURL.RECOMMEND} className={classes.titles}>
+										SAN PHAM GOI Y<div className={classes.title}></div>
+									</Link>
+								</Grid>
+								<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<List style={{ display: 'flex' }}>
+										{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 										return (
 											<Link
 												to={`/views/${toURL(item.name)}-${item.id}`}
@@ -352,355 +405,52 @@ const Content: React.FC = () => {
 											</Link>
 										);
 									})} */}
-									<Link to={'/views/san-pham-goi-y'} className={classes.styleViewAll}>
-										<ListItem
-											style={{
-												padding: 0,
-												fontWeight: 'bold',
-												paddingRight: '10px',
-												paddingLeft: '10px',
-											}}
-										>
-											<Typography variant="body1" style={{ fontWeight: 500 }}>
-												Xem tat ca
-											</Typography>
-										</ListItem>
-									</Link>
-								</List>
+										<Link to={AppURL.RECOMMEND} className={classes.styleViewAll}>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													Xem tat ca
+												</Typography>
+											</ListItem>
+										</Link>
+									</List>
+								</Grid>
 							</Grid>
 						</Grid>
-					</Grid>
-					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
+						<Grid container spacing={3} style={{ marginTop: '10px' }}>
+							{dataProductRecommend?.map((item: any) => {
+								return (
+									<Product
+										unit_price={item[0].unit_price}
+										name={item[0].name}
+										id={item[0].id}
+										promotion_price={item[0].promotion_price}
+										link={item.image}
+										avg={item.avg}
+										promotion={item.promotion}
+										rate_number={item.rate_number}
+										storeQuantity={item[0].quantity}
+										addToCart={addToCart}
 									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
+								);
+							})}
 						</Grid>
 					</Grid>
 				</Grid>
-			</Grid>
+			)}
 			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 				<Grid container>
 					<Grid item xs={12} className={classes.borderTitle}>
 						<Grid container style={{ alignItems: 'baseline' }}>
 							<Grid item xs={3}>
-								<Link to="/" className={classes.titles}>
-									DIEN THOAI BAN CHAY<div className={classes.title}></div>
+								<Link to={AppURL.NEW_PHONE} className={classes.titles}>
+									DIEN THOAI MOI NHAT<div className={classes.title}></div>
 								</Link>
 							</Grid>
 							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -726,7 +476,7 @@ const Content: React.FC = () => {
 											</Link>
 										);
 									})}
-									<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+									<Link to={AppURL.NEW_PHONE} className={classes.styleViewAll}>
 										<ListItem
 											style={{
 												padding: 0,
@@ -745,326 +495,92 @@ const Content: React.FC = () => {
 						</Grid>
 					</Grid>
 					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
+						{dataProductNew?.map((item: any) => {
+							return (
+								<Product
+									unit_price={item[0].unit_price}
+									name={item[0].name}
+									id={item[0].id}
+									promotion_price={item[0].promotion_price}
+									link={item.image}
+									avg={item.avg}
+									promotion={item.promotion}
+									rate_number={item.rate_number}
+									storeQuantity={item[0].quantity}
+									addToCart={addToCart}
 								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
+							);
+						})}
+					</Grid>
+				</Grid>
+			</Grid>
+			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+				<Grid container>
+					<Grid item xs={12} className={classes.borderTitle}>
+						<Grid container style={{ alignItems: 'baseline' }}>
+							<Grid item xs={3}>
+								<Link to={AppURL.SELL_PHONE} className={classes.titles}>
+									DIEN THOAI BAN CHAY<div className={classes.title}></div>
+								</Link>
+							</Grid>
+							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+								<List style={{ display: 'flex' }}>
+									{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+										return (
+											<Link
+												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+												className={classes.stylePhoneBranch}
+											>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														{item.name}
+													</Typography>
+												</ListItem>
+											</Link>
+										);
+									})} */}
+									<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
+										<ListItem
 											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
+												padding: 0,
+												fontWeight: 'bold',
+												paddingRight: '10px',
+												paddingLeft: '10px',
 											}}
-											variant="h6"
 										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
+											<Typography variant="body1" style={{ fontWeight: 500 }}>
+												Xem tat ca
+											</Typography>
+										</ListItem>
 									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
+								</List>
+							</Grid>
 						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
+					</Grid>
+					<Grid container spacing={3} style={{ marginTop: '10px' }}>
+						{dataProductSell?.map((item: any) => {
+							return (
+								<Product
+									unit_price={item[0].unit_price}
+									name={item[0].name}
+									id={item[0].id}
+									promotion_price={item[0].promotion_price}
+									link={item.image}
+									avg={item.avg}
+									promotion={item.promotion}
+									rate_number={item.rate_number}
+									storeQuantity={item[0].quantity}
+									addToCart={addToCart}
 								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
+							);
+						})}
 					</Grid>
 				</Grid>
 			</Grid>
@@ -1082,27 +598,6 @@ const Content: React.FC = () => {
 							</Grid>
 							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 								<List style={{ display: 'flex' }}>
-									{dataPhoneBranch?.listData?.map((item: any, index: number) => {
-										return (
-											<Link
-												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-												className={classes.stylePhoneBranch}
-											>
-												<ListItem
-													style={{
-														padding: 0,
-														fontWeight: 'bold',
-														paddingRight: '10px',
-														paddingLeft: '10px',
-													}}
-												>
-													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														{item.name}
-													</Typography>
-												</ListItem>
-											</Link>
-										);
-									})}
 									<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
 										<ListItem
 											style={{
@@ -1122,326 +617,18 @@ const Content: React.FC = () => {
 						</Grid>
 					</Grid>
 					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
+						{dataNews.listData?.map((item: any) => {
+							return (
+								<Grid item xs={4}>
+									<NewsSmall
+										title={item.title}
+										image={item.image}
+										id={item.id}
+										created_at={item.created_at}
 									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
-						<Grid item xs={3}>
-							<Box
-								boxShadow={hoverProduct && 5}
-								style={{ padding: '20px', position: 'relative' }}
-								//onMouseOver={onMouseOverProduct}
-								//onMouseOut={onMouseOutProduct}
-								className={classes.hoverProduct}
-							>
-								<Chip
-									label="-6%"
-									color="primary"
-									style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
-								/>
-								<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
-									<img width="90%" src={sp1} />
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Link to="/" className={classes.nameProduct}>
-										<Typography
-											style={{
-												height: '55px',
-												overflow: 'hidden',
-												display: '-webkit-box',
-												textOverflow: 'ellipsis',
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: 'vertical',
-
-												fontSize: '1.1rem',
-											}}
-											variant="h6"
-										>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS
-											40mm
-										</Typography>
-									</Link>
-								</Box>
-								<Box>
-									<Typography
-										variant="h6"
-										style={{
-											color: 'red',
-											fontWeight: 'bold',
-											display: 'inline-block',
-											paddingRight: '15px',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-									<Typography
-										style={{
-											textDecoration: 'line-through',
-											color: 'grey',
-											display: 'inline-block',
-										}}
-									>
-										19.000.000đ
-									</Typography>
-								</Box>
-								<Box style={{ display: 'flex', alignItems: 'center' }}>
-									<Rating
-										name="read-only"
-										value={3}
-										readOnly
-										style={{
-											paddingRight: '10px',
-											borderRight: '1px solid grey',
-										}}
-									/>
-									<Typography
-										component="span"
-										style={{
-											paddingLeft: '10px',
-											color: 'grey',
-										}}
-									>
-										1 đánh giá
-									</Typography>
-								</Box>
-							</Box>
-						</Grid>
+								</Grid>
+							);
+						})}
 					</Grid>
 				</Grid>
 			</Grid>
@@ -1476,6 +663,17 @@ const Content: React.FC = () => {
 					</ListItem>
 				</List>
 			</Box>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 		</Grid>
 	);
 };

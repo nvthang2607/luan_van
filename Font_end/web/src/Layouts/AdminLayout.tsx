@@ -1,10 +1,25 @@
-import { Avatar, Box, Button, Fade, Grid, ListItemAvatar, Menu, MenuItem } from '@material-ui/core';
+import {
+	Avatar,
+	Box,
+	Button,
+	Collapse,
+	Fade,
+	Grid,
+	ListItemAvatar,
+	Menu,
+	MenuItem,
+} from '@material-ui/core';
 import React from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AvTimerIcon from '@mui/icons-material/AvTimer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -30,7 +45,7 @@ import iconvn from '../public/images/vietnamese.svg';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import PersonIcon from '@material-ui/icons/Person';
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -44,10 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
 				duration: theme.transitions.duration.leavingScreen,
 			}),
 			width: `calc(100% - ${73}px)`,
-			backgroundColor: '#fff',
+			backgroundColor: '#00695c',
 			color: 'black',
 		},
 		appBarShift: {
+			height: '76px',
 			marginLeft: drawerWidth,
 			width: `calc(100% - ${drawerWidth}px)`,
 			transition: theme.transitions.create(['width', 'margin'], {
@@ -68,6 +84,17 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		drawerOpen: {
 			width: drawerWidth,
+
+			backgroundColor: '#00695c',
+			transition: theme.transitions.create('width', {
+				easing: theme.transitions.easing.sharp,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+		},
+		drawerOpen1: {
+			width: drawerWidth,
+			marginTop: '74px',
+			backgroundColor: '#00695c',
 			transition: theme.transitions.create('width', {
 				easing: theme.transitions.easing.sharp,
 				duration: theme.transitions.duration.enteringScreen,
@@ -85,12 +112,24 @@ const useStyles = makeStyles((theme: Theme) =>
 			},
 		},
 		link: {
-			color: '#1bb55c !important',
+			color: 'red !important',
 			textDecoration: 'none',
-			background: '#e3f2fd',
+			backgroundColor: 'red !important',
+		},
+		activeTagLi: {
+			backgroundColor: '#267f74',
+			//borderLeft: `4px solid ${theme.palette.primary.main}`,
+			//color: `${theme.palette.primary.main} !important`,
+		},
+		tagLi: {
+			textDecoration: 'none',
+			cursor: 'pointer',
+			color: '#fff',
+
+			display: 'block',
 		},
 		selected: {
-			background: '#e3f2fd !important',
+			backgroundColor: '#e3f2fd !important',
 		},
 		activeColor: { color: '#1bb55c' },
 		toolbar: {
@@ -206,12 +245,14 @@ const AdminLayout: React.FC = (props) => {
 	// 		return <Redirect to={AppURL.LOGIN} />;
 	// 	}
 	// };
+	const [showCategories, setShowCategories] = React.useState(false);
 	return (
 		<Box>
 			<div className={classes.root}>
 				<CssBaseline />
 				<AppBar
 					position="fixed"
+					style={{ display: 'flex', justifyContent: 'center' }}
 					className={clsx(classes.appBar, {
 						[classes.appBarShift]: open,
 					})}
@@ -219,14 +260,14 @@ const AdminLayout: React.FC = (props) => {
 					<Toolbar>
 						<Grid container>
 							<Grid item xs={6} style={{ alignItems: 'center', display: 'flex' }}>
-								<IconButton>
+								{/* <IconButton>
 									{open ? (
 										<MenuIcon onClick={handleDrawerClose} />
 									) : (
 										<ChevronRightIcon onClick={handleDrawerOpen} />
 									)}
-								</IconButton>
-								<Typography variant="h6" noWrap>
+								</IconButton> */}
+								<Typography variant="h5" noWrap style={{ color: '#fff' }}>
 									Trang Quan Tri
 								</Typography>
 							</Grid>
@@ -244,7 +285,7 @@ const AdminLayout: React.FC = (props) => {
 								<Button onClick={handleClickLng}>
 									<img src={item} />
 									&nbsp;
-									<i className="fa fa-angle-down"></i>
+									<i className="fa fa-angle-down" style={{ color: '#fff' }}></i>
 								</Button>
 								<Menu
 									id="fade-menu"
@@ -325,43 +366,175 @@ const AdminLayout: React.FC = (props) => {
 						}),
 					}}
 				>
-					<div className={classes.toolbar}>
+					<div className={classes.toolbar} style={{ display: 'flex', alignItems: 'flex-end' }}>
 						<img src={logo} style={{ width: '-webkit-fill-available' }} />
 					</div>
-					<Divider />
-					<List>
-						{items.map((item, index) => (
-							<NavLink
-								onClick={() => handleClick(index, item.text)}
-								to="/"
-								activeClassName={classes.link}
-								style={{ textDecoration: 'none', color: theme.palette.common.black }}
-								key={index}
+					<Drawer
+						variant="permanent"
+						className={clsx(classes.drawer, {
+							[classes.drawerOpen1]: open,
+							[classes.drawerClose]: !open,
+						})}
+						classes={{
+							paper: clsx({
+								[classes.drawerOpen1]: open,
+								[classes.drawerClose]: !open,
+							}),
+						}}
+					>
+						<Divider />
+						<List style={{ paddingTop: 0 }}>
+							<ListItem
+								button
+								onClick={() => {
+									setShowCategories(!showCategories);
+								}}
 							>
-								<ListItem
-									button
-									className={clsx(classes.button, {
-										[classes.selected]: selectedItem === index,
-									})}
-								>
-									<ListItemIcon
-										className={clsx(classes.button, {
-											[classes.activeColor]: selectedItem === index,
-										})}
+								<AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />
+
+								<ListItemText style={{ display: 'flex' }}>
+									<Typography
+										variant="h6"
+										style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
 									>
-										{item.icon}
-									</ListItemIcon>
-									<ListItemText>{t('header.' + item.text)}</ListItemText>
+										Quan tri danh muc
+									</Typography>
+								</ListItemText>
+								{showCategories ? (
+									<KeyboardArrowUpIcon style={{ color: '#fff' }} />
+								) : (
+									<KeyboardArrowDownIcon style={{ color: '#fff' }} />
+								)}
+							</ListItem>
+
+							<Collapse in={showCategories} timeout="auto" unmountOnExit>
+								<NavLink
+									to="/admin/order/all"
+									activeClassName={classes.activeTagLi}
+									className={classes.tagLi}
+								>
+									<ListItem divider>
+										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+											<Typography variant="h6" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+												Loai san pham
+											</Typography>
+										</ListItemText>
+									</ListItem>
+								</NavLink>
+								<NavLink
+									to="/"
+									activeClassName={classes.link}
+									style={{ textDecoration: 'none', color: 'black' }}
+								>
+									<ListItem button>
+										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+											<Typography
+												variant="h6"
+												style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+											>
+												Thuong hieu
+											</Typography>
+										</ListItemText>
+									</ListItem>
+								</NavLink>
+								<NavLink
+									to="/"
+									//activeClassName={classes.link}
+									style={{ textDecoration: 'none', color: 'black' }}
+								>
+									<ListItem button>
+										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+											<Typography
+												variant="h6"
+												style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+											>
+												San pham
+											</Typography>
+										</ListItemText>
+									</ListItem>
+								</NavLink>
+							</Collapse>
+
+							<Divider />
+						</List>
+						<List style={{ paddingTop: 0 }}>
+							<NavLink
+								to="/"
+								//activeClassName={classes.link}
+								style={{ textDecoration: 'none', color: 'black' }}
+							>
+								<ListItem button>
+									<AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />
+
+									<ListItemText style={{ display: 'flex' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Quan tri danh muc
+										</Typography>
+									</ListItemText>
+									<ArrowDropDownIcon style={{ color: '#fff' }} />
 								</ListItem>
 							</NavLink>
-						))}
-					</List>
+							<NavLink
+								to="/"
+								//activeClassName={classes.link}
+								style={{ textDecoration: 'none', color: 'black' }}
+							>
+								<ListItem button>
+									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Quan tri danh muc
+										</Typography>
+									</ListItemText>
+								</ListItem>
+							</NavLink>
+							<NavLink
+								to="/"
+								//activeClassName={classes.link}
+								style={{ textDecoration: 'none', color: 'black' }}
+							>
+								<ListItem button>
+									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Quan tri danh muc
+										</Typography>
+									</ListItemText>
+								</ListItem>
+							</NavLink>
+							<NavLink
+								to="/"
+								//activeClassName={classes.link}
+								style={{ textDecoration: 'none', color: 'black' }}
+							>
+								<ListItem button>
+									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Quan tri danh muc
+										</Typography>
+									</ListItemText>
+								</ListItem>
+							</NavLink>
+							<Divider />
+						</List>
+					</Drawer>
 				</Drawer>
+
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
 
 					{/* {handleCheckToken(props.children)} */}
-					{props.children}
+					<h1>ADMIN</h1>
 				</main>
 			</div>
 		</Box>

@@ -312,17 +312,18 @@ const Header: React.FC<Props> = (props) => {
 		const getDataUser = async () => {
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();
-			if (token) {
+			if (window.localStorage.getItem('token')) {
 				const checkToken: any = jwtDecode(token);
-				console.log(checkToken);
 
 				if (checkToken.exp < date / 1000) {
 					localStorage.removeItem('token');
+					setDataUser({ name: '' });
 				} else {
 					const response = await UserGet();
 					if (response.errorCode === null) {
 						//dispatch(updateValueRefreshPage(true));
 						setDataUser(response.data);
+
 						//dispatch(updateProfileUser(response.data));
 					}
 				}
@@ -432,7 +433,7 @@ const Header: React.FC<Props> = (props) => {
 											<IconButton
 												onClick={() => {
 													history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
-													dispatch(updateValueRefreshPage(true));
+													//dispatch(updateValueRefreshPage(true));
 												}}
 											>
 												<SearchIcon />

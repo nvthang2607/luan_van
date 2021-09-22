@@ -51,15 +51,24 @@ const Profile: React.FC = (props) => {
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
 	const [flag, setFlag] = React.useState(false);
 	React.useEffect(() => {
-		const getData = async () => {
-			const profile = await UserGet();
-			if (profile.errorCode === null) {
-				setProfileInfo(profile.data);
-				setFlag(true);
-				//console.log(pro);
+		const token: any = window.localStorage.getItem('token');
+		const date = Date.now();
+		if (window.localStorage.getItem('token')) {
+			const checkToken: any = jwtDecode(token);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('token');
+			} else {
+				const getData = async () => {
+					const profile = await UserGet();
+					if (profile.errorCode === null) {
+						setProfileInfo(profile.data);
+						setFlag(true);
+						//console.log(pro);
+					}
+				};
+				getData();
 			}
-		};
-		getData();
+		}
 	}, [valueRefreshPage]);
 	const checkToken = () => {
 		const token: any = window.localStorage.getItem('token');
@@ -197,7 +206,7 @@ const Profile: React.FC = (props) => {
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang da hoan thanh</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Don hang da huy</Typography>
 							</NavLink>
 						</Box>
 					</Card>
@@ -230,23 +239,39 @@ const Profile: React.FC = (props) => {
 							</Route>
 							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
 							<Route path={AppURL.ORDER_COMPLETED}>
-								<OrderStatus title="Don hang da hoan thanh" name={AppURL.ORDER_COMPLETED} />
+								<OrderStatus
+									title="Don hang da hoan thanh"
+									name={AppURL.ORDER_COMPLETED}
+									status={4}
+								/>
 							</Route>
 
 							<Route path={AppURL.ORDER_ALL}>
-								<OrderStatus title="Tat ca don hang" name={AppURL.ORDER_ALL} />
+								<OrderStatus title="Tat ca don hang" name={AppURL.ORDER_ALL} status={0} />
 							</Route>
 							<Route path={AppURL.ORDER_PENDING}>
-								<OrderStatus title="Don hang dang cho duyet" name={AppURL.ORDER_PENDING} />
+								<OrderStatus
+									title="Don hang dang cho duyet"
+									name={AppURL.ORDER_PENDING}
+									status={1}
+								/>
 							</Route>
 							<Route path={AppURL.ORDER_SHIPPING}>
-								<OrderStatus title="Don hang dang van chuyen" name={AppURL.ORDER_SHIPPING} />
+								<OrderStatus
+									title="Don hang dang van chuyen"
+									name={AppURL.ORDER_SHIPPING}
+									status={2}
+								/>
 							</Route>
 							<Route path={AppURL.ORDER_PROCESSING}>
-								<OrderStatus title="Don hang da dong goi" name={AppURL.ORDER_PROCESSING} />
+								<OrderStatus
+									title="Don hang da dong goi"
+									name={AppURL.ORDER_PROCESSING}
+									status={3}
+								/>
 							</Route>
 							<Route path={AppURL.ORDER_CANCELLED}>
-								<OrderStatus title="Don hang da huy" name={AppURL.ORDER_CANCELLED} />
+								<OrderStatus title="Don hang da huy" name={AppURL.ORDER_CANCELLED} status={5} />
 							</Route>
 							<Route path={AppURL.ORDER_DETAIL}>
 								<OrderDetail />

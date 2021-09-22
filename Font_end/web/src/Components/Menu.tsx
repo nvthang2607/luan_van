@@ -21,6 +21,7 @@ import TabletAndroidIcon from '@material-ui/icons/TabletAndroid';
 import HeadsetIcon from '@material-ui/icons/Headset';
 import clsx from 'clsx';
 import { TypeBranch } from '../api/Product';
+import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme: Theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
@@ -28,6 +29,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 		backgroundColor: '#f4f4f4',
 		marginTop: '20px',
 		marginBottom: '10px',
+	},
+	stylePhoneBranch: {
+		textDecoration: 'none',
+		color: 'black',
+		fontWeight: 'bold',
+		'&:hover': {
+			color: '#ff6600',
+		},
 	},
 	showBoxBranch: {
 		display: 'inline-flex !important',
@@ -73,6 +82,21 @@ const Menu: React.FC = () => {
 		errorCode: null,
 		data: [],
 	});
+	const toURL = (str: string) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
+	};
 	React.useEffect(() => {
 		const fetchTypeBranch = async () => {
 			const getTypeBranch = await TypeBranch();
@@ -111,9 +135,14 @@ const Menu: React.FC = () => {
 			const data = dataBranch.map((item: any) => {
 				return (
 					<React.Fragment>
-						<ListItem>
-							<Typography>{item.name}</Typography>
-						</ListItem>
+						<Link
+							to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+							className={classes.stylePhoneBranch}
+						>
+							<ListItem>
+								<Typography>{item.name}</Typography>
+							</ListItem>
+						</Link>
 					</React.Fragment>
 				);
 			});
