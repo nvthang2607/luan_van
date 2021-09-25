@@ -1024,7 +1024,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	readOnly
 																/>
 
-																<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
+																<Typography color="textSecondary">Vao ngay {item.date}</Typography>
 															</Typography>
 															<Typography>{item.comment}</Typography>
 														</Box>
