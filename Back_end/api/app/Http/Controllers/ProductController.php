@@ -222,9 +222,17 @@ class ProductController extends Controller
                     $id_user=User::where('email',$email)->pluck('id')->first();
                     $rating=$i->rate;
                     $comment=$i->comment;
+                    $date= $i->created_at;
+                    $date = Carbon::parse($date);
+                    $day=$date->day;
+                    $month=$date->month;
+                    $year=$date->year;
+                    $date=$day.'/'.$month.'/'.$year;
                     $data[count($data)]=[
                         'id'=>$id,
                         'id_user'=>$id_user,
+                        'email_user'=>$email,
+                        'date'=>$date,
                         'rating'=>$rating,
                         'comment'=>$comment,
                     ];
