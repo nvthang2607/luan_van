@@ -252,8 +252,11 @@ class ProductController extends Controller
         if($req->type=='new'){
             $product=Product::all()->sortByDesc("id");
         }
-        else{
+        elseif($req->type=='sell'){
             $product=Product::all()->sortByDesc("count");
+        }
+        else{
+            $product=Product::where('promotion_price','>',0)->orderBy('updated_at', 'DESC')->get();
         }
         $n=$product->count();
         $data=[];
