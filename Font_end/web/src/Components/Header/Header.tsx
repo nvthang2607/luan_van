@@ -288,7 +288,7 @@ const Header: React.FC<Props> = (props) => {
 	const [valueSearch, setValueSearch] = React.useState('');
 	const [valuePlaceholder, setValuePlaceholder] = React.useState('');
 	React.useEffect(() => {
-		const cusor = ' ';
+		const cusor = '|';
 		let count = 1;
 		const mess = 'Nhap noi dung can tim...';
 		setInterval(function () {
