@@ -188,18 +188,36 @@ class BillController extends Controller
             $status->id_user=auth()->user()->id;
             $status->id_bill=$req->id_bill;
             $status->status=$status2+1;
+            if($status->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
+            }
         }
         else{
             $status=new Status;
             $status->id_user=auth()->user()->id;
             $status->id_bill=$req->id_bill;
             $status->status=2;
+            if($status->save()){
+                $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
+                foreach($bill_detail as $bill_detail){
+                    $product = Product::find($bill_detail->product->id);
+                    $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
+                    $product->count =$bill_detail->product->count+$bill_detail->quantity;
+                    if(!$product->save()){
+                        $status3=Status::where('id_bill',$req->id_bill)->get();
+                        $status3->delete();
+                        return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình trừ số lượng sản phẩm ra khỏi kho hàng!'], 401);
+                    }
+                }
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
+            }
         }
-        if($status->save()){
-            return response()->json(['errorCode'=> null,'data'=>true], 200);
-        }
-        else{
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
-        }
+        
     }
 }
