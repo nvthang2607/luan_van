@@ -45,6 +45,7 @@ import iconvn from '../public/images/vietnamese.svg';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import PersonIcon from '@material-ui/icons/Person';
+import Test from '../pages/text/Test';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -534,7 +535,7 @@ const AdminLayout: React.FC = (props) => {
 					<div className={classes.toolbar} />
 
 					{/* {handleCheckToken(props.children)} */}
-					<h1>ADMIN</h1>
+					<Test />
 				</main>
 			</div>
 		</Box>

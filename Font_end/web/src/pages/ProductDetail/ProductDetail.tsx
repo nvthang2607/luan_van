@@ -12,8 +12,10 @@ import {
 	LinearProgress,
 	makeStyles,
 	TextField,
+	Toolbar,
 	Tooltip,
 	Typography,
+	useScrollTrigger,
 } from '@material-ui/core';
 import React from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -45,7 +47,7 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
-import { ProductIdGet } from '../../api/Product';
+import { ProductIdGet, RatingPost } from '../../api/Product';
 import { getCartData, updataCartData } from '../../Components/Product/CartSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
@@ -62,6 +64,15 @@ function SampleNextArrow(props: any) {
 		/>
 	);
 }
+interface Props {
+	/**
+	 * Injected by the documentation to work in an iframe.
+	 * You won't need it on your project.
+	 */
+	window?: () => Window;
+	children: React.ReactElement;
+}
+
 function SamplePrevArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -148,7 +159,24 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const ProductDetail: React.FC = () => {
+const ProductDetail: React.FC<Props> = (props) => {
+	const { children } = props;
+	// Note that you normally won't need to set the window ref as useScrollTrigger
+	// will default to window.
+	// This is only being set here because the demo is in an iframe.
+	const handleClickPageRating = (event: React.MouseEvent<HTMLDivElement>) => {
+		const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector(
+			'#back-to-rating'
+		);
+
+		if (anchor) {
+			anchor.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center',
+			});
+		}
+	};
+
 	const labels: { [index: string]: string } = {
 		1: 'Không thích',
 		2: 'Tạm được',
@@ -211,18 +239,44 @@ const ProductDetail: React.FC = () => {
 		idRate: 0,
 		value: 0,
 	});
+	const [ratingListData, setRatingListData] = React.useState<any>({});
+	const [pageCmt, setPageCmt] = React.useState(1);
+	const [pageRating, setPageRating] = React.useState(1);
+	const [progressCmt, setProgressCmt] = React.useState(false);
+	const [progressRating, setProgressRating] = React.useState(false);
 	React.useEffect(() => {
-		//window.scrollTo(0, 0);
-		const fetchProductId = async () => {
-			const getComment = await CommentPost({ id: 1, page: 1, pageSize: 10 });
+		const fetchCmt = async () => {
+			setProgressCmt(true);
+			const getComment = await CommentPost({ id: idProduct, page: pageCmt, pageSize: 5 });
 			console.log(getComment);
 
 			if (getComment) {
 				if (getComment.errorCode === null) {
 					console.log(getComment);
 					setDataComment(getComment.data);
+					setProgressCmt(false);
 				}
 			}
+		};
+		fetchCmt();
+	}, [pageCmt, idProduct]);
+	React.useEffect(() => {
+		const fetchRating = async () => {
+			setProgressRating(true);
+			const fetchRatingList = await RatingPost({ id: idProduct, page: pageRating, pageSize: 5 });
+			if (fetchRatingList) {
+				if (fetchRatingList.errorCode === null) {
+					console.log('fetchRatingList', fetchRatingList);
+					setRatingListData(fetchRatingList.data);
+					setProgressRating(false);
+				}
+			}
+		};
+		fetchRating();
+	}, [pageRating, idProduct]);
+	React.useEffect(() => {
+		//window.scrollTo(0, 0);
+		const fetchProductId = async () => {
 			const getProductId = await ProductIdGet(idProduct);
 			if (getProductId) {
 				if (getProductId.errorCode === null) {
@@ -373,6 +427,7 @@ const ProductDetail: React.FC = () => {
 		}
 	};
 	const [idcmt, setIdCmt] = React.useState(-1);
+
 	return (
 		<Grid container className={classes.bgHeader}>
 			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
@@ -876,7 +931,7 @@ const ProductDetail: React.FC = () => {
 												size="large"
 												onChange={(event, newValue) => {
 													setValue(newValue);
-													console.log(newValue);
+													//console.log(newValue);
 
 													if (newValue === null) {
 														setCollapseForm(false);
@@ -942,45 +997,62 @@ const ProductDetail: React.FC = () => {
 									</Collapse>
 								</Card>
 								<Divider style={{ marginTop: '10px', marginBottom: '10px' }} />
-								<Box style={{ marginBottom: '10px' }}>
-									<Box style={{ display: 'flex', alignItems: 'center' }}>
-										<Avatar>S</Avatar> &nbsp;&nbsp;
-										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-											Sang tran
-										</Typography>
-									</Box>
-									<Box style={{ marginLeft: '39px' }}>
-										<Typography variant="h6">
-											<Rating
-												style={{ fontSize: '20px', display: 'flex' }}
-												name="read-only"
-												value={3.2}
-												readOnly
-											/>
-											<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
-										</Typography>
-										<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-									</Box>
-								</Box>
-								<Box style={{ marginBottom: '10px' }}>
-									<Box style={{ display: 'flex', alignItems: 'center' }}>
-										<Avatar>T</Avatar> &nbsp;&nbsp;
-										<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-											Thang nguyen
-										</Typography>
-									</Box>
-									<Box style={{ marginLeft: '39px' }}>
-										<Typography variant="h6">
-											<Rating
-												style={{ fontSize: '20px', display: 'flex' }}
-												name="read-only"
-												value={3.2}
-												readOnly
-											/>
-											<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
-										</Typography>
-										<Typography>Cho mình hỏi. Sao dùng camera máy lại nóng ghê vậy?</Typography>
-									</Box>
+								<Toolbar id="back-to-rating" />
+								<Box style={{ position: 'relative' }}>
+									{progressRating ? (
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', top: '50%', left: '50%' }}
+										/>
+									) : (
+										<React.Fragment>
+											{ratingListData.listdata?.map((item: any) => {
+												return (
+													<Box style={{ marginBottom: '10px' }}>
+														<Box style={{ display: 'flex', alignItems: 'center' }}>
+															<Avatar>S</Avatar> &nbsp;&nbsp;
+															<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+																{item.email_user.slice(0, item.email_user.indexOf('@'))}
+															</Typography>
+														</Box>
+														<Box style={{ marginLeft: '39px' }}>
+															<Typography variant="h6">
+																<Rating
+																	style={{ fontSize: '20px', display: 'flex' }}
+																	name="read-only"
+																	value={item.rating}
+																	readOnly
+																/>
+
+																<Typography color="textSecondary">Vao ngay 29/09/2021</Typography>
+															</Typography>
+															<Typography>{item.comment}</Typography>
+														</Box>
+													</Box>
+												);
+											})}
+											{ratingListData.total > 5 && (
+												<Box
+													style={{
+														display: 'flex',
+														justifyContent: 'flex-end',
+														marginTop: ' 30px',
+													}}
+												>
+													<Pagination
+														count={Math.ceil(ratingListData.total / 5)}
+														variant="outlined"
+														color="primary"
+														defaultPage={pageRating}
+														onClick={handleClickPageRating}
+														onChange={(event: object, page: number) => {
+															setPageRating(page);
+														}}
+													/>
+												</Box>
+											)}
+										</React.Fragment>
+									)}
 								</Box>
 								{/* <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
 							<Pagination count={10} color="primary" />
@@ -1020,107 +1092,135 @@ const ProductDetail: React.FC = () => {
 									</Box>
 
 									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
-									{dataComment?.listdata?.map((item: any) => {
-										return (
-											<Box>
-												<Box style={{ marginBottom: '10px' }}>
-													<Box style={{ display: 'flex', alignItems: 'center' }}>
-														<Avatar>{item?.email_comment?.charAt(0)}</Avatar> &nbsp;&nbsp;
-														<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-															{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
-														</Typography>
-														&nbsp;&nbsp;
-														<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-													</Box>
-													<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
-														<Typography>{item.comment_comment}</Typography>
-														<Typography
-															className={classes.reply}
-															onClick={() => {
-																setCollapseReply(!collapseReply);
-																setIdCmt(item.id_comment);
-															}}
-														>
-															Tra loi
-														</Typography>
-													</Box>
-													{item?.feedback?.map((itemFeedback: any) => {
-														return (
-															<Box
-																style={{
-																	marginLeft: '60px',
-																	borderLeft: '5px solid #dee2e6',
-																	paddingLeft: '10px',
-																	marginBottom: '10px',
-																}}
-															>
-																<Typography style={{ display: 'flex', alignItems: 'center' }}>
-																	<Typography variant="h6">
-																		{itemFeedback.email_feedback.slice(
-																			0,
-																			itemFeedback.email_feedback.indexOf('@')
-																		)}
+									<Box style={{ position: 'relative' }}>
+										{progressCmt ? (
+											<CircularProgress
+												color="secondary"
+												style={{ position: 'absolute', top: '50%', left: '50%' }}
+											/>
+										) : (
+											<React.Fragment>
+												{dataComment?.listdata?.map((item: any) => {
+													return (
+														<Box>
+															<Box style={{ marginBottom: '10px' }}>
+																<Box style={{ display: 'flex', alignItems: 'center' }}>
+																	<Avatar>{item?.email_comment?.charAt(0)}</Avatar> &nbsp;&nbsp;
+																	<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+																		{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
 																	</Typography>
 																	&nbsp;&nbsp;
-																	{itemFeedback.isadmin === 'admin' && (
-																		<Typography
-																			component="span"
-																			className={classes.discount_percent}
-																			style={{ fontSize: '11px', marginRight: '10px' }}
-																		>
-																			Quan tri vien
-																		</Typography>
-																	)}
 																	<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
-																</Typography>
-																<Typography>{itemFeedback.comment_feedback}</Typography>
-															</Box>
-														);
-													})}
+																</Box>
+																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
+																	<Typography>{item.comment_comment}</Typography>
+																	<Typography
+																		className={classes.reply}
+																		onClick={() => {
+																			setCollapseReply(!collapseReply);
+																			setIdCmt(item.id_comment);
+																		}}
+																	>
+																		Tra loi
+																	</Typography>
+																</Box>
+																{item?.feedback?.map((itemFeedback: any) => {
+																	return (
+																		<Box
+																			style={{
+																				marginLeft: '60px',
+																				borderLeft: '5px solid #dee2e6',
+																				paddingLeft: '10px',
+																				marginBottom: '10px',
+																			}}
+																		>
+																			<Typography style={{ display: 'flex', alignItems: 'center' }}>
+																				<Typography variant="h6">
+																					{itemFeedback.email_feedback.slice(
+																						0,
+																						itemFeedback.email_feedback.indexOf('@')
+																					)}
+																				</Typography>
+																				&nbsp;&nbsp;
+																				{itemFeedback.isadmin === 'admin' && (
+																					<Typography
+																						component="span"
+																						className={classes.discount_percent}
+																						style={{ fontSize: '11px', marginRight: '10px' }}
+																					>
+																						Quan tri vien
+																					</Typography>
+																				)}
+																				<Typography color="textSecondary">
+																					vao ngay 29/09/2021
+																				</Typography>
+																			</Typography>
+																			<Typography>{itemFeedback.comment_feedback}</Typography>
+																		</Box>
+																	);
+																})}
 
+																<Box
+																	style={{
+																		marginLeft: '60px',
+
+																		paddingLeft: '10px',
+																		marginBottom: '10px',
+																	}}
+																>
+																	<Collapse
+																		in={collapseReply && idcmt === item.id_comment}
+																		timeout="auto"
+																		unmountOnExit
+																	>
+																		<form
+																			onSubmit={handleSubmit(onSubmit)}
+																			style={{ display: 'contents' }}
+																		>
+																			<Box style={{ display: 'inline-block', width: '100%' }}>
+																				<TextField
+																					id="rate_content"
+																					{...register('rate_content')}
+																					multiline
+																					name="rate_content"
+																					rows={3}
+																					placeholder="Nhập đánh giá về sản phẩm"
+																					variant="outlined"
+																					fullWidth
+																					style={{ marginBottom: '10px' }}
+																				/>
+																				<Button variant="contained" color="primary" type="submit">
+																					gui cau hoi
+																				</Button>
+																			</Box>
+																		</form>
+																	</Collapse>
+																</Box>
+															</Box>
+														</Box>
+													);
+												})}
+												{dataComment.total > 5 && (
 													<Box
 														style={{
-															marginLeft: '60px',
-
-															paddingLeft: '10px',
-															marginBottom: '10px',
+															display: 'flex',
+															justifyContent: 'flex-end',
+															marginTop: ' 30px',
 														}}
 													>
-														<Collapse
-															in={collapseReply && idcmt === item.id_comment}
-															timeout="auto"
-															unmountOnExit
-														>
-															<form
-																onSubmit={handleSubmit(onSubmit)}
-																style={{ display: 'contents' }}
-															>
-																<Box style={{ display: 'inline-block', width: '100%' }}>
-																	<TextField
-																		id="rate_content"
-																		{...register('rate_content')}
-																		multiline
-																		name="rate_content"
-																		rows={3}
-																		placeholder="Nhập đánh giá về sản phẩm"
-																		variant="outlined"
-																		fullWidth
-																		style={{ marginBottom: '10px' }}
-																	/>
-																	<Button variant="contained" color="primary" type="submit">
-																		gui cau hoi
-																	</Button>
-																</Box>
-															</form>
-														</Collapse>
+														<Pagination
+															count={Math.ceil(dataComment.total / 5)}
+															variant="outlined"
+															color="primary"
+															defaultPage={pageCmt}
+															onChange={(event: object, page: number) => {
+																setPageCmt(page);
+															}}
+														/>
 													</Box>
-												</Box>
-											</Box>
-										);
-									})}
-
-									<Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-										<Pagination count={10} color="primary" />
+												)}
+											</React.Fragment>
+										)}
 									</Box>
 								</Box>
 							</Grid>

@@ -160,6 +160,21 @@ const Cart: React.FC<CartProps> = (props) => {
 		return total;
 	};
 	const [err, setErr] = React.useState<any>();
+	const toURL = (str: any) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
+	};
 	return (
 		<Box style={{ width: 400 }}>
 			<Box>
@@ -189,10 +204,25 @@ const Cart: React.FC<CartProps> = (props) => {
 								return (
 									<Box style={{ display: 'flex', marginBottom: '35px' }}>
 										<Box style={{ width: '32%' }}>
-											<img width="100%" src={`http://localhost:8000/${item.link}`} />
+											<img
+												width="100%"
+												style={{ cursor: 'pointer' }}
+												src={`http://localhost:8000/${item.link}`}
+												onClick={() => {
+													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
+													props.receiveCart?.(false);
+												}}
+											/>
 										</Box>
 										<Box style={{ marginLeft: '4px', width: '78%' }}>
-											<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+											<Typography
+												variant="body1"
+												style={{ fontWeight: 'bold', cursor: 'pointer' }}
+												onClick={() => {
+													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
+													props.receiveCart?.(false);
+												}}
+											>
 												{item.name}
 											</Typography>
 											<Box style={{ display: 'contents' }}>

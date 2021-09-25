@@ -286,6 +286,16 @@ const Header: React.FC<Props> = (props) => {
 	const [valueQuery, setValueQuery] = React.useState('');
 	const [valueType, setValueType] = React.useState('product');
 	const [valueSearch, setValueSearch] = React.useState('');
+	const [valuePlaceholder, setValuePlaceholder] = React.useState('');
+	React.useEffect(() => {
+		const cusor = ' ';
+		let count = 1;
+		const mess = 'Nhap noi dung can tim...';
+		setInterval(function () {
+			if (count > mess.length) count = 1;
+			setValuePlaceholder(mess.substring(0, count++) + cusor);
+		}, 200);
+	}, []);
 	React.useEffect(() => {
 		const i18nLng = window.localStorage.getItem('i18nextLng') || 'en';
 		if (i18nLng === 'en') {
@@ -422,10 +432,16 @@ const Header: React.FC<Props> = (props) => {
 								<OutlinedInput
 									className={classes.inputSearch}
 									id="standard-adornment-password"
-									placeholder="Search..."
+									placeholder={valuePlaceholder}
 									value={valueSearch}
 									onChange={(event: any) => {
 										setValueSearch(event?.target.value);
+									}}
+									onKeyDown={(e) => {
+										if (e.keyCode == 13) {
+											history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
+											dispatch(updateValueRefreshPage(true));
+										}
 									}}
 									inputProps={{ className: classes.styleSearch }}
 									endAdornment={
@@ -433,7 +449,7 @@ const Header: React.FC<Props> = (props) => {
 											<IconButton
 												onClick={() => {
 													history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
-													//dispatch(updateValueRefreshPage(true));
+													dispatch(updateValueRefreshPage(true));
 												}}
 											>
 												<SearchIcon />

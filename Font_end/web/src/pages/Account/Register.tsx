@@ -231,6 +231,8 @@ const Register: React.FC<registerProps> = (props) => {
 			setDataDistrict([]);
 			setIdCity(options.id);
 			const getDistrict = await DistrictPost({ idCity: options.id });
+			console.log(getDistrict.data);
+
 			setDataDistrict(getDistrict.data);
 			setDataCommune([]);
 		}

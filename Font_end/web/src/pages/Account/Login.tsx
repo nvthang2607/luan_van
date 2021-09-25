@@ -43,7 +43,7 @@ import {
 } from '@material-ui/core';
 import { Message, Visibility, VisibilityOff } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
-import { LoginPost } from '../../api/LoginAPI';
+import { LoginGGPost, LoginPost } from '../../api/LoginAPI';
 import { toast, ToastContainer } from 'react-toastify';
 import { LoginDTO } from '../../DTO/Login/LoginDTO';
 import GoogleLogin from 'react-google-login';
@@ -140,8 +140,19 @@ const Login: React.FC<loginprops> = (props) => {
 		setState({ ...state, showPwdLogin: !state.showPwdLogin });
 	};
 	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
-	const responseGoogle = (response: any) => {
-		console.log(response);
+	const responseGoogle = async (response: any) => {
+		// console.log(response.ht.Re);
+		// console.log(response.ht.St);
+		const reqData = { email: response.ht.St, name: response.ht.Re };
+		const resLoginGG = await LoginGGPost(reqData);
+		if (resLoginGG) {
+			if (resLoginGG?.errorCode === null) {
+				window.localStorage.setItem('token', resLoginGG.data.accessToken || '');
+			}
+			if (resLoginGG?.errorCode || resLoginGG?.errorCode === null) {
+				props?.resultApiLogin?.(resLoginGG.errorCode);
+			}
+		}
 	};
 	const responseFacebook = (response: any) => {
 		console.log(response);

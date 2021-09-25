@@ -11,3 +11,9 @@ export const LoginPost = (data: LoginDTO): Promise<ResponseDTO<jwt> | undefined>
 	);
 	return response;
 };
+export const LoginGGPost = (data: any) => {
+	const response = callApi('POST', '/api/users/login/google', data, false).catch((res) => {
+		return res;
+	});
+	return response;
+};
