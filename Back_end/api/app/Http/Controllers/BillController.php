@@ -15,7 +15,7 @@ class BillController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_bill_create','post_bill_user_cancel_bill']]);
+        $this->middleware('auth:api', ['except' => ['post_bill_create']]);
     }
     public function post_bill_create(request $req){
         $customer=new Customer;
@@ -171,6 +171,35 @@ class BillController extends Controller
             }else{
                 return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);
             }
+        }
+    }
+
+    public function post_bill_approve(request $req){
+        if(auth()->user()->isadmin!='Quản lý đơn hàng'){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
+        }
+        $status1=Status::where('id_bill',$req->id_bill)->get();
+        if($status1->count()>0){
+            $status2=Status::where('id_bill',$req->id_bill)->max('status');
+            if($status2=='4'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Đơn hàng có id: '.$req->id_bill.' đã hoàn thành trước đó!'], 401);
+            }
+            $status=new Status;
+            $status->id_user=auth()->user()->id;
+            $status->id_bill=$req->id_bill;
+            $status->status=$status2+1;
+        }
+        else{
+            $status=new Status;
+            $status->id_user=auth()->user()->id;
+            $status->id_bill=$req->id_bill;
+            $status->status=2;
+        }
+        if($status->save()){
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
         }
     }
 }

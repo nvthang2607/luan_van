@@ -152,4 +152,5 @@ Route::group([
     Route::post('/user_list_bill', [BillController::class, 'post_bill_user_list_bill']);
     Route::get('/user_list_billdetail/{id_bill}', [BillDetailController::class, 'get_billdetail_user_list_billdetail']);
     Route::post('/user_cancel_bill', [BillController::class, 'post_bill_user_cancel_bill']);
+    Route::post('/approve', [BillController::class, 'post_bill_approve']);
 });
