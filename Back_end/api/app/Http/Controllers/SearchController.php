@@ -16,11 +16,16 @@ class SearchController extends Controller
     }
     public function get_search_product_news(Request $req){
         Carbon::setLocale('vi');
+        $name = preg_replace("/(dien thoai)/", 'điện thoại', $req->search);
+        //$name=$req->search;
         $data=[];
         if($req->type=='product'){
-            $product=Product::where('name','like','%'.$req->search.'%')->where('active',1)->get();
+            $product=Product::where('name','like','%'.$name.'%')->where('active',1)->get();
             $n=$product->count();
-            $datas=Product::where('name','like','%'.$req->search.'%')->where('active',1)->orderByDesc('id')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            $datas=Product::where('name','like','%'.$name.'%')->where('active',1)/*->orderByDesc('id')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)*/->get();
+            // $product = Product::search($req->search)->get();
+            // $n=$product->count();
+            // $datas=Product::search($req->search)->where('active',1)/*->orderByDesc('id')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)*/->get();
             if(count($datas)>0){
                 $u=0;
                 foreach($datas as $i){
@@ -50,9 +55,9 @@ class SearchController extends Controller
             }
         }
         elseif($req->type=='news'){
-            $news=News::where('title','like','%'.$req->search.'%')->get();
+            $news=News::where('title','like','%'.$name.'%')->get();
             $n=$news->count();
-            $datas=News::where('title','like','%'.$req->search.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
+            $datas=News::where('title','like','%'.$name.'%')->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
             if(count($datas)>0){
                 $u=0;
                 foreach($datas as $i){
