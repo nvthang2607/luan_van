@@ -20,7 +20,7 @@ class UserController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => []]);
+        $this->middleware('auth:api', ['except' => ['get_insert','get_write_rating_to_csv']]);
     }
     public function post_admin_list_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
