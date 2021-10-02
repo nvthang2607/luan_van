@@ -38,7 +38,6 @@ class CreateCustomerTable extends Migration
             $gender=$faker->randomElement(['Nam', 'Nữ']);
             $active=$faker->randomElement([0,1]);
             $phoneNumber=$faker->phoneNumber;
-            $address=$faker->address;
             DB::table('users')->insert(
                 array(
                     'name' => $name,
@@ -46,7 +45,7 @@ class CreateCustomerTable extends Migration
                     'email'=>$email,
                     'password'=>bcrypt(12345678),
                     'phone' => $phoneNumber,
-                    'address' => $address,
+                    'address' => '00001, 001, 01',
                     'isadmin' => 'user',
                     'active'=>$active,
                 )
@@ -57,7 +56,7 @@ class CreateCustomerTable extends Migration
                     'gender'=>$gender,
                     'email'=>$email,
                     'phone' => $phoneNumber,
-                    'address' => $address,
+                    'address' => '00001, 001, 01',
                 )
             );
         }

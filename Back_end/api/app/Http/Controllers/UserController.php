@@ -3,17 +3,160 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Input;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use DB;
 use App\Models\BillDetail;
 use App\Models\Bill;
 use App\Models\User;
+use App\Models\commune;
+use App\Models\district;
+use App\Models\City;
+use App\Models\Product;
+use App\Models\Promotion;
 use Carbon\Carbon;
 
 class UserController extends Controller
 {
     //
+    public function __construct() {
+        $this->middleware('auth:api', ['except' => []]);
+    }
+    public function post_admin_list_users(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $data=collect();
+            if($req->type=='all'){
+                $users=User::where('isadmin','user')->orderBy('id', 'DESC')->get();
+            }
+            elseif($req->type=='active'){
+                $users=User::where('isadmin','user')->where('active',1)->orderBy('id', 'DESC')->get();
+            }
+            elseif($req->type=='noactive'){
+                $users=User::where('isadmin','user')->where('active',0)->orderBy('id', 'DESC')->get();
+            }
+            foreach($users as $i){
+                $address=$i->address;
+                $address = explode(", ", $address);
+                $idCommune=$address[0];
+                $idDistrict=$address[1];
+                $idCity=$address[2];
+                $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
+                // $nameCommune=$nameCommune->name;
+                $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
+                // $nameDistrict=$nameDistrict->name;
+                $nameCity=City::where('matp',$idCity)->pluck('name')->first();
+                // $nameCity=$nameCity->name;
+                $date= $i->created_at;
+                $date = $date->format('Y/m/d H:i:s');
+                $date1= $i->updated_at;
+                $date1 = $date1->format('Y/m/d H:i:s');
+                $data[]=[
+                    'id'=>$i->id,
+                    'name'=>$i->name,
+                    'gender'=>$i->gender,
+                    'email'=>$i->email,
+                    'phone'=>$i->phone,
+                    'idCommune'=>$idCommune,
+                    'idDistrict'=>$idDistrict,
+                    'idCity'=>$idCity,
+                    'nameCommune'=>$nameCommune,
+                    'nameDistrict'=>$nameDistrict,
+                    'nameCity'=>$nameCity,
+                    'active'=>$i->active,
+                    'created_at'=>$date,
+                    'updated_at'=>$date1,
+                ];
+            }
+            $n=$data->count();
+            $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+
+    public function post_admin_update_users(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $users=User::find($req->id_user);
+            $users->fill($req->input())->save();
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+    public function get_admin_active_users(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $active=User::find($req->id_user);
+            if($active->active=='0'){
+                $active->update(['active'=>1]);
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            if($active->active=='1'){
+                $active->update(['active'=>0]);
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+
+    }
+
+    public function get_admin_delete_users(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $active=User::find($req->id_user);
+            $active->delete();
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+
+    public function get_admin_search_users(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            if($req->search==null){
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            $product=Product::where('name','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+            $n=$product->count();
+            $datas=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            if(count($datas)>0){
+                $u=0;
+                foreach($datas as $i){
+                    $promotions=[];
+                    $image=Product::find($i->id)->image_product()->pluck('image')->first();
+                    $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
+                    $rate_number=$rate->count();
+                    $avg=5;
+                    if($rate_number>0){
+                        $t=0;
+                        foreach($rate as $r){
+                            $t=$t+$r->rate;
+                        }
+                        $avg=$t/$rate_number;
+                    }
+                    $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+                    foreach($promotion as $m){
+                        $promotions[count($promotions)]=$m;
+                    }
+                    $data[$u]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+                    $u++;
+                }
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+                }
+            else{
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+
+    }
     public function get_insert(){
         ini_set('max_execution_time', 600);
         $now1=Carbon::now();

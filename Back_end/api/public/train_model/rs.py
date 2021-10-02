@@ -47,10 +47,12 @@ class CF(object):
         users = self.Y_data[:, 0]
         # ma trận y_bar
         self.Ybar_data = self.Y_data.copy()
+        # ép kiểu float cho các giá trị trong ma trận
         self.Ybar_data=self.Ybar_data.astype(np.float)
-        # đặt giá trị trung bình cho các user (943)
+        # đặt giá trị trung bình cho các user (943) (hình a)
         self.mu = np.zeros((self.n_users,))
-        # chạy qua các user_id
+        
+        # chạy qua các user_id để tính giá trị chuẩn hóa (hình b)
         for n in range(self.n_users):
             # chuyển user_id thành số nguyên
             ids = np.where(users == n)[0].astype(np.int32)
@@ -58,39 +60,35 @@ class CF(object):
             ratings = self.Y_data[ids, 2]
             # lấy giá trị R trung bình của user
             self.mu[n] = np.mean(ratings)
-            # print('***',ratings)
+            # print('***',n,':',ratings)
             self.Ybar_data[ids, 2] = ratings - self.mu[n]
         # return  self.Ybar_data[:,2]
         self.Ybar = sparse.coo_matrix((self.Ybar_data[:, 2],
             (self.Ybar_data[:, 1], self.Ybar_data[:, 0])), (self.n_items, self.n_users))
-        # return self.Ybar
         self.Ybar = self.Ybar.tocsr()
         # return self.Ybar
 
     def similarity(self):
         self.S = self.dist_func(self.Ybar.T, self.Ybar.T)
-        # return self.S
 
     def fit(self):
         self.normalize_Y()
         self.similarity()
-        # return  self.similarity()
 
     def pred(self, u, i):
         """
         predict the rating of user u for item i (normalized)
         if you need the un
         """
-        # Step 1: find all users who rated i
+        # lấy vị trí trong mảng những đánh giá i
         ids = np.where(self.Y_data[:, 1] == i)[0].astype(np.int32)
-        # Step 2:
+        # lấy id user đánh giá i
         users_rated_i = (self.Y_data[ids, 0]).astype(np.int32)
-        # Step 3: find similarity btw the current user and others
-        # who already rated i
+        # Độ tương tự của user khác đánh giá i so với u
         sim = self.S[u, users_rated_i]
-        # Step 4: find the k most similarity users
+        # lấy k user gần u nhất
         a = np.argsort(sim)[-self.k:]
-        # and the corresponding similarity levels
+        # lấy mức độ tương tự tương ứng
         nearest_s = sim[a]
         # How did each of 'near' users rate item i
         r = self.Ybar[i, users_rated_i[a]]
@@ -143,16 +141,16 @@ class CF(object):
 
 # rs = CF(rate_train, k = 50)
 # rs.fit()
-# # # u=rs.recommend(1)
-# # # print(rs.pred(1,33))
-# # SE = 0 # squared error
+# # u=rs.recommend(1)
+# # print(rs.pred(1,33))
+# SE = 0 # squared error
 
-# # for n in range(n_tests):
-# #     pred = rs.pred(rate_test[n, 0], rate_test[n, 1])
-# #     SE +=((pred - rate_test[n, 2])**2)
+# for n in range(n_tests):
+#     pred = rs.pred(rate_test[n, 0], rate_test[n, 1])
+#     SE +=((pred - rate_test[n, 2])**2)
 
-# # RMSE = np.sqrt(SE/n_tests)
-# # print ('User-user CF, RMSE =', RMSE)
+# RMSE = np.sqrt(SE/n_tests)
+# print ('User-user CF, RMSE =', RMSE)
 
 
 #web

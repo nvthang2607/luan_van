@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
     /*
     |--------------------------------------------------------------------------
@@ -237,6 +237,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'ImportExcel' => PhpOffice\PhpSpreadsheet\IOFactory::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
     ],
 
 ];

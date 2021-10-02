@@ -154,3 +154,15 @@ Route::group([
     Route::post('/user_cancel_bill', [BillController::class, 'post_bill_user_cancel_bill']);
     Route::post('/approve', [BillController::class, 'post_bill_approve']);
 });
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'admin'
+
+], function ($router) {
+    Route::post('/list_users', [UserController::class, 'post_admin_list_users']);
+    Route::post('/update_users', [UserController::class, 'post_admin_update_users']);
+    Route::get('/active_users/{id_user}', [UserController::class, 'get_admin_active_users']);
+    Route::get('/delete_users/{id_user}', [UserController::class, 'get_admin_delete_users']);
+    Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
+});
