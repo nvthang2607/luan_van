@@ -18,5 +18,12 @@ Route::get('/', function () {
 });
 Route::get('test', function () {
     $date=Carbon::now('Asia/Ho_Chi_Minh');
-  
+  echo "ôK";
+  //Storage::put('avatars/thang.txt', 'lalalala');
+//$avatars = asset('avatars/thang.txt');
+    $content=Storage::get('news1.jpg');
+    $mime = Storage::mimeType('news1.jpg');
+    $response = Response::make($content, 200);
+    $response->header('Content-Type', $mime);
+    return $response;
 });

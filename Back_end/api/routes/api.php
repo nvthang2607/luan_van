@@ -17,6 +17,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -165,4 +166,14 @@ Route::group([
     Route::get('/active_users/{id_user}', [UserController::class, 'get_admin_active_users']);
     Route::get('/delete_users/{id_user}', [UserController::class, 'get_admin_delete_users']);
     Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
+    Route::post('/list_customers', [CustomerController::class, 'post_admin_list_customers']);
+    Route::post('/delete_customers/{id_customer}', [CustomerController::class, 'post_admin_delete_customers']);
+});
+Route::get('test', function () {
+    $content=Storage::get('news1.jpg');
+    $mime = Storage::mimeType('news1.jpg');
+    $response = Response::make($content, 200);
+    $response->header('Content-Type', $mime);
+    echo $response;
+    return response()->json(['errorCode'=> null,'data'=>$response], 200);
 });
