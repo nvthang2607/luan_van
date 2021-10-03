@@ -120,34 +120,45 @@ class UserController extends Controller
             if($req->search==null){
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
             }
-            $product=Product::where('name','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
-            $n=$product->count();
-            $datas=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            $user=User::where('email','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+            $n=$user->count();
+            $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             if(count($datas)>0){
-                $u=0;
                 foreach($datas as $i){
-                    $promotions=[];
-                    $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                    $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
-                    $rate_number=$rate->count();
-                    $avg=5;
-                    if($rate_number>0){
-                        $t=0;
-                        foreach($rate as $r){
-                            $t=$t+$r->rate;
-                        }
-                        $avg=$t/$rate_number;
-                    }
-                    $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
-                    foreach($promotion as $m){
-                        $promotions[count($promotions)]=$m;
-                    }
-                    $data[$u]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
-                    $u++;
+                    $address=$i->address;
+                    $address = explode(", ", $address);
+                    $idCommune=$address[0];
+                    $idDistrict=$address[1];
+                    $idCity=$address[2];
+                    $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
+                    // $nameCommune=$nameCommune->name;
+                    $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
+                    // $nameDistrict=$nameDistrict->name;
+                    $nameCity=City::where('matp',$idCity)->pluck('name')->first();
+                    // $nameCity=$nameCity->name;
+                    $date= $i->created_at;
+                    $date = $date->format('Y/m/d H:i:s');
+                    $date1= $i->updated_at;
+                    $date1 = $date1->format('Y/m/d H:i:s');
+                    $data[]=[
+                        'id'=>$i->id,
+                        'name'=>$i->name,
+                        'gender'=>$i->gender,
+                        'email'=>$i->email,
+                        'phone'=>$i->phone,
+                        'idCommune'=>$idCommune,
+                        'idDistrict'=>$idDistrict,
+                        'idCity'=>$idCity,
+                        'nameCommune'=>$nameCommune,
+                        'nameDistrict'=>$nameDistrict,
+                        'nameCity'=>$nameCity,
+                        'active'=>$i->active,
+                        'created_at'=>$date,
+                        'updated_at'=>$date1,
+                    ];
                 }
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
-                }
-            else{
+            }else{
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
             }
             
