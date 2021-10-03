@@ -174,6 +174,5 @@ Route::get('test', function () {
     $mime = Storage::mimeType('news1.jpg');
     $response = Response::make($content, 200);
     $response->header('Content-Type', $mime);
-    echo $response;
     return response()->json(['errorCode'=> null,'data'=>$response], 200);
 });
