@@ -139,12 +139,12 @@ class UserController extends Controller
     public function get_admin_search_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             if($req->search==null){
-                $user=User::where('active',1)->orderBy('id', 'DESC')->get();
+                $user=User::where('active',1)->where('isadmin','user')->orderBy('id', 'DESC')->get();
                 $n=$user->count();
                 $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             }
             else{
-                $user=User::where('email','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+                $user=User::where('email','like','%'.$req->search.'%')->orwhere('id',$req->search)->where('isadmin','user')->orderBy('id', 'DESC')->get();
                 $n=$user->count();
                 $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             }
