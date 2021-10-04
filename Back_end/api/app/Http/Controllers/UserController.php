@@ -139,11 +139,15 @@ class UserController extends Controller
     public function get_admin_search_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             if($req->search==null){
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+                $user=User::where('active',1)->orderBy('id', 'DESC')->get();
+                $n=$user->count();
+                $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             }
-            $user=User::where('email','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
-            $n=$user->count();
-            $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            else{
+                $user=User::where('email','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+                $n=$user->count();
+                $datas=$user->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            }
             if(count($datas)>0){
                 foreach($datas as $i){
                     $address=$i->address;
