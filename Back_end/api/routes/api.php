@@ -166,4 +166,8 @@ Route::group([
     Route::get('/active_users/{id_user}', [UserController::class, 'get_admin_active_users']);
     Route::get('/delete_users/{id_user}', [UserController::class, 'get_admin_delete_users']);
     Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
+    Route::get('/list_type_product', [TypeProductController::class, 'get_list_type_product']);
+    Route::get('/delete_type_product/{id_type_product}', [TypeProductController::class, 'get_delete_type_product']);
+    Route::post('/create_type_product', [TypeProductController::class, 'post_admin_create_type_product']);
+    Route::post('/change_type_product', [TypeProductController::class, 'post_admin_change_type_product']);
 });
