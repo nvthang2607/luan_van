@@ -35,10 +35,12 @@ const MainLayoutCheckout: React.FC = () => {
 					setFlag(true);
 				} else {
 					const profile = await UserGet();
-					if (profile.errorCode === null) {
-						setProfileInfo(profile.data);
-						setFlag(true);
-						console.log(profile);
+					if (profile) {
+						if (profile.errorCode === null) {
+							setProfileInfo(profile.data);
+							setFlag(true);
+							console.log(profile);
+						}
 					}
 				}
 			} else {
