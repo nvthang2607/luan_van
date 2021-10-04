@@ -15,16 +15,33 @@ use App\Models\City;
 use App\Models\Product;
 use App\Models\Promotion;
 use Carbon\Carbon;
+use Image;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_insert','get_write_rating_to_csv']]);
+        $this->middleware('auth:api', ['except' => ['get_insert','get_write_rating_to_csv','file']]);
     }
-    public function b(){
-        $a=5;
-        echo app('App\Http\Controllers\CustomerController')->a($a);
+    public function file(request $req){
+        // $path = $req->file('hinh')->store('public');
+        // echo $path;
+        // $path = $req->file('hinh')->storeAs(
+        //     'public/images', 'thangne1.png'
+        // );
+        $image = Image::make('storage/images/b.png');
+        $image->widen(300)->save('storage/images/2.png');
+        $image1 = Image::make('storage/images/c.png');
+        $image1->widen(300)->save('storage/images/3.png');
+        $image2 = Image::make('storage/images/d.png');
+        $image2->widen(300)->save('storage/images/4.png');
+        // $path = Storage::putFileAs(
+        //     'public/images', $image, 'thangne2.png'
+        // );
+        $size=Storage::size('public/images/thangne3.png');
+        echo $size;
+        // echo $url;
     }
     public function post_admin_list_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
