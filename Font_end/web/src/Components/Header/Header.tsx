@@ -362,11 +362,13 @@ const Header: React.FC<Props> = (props) => {
 					setDataUser({ name: '' });
 				} else {
 					const response = await UserGet();
-					if (response.errorCode === null) {
-						//dispatch(updateValueRefreshPage(true));
-						setDataUser(response.data);
+					if (response) {
+						if (response.errorCode === null) {
+							//dispatch(updateValueRefreshPage(true));
+							setDataUser(response.data);
 
-						//dispatch(updateProfileUser(response.data));
+							//dispatch(updateProfileUser(response.data));
+						}
 					}
 				}
 			}
