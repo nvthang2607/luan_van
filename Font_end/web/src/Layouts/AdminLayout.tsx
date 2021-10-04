@@ -33,11 +33,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { NavLink, Redirect } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { AppURL } from '../utils/const';
 import logo from '../public/images/logo1.png';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import PolicyIcon from '@material-ui/icons/Policy';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import icon from '../public/images/english.svg';
@@ -46,6 +47,10 @@ import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import PersonIcon from '@material-ui/icons/Person';
 import Test from '../pages/text/Test';
+import User from '../pages/Admin/User/User';
+import HomeIcon from '@mui/icons-material/Home';
+import Home from '../pages/Admin/Home/Home';
+import { UserGet } from '../api/Admin/User';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -145,6 +150,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		content: {
 			flexGrow: 1,
 			padding: theme.spacing(3),
+			backgroundColor: '#f4f4f4',
 		},
 	})
 );
@@ -152,7 +158,7 @@ const AdminLayout: React.FC = (props) => {
 	const classes = useStyles();
 	const theme = useTheme();
 	const [open, setOpen] = React.useState(true);
-
+	const history = useHistory();
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -181,13 +187,13 @@ const AdminLayout: React.FC = (props) => {
 			setItem(iconvn);
 			setValueI18n(i18nLng);
 		}
-		// const getDataProfile = async () => {
-		// 	const response = await ProfileGet();
-		// 	if (response?.errorCode === null) {
-		// 		setProfile(response.data.name);
-		// 	}
-		// };
-		// getDataProfile();
+		const getDataProfile = async () => {
+			const response = await UserGet();
+			if (response?.errorCode === null) {
+				setProfile(response.data.name);
+			}
+		};
+		getDataProfile();
 	}, [setValueI18n]);
 
 	//const title = useAppSelector(titleHeader);
@@ -225,30 +231,29 @@ const AdminLayout: React.FC = (props) => {
 		}
 	};
 	const handleLogout = () => {
-		window.localStorage.getItem('token') && window.localStorage.removeItem('token');
+		window.localStorage.getItem('tokenAdmin') && window.localStorage.removeItem('tokenAdmin');
 		setAnchorElProfile(null);
 	};
-	const token: any = window.localStorage.getItem('token');
-	const date = Date.now();
-	// const handleCheckToken = (element: any) => {
-	// 	if (token) {
-	// 		const checkToken: any = jwtDecode(token);
-	// 		if (checkToken.exp < date / 1000) {
-	// 			localStorage.removeItem('token');
-	// 			return <Redirect to={AppURL.LOGIN} />;
-	// 		} else if (!checkToken.isAdmin) {
-	// 			return <Redirect to="404" />;
-	// 		} else {
-	// 			return element;
-	// 		}
-	// 	} else {
-	// 		localStorage.removeItem('token');
-	// 		return <Redirect to={AppURL.LOGIN} />;
-	// 	}
-	// };
 	const [showCategories, setShowCategories] = React.useState(false);
+	const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+	const date = Date.now();
+	const handleCheckToken = () => {
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('tokenAdmin');
+				return <Redirect to={AppURL.LOGIN} />;
+			} else if (checkToken.isAdmin === false) {
+				return <Redirect to="404" />;
+			}
+		} else {
+			localStorage.removeItem('tokenAdmin');
+			return <Redirect to={AppURL.LOGIN} />;
+		}
+	};
 	return (
 		<Box>
+			{handleCheckToken()}
 			<div className={classes.root}>
 				<CssBaseline />
 				<AppBar
@@ -329,9 +334,10 @@ const AdminLayout: React.FC = (props) => {
 											overflow: 'hidden',
 											textOverflow: 'ellipsis',
 											whiteSpace: 'nowrap',
+											color: '#fff',
 										}}
 									>
-										<div>{t('header.hello')}</div>
+										<div>Xin chao!</div>
 										<div>
 											<Typography variant="body2" noWrap>
 												{profile}
@@ -384,7 +390,34 @@ const AdminLayout: React.FC = (props) => {
 						}}
 					>
 						<Divider />
-						<List style={{ paddingTop: 0 }}>
+						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
+							<NavLink
+								to={AppURL.ADMIN_HOME}
+								activeClassName={classes.activeTagLi}
+								className={classes.tagLi}
+							>
+								<ListItem
+									button
+									onClick={() => {
+										history.push(AppURL.ADMIN_HOME);
+										setShowCategories(false);
+									}}
+								>
+									<HomeIcon style={{ color: '#fff', marginRight: '10px' }} />
+
+									<ListItemText style={{ display: 'flex' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Trang chu
+										</Typography>
+									</ListItemText>
+								</ListItem>
+								<Divider />
+							</NavLink>
+						</List>
+						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
 							<ListItem
 								button
 								onClick={() => {
@@ -457,6 +490,33 @@ const AdminLayout: React.FC = (props) => {
 							</Collapse>
 
 							<Divider />
+						</List>
+						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
+							<NavLink
+								to={AppURL.MANAGER_USER}
+								activeClassName={classes.activeTagLi}
+								className={classes.tagLi}
+							>
+								<ListItem
+									button
+									onClick={() => {
+										history.push(AppURL.MANAGER_USER);
+										setShowCategories(false);
+									}}
+								>
+									<PersonIcon style={{ color: '#fff', marginRight: '10px' }} />
+
+									<ListItemText style={{ display: 'flex' }}>
+										<Typography
+											variant="h6"
+											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+										>
+											Quan tri nguoi dung
+										</Typography>
+									</ListItemText>
+								</ListItem>
+								<Divider />
+							</NavLink>
 						</List>
 						<List style={{ paddingTop: 0 }}>
 							<NavLink
@@ -533,9 +593,11 @@ const AdminLayout: React.FC = (props) => {
 
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
-
 					{/* {handleCheckToken(props.children)} */}
-					<Test />
+					<Switch>
+						<Route path={AppURL.MANAGER_USER} component={User} />
+						<Route path={AppURL.ADMIN_HOME} component={Home} />
+					</Switch>
 				</main>
 			</div>
 		</Box>

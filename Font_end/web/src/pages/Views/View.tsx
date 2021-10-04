@@ -760,18 +760,20 @@ const View: React.FC<ViewProps> = (props) => {
 								<Grid container spacing={3} style={{ marginTop: '10px' }}>
 									{dataFilter?.listData?.map((item: any, index: number) => {
 										return (
-											<Product
-												key={index}
-												unit_price={item[0].unit_price}
-												name={item[0].name}
-												id={item[0].id}
-												promotion_price={item[0].promotion_price}
-												link={item.image}
-												avg={item.avg}
-												rate_number={item.rate_number}
-												storeQuantity={item[0].quantity}
-												addToCart={addToCart}
-											/>
+											<Grid item xs={3}>
+												<Product
+													key={index}
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
 										);
 									})}
 								</Grid>

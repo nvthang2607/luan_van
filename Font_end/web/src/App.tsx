@@ -31,6 +31,7 @@ import MainView from './pages/Views/MainView';
 import Login from './pages/Login/Login';
 import LoginLayout from './Layouts/LoginLayout';
 import AdminLayout from './Layouts/AdminLayout';
+import { useMediaQuery } from 'react-responsive';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -51,6 +52,7 @@ function App() {
 	// 		},
 	// 	},
 	// });
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
 	return (
 		<I18nextProvider i18n={i18n}>
 			<ThemeProvider theme={theme}>
@@ -75,7 +77,7 @@ function App() {
 									{/* <HeaderBanner /> */}
 									<Header />
 
-									<Menu />
+									{isResponseive && <Menu />}
 									<Switch>
 										<Route
 											path={[
@@ -118,9 +120,9 @@ function App() {
 									</Route>
 								</Switch>
 							</Route>
-							<Route path={[AppURL.ORDER_ALL_ADMIN]}>
+							<Route path={[AppURL.ORDER_ALL_ADMIN, AppURL.MANAGER_USER, AppURL.ADMIN_HOME]}>
 								<Switch>
-									<Route path={AppURL.ORDER_ALL_ADMIN}>
+									<Route path={[AppURL.ORDER_ALL_ADMIN, AppURL.MANAGER_USER, AppURL.ADMIN_HOME]}>
 										<AdminLayout />
 									</Route>
 								</Switch>

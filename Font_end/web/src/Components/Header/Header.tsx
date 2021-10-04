@@ -11,8 +11,10 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
+import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useMediaQuery } from 'react-responsive';
 import jwtDecode from 'jwt-decode';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import MailIcon from '@material-ui/icons/Mail';
@@ -73,6 +75,7 @@ import {
 } from '../../features/refresh/RefreshPageSlice';
 import Cart from '../Cart/Cart';
 import { getCartData } from '../Product/CartSlice';
+import MenuMobile from '../MenuMobile/MenuMobile';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -120,6 +123,12 @@ const useStyles = makeStyles((theme: Theme) =>
 			paddingRight: theme.spacing(10),
 			paddingLeft: theme.spacing(10),
 		},
+		bgHeaderMobile: {
+			backgroundColor: theme.palette.primary.main,
+			paddingRight: theme.spacing(2),
+			paddingLeft: theme.spacing(2),
+		},
+
 		grow: {
 			flexGrow: 1,
 		},
@@ -133,6 +142,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			position: 'fixed',
 			bottom: theme.spacing(3),
 			right: theme.spacing(2),
+			zIndex: 2,
 		},
 		adHover: {
 			color: 'black',
@@ -206,6 +216,12 @@ const useStyles = makeStyles((theme: Theme) =>
 			borderRadius: theme.shape.borderRadius,
 			backgroundColor: '#fff',
 		},
+		inputSearchBobile: {
+			height: '44px',
+			paddingRight: 0,
+			borderRadius: theme.shape.borderRadius,
+			backgroundColor: '#fff',
+		},
 		a: {
 			borderRight: '1px solid',
 			marginRight: '15px',
@@ -259,7 +275,23 @@ function ScrollTop(props: Props) {
 		</Zoom>
 	);
 }
+function HideOnScroll(props: Props) {
+	const { children, window } = props;
+	// Note that you normally won't need to set the window ref as useScrollTrigger
+	// will default to window.
+	// This is only being set here because the demo is in an iframe.
+	const trigger = useScrollTrigger({
+		target: window ? window() : undefined,
+	});
+
+	return (
+		<Slide appear={false} direction="down" in={!trigger}>
+			{children}
+		</Slide>
+	);
+}
 const Header: React.FC<Props> = (props) => {
+	const isHeader = useMediaQuery({ query: '(min-width: 1208px)' });
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const classes = useStyles();
 	const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -395,6 +427,7 @@ const Header: React.FC<Props> = (props) => {
 		setAnchorElAccount(null);
 	};
 	const [openCart, setOpenCart] = React.useState(false);
+	const [openMenuMobile, setOpenMenuMobile] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
 	const cartData = useAppSelector(getCartData);
@@ -408,61 +441,62 @@ const Header: React.FC<Props> = (props) => {
 	const receiveCart: (result: boolean) => void = (result) => {
 		setOpenCart(result);
 	};
-
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 900px)' });
 	return (
 		<div className={classes.grow}>
-			<AppBar className={classes.bgHeader}>
-				<Toolbar style={{ height: '9ch' }}>
-					<Grid container spacing={2}>
-						<Grid item xs={2} style={{ display: 'grid', alignItems: 'center' }}>
-							<img
-								src={Logo}
-								alt="logo"
-								width="85%"
-								onClick={() => {
-									history.push('/');
-									setValueSearch('');
-									setValueType('product');
-								}}
-								style={{ cursor: 'pointer' }}
-							/>
-						</Grid>
-						<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
-							<FormControl style={{ width: '100%' }}>
-								<OutlinedInput
-									className={classes.inputSearch}
-									id="standard-adornment-password"
-									placeholder={valuePlaceholder}
-									value={valueSearch}
-									onChange={(event: any) => {
-										setValueSearch(event?.target.value);
+			{isHeader ? (
+				<AppBar className={classes.bgHeader}>
+					<Toolbar style={{ height: '9ch' }}>
+						<Grid container spacing={2}>
+							<Grid item xs={2} style={{ display: 'grid', alignItems: 'center' }}>
+								<img
+									src={Logo}
+									alt="logo"
+									width="85%"
+									onClick={() => {
+										history.push('/');
+										setValueSearch('');
+										setValueType('product');
 									}}
-									onKeyDown={(e) => {
-										if (e.keyCode == 13) {
-											history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
-											dispatch(updateValueRefreshPage(true));
-										}
-									}}
-									inputProps={{ className: classes.styleSearch }}
-									endAdornment={
-										<InputAdornment position="end">
-											<IconButton
-												onClick={() => {
-													history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
-													dispatch(updateValueRefreshPage(true));
-												}}
-											>
-												<SearchIcon />
-											</IconButton>
-										</InputAdornment>
-									}
+									style={{ cursor: 'pointer' }}
 								/>
-							</FormControl>
-						</Grid>
-						<Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
-							<Grid container justify="center" style={{ textAlign: 'center', color: '#fff' }}>
-								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
-									{/* <i className="fa fa-newspaper-o" style={{ fontSize: '1.5vw' }}></i>
+							</Grid>
+							<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
+								<FormControl style={{ width: '100%' }}>
+									<OutlinedInput
+										className={classes.inputSearch}
+										id="standard-adornment-password"
+										placeholder={valuePlaceholder}
+										value={valueSearch}
+										onChange={(event: any) => {
+											setValueSearch(event?.target.value);
+										}}
+										onKeyDown={(e) => {
+											if (e.keyCode == 13) {
+												history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
+												dispatch(updateValueRefreshPage(true));
+											}
+										}}
+										inputProps={{ className: classes.styleSearch }}
+										endAdornment={
+											<InputAdornment position="end">
+												<IconButton
+													onClick={() => {
+														history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
+														dispatch(updateValueRefreshPage(true));
+													}}
+												>
+													<SearchIcon />
+												</IconButton>
+											</InputAdornment>
+										}
+									/>
+								</FormControl>
+							</Grid>
+							<Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
+								<Grid container justify="center" style={{ textAlign: 'center', color: '#fff' }}>
+									<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
+										{/* <i className="fa fa-newspaper-o" style={{ fontSize: '1.5vw' }}></i>
 									<Link
 										href="tel: 09878767"
 										style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}
@@ -472,303 +506,15 @@ const Header: React.FC<Props> = (props) => {
 										</Typography>
 									</Link> */}
 
-									<ListItem style={{ cursor: 'pointer' }}>
-										<ListItemAvatar style={{ marginRight: '-8px' }}>
-											<Avatar style={{ backgroundColor: '#fff' }}>
-												{/* <CallIcon style={{ color: '#16a086' }} /> */}
-												<i
-													className="fa fa-newspaper-o"
-													style={{ fontSize: '1.5vw', color: theme.palette.primary.main }}
-												></i>
-											</Avatar>
-										</ListItemAvatar>
-										<div
-											style={{
-												overflow: 'hidden',
-												textOverflow: 'ellipsis',
-												whiteSpace: 'nowrap',
-											}}
-										>
-											<div>
-												<Typography variant="body2" noWrap>
-													Tin tuc
-												</Typography>
-											</div>
-											<div>
-												<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
-													Hot news
-												</Typography>
-											</div>
-										</div>
-									</ListItem>
-								</Grid>
-								<Grid
-									item
-									xs={3}
-									onMouseOver={() => setShowBoxContact(true)}
-									onMouseOut={() => setShowBoxContact(false)}
-									style={{ display: 'grid', alignItems: 'center', position: 'relative' }}
-								>
-									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
-
-									<ListItem style={{ cursor: 'pointer' }}>
-										<ListItemAvatar style={{ marginRight: '-8px' }}>
-											<Avatar style={{ backgroundColor: '#fff' }}>
-												<CallIcon className={classes.colorIcon} />
-											</Avatar>
-										</ListItemAvatar>
-										<div
-											style={{
-												overflow: 'hidden',
-												textOverflow: 'ellipsis',
-												whiteSpace: 'nowrap',
-											}}
-										>
-											<div>
-												<Typography variant="body2" noWrap>
-													Ban hang
-												</Typography>
-											</div>
-											<div>
-												<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
-													Online
-												</Typography>
-											</div>
-										</div>
-									</ListItem>
-									{/* <Slide direction="down" in={showBoxContact}> */}
-									<Box
-										className={clsx(classes.button, showBoxContact && classes.displayBoxContact)}
-										style={{
-											position: 'absolute',
-											top: '100%',
-											display: 'none',
-											zIndex: 1,
-											paddingTop: '10px',
-											color: 'black',
-										}}
-									>
-										<Box
-											boxShadow={3}
-											pt={2}
-											pr={3}
-											pb={3}
-											pl={3}
-											style={{ backgroundColor: '#fff' }}
-										>
-											<Box pb={3}>
-												<Chip
-													label="BÁN HÀNG ONLINE(8H - 21H HÀNG NGÀY)"
-													color="primary"
-													variant="outlined"
-													size="medium"
-													className={classes.colorChip}
-												></Chip>
-											</Box>
-											<Box pb={3} style={{ textAlign: 'start' }}>
-												<Typography variant="body1" gutterBottom>
-													<Typography
-														variant="body1"
-														component="span"
-														style={{ fontWeight: 'bold' }}
-													>
-														Tư vấn bán hàng
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span" gutterBottom>
-														(Gọi hoặc chat Zalo)
-													</Typography>
-												</Typography>
-
-												<Typography variant="body1">
-													<i
-														className="fa fa-commenting-o"
-														style={{ color: '#2196f3', fontSize: '23px' }}
-													></i>
-													&nbsp;
-													<Typography variant="body1" component="span" style={{ color: '#2196f3' }}>
-														Zalo
-													</Typography>
-													&nbsp;
-													<Typography
-														variant="body1"
-														component="span"
-														style={{ color: 'red', fontWeight: 'bold' }}
-													>
-														0818.215.215
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														Hotline 1
-													</Typography>
-												</Typography>
-												<Typography variant="body1" gutterBottom>
-													<i
-														className="fa fa-commenting-o"
-														style={{ color: '#2196f3', fontSize: '23px' }}
-													></i>
-													&nbsp;
-													<Typography variant="body1" component="span" style={{ color: '#2196f3' }}>
-														Zalo
-													</Typography>
-													&nbsp;
-													<Typography
-														variant="body1"
-														component="span"
-														style={{ color: 'red', fontWeight: 'bold' }}
-													>
-														0818.215.215
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														Hotline 2
-													</Typography>
-												</Typography>
-												<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-													Tư vấn qua Facebook
-												</Typography>
-												<Typography variant="body1" gutterBottom>
-													<Typography variant="body1" component="span">
-														- Truy cập ngay
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														<a
-															title="Fanpages SangTV.VN"
-															rel="nofollow"
-															href="google.com"
-															style={{ color: '#2196f3', textDecoration: 'none' }}
-														>
-															Fanpages SangTV.VN
-														</a>
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														để được cập nhật giá, thông tin mới nhất về các sản phẩm công nghệ.
-													</Typography>
-												</Typography>
-												<Typography variant="body1" gutterBottom>
-													<Typography variant="body1" component="span">
-														-
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														<a
-															title="chat voi nhan vien"
-															rel="nofollow"
-															href="google.com"
-															style={{ color: '#2196f3', textDecoration: 'none' }}
-														>
-															Ấn vào đây{' '}
-															<i className="fa fa-comments" style={{ fontSize: '23px' }}></i>
-														</a>
-													</Typography>
-													&nbsp;
-													<Typography variant="body1" component="span">
-														để chát trực tiếp với nhân viên tư vấn.
-													</Typography>
-												</Typography>
-												<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-													Hỗ trợ cửa hàng
-												</Typography>
-												<Typography variant="body1" gutterBottom>
-													<Typography variant="body1" component="span">
-														<Typography variant="body1" component="span">
-															Cơ sở 1:
-														</Typography>
-														&nbsp;
-														<a
-															title="Google map"
-															rel="nofollow"
-															href="google.com"
-															className={classes.adHover}
-														>
-															Số 215 Giáp Nhất, Nhân Chính, Thanh Xuân, Hà Nội
-														</a>
-														&nbsp;
-														<Typography variant="body1" component="span">
-															- Gọi ngay:
-														</Typography>
-														&nbsp;
-														<a
-															href="tel:0818.215.215"
-															style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
-														>
-															0818.215.215
-														</a>
-													</Typography>
-												</Typography>
-												<Typography variant="body1" gutterBottom>
-													<Typography variant="body1" component="span">
-														<Typography variant="body1" component="span">
-															Cơ sở 2:
-														</Typography>
-														&nbsp;
-														<a
-															title="Google map"
-															rel="nofollow"
-															href="google.com"
-															className={classes.adHover}
-														>
-															208 Xã Đàn, Đống Đa, Hà Nội
-														</a>
-														&nbsp;
-														<Typography variant="body1" component="span">
-															- Gọi ngay:
-														</Typography>
-														&nbsp;
-														<a
-															href="tel:0818.215.215"
-															style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
-														>
-															0818.215.215
-														</a>
-													</Typography>
-												</Typography>
-											</Box>
-										</Box>
-									</Box>
-									{/* </Slide> */}
-								</Grid>
-
-								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
-									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
-
-									{dataUser.name === '' ? (
-										<RouteLink
-											to={AppURL.ACCOUNT}
-											style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}
-										>
-											<ListItem style={{ cursor: 'pointer' }}>
-												<ListItemAvatar style={{ marginRight: '-8px' }}>
-													<Avatar style={{ backgroundColor: '#fff' }}>
-														<PersonIcon className={classes.colorIcon} />
-													</Avatar>
-												</ListItemAvatar>
-												<div
-													style={{
-														overflow: 'hidden',
-														textOverflow: 'ellipsis',
-														whiteSpace: 'nowrap',
-													}}
-												>
-													{/* <div>
-													<Typography variant="body2" noWrap>
-														Ban hang
-													</Typography>
-												</div> */}
-													<div>
-														<Typography variant="h6" style={{ fontSize: '16px' }} noWrap>
-															{t('header.account')}
-														</Typography>
-													</div>
-												</div>
-											</ListItem>
-										</RouteLink>
-									) : (
-										<ListItem style={{ cursor: 'pointer' }} onClick={handleClickAccountLogin}>
+										<ListItem style={{ cursor: 'pointer' }}>
 											<ListItemAvatar style={{ marginRight: '-8px' }}>
-												<Avatar className={classes.colorAvatar}>{dataUser.name.charAt(0)}</Avatar>
+												<Avatar style={{ backgroundColor: '#fff' }}>
+													{/* <CallIcon style={{ color: '#16a086' }} /> */}
+													<i
+														className="fa fa-newspaper-o"
+														style={{ fontSize: '1.5vw', color: theme.palette.primary.main }}
+													></i>
+												</Avatar>
 											</ListItemAvatar>
 											<div
 												style={{
@@ -779,122 +525,550 @@ const Header: React.FC<Props> = (props) => {
 											>
 												<div>
 													<Typography variant="body2" noWrap>
-														Xin chao!
+														Tin tuc
 													</Typography>
 												</div>
-												<div style={{ display: 'grid' }}>
-													<Typography variant="h6" style={{ fontSize: '16px' }} noWrap>
-														{dataUser.name}
+												<div>
+													<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
+														Hot news
 													</Typography>
 												</div>
 											</div>
 										</ListItem>
-									)}
-									<Menu
-										id="simple-menu"
-										anchorEl={anchorElAccount}
-										keepMounted
-										open={Boolean(anchorElAccount)}
-										onClose={handleCloseAccount}
+									</Grid>
+									<Grid
+										item
+										xs={3}
+										onMouseOver={() => setShowBoxContact(true)}
+										onMouseOut={() => setShowBoxContact(false)}
+										style={{ display: 'grid', alignItems: 'center', position: 'relative' }}
 									>
-										<MenuItem onClick={handleClickOrder}>
-											<EventNoteIcon /> &nbsp;Quan ly don hang
-										</MenuItem>
-										<MenuItem onClick={handleClickInfo}>
-											<PersonIcon />
-											&nbsp;Quan ly thong tin
-										</MenuItem>
-										<MenuItem onClick={handleClickLogout}>
-											<ExitToAppIcon />
-											&nbsp;Thoat tai khoan
-										</MenuItem>
-									</Menu>
-									{/* <Typography
+										{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
+
+										<ListItem style={{ cursor: 'pointer' }}>
+											<ListItemAvatar style={{ marginRight: '-8px' }}>
+												<Avatar style={{ backgroundColor: '#fff' }}>
+													<CallIcon className={classes.colorIcon} />
+												</Avatar>
+											</ListItemAvatar>
+											<div
+												style={{
+													overflow: 'hidden',
+													textOverflow: 'ellipsis',
+													whiteSpace: 'nowrap',
+												}}
+											>
+												<div>
+													<Typography variant="body2" noWrap>
+														Ban hang
+													</Typography>
+												</div>
+												<div>
+													<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
+														Online
+													</Typography>
+												</div>
+											</div>
+										</ListItem>
+										{/* <Slide direction="down" in={showBoxContact}> */}
+										<Box
+											className={clsx(classes.button, showBoxContact && classes.displayBoxContact)}
+											style={{
+												position: 'absolute',
+												top: '100%',
+												display: 'none',
+												zIndex: 1,
+												paddingTop: '10px',
+												color: 'black',
+											}}
+										>
+											<Box
+												boxShadow={3}
+												pt={2}
+												pr={3}
+												pb={3}
+												pl={3}
+												style={{ backgroundColor: '#fff' }}
+											>
+												<Box pb={3}>
+													<Chip
+														label="BÁN HÀNG ONLINE(8H - 21H HÀNG NGÀY)"
+														color="primary"
+														variant="outlined"
+														size="medium"
+														className={classes.colorChip}
+													></Chip>
+												</Box>
+												<Box pb={3} style={{ textAlign: 'start' }}>
+													<Typography variant="body1" gutterBottom>
+														<Typography
+															variant="body1"
+															component="span"
+															style={{ fontWeight: 'bold' }}
+														>
+															Tư vấn bán hàng
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span" gutterBottom>
+															(Gọi hoặc chat Zalo)
+														</Typography>
+													</Typography>
+
+													<Typography variant="body1">
+														<i
+															className="fa fa-commenting-o"
+															style={{ color: '#2196f3', fontSize: '23px' }}
+														></i>
+														&nbsp;
+														<Typography
+															variant="body1"
+															component="span"
+															style={{ color: '#2196f3' }}
+														>
+															Zalo
+														</Typography>
+														&nbsp;
+														<Typography
+															variant="body1"
+															component="span"
+															style={{ color: 'red', fontWeight: 'bold' }}
+														>
+															0818.215.215
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															Hotline 1
+														</Typography>
+													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<i
+															className="fa fa-commenting-o"
+															style={{ color: '#2196f3', fontSize: '23px' }}
+														></i>
+														&nbsp;
+														<Typography
+															variant="body1"
+															component="span"
+															style={{ color: '#2196f3' }}
+														>
+															Zalo
+														</Typography>
+														&nbsp;
+														<Typography
+															variant="body1"
+															component="span"
+															style={{ color: 'red', fontWeight: 'bold' }}
+														>
+															0818.215.215
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															Hotline 2
+														</Typography>
+													</Typography>
+													<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
+														Tư vấn qua Facebook
+													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<Typography variant="body1" component="span">
+															- Truy cập ngay
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															<a
+																title="Fanpages SangTV.VN"
+																rel="nofollow"
+																href="google.com"
+																style={{ color: '#2196f3', textDecoration: 'none' }}
+															>
+																Fanpages SangTV.VN
+															</a>
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															để được cập nhật giá, thông tin mới nhất về các sản phẩm công nghệ.
+														</Typography>
+													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<Typography variant="body1" component="span">
+															-
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															<a
+																title="chat voi nhan vien"
+																rel="nofollow"
+																href="google.com"
+																style={{ color: '#2196f3', textDecoration: 'none' }}
+															>
+																Ấn vào đây{' '}
+																<i className="fa fa-comments" style={{ fontSize: '23px' }}></i>
+															</a>
+														</Typography>
+														&nbsp;
+														<Typography variant="body1" component="span">
+															để chát trực tiếp với nhân viên tư vấn.
+														</Typography>
+													</Typography>
+													<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
+														Hỗ trợ cửa hàng
+													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<Typography variant="body1" component="span">
+															<Typography variant="body1" component="span">
+																Cơ sở 1:
+															</Typography>
+															&nbsp;
+															<a
+																title="Google map"
+																rel="nofollow"
+																href="google.com"
+																className={classes.adHover}
+															>
+																Số 215 Giáp Nhất, Nhân Chính, Thanh Xuân, Hà Nội
+															</a>
+															&nbsp;
+															<Typography variant="body1" component="span">
+																- Gọi ngay:
+															</Typography>
+															&nbsp;
+															<a
+																href="tel:0818.215.215"
+																style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
+															>
+																0818.215.215
+															</a>
+														</Typography>
+													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<Typography variant="body1" component="span">
+															<Typography variant="body1" component="span">
+																Cơ sở 2:
+															</Typography>
+															&nbsp;
+															<a
+																title="Google map"
+																rel="nofollow"
+																href="google.com"
+																className={classes.adHover}
+															>
+																208 Xã Đàn, Đống Đa, Hà Nội
+															</a>
+															&nbsp;
+															<Typography variant="body1" component="span">
+																- Gọi ngay:
+															</Typography>
+															&nbsp;
+															<a
+																href="tel:0818.215.215"
+																style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
+															>
+																0818.215.215
+															</a>
+														</Typography>
+													</Typography>
+												</Box>
+											</Box>
+										</Box>
+										{/* </Slide> */}
+									</Grid>
+
+									<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
+										{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
+
+										{dataUser.name === '' ? (
+											<RouteLink
+												to={AppURL.ACCOUNT}
+												style={{ textDecoration: 'none', fontWeight: 'bold', color: '#fff' }}
+											>
+												<ListItem style={{ cursor: 'pointer' }}>
+													<ListItemAvatar style={{ marginRight: '-8px' }}>
+														<Avatar style={{ backgroundColor: '#fff' }}>
+															<PersonIcon className={classes.colorIcon} />
+														</Avatar>
+													</ListItemAvatar>
+													<div
+														style={{
+															overflow: 'hidden',
+															textOverflow: 'ellipsis',
+															whiteSpace: 'nowrap',
+														}}
+													>
+														{/* <div>
+													<Typography variant="body2" noWrap>
+														Ban hang
+													</Typography>
+												</div> */}
+														<div>
+															<Typography variant="h6" style={{ fontSize: '16px' }} noWrap>
+																{t('header.account')}
+															</Typography>
+														</div>
+													</div>
+												</ListItem>
+											</RouteLink>
+										) : (
+											<ListItem style={{ cursor: 'pointer' }} onClick={handleClickAccountLogin}>
+												<ListItemAvatar style={{ marginRight: '-8px' }}>
+													<Avatar className={classes.colorAvatar}>{dataUser.name.charAt(0)}</Avatar>
+												</ListItemAvatar>
+												<div
+													style={{
+														overflow: 'hidden',
+														textOverflow: 'ellipsis',
+														whiteSpace: 'nowrap',
+													}}
+												>
+													<div>
+														<Typography variant="body2" noWrap>
+															Xin chao!
+														</Typography>
+													</div>
+													<div style={{ display: 'grid' }}>
+														<Typography variant="h6" style={{ fontSize: '16px' }} noWrap>
+															{dataUser.name}
+														</Typography>
+													</div>
+												</div>
+											</ListItem>
+										)}
+										<Menu
+											id="simple-menu"
+											anchorEl={anchorElAccount}
+											keepMounted
+											open={Boolean(anchorElAccount)}
+											onClose={handleCloseAccount}
+										>
+											<MenuItem onClick={handleClickOrder}>
+												<EventNoteIcon /> &nbsp;Quan ly don hang
+											</MenuItem>
+											<MenuItem onClick={handleClickInfo}>
+												<PersonIcon />
+												&nbsp;Quan ly thong tin
+											</MenuItem>
+											<MenuItem onClick={handleClickLogout}>
+												<ExitToAppIcon />
+												&nbsp;Thoat tai khoan
+											</MenuItem>
+										</Menu>
+										{/* <Typography
 											component="h5"
 											style={{ lineHeight: 'inherit', display: 'content' }}
 										>
 											{dataUser.name === '' ? t('header.account') : dataUser.name}
 										</Typography> */}
-								</Grid>
-								<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
-									{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
+									</Grid>
+									<Grid item xs={3} style={{ display: 'grid', alignItems: 'center' }}>
+										{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
 
-									<ListItem
-										style={{ cursor: 'pointer' }}
-										onClick={() => {
-											setOpenCart(true);
-										}}
-									>
-										<ListItemAvatar style={{ marginRight: '-8px' }}>
-											<Avatar style={{ backgroundColor: '#fff' }}>
-												<StyledBadge color="secondary" badgeContent={countQuantity()}>
-													<ShoppingCartIcon className={classes.colorIcon} />
-												</StyledBadge>
-											</Avatar>
-										</ListItemAvatar>
-										<div
-											style={{
-												overflow: 'hidden',
-												textOverflow: 'ellipsis',
-												whiteSpace: 'nowrap',
+										<ListItem
+											style={{ cursor: 'pointer' }}
+											onClick={() => {
+												setOpenCart(true);
 											}}
 										>
-											{/* <div>
+											<ListItemAvatar style={{ marginRight: '-8px' }}>
+												<Avatar style={{ backgroundColor: '#fff' }}>
+													<StyledBadge color="secondary" badgeContent={countQuantity()}>
+														<ShoppingCartIcon className={classes.colorIcon} />
+													</StyledBadge>
+												</Avatar>
+											</ListItemAvatar>
+											<div
+												style={{
+													overflow: 'hidden',
+													textOverflow: 'ellipsis',
+													whiteSpace: 'nowrap',
+												}}
+											>
+												{/* <div>
 												<Typography variant="body2" noWrap>
 													Ban hang
 												</Typography>
 											</div> */}
-											<div>
-												<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
-													Gio hang
-												</Typography>
+												<div>
+													<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
+														Gio hang
+													</Typography>
+												</div>
 											</div>
-										</div>
-									</ListItem>
+										</ListItem>
+									</Grid>
+									<SwipeableDrawer
+										anchor="right"
+										open={openCart}
+										onClose={() => setOpenCart(false)}
+										onOpen={() => {}}
+										style={{ position: 'relative' }}
+									>
+										<IconButton className={classes.closeButton} onClick={() => setOpenCart(false)}>
+											<Close />
+										</IconButton>
+										<Cart receiveCart={receiveCart} />
+									</SwipeableDrawer>
 								</Grid>
-								<SwipeableDrawer
-									anchor="right"
-									open={openCart}
-									onClose={() => setOpenCart(false)}
-									onOpen={() => {}}
-									style={{ position: 'relative' }}
+							</Grid>
+							<Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
+								<Button onClick={handleClick}>
+									<img src={item} />
+									&nbsp;
+									<i className="fa fa-angle-down" style={{ color: '#fff' }}></i>
+								</Button>
+								<Menu
+									id="fade-menu"
+									anchorEl={anchorEl}
+									keepMounted
+									open={open}
+									onClose={handleClose}
+									TransitionComponent={Fade}
 								>
-									<IconButton className={classes.closeButton} onClick={() => setOpenCart(false)}>
-										<Close />
-									</IconButton>
-									<Cart receiveCart={receiveCart} />
-								</SwipeableDrawer>
+									<MenuItem onClick={() => handleLanguage('en')}>
+										<img src={icon} />
+										&nbsp;English&nbsp;
+										{valueI18n === 'en' && <i className="fa fa-check" aria-hidden="true"></i>}
+									</MenuItem>
+									<MenuItem onClick={() => handleLanguage('vi')}>
+										<img src={iconvn} />
+										&nbsp;Vietnamese&nbsp;
+										{valueI18n === 'vi' && <i className="fa fa-check" aria-hidden="true"></i>}
+									</MenuItem>
+								</Menu>
 							</Grid>
 						</Grid>
-						<Grid item xs={1} style={{ display: 'flex', alignItems: 'center' }}>
-							<Button onClick={handleClick}>
-								<img src={item} />
-								&nbsp;
-								<i className="fa fa-angle-down" style={{ color: '#fff' }}></i>
-							</Button>
-							<Menu
-								id="fade-menu"
-								anchorEl={anchorEl}
-								keepMounted
-								open={open}
-								onClose={handleClose}
-								TransitionComponent={Fade}
-							>
-								<MenuItem onClick={() => handleLanguage('en')}>
-									<img src={icon} />
-									&nbsp;English&nbsp;
-									{valueI18n === 'en' && <i className="fa fa-check" aria-hidden="true"></i>}
-								</MenuItem>
-								<MenuItem onClick={() => handleLanguage('vi')}>
-									<img src={iconvn} />
-									&nbsp;Vietnamese&nbsp;
-									{valueI18n === 'vi' && <i className="fa fa-check" aria-hidden="true"></i>}
-								</MenuItem>
-							</Menu>
-						</Grid>
-					</Grid>
-				</Toolbar>
-			</AppBar>
+					</Toolbar>
+				</AppBar>
+			) : (
+				<React.Fragment>
+					<HideOnScroll {...props}>
+						<AppBar
+							className={clsx(
+								classes.button,
+								isResponseiveMobile ? classes.bgHeader : classes.bgHeaderMobile
+							)}
+						>
+							<Toolbar>
+								<Grid container>
+									<Grid
+										item
+										xs={12}
+										style={{
+											display: 'grid',
+											alignItems: 'center',
+											justifyContent: 'center',
+											paddingTop: '13px',
+										}}
+									>
+										<img
+											src={Logo}
+											alt="logo"
+											width="170px"
+											onClick={() => {
+												history.push('/');
+												setValueSearch('');
+												setValueType('product');
+											}}
+											style={{ cursor: 'pointer' }}
+										/>
+									</Grid>
+
+									<Grid
+										item
+										xs={11}
+										style={{ display: 'flex', alignItems: 'center', paddingTop: 0 }}
+									>
+										<MenuIcon
+											style={{ fontSize: '45px', cursor: 'pointer', marginRight: '10px' }}
+											onClick={() => {
+												setOpenMenuMobile(true);
+											}}
+										/>
+
+										<FormControl style={{ width: '100%' }}>
+											<OutlinedInput
+												className={classes.inputSearchBobile}
+												id="standard-adornment-password"
+												placeholder={valuePlaceholder}
+												value={valueSearch}
+												onChange={(event: any) => {
+													setValueSearch(event?.target.value);
+												}}
+												onKeyDown={(e) => {
+													if (e.keyCode == 13) {
+														history.push(`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`);
+														dispatch(updateValueRefreshPage(true));
+													}
+												}}
+												inputProps={{ className: classes.styleSearch }}
+												endAdornment={
+													<InputAdornment position="end">
+														<IconButton
+															onClick={() => {
+																history.push(
+																	`${AppURL.SEARCH}?query=${valueSearch}&type=${valueType}`
+																);
+																dispatch(updateValueRefreshPage(true));
+															}}
+														>
+															<SearchIcon />
+														</IconButton>
+													</InputAdornment>
+												}
+											/>
+										</FormControl>
+									</Grid>
+									<Grid item xs={1} style={{ display: 'grid', alignItems: 'center' }}>
+										{/* <FiberNewIcon style={{ position: 'absolute', fontSize: '3vw' }} /> */}
+
+										<ListItem
+											style={{ cursor: 'pointer' }}
+											onClick={() => {
+												setOpenCart(true);
+											}}
+										>
+											<ListItemAvatar style={{ marginRight: '-8px' }}>
+												<Avatar style={{ backgroundColor: '#fff' }}>
+													<StyledBadge color="secondary" badgeContent={countQuantity()}>
+														<ShoppingCartIcon className={classes.colorIcon} />
+													</StyledBadge>
+												</Avatar>
+											</ListItemAvatar>
+										</ListItem>
+									</Grid>
+									<SwipeableDrawer
+										anchor="right"
+										open={openCart}
+										onClose={() => setOpenCart(false)}
+										onOpen={() => {}}
+										style={{ position: 'relative' }}
+									>
+										<IconButton className={classes.closeButton} onClick={() => setOpenCart(false)}>
+											<Close />
+										</IconButton>
+										<Cart receiveCart={receiveCart} />
+									</SwipeableDrawer>
+									<SwipeableDrawer
+										anchor="left"
+										open={openMenuMobile}
+										onClose={() => setOpenMenuMobile(false)}
+										onOpen={() => {}}
+										style={{ position: 'relative' }}
+									>
+										<IconButton
+											className={classes.closeButton}
+											onClick={() => setOpenMenuMobile(false)}
+										>
+											<Close />
+										</IconButton>
+										<MenuMobile />
+									</SwipeableDrawer>
+								</Grid>
+							</Toolbar>
+						</AppBar>
+					</HideOnScroll>
+					<Toolbar style={{ minHeight: '37px' }} />
+				</React.Fragment>
+			)}
+
 			<Toolbar id="back-to-top-anchor" />
 			<ScrollTop {...props}>
 				<Fab color="primary" size="small" aria-label="scroll back to top">

@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const Product: React.FC<ProductProps> = (props) => {
+const ProductMobile: React.FC<ProductProps> = (props) => {
 	const classes = useStyles();
 	const [hoverProduct, setHoverProduct] = React.useState(false);
 	const onMouseOverProduct = () => {
@@ -254,6 +254,7 @@ const Product: React.FC<ProductProps> = (props) => {
 						style={{
 							paddingRight: '10px',
 							borderRight: '1px solid grey',
+							fontSize: '18px',
 						}}
 					/>
 					<Typography
@@ -261,45 +262,14 @@ const Product: React.FC<ProductProps> = (props) => {
 						style={{
 							paddingLeft: '10px',
 							color: 'grey',
+							fontSize: '14px',
 						}}
 					>
 						{props.rate_number} đánh giá
 					</Typography>
 				</Box>
-
-				<Zoom in={hoverProduct}>
-					<Box style={{ marginTop: '10px' }}>
-						<Button
-							variant="contained"
-							color="primary"
-							style={{ width: '48%' }}
-							onClick={() => {
-								history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
-							}}
-						>
-							Chi tiet
-						</Button>
-						{props.storeQuantity === 0 ? (
-							<Button
-								disabled
-								variant="contained"
-								style={{ float: 'right', width: '48%', color: 'grey' }}
-							>
-								Het hang
-							</Button>
-						) : (
-							<Button
-								variant="contained"
-								style={{ float: 'right', width: '48%', color: 'grey' }}
-								onClick={buyNow}
-							>
-								Mua ngay
-							</Button>
-						)}
-					</Box>
-				</Zoom>
 			</Box>
 		</React.Fragment>
 	);
 };
-export default Product;
+export default ProductMobile;

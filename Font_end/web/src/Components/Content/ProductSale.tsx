@@ -39,6 +39,20 @@ import theme from './../../utils/theme/index';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import spsale from './../../public/images/4.png';
 import Countdown from 'react-countdown';
+interface ProductProps {
+	unit_price?: number;
+	name?: any;
+	id?: number;
+	rate_number?: number;
+	link?: string;
+	avg?: number;
+	promotion_price?: number;
+	storeQuantity?: number;
+	promotion?: any;
+	addToCart?: (boolean: boolean) => void;
+	timeout?: any;
+	resultTimeout?: any;
+}
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: '30px',
 	borderRadius: 5,
@@ -152,7 +166,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const ProductSale: React.FC = () => {
+const ProductSale: React.FC<ProductProps> = (props) => {
 	const classes = useStyles();
 	const Completionist = () => <span>You are good to go!</span>;
 	const renderer = (hours: any, minutes: any, seconds: any, completed: any) => {
@@ -169,30 +183,63 @@ const ProductSale: React.FC = () => {
 		}
 	};
 	const now = new Date().getTime();
-	const countdownTime = new Date('24 Sep, 2021 20:35:00').getTime();
+	const countdownTime = new Date('3 Dec, 2021 13:00:00').getTime();
 	const distance = countdownTime - now;
 	//const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 	const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 	const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
+	const history = useHistory();
 	const timeDistance = (hours * 60 * 60 + minutes * 60 + seconds + 60) * 1000;
-
+	const toURL = (str: any) => {
+		str = str.toLowerCase();
+		str = str.replace(/(à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ)/g, 'a');
+		str = str.replace(/(è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ)/g, 'e');
+		str = str.replace(/(ì|í|ị|ỉ|ĩ)/g, 'i');
+		str = str.replace(/(ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ)/g, 'o');
+		str = str.replace(/(ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ)/g, 'u');
+		str = str.replace(/(ỳ|ý|ỵ|ỷ|ỹ)/g, 'y');
+		str = str.replace(/(đ)/g, 'd');
+		str = str.replace(/([^0-9a-z-\s])/g, '');
+		str = str.replace(/(\s+)/g, '-');
+		str = str.replace(/^-+/g, '');
+		str = str.replace(/-+$/g, '');
+		return str;
+	};
 	return (
 		<React.Fragment>
 			<Box style={{ display: 'flex' }}>
 				<Box>
-					<img width="100%" src={spsale} />
+					<img
+						width="100%"
+						src={`http://localhost:8000/${props.link}`}
+						onClick={() => {
+							history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
+						}}
+						style={{ cursor: 'pointer' }}
+					/>
 				</Box>
-				<Box>
+				<Box style={{ width: '80%' }}>
 					<Box>
-						<Typography variant="body1" gutterBottom style={{ fontWeight: 400 }}>
-							Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+						<Typography
+							variant="body1"
+							gutterBottom
+							style={{
+								height: '51px',
+								overflow: 'hidden',
+								display: '-webkit-box',
+								textOverflow: 'ellipsis',
+								WebkitLineClamp: 2,
+								WebkitBoxOrient: 'vertical',
+								fontWeight: 400,
+							}}
+						>
+							{props.name}
 						</Typography>
 					</Box>
 					<Box>
 						<Typography variant="h6" style={{ fontWeight: 'bold' }}>
-							12.000.000d
+							{Intl.NumberFormat('en-US').format(Number(props.unit_price))}đ
 						</Typography>
 					</Box>
 					{/* <Box>
@@ -232,14 +279,14 @@ const ProductSale: React.FC = () => {
 								paddingRight: '15px',
 							}}
 						>
-							{Intl.NumberFormat('en-US').format(Number(12000000))}đ
+							{Intl.NumberFormat('en-US').format(Number(props.promotion_price))}đ
 						</Typography>
 					</Box>
 					<Box>
 						<Typography style={{ display: 'flex', alignItems: 'center' }}>
 							<Rating
 								name="read-only"
-								value={Number(Number(12).toFixed(1))}
+								value={Number(Number(props.avg).toFixed(1))}
 								precision={0.04}
 								readOnly
 								style={{
@@ -255,7 +302,7 @@ const ProductSale: React.FC = () => {
 									color: 'grey',
 								}}
 							>
-								{12} đánh giá
+								{props.rate_number} đánh giá
 							</Typography>
 						</Typography>
 					</Box>

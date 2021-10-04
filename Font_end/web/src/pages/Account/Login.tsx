@@ -47,6 +47,8 @@ import { LoginGGPost, LoginPost } from '../../api/LoginAPI';
 import { toast, ToastContainer } from 'react-toastify';
 import { LoginDTO } from '../../DTO/Login/LoginDTO';
 import GoogleLogin from 'react-google-login';
+import Swal from 'sweetalert2';
+import jwtDecode from 'jwt-decode';
 interface loginprops {
 	receivePropsLogin?: (result: boolean) => void;
 	resultApiLogin?: (result: any) => void;
@@ -126,10 +128,21 @@ const Login: React.FC<loginprops> = (props) => {
 	const onSubmit = async (data: LoginDTO) => {
 		const res = await LoginPost({ email: data.email, password: data.password });
 		if (res?.errorCode === null) {
-			window.localStorage.setItem('token', res.data.accessToken || '');
-		}
-		if (res?.errorCode || res?.errorCode === null) {
-			props?.resultApiLogin?.(res.errorCode);
+			const token: any = res.data.accessToken;
+			const checkToken: any = jwtDecode(token);
+			console.log(checkToken);
+
+			if (checkToken.isAdmin === false) {
+				window.localStorage.setItem('token', res.data.accessToken || '');
+				props?.resultApiLogin?.(res.errorCode);
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong dung quan tri de dang nhap',
+					//text: 'Ten tai khoan hoac mat khau khong dung',
+				});
+				//props?.resultApiLogin?.(res.errorCode);
+			}
 		}
 	};
 	const [state, setState] = React.useState({

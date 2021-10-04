@@ -8,5 +8,41 @@
 	"account": {
 		"sign_in": "đăng nhập",
 		"sign_up": "đăng ký"
+	},
+	"document": {
+		"search": "Tìm kiếm",
+		"category": "Danh mục",
+		"from_date": "Từ ngày",
+		"to_date": "Đến ngày",
+		"clear": "Làm mới",
+		"action": "Hành động",
+		"name": "Tên",
+		"created_date": "Ngày tạo",
+		"created_by": "Người tạo",
+		"rows_per_page": "Số dòng trên trang",
+		"jump_to_page": "Chuyển đến trang",
+		"display_rows": " trên",
+		"favorite": "Yêu thích",
+		"no_match": "Xin lỗi, không có dữ liệu trên trang này."
+	},
+	"tenant": {
+		"search": "Tìm kiếm",
+		"name": "Tên",
+		"login_name": "Tên đăng nhập",
+		"from_date": "Từ ngày",
+		"to_date": "Đến ngày",
+		"clear": "Làm mới",
+		"rows_per_page": "Số dòng trên trang",
+		"jump_to_page": "Chuyển đến trang",
+		"display_rows": "trên",
+		"action": "Hành động",
+		"no_match": "Xin lỗi, không có dữ liệu trên trang này.",
+		"password_err_null": "Vui lòng nhập mật khẩu",
+		"password_err": "Vui lòng nhập ít nhất 6 ký tự",
+		"the_name_field_is_required": "Tên là bắt buộc",
+		"the_loginName_field_is_required": "Tên đăng nhập là bắc buộc",
+		"re_password_err_null": "Vui lòng nhập lại mật khẩu",
+		"create_tenant": "Người dùng đã được tạo!",
+		"create_tenant_error": "Không thể tạo người dùng!"
 	}
 }

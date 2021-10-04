@@ -2,6 +2,7 @@ import {
 	Box,
 	Button,
 	Checkbox,
+	CircularProgress,
 	Container,
 	FormControlLabel,
 	Grid,
@@ -21,6 +22,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
 import jwtDecode from 'jwt-decode';
+import { LoginPost } from '../../api/LoginAPI';
+import Swal from 'sweetalert2';
+import theme from '../../utils/theme';
 
 function Copyright() {
 	return (
@@ -71,19 +75,34 @@ const Login: React.FC = () => {
 	});
 	const history = useHistory();
 	const onSubmit = async (data: any) => {
-		// const response = await LoginPost({ loginName: data.loginName, password: data.password });
-		// if (response?.errorCode === null) {
-		// 	window.localStorage.setItem('token', response.data.accessToken || '');
-		// 	const token: any = response.data.accessToken;
-		// 	const checkToken: any = jwtDecode(token);
-		// 	if (checkToken.isAdmin) {
-		// 		history.push(`${AppURL.USER}`);
-		// 	} else {
-		// 		history.push(`${AppURL.DASHBOARD}`);
-		// 	}
-		// } else if (response?.errorCode === 1) {
-		// 	toast.error('Tai khoan ko chinh xac');
-		// }
+		const response = await LoginPost({ email: data.loginName, password: data.password });
+		if (response?.errorCode === null) {
+			const token: any = response.data.accessToken;
+			const checkToken: any = jwtDecode(token);
+
+			if (checkToken.isAdmin === 'admin') {
+				window.localStorage.setItem('tokenAdmin', response.data.accessToken || '');
+				history.push(AppURL.ADMIN_HOME);
+			} else {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen vao trang quan tri',
+					//text: 'Ten tai khoan hoac mat khau khong dung',
+				});
+			}
+		} else if (response?.errorCode === 1) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Dang nhap that bai',
+				text: 'Ten tai khoan hoac mat khau khong dung',
+			});
+		} else {
+			Swal.fire({
+				icon: 'error',
+				title: 'Dang nhap that bai',
+				text: 'Co loi xay ra',
+			});
+		}
 	};
 
 	return (
@@ -146,8 +165,25 @@ const Login: React.FC = () => {
 				</Grid> */}
 				<Grid container justify="center">
 					<Grid item xs={12} className={classes.mt3}>
-						<Button fullWidth={true} color="primary" type="submit" variant="contained" size="large">
+						<Button
+							fullWidth={true}
+							color="primary"
+							type="submit"
+							variant="contained"
+							size="large"
+							disabled={isSubmitting}
+							style={{ position: 'relative' }}
+						>
 							Sign in
+							{isSubmitting && (
+								<CircularProgress
+									size={24}
+									color="secondary"
+									style={{
+										position: 'absolute',
+									}}
+								/>
+							)}
 						</Button>
 					</Grid>
 				</Grid>

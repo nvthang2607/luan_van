@@ -65,3 +65,9 @@ export const RatingPost = (data: any) => {
 	});
 	return response;
 };
+export const ProductFSalePost = (data: any) => {
+	const response = callApi('POST', `/api/product/`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};

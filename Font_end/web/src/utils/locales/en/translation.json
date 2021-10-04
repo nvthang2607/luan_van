@@ -8,5 +8,41 @@
 	"account": {
 		"sign_in": "Sign in",
 		"sign_up": "Sign up"
+	},
+	"document": {
+		"search": "Search",
+		"category": "Category",
+		"from_date": "From date",
+		"to_date": "To date",
+		"clear": "Clear",
+		"action": "Action",
+		"name": "Name",
+		"created_date": "Created date",
+		"created_by": "Created by",
+		"rows_per_page": "Rows per page",
+		"jump_to_page": "Jump to page",
+		"display_rows": "Of",
+		"favorite": "Favorite",
+		"no_match": "Sorry, there is no data on page."
+	},
+	"tenant": {
+		"search": "Search",
+		"name": "Name",
+		"login_name": "Login name",
+		"from_date": "From date",
+		"to_date": "To date",
+		"clear": "Clear",
+		"rows_per_page": "Rows per page",
+		"jump_to_page": "Jump to page",
+		"display_rows": "Of",
+		"action": "Action",
+		"no_match": "Sorry, there is no data on page.",
+		"password_err_null": "Please enter your password",
+		"password_err": "Please enter at least 6 characters",
+		"the_name_field_is_required": "The name field is required",
+		"the_loginName_field_is_required": "The login name field is required",
+		"re_password_err_null": "Please retype your password",
+		"create_tenant": "Tenant Created!",
+		"create_tenant_error": "Can't create the tenant!"
 	}
 }

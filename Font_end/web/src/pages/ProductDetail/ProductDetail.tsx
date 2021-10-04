@@ -47,13 +47,14 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
-import { ProductIdGet, RatingPost } from '../../api/Product';
+import { ProductIdGet, RatingPost, RecommendPost } from '../../api/Product';
 import { getCartData, updataCartData } from '../../Components/Product/CartSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CommentPost } from '../../api/comment';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import jwtDecode from 'jwt-decode';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -224,6 +225,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 	};
 
 	const dispatch = useAppDispatch();
+	const [dataProductRecommend, setDataProductRecommend] = React.useState<any>([]);
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 		dispatch(updateValueRefreshPage(true));
@@ -272,8 +274,30 @@ const ProductDetail: React.FC<Props> = (props) => {
 				}
 			}
 		};
+		const getDataRecommend = async () => {
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (token) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					dispatch(updateValueRefreshPage(true));
+					setDataProductRecommend([]);
+				} else {
+					const response = await RecommendPost({ page: 1, pageSize: 8 });
+					if (response.errorCode === null) {
+						//dispatch(updateValueRefreshPage(true));
+						setDataProductRecommend(response.data.listData);
+						//dispatch(updateProfileUser(response.data));
+					}
+				}
+			} else {
+				setDataProductRecommend([]);
+			}
+		};
+		getDataRecommend();
 		fetchRating();
-	}, [pageRating, idProduct]);
+	}, [pageRating, idProduct, dispatch]);
 	React.useEffect(() => {
 		//window.scrollTo(0, 0);
 		const fetchProductId = async () => {
@@ -643,7 +667,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 							<Button
 								variant="contained"
 								color="primary"
-								style={{ display: 'flex', marginTop: '10px' }}
+								style={{ display: 'flex', marginTop: '10px', marginBottom: '20px' }}
 								fullWidth
 								size="large"
 								onClick={buyNow}
@@ -1231,7 +1255,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 								>
 									<Box style={{ textAlign: 'center' }}>
 										<Typography variant="h6" style={{ lineHeight: 1 }}>
-											Apple Watch SE GPS 40mm Vàng Chính Hãng
+											{dataProduct?.item?.name}
 										</Typography>
 										<Typography
 											variant="h5"
@@ -1241,7 +1265,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 												color: 'red',
 											}}
 										>
-											19.000.000đ
+											{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.unit_price))}đ
 										</Typography>
 									</Box>
 									<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
@@ -1258,10 +1282,102 @@ const ProductDetail: React.FC<Props> = (props) => {
 												Khuyen mai
 											</Typography>
 											<Typography>
-												Lorem ipsum dolor sit amet consectetur adipisicing elit. Repudiandae fuga
-												dolorum, rerum soluta porro quisquam? Odio magni doloremque explicabo.
-												Doloribus sint asperiores a officia aperiam neque unde, libero excepturi
-												magni.
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+													Tặng sạc cáp Deimark chính hãng bảo hành 1 đổi 1 trong 12 tháng
+												</Typography>
+											</Typography>
+											<Typography>
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+													Đổi sạc nhanh 20W MIỄN PHÍ khi nâng cấp BH 12 tháng
+												</Typography>
+											</Typography>
+											{dataProduct?.promotion?.map((item: any) => {
+												return (
+													<Typography>
+														<i
+															className="fa fa-check-circle"
+															aria-hidden="true"
+															style={{ color: '#4caf50' }}
+														></i>
+														&nbsp;&nbsp;
+														<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+															{item.name}&nbsp;
+															{/* <Typography
+														component="span"
+														style={{ fontSize: '12px', fontWeight: 600 }}
+													>
+														(chi áp dụng cho san pham nay)
+													</Typography>
+													&nbsp; */}
+															<i
+																className="fa fa-hand-o-right"
+																aria-hidden="true"
+																style={{ color: 'indigo' }}
+															></i>
+															&nbsp; &nbsp;&nbsp;
+															<CopyToClipboard text={item.code} onCopy={() => setTxtCopy('Copied')}>
+																<Tooltip title={txtCopy} onOpen={() => setTxtCopy('Copy')}>
+																	<i
+																		className="fa fa-clone"
+																		aria-hidden="true"
+																		style={{ fontSize: '22px', color: 'black', cursor: 'pointer' }}
+																	></i>
+																</Tooltip>
+															</CopyToClipboard>
+														</Typography>
+													</Typography>
+												);
+											})}
+											<Typography>
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography
+													component="span"
+													style={{ fontStyle: 'italic', fontWeight: 600 }}
+												>
+													Bảo hành quốc tế trọn đời, đổi mới nếu bị Relock
+												</Typography>
+											</Typography>
+											<Typography>
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography
+													component="span"
+													style={{ fontStyle: 'italic', fontWeight: 600 }}
+												>
+													Hỗ trợ cài đặt, tạo tài khoản iCloud miễn phí
+												</Typography>
+											</Typography>
+											<Typography>
+												<i
+													className="fa fa-check-circle"
+													aria-hidden="true"
+													style={{ color: '#4caf50' }}
+												></i>
+												&nbsp;&nbsp;
+												<Typography component="span">
+													Mua Online: Giao hàng tận nhà- Nhận hàng thanh toán
+												</Typography>
 											</Typography>
 										</Card>
 									</Box>
@@ -1271,20 +1387,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 										style={{ display: 'block', marginTop: '10px' }}
 										fullWidth
 										size="large"
+										onClick={buyNow}
 									>
 										<Typography component="h6" style={{ fontSize: '1.1rem' }}>
 											Mua ngay
-										</Typography>
-									</Button>
-									<Button
-										variant="outlined"
-										color="primary"
-										style={{ display: 'block', marginTop: '10px' }}
-										fullWidth
-										size="large"
-									>
-										<Typography component="h6" style={{ fontSize: '1rem' }}>
-											Them vao gio hang
 										</Typography>
 									</Button>
 								</Card>
@@ -1301,8 +1407,8 @@ const ProductDetail: React.FC<Props> = (props) => {
 						>
 							San pham cung loai
 						</Typography>
+
 						<Slider {...settings}>
-							<ProductCarousel />
 							<ProductCarousel />
 							<ProductCarousel />
 							<ProductCarousel />
@@ -1311,6 +1417,24 @@ const ProductDetail: React.FC<Props> = (props) => {
 							<ProductCarousel />
 						</Slider>
 					</Grid>
+					{dataProductRecommend.length > 0 && (
+						<Grid item xs={12}>
+							<Typography
+								variant="h5"
+								className={classes.titleText}
+								gutterBottom
+								style={{ marginTop: '10px' }}
+							>
+								San pham goi y
+							</Typography>
+
+							<Slider {...settings}>
+								{dataProductRecommend?.map((item: any) => {
+									return <ProductCarousel />;
+								})}
+							</Slider>
+						</Grid>
+					)}
 				</React.Fragment>
 			)}
 			<ToastContainer

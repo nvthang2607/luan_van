@@ -35,6 +35,7 @@ import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
 import {
 	PhoneBranch,
+	ProductFSalePost,
 	ProductNewPost,
 	ProductSellPost,
 	RecommendPost,
@@ -59,6 +60,8 @@ import {
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { useMediaQuery } from 'react-responsive';
+import ProductMobile from '../Product/ProductMobile';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: '30px',
@@ -79,6 +82,12 @@ const useStyles = makeStyles((theme) => ({
 		paddingLeft: theme.spacing(13),
 		backgroundColor: '#f4f4f4',
 	},
+	bgHeaderMobile: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
+		backgroundColor: 'red',
+	},
+
 	showBox: {
 		display: 'block !important',
 	},
@@ -199,6 +208,7 @@ const Content: React.FC = () => {
 	const [dataNews, setDataNews] = React.useState<any>({});
 	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
 	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
+	const [dataProductFsale, setDataProductFsale] = React.useState<any>([]);
 	const dispatch = useAppDispatch();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	React.useEffect(() => {
@@ -210,25 +220,32 @@ const Content: React.FC = () => {
 					setDataPhoneBranch(getPhoneBranch.data);
 				}
 			}
+			const getProductFSalePost = await ProductFSalePost({ page: 1, pageSize: 4, type: 'fsale' });
+			if (getProductFSalePost) {
+				if (getProductFSalePost.errorCode === null) {
+					console.log('getProductFSalePost', getProductFSalePost);
+					setDataProductFsale(getProductFSalePost.data.listData);
+				}
+			}
 			const responseNewsGet = await NewsGet({ page: 1, pageSize: 9 });
 			if (responseNewsGet) {
 				if (responseNewsGet.errorCode === null) {
 					setDataNews(responseNewsGet.data);
-					console.log(responseNewsGet.data);
+					//console.log(responseNewsGet.data);
 				}
 			}
 			const responseProductSell = await ProductSellPost({ page: 1, pageSize: 4, type: 'sell' });
 			if (responseProductSell) {
 				if (responseProductSell.errorCode === null) {
 					setDataProductSell(responseProductSell.data.listData);
-					console.log(responseProductSell.data.listData);
+					//console.log(responseProductSell.data.listData);
 				}
 			}
 			const responseProductNew = await ProductNewPost({ page: 1, pageSize: 4, type: 'new' });
 			if (responseProductNew) {
 				if (responseProductNew.errorCode === null) {
 					setDataProductNew(responseProductNew.data.listData);
-					console.log(responseProductNew.data.listData);
+					//console.log(responseProductNew.data.listData);
 				}
 			}
 		};
@@ -244,10 +261,12 @@ const Content: React.FC = () => {
 					setDataProductRecommend([]);
 				} else {
 					const response = await RecommendPost({ page: 1, pageSize: 4 });
-					if (response.errorCode === null) {
-						//dispatch(updateValueRefreshPage(true));
-						setDataProductRecommend(response.data.listData);
-						//dispatch(updateProfileUser(response.data));
+					if (response) {
+						if (response.errorCode === null) {
+							//dispatch(updateValueRefreshPage(true));
+							setDataProductRecommend(response.data.listData);
+							//dispatch(updateProfileUser(response.data));
+						}
 					}
 				}
 			} else {
@@ -290,101 +309,603 @@ const Content: React.FC = () => {
 		nextArrow: <SampleNextArrow />,
 		prevArrow: <SamplePrevArrow />,
 	};
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
 	return (
-		<Grid container className={classes.bgHeader}>
-			<Grid item xs={9} style={{ zIndex: 0 }}>
-				<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
-					<div>
-						<img src={img1} />
-					</div>
-					<div>
-						<img src={img2} />
-					</div>
-					<div>
-						<img src={img3} />
-					</div>
-				</Carousel>
-			</Grid>
-			<Grid item xs={3} style={{ paddingLeft: '8px' }}>
-				<div>
-					<img width="100%" src={img4} />
-				</div>
-				<div>
-					<img width="100%" src={img5} />
-				</div>
-			</Grid>
-			<Grid item xs={12} style={{ marginTop: '30px', backgroundColor: '#fff' }}>
-				<Box style={{ border: `3px solid ${theme.palette.primary.main}` }} pl={3} pr={3} pb={3}>
-					<Box
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							marginTop: '30px',
-							marginBottom: '13px',
-						}}
-					>
-						<Typography
-							variant="h4"
-							component="span"
-							style={{
-								color: `${theme.palette.primary.main}`,
-								fontStyle: 'italic',
-								fontWeight: 'bold',
-							}}
-						>
-							FLASH SALE
-						</Typography>
-						&nbsp;&nbsp;
-						<img src={sale} />
-						&nbsp;&nbsp;
-						<Typography
-							variant="h4"
-							component="span"
-							style={{
-								color: `${theme.palette.primary.main}`,
-								fontStyle: 'italic',
-								fontWeight: 'bold',
-							}}
-						>
-							HOM NAY
-						</Typography>
-					</Box>
+		<React.Fragment>
+			{isResponseiveMobile ? (
+				<Grid container className={classes.bgHeader}>
+					{isResponseive ? (
+						<React.Fragment>
+							<Grid item xs={9} style={{ zIndex: 0 }}>
+								<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
+									<div>
+										<img src={img1} />
+									</div>
+									<div>
+										<img src={img2} />
+									</div>
+									<div>
+										<img src={img3} />
+									</div>
+								</Carousel>
+							</Grid>
+							<Grid item xs={3} style={{ paddingLeft: '8px' }}>
+								<div>
+									<img width="100%" src={img4} />
+								</div>
+								<div>
+									<img width="100%" src={img5} />
+								</div>
+							</Grid>
+						</React.Fragment>
+					) : (
+						<Grid item xs={12} style={{ zIndex: 0, marginTop: '25px' }}>
+							<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
+								<div>
+									<img src={img1} />
+								</div>
+								<div>
+									<img src={img2} />
+								</div>
+								<div>
+									<img src={img3} />
+								</div>
+							</Carousel>
+						</Grid>
+					)}
+					{dataProductFsale.length > 0 && (
+						<Grid item xs={12} style={{ marginTop: '30px', backgroundColor: '#fff' }}>
+							<Box
+								style={{ border: `3px solid ${theme.palette.primary.main}` }}
+								pl={3}
+								pr={3}
+								pb={3}
+							>
+								<Box
+									style={{
+										display: 'flex',
+										alignItems: 'center',
+										marginTop: '30px',
+										marginBottom: '13px',
+									}}
+								>
+									<Typography
+										variant="h4"
+										component="span"
+										style={{
+											color: `${theme.palette.primary.main}`,
+											fontStyle: 'italic',
+											fontWeight: 'bold',
+										}}
+									>
+										FLASH SALE
+									</Typography>
+									&nbsp;&nbsp;
+									<img src={sale} />
+									&nbsp;&nbsp;
+									<Typography
+										variant="h4"
+										component="span"
+										style={{
+											color: `${theme.palette.primary.main}`,
+											fontStyle: 'italic',
+											fontWeight: 'bold',
+										}}
+									>
+										HOM NAY
+									</Typography>
+								</Box>
 
-					<Slider {...settings}>
-						{/* <Grid container style={{ display: 'flex', justifyContent: 'center' }}>
+								<Slider {...settings}>
+									{/* <Grid container style={{ display: 'flex', justifyContent: 'center' }}>
+						<Grid item xs={6}>
+							<ProductSale />
+						</Grid>
+					</Grid> */}
+									{dataProductFsale?.map((item: any) => {
+										return (
+											<ProductSale
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												timeout="29 Sep, 2021 20:35:00"
+											/>
+										);
+									})}
+									{/* <ProductSale /> */}
+								</Slider>
+							</Box>
+						</Grid>
+					)}
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container spacing={2}>
+							<Grid item xs={6}>
+								<img width="100%" src={ad1_1} />
+							</Grid>
+							<Grid item xs={6}>
+								<img width="100%" src={ad1_2} />
+							</Grid>
+						</Grid>
+					</Grid>
+					{dataProductRecommend.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12} className={classes.borderTitle}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={3}>
+											<Link to={AppURL.RECOMMEND} className={classes.titles}>
+												SAN PHAM GOI Y<div className={classes.title}></div>
+											</Link>
+										</Grid>
+										<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+									return (
+										<Link
+											to={`/views/${toURL(item.name)}-${item.id}`}
+											className={classes.stylePhoneBranch}
+										>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													{item.name}
+												</Typography>
+											</ListItem>
+										</Link>
+									);
+								})} */}
+												<Link to={AppURL.RECOMMEND} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductRecommend?.map((item: any) => {
+										return (
+											<Product
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												addToCart={addToCart}
+											/>
+										);
+									})}
+								</Grid>
+							</Grid>
+						</Grid>
+					)}
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12} className={classes.borderTitle}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={4}>
+										<Link to={AppURL.NEW_PHONE} className={classes.titles}>
+											DIEN THOAI MOI NHAT<div className={classes.title}></div>
+										</Link>
+									</Grid>
+									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<List style={{ display: 'flex' }}>
+											{dataPhoneBranch?.listData?.map((item: any, index: number) => {
+												return (
+													<Link
+														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+														className={classes.stylePhoneBranch}
+													>
+														<ListItem
+															style={{
+																padding: 0,
+																fontWeight: 'bold',
+																paddingRight: '10px',
+																paddingLeft: '10px',
+															}}
+														>
+															<Typography variant="body1" style={{ fontWeight: 500 }}>
+																{item.name}
+															</Typography>
+														</ListItem>
+													</Link>
+												);
+											})}
+											<Link to={AppURL.NEW_PHONE} className={classes.styleViewAll}>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														Xem tat ca
+													</Typography>
+												</ListItem>
+											</Link>
+										</List>
+									</Grid>
+								</Grid>
+							</Grid>
+
+							{isResponseiveProductMobile ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductNew?.map((item: any) => {
+										return (
+											<Grid item md={4} lg={3} xl={3}>
+												<Product
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductNew?.map((item: any) => {
+										return (
+											<Grid item md={4} lg={3} xl={3}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
+						</Grid>
+					</Grid>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12} className={classes.borderTitle}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={3}>
+										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
+											DIEN THOAI BAN CHAY<div className={classes.title}></div>
+										</Link>
+									</Grid>
+									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<List style={{ display: 'flex' }}>
+											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+									return (
+										<Link
+											to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+											className={classes.stylePhoneBranch}
+										>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													{item.name}
+												</Typography>
+											</ListItem>
+										</Link>
+									);
+								})} */}
+											<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														Xem tat ca
+													</Typography>
+												</ListItem>
+											</Link>
+										</List>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid container spacing={3} style={{ marginTop: '10px' }}>
+								{dataProductSell?.map((item: any) => {
+									return (
+										<Product
+											unit_price={item[0].unit_price}
+											name={item[0].name}
+											id={item[0].id}
+											promotion_price={item[0].promotion_price}
+											link={item.image}
+											avg={item.avg}
+											promotion={item.promotion}
+											rate_number={item.rate_number}
+											storeQuantity={item[0].quantity}
+											addToCart={addToCart}
+										/>
+									);
+								})}
+							</Grid>
+						</Grid>
+					</Grid>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<img width="100%" src={ad2_1} />
+					</Grid>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12} className={classes.borderTitle}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={3}>
+										<Link to="/" className={classes.titles}>
+											24H CONG NGHE<div className={classes.title}></div>
+										</Link>
+									</Grid>
+									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<List style={{ display: 'flex' }}>
+											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														Xem tat ca
+													</Typography>
+												</ListItem>
+											</Link>
+										</List>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid container spacing={3} style={{ marginTop: '10px' }}>
+								{dataNews.listData?.map((item: any) => {
+									return (
+										<Grid item xs={4}>
+											<NewsSmall
+												title={item.title}
+												image={item.image}
+												id={item.id}
+												created_at={item.created_at}
+											/>
+										</Grid>
+									);
+								})}
+							</Grid>
+						</Grid>
+					</Grid>
+
+					<Box style={{ position: 'fixed', left: 0, top: '40%' }}>
+						<List>
+							<ListItem>
+								<ListItemAvatar>
+									<a title="Link youtube">
+										<Avatar
+											style={{
+												backgroundColor: '#fff',
+												border: '1px solid red',
+												cursor: 'pointer',
+											}}
+										>
+											<i className="fa fa-youtube" aria-hidden="true" style={{ color: 'red' }}></i>
+										</Avatar>
+									</a>
+								</ListItemAvatar>
+							</ListItem>
+							<ListItem>
+								<ListItemAvatar>
+									<a title="Lick facebook">
+										<Avatar
+											style={{
+												backgroundColor: '#fff',
+												border: '1px solid #0278ad',
+												cursor: 'pointer',
+											}}
+										>
+											<i
+												className="fa fa-facebook"
+												aria-hidden="true"
+												style={{ color: '#0278ad' }}
+											></i>
+										</Avatar>
+									</a>
+								</ListItemAvatar>
+							</ListItem>
+						</List>
+					</Box>
+					<ToastContainer
+						position="top-right"
+						autoClose={5000}
+						hideProgressBar={false}
+						newestOnTop={false}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+					/>
+				</Grid>
+			) : (
+				<Grid container className={classes.bgHeaderMobile}>
+					{isResponseive ? (
+						<React.Fragment>
+							<Grid item xs={9} style={{ zIndex: 0 }}>
+								<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
+									<div>
+										<img src={img1} />
+									</div>
+									<div>
+										<img src={img2} />
+									</div>
+									<div>
+										<img src={img3} />
+									</div>
+								</Carousel>
+							</Grid>
+							<Grid item xs={3} style={{ paddingLeft: '8px' }}>
+								<div>
+									<img width="100%" src={img4} />
+								</div>
+								<div>
+									<img width="100%" src={img5} />
+								</div>
+							</Grid>
+						</React.Fragment>
+					) : (
+						<Grid item xs={12} style={{ zIndex: 0, marginTop: '25px' }}>
+							<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
+								<div>
+									<img src={img1} />
+								</div>
+								<div>
+									<img src={img2} />
+								</div>
+								<div>
+									<img src={img3} />
+								</div>
+							</Carousel>
+						</Grid>
+					)}
+					{dataProductFsale.length > 0 && (
+						<Grid item xs={12} style={{ marginTop: '30px', backgroundColor: '#fff' }}>
+							<Box
+								style={{ border: `3px solid ${theme.palette.primary.main}` }}
+								pl={3}
+								pr={3}
+								pb={3}
+							>
+								<Box
+									style={{
+										display: 'flex',
+										alignItems: 'center',
+										marginTop: '30px',
+										marginBottom: '13px',
+									}}
+								>
+									<Typography
+										variant="h4"
+										component="span"
+										style={{
+											color: `${theme.palette.primary.main}`,
+											fontStyle: 'italic',
+											fontWeight: 'bold',
+										}}
+									>
+										FLASH SALE
+									</Typography>
+									&nbsp;&nbsp;
+									<img src={sale} />
+									&nbsp;&nbsp;
+									<Typography
+										variant="h4"
+										component="span"
+										style={{
+											color: `${theme.palette.primary.main}`,
+											fontStyle: 'italic',
+											fontWeight: 'bold',
+										}}
+									>
+										HOM NAY
+									</Typography>
+								</Box>
+
+								<Slider {...settings}>
+									{/* <Grid container style={{ display: 'flex', justifyContent: 'center' }}>
 							<Grid item xs={6}>
 								<ProductSale />
 							</Grid>
 						</Grid> */}
-						<ProductSale />
-						<ProductSale />
-						<ProductSale />
-					</Slider>
-				</Box>
-			</Grid>
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<Grid container spacing={2}>
-					<Grid item xs={6}>
-						<img width="100%" src={ad1_1} />
+									{dataProductFsale?.map((item: any) => {
+										return (
+											<ProductSale
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												timeout="29 Sep, 2021 20:35:00"
+											/>
+										);
+									})}
+									{/* <ProductSale /> */}
+								</Slider>
+							</Box>
+						</Grid>
+					)}
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container spacing={2}>
+							<Grid item xs={6}>
+								<img width="100%" src={ad1_1} />
+							</Grid>
+							<Grid item xs={6}>
+								<img width="100%" src={ad1_2} />
+							</Grid>
+						</Grid>
 					</Grid>
-					<Grid item xs={6}>
-						<img width="100%" src={ad1_2} />
-					</Grid>
-				</Grid>
-			</Grid>
-			{dataProductRecommend.length > 0 && (
-				<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-					<Grid container>
-						<Grid item xs={12} className={classes.borderTitle}>
-							<Grid container style={{ alignItems: 'baseline' }}>
-								<Grid item xs={3}>
-									<Link to={AppURL.RECOMMEND} className={classes.titles}>
-										SAN PHAM GOI Y<div className={classes.title}></div>
-									</Link>
-								</Grid>
-								<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-									<List style={{ display: 'flex' }}>
-										{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+					{dataProductRecommend.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12} className={classes.borderTitle}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={3}>
+											<Link to={AppURL.RECOMMEND} className={classes.titles}>
+												SAN PHAM GOI Y<div className={classes.title}></div>
+											</Link>
+										</Grid>
+										<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 										return (
 											<Link
 												to={`/views/${toURL(item.name)}-${item.id}`}
@@ -405,62 +926,78 @@ const Content: React.FC = () => {
 											</Link>
 										);
 									})} */}
-										<Link to={AppURL.RECOMMEND} className={classes.styleViewAll}>
-											<ListItem
-												style={{
-													padding: 0,
-													fontWeight: 'bold',
-													paddingRight: '10px',
-													paddingLeft: '10px',
-												}}
-											>
-												<Typography variant="body1" style={{ fontWeight: 500 }}>
-													Xem tat ca
-												</Typography>
-											</ListItem>
-										</Link>
-									</List>
+												<Link to={AppURL.RECOMMEND} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductRecommend?.map((item: any) => {
+										return (
+											<Product
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												addToCart={addToCart}
+											/>
+										);
+									})}
 								</Grid>
 							</Grid>
 						</Grid>
-						<Grid container spacing={3} style={{ marginTop: '10px' }}>
-							{dataProductRecommend?.map((item: any) => {
-								return (
-									<Product
-										unit_price={item[0].unit_price}
-										name={item[0].name}
-										id={item[0].id}
-										promotion_price={item[0].promotion_price}
-										link={item.image}
-										avg={item.avg}
-										promotion={item.promotion}
-										rate_number={item.rate_number}
-										storeQuantity={item[0].quantity}
-										addToCart={addToCart}
-									/>
-								);
-							})}
-						</Grid>
-					</Grid>
-				</Grid>
-			)}
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<Grid container>
-					<Grid item xs={12} className={classes.borderTitle}>
-						<Grid container style={{ alignItems: 'baseline' }}>
-							<Grid item xs={3}>
-								<Link to={AppURL.NEW_PHONE} className={classes.titles}>
-									DIEN THOAI MOI NHAT<div className={classes.title}></div>
-								</Link>
-							</Grid>
-							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-								<List style={{ display: 'flex' }}>
-									{dataPhoneBranch?.listData?.map((item: any, index: number) => {
-										return (
-											<Link
-												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-												className={classes.stylePhoneBranch}
-											>
+					)}
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
+										<Link to={AppURL.NEW_PHONE} className={classes.titles}>
+											DIEN THOAI MOI NHAT
+										</Link>
+									</Grid>
+									<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
+										<List style={{ display: 'flex', width: 'max-content' }}>
+											{dataPhoneBranch?.listData?.map((item: any, index: number) => {
+												return (
+													<Link
+														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+														className={classes.stylePhoneBranch}
+													>
+														<ListItem
+															style={{
+																padding: 0,
+																fontWeight: 'bold',
+																paddingRight: '10px',
+																paddingLeft: '10px',
+															}}
+														>
+															<Typography variant="body1" style={{ fontWeight: 500 }}>
+																{item.name}
+															</Typography>
+														</ListItem>
+													</Link>
+												);
+											})}
+											<Link to={AppURL.NEW_PHONE} className={classes.styleViewAll}>
 												<ListItem
 													style={{
 														padding: 0,
@@ -470,62 +1007,48 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														{item.name}
+														Xem tat ca
 													</Typography>
 												</ListItem>
 											</Link>
-										);
-									})}
-									<Link to={AppURL.NEW_PHONE} className={classes.styleViewAll}>
-										<ListItem
-											style={{
-												padding: 0,
-												fontWeight: 'bold',
-												paddingRight: '10px',
-												paddingLeft: '10px',
-											}}
-										>
-											<Typography variant="body1" style={{ fontWeight: 500 }}>
-												Xem tat ca
-											</Typography>
-										</ListItem>
-									</Link>
-								</List>
+										</List>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid container spacing={3} style={{ marginTop: '10px' }}>
+								{dataProductNew?.map((item: any) => {
+									return (
+										<Grid item xs={12} md={3} sm={4}>
+											<ProductMobile
+												unit_price={item[0].unit_price}
+												name={item[0].name}
+												id={item[0].id}
+												promotion_price={item[0].promotion_price}
+												link={item.image}
+												avg={item.avg}
+												promotion={item.promotion}
+												rate_number={item.rate_number}
+												storeQuantity={item[0].quantity}
+												addToCart={addToCart}
+											/>
+										</Grid>
+									);
+								})}
 							</Grid>
 						</Grid>
 					</Grid>
-					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						{dataProductNew?.map((item: any) => {
-							return (
-								<Product
-									unit_price={item[0].unit_price}
-									name={item[0].name}
-									id={item[0].id}
-									promotion_price={item[0].promotion_price}
-									link={item.image}
-									avg={item.avg}
-									promotion={item.promotion}
-									rate_number={item.rate_number}
-									storeQuantity={item[0].quantity}
-									addToCart={addToCart}
-								/>
-							);
-						})}
-					</Grid>
-				</Grid>
-			</Grid>
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<Grid container>
-					<Grid item xs={12} className={classes.borderTitle}>
-						<Grid container style={{ alignItems: 'baseline' }}>
-							<Grid item xs={3}>
-								<Link to={AppURL.SELL_PHONE} className={classes.titles}>
-									DIEN THOAI BAN CHAY<div className={classes.title}></div>
-								</Link>
-							</Grid>
-							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-								<List style={{ display: 'flex' }}>
-									{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12} className={classes.borderTitle}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={3}>
+										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
+											DIEN THOAI BAN CHAY<div className={classes.title}></div>
+										</Link>
+									</Grid>
+									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<List style={{ display: 'flex' }}>
+											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 										return (
 											<Link
 												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
@@ -546,135 +1069,151 @@ const Content: React.FC = () => {
 											</Link>
 										);
 									})} */}
-									<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
-										<ListItem
-											style={{
-												padding: 0,
-												fontWeight: 'bold',
-												paddingRight: '10px',
-												paddingLeft: '10px',
-											}}
-										>
-											<Typography variant="body1" style={{ fontWeight: 500 }}>
-												Xem tat ca
-											</Typography>
-										</ListItem>
-									</Link>
-								</List>
-							</Grid>
-						</Grid>
-					</Grid>
-					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						{dataProductSell?.map((item: any) => {
-							return (
-								<Product
-									unit_price={item[0].unit_price}
-									name={item[0].name}
-									id={item[0].id}
-									promotion_price={item[0].promotion_price}
-									link={item.image}
-									avg={item.avg}
-									promotion={item.promotion}
-									rate_number={item.rate_number}
-									storeQuantity={item[0].quantity}
-									addToCart={addToCart}
-								/>
-							);
-						})}
-					</Grid>
-				</Grid>
-			</Grid>
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<img width="100%" src={ad2_1} />
-			</Grid>
-			<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
-				<Grid container>
-					<Grid item xs={12} className={classes.borderTitle}>
-						<Grid container style={{ alignItems: 'baseline' }}>
-							<Grid item xs={3}>
-								<Link to="/" className={classes.titles}>
-									24H CONG NGHE<div className={classes.title}></div>
-								</Link>
-							</Grid>
-							<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-								<List style={{ display: 'flex' }}>
-									<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
-										<ListItem
-											style={{
-												padding: 0,
-												fontWeight: 'bold',
-												paddingRight: '10px',
-												paddingLeft: '10px',
-											}}
-										>
-											<Typography variant="body1" style={{ fontWeight: 500 }}>
-												Xem tat ca
-											</Typography>
-										</ListItem>
-									</Link>
-								</List>
-							</Grid>
-						</Grid>
-					</Grid>
-					<Grid container spacing={3} style={{ marginTop: '10px' }}>
-						{dataNews.listData?.map((item: any) => {
-							return (
-								<Grid item xs={4}>
-									<NewsSmall
-										title={item.title}
-										image={item.image}
-										id={item.id}
-										created_at={item.created_at}
-									/>
+											<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														Xem tat ca
+													</Typography>
+												</ListItem>
+											</Link>
+										</List>
+									</Grid>
 								</Grid>
-							);
-						})}
+							</Grid>
+							<Grid container spacing={3} style={{ marginTop: '10px' }}>
+								{dataProductSell?.map((item: any) => {
+									return (
+										<Product
+											unit_price={item[0].unit_price}
+											name={item[0].name}
+											id={item[0].id}
+											promotion_price={item[0].promotion_price}
+											link={item.image}
+											avg={item.avg}
+											promotion={item.promotion}
+											rate_number={item.rate_number}
+											storeQuantity={item[0].quantity}
+											addToCart={addToCart}
+										/>
+									);
+								})}
+							</Grid>
+						</Grid>
 					</Grid>
-				</Grid>
-			</Grid>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<img width="100%" src={ad2_1} />
+					</Grid>
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+						<Grid container>
+							<Grid item xs={12} className={classes.borderTitle}>
+								<Grid container style={{ alignItems: 'baseline' }}>
+									<Grid item xs={3}>
+										<Link to="/" className={classes.titles}>
+											24H CONG NGHE<div className={classes.title}></div>
+										</Link>
+									</Grid>
+									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<List style={{ display: 'flex' }}>
+											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														Xem tat ca
+													</Typography>
+												</ListItem>
+											</Link>
+										</List>
+									</Grid>
+								</Grid>
+							</Grid>
+							<Grid container spacing={3} style={{ marginTop: '10px' }}>
+								{dataNews.listData?.map((item: any) => {
+									return (
+										<Grid item xs={4}>
+											<NewsSmall
+												title={item.title}
+												image={item.image}
+												id={item.id}
+												created_at={item.created_at}
+											/>
+										</Grid>
+									);
+								})}
+							</Grid>
+						</Grid>
+					</Grid>
 
-			<Box style={{ position: 'fixed', left: 0, top: '40%' }}>
-				<List>
-					<ListItem>
-						<ListItemAvatar>
-							<a title="Link youtube">
-								<Avatar
-									style={{ backgroundColor: '#fff', border: '1px solid red', cursor: 'pointer' }}
-								>
-									<i className="fa fa-youtube" aria-hidden="true" style={{ color: 'red' }}></i>
-								</Avatar>
-							</a>
-						</ListItemAvatar>
-					</ListItem>
-					<ListItem>
-						<ListItemAvatar>
-							<a title="Lick facebook">
-								<Avatar
-									style={{
-										backgroundColor: '#fff',
-										border: '1px solid #0278ad',
-										cursor: 'pointer',
-									}}
-								>
-									<i className="fa fa-facebook" aria-hidden="true" style={{ color: '#0278ad' }}></i>
-								</Avatar>
-							</a>
-						</ListItemAvatar>
-					</ListItem>
-				</List>
-			</Box>
-			<ToastContainer
-				position="top-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-		</Grid>
+					{isResponseiveMobile && (
+						<Box style={{ position: 'fixed', left: 0, top: '40%' }}>
+							<List>
+								<ListItem>
+									<ListItemAvatar>
+										<a title="Link youtube">
+											<Avatar
+												style={{
+													backgroundColor: '#fff',
+													border: '1px solid red',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-youtube"
+													aria-hidden="true"
+													style={{ color: 'red' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+								</ListItem>
+								<ListItem>
+									<ListItemAvatar>
+										<a title="Lick facebook">
+											<Avatar
+												style={{
+													backgroundColor: '#fff',
+													border: '1px solid #0278ad',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-facebook"
+													aria-hidden="true"
+													style={{ color: '#0278ad' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+								</ListItem>
+							</List>
+						</Box>
+					)}
+					<ToastContainer
+						position="top-right"
+						autoClose={5000}
+						hideProgressBar={false}
+						newestOnTop={false}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+					/>
+				</Grid>
+			)}
+		</React.Fragment>
 	);
 };
 export default Content;

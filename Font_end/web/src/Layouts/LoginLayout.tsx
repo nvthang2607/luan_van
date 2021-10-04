@@ -13,26 +13,27 @@ const useStyles = makeStyles((theme) => ({
 		height: '100vh',
 	},
 }));
-const token: any = window.localStorage.getItem('token');
+const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
 const date = Date.now();
 
-// const handleCheckToken = () => {
-// 	if (window.localStorage.getItem('token')) {
-// 		const checkToken: any = jwtDecode(token);
-// 		if (checkToken.exp < date / 1000) {
-// 			localStorage.removeItem('token');
-// 		} else if (checkToken.isAdmin) {
-// 			return <Redirect to={AppURL.USER} />;
-// 		} else if (!checkToken.isAdmin) {
-// 			return <Redirect to={AppURL.DASHBOARD} />;
-// 		}
-// 	}
-// };
+const handleCheckToken = () => {
+	if (window.localStorage.getItem('tokenAdmin')) {
+		const checkToken: any = jwtDecode(tokenAdmin);
+
+		if (checkToken.exp < date / 1000) {
+			localStorage.removeItem('tokenAdmin');
+		} else if (checkToken.isAdmin) {
+			return <Redirect to={AppURL.ADMIN_HOME} />;
+		} else if (!checkToken.isAdmin) {
+			return <Redirect to="404" />;
+		}
+	}
+};
 const LoginLayout: React.FC = (props) => {
 	const classes = useStyles();
 	return (
 		<Box>
-			{/* {handleCheckToken()} */}
+			{handleCheckToken()}
 			{/* {window.localStorage.getItem('token') && <Redirect to={AppURL.USER} />} */}
 			<Grid container className={classes.root} justify="center" alignItems="center">
 				<Grid item className={classes.paper} component={Card}>

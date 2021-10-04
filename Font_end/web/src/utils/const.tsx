@@ -24,4 +24,6 @@ export const AppURL = {
 	NEW_PHONE: '/views/dien-thoai-moi-nhat',
 	LOGIN: '/admin/login',
 	ORDER_ALL_ADMIN: '/admin/order/all',
+	MANAGER_USER: '/admin/manager/user',
+	ADMIN_HOME: '/admin/home',
 };
