@@ -8,6 +8,7 @@ import {
 	ListItemAvatar,
 	Menu,
 	MenuItem,
+	SwipeableDrawer,
 } from '@material-ui/core';
 import React from 'react';
 import clsx from 'clsx';
@@ -51,6 +52,10 @@ import User from '../pages/Admin/User/User';
 import HomeIcon from '@mui/icons-material/Home';
 import Home from '../pages/Admin/Home/Home';
 import { UserGet } from '../api/Admin/User';
+import { useMediaQuery } from 'react-responsive';
+import { Close } from '@material-ui/icons';
+import MenuAdmin from './MenuAdmin';
+import TypeProduct from '../pages/Admin/ProductType/TypeProduct';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -137,6 +142,13 @@ const useStyles = makeStyles((theme: Theme) =>
 		selected: {
 			backgroundColor: '#e3f2fd !important',
 		},
+		closeButton: {
+			position: 'absolute',
+			top: theme.spacing(1),
+			right: theme.spacing(1),
+			color: theme.palette.grey[500],
+			zIndex: 1,
+		},
 		activeColor: { color: '#1bb55c' },
 		toolbar: {
 			display: 'flex',
@@ -202,6 +214,7 @@ const AdminLayout: React.FC = (props) => {
 		// setSelectedItem(index);
 		// dispatch(updateTitleHeader(text));
 	};
+	const [openMenu, setOpenMenu] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [anchorElProfile, setAnchorElProfile] = React.useState<null | HTMLElement>(null);
 	const open1 = Boolean(anchorEl);
@@ -234,7 +247,7 @@ const AdminLayout: React.FC = (props) => {
 		window.localStorage.getItem('tokenAdmin') && window.localStorage.removeItem('tokenAdmin');
 		setAnchorElProfile(null);
 	};
-	const [showCategories, setShowCategories] = React.useState(false);
+	const [showCategories, setShowCategories] = React.useState('');
 	const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
 	const date = Date.now();
 	const handleCheckToken = () => {
@@ -251,7 +264,65 @@ const AdminLayout: React.FC = (props) => {
 			return <Redirect to={AppURL.LOGIN} />;
 		}
 	};
-	return (
+	const menuData = [
+		{
+			id: 1,
+			name: 'Trang chu',
+			icon: <HomeIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [],
+		},
+		{
+			id: 2,
+			name: 'Quan tri danh muc',
+			icon: <AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [
+				{ id: 202, name: 'Loai san pham' },
+				{ id: 203, name: 'Thuong hieu' },
+				{ id: 204, name: 'San pham' },
+			],
+		},
+		{
+			id: 3,
+			name: 'Quan tri Nguoi dung',
+			icon: <PersonIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [],
+		},
+	];
+
+	const handleNavLink = (id: number) => {
+		if (id === 1) {
+			return AppURL.ADMIN_HOME;
+		} else if (id === 2) {
+			return AppURL.LOGIN;
+		} else if (id === 3) {
+			return AppURL.MANAGER_USER;
+		} else {
+			return AppURL.ADMIN_HOME;
+		}
+	};
+	const handleNavLinkChildren = (id: number) => {
+		if (id === 202) {
+			return AppURL.ADMIN_TYPE_PRODUCT;
+		} else if (id === 203) {
+			return AppURL.LOGIN;
+		} else if (id === 204) {
+			return AppURL.MANAGER_USER;
+		} else {
+			return AppURL.ADMIN_HOME;
+		}
+	};
+
+	const receiveShowCategories: (result: any) => void = (result) => {
+		if (result.click === true) {
+			setShowCategories(result.id);
+		}
+	};
+	const closeMenu: (result: boolean) => void = (result) => {
+		setOpenMenu(result);
+	};
+
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 1200px)' });
+	return isResponseiveMobile ? (
 		<Box>
 			{handleCheckToken()}
 			<div className={classes.root}>
@@ -265,14 +336,14 @@ const AdminLayout: React.FC = (props) => {
 				>
 					<Toolbar>
 						<Grid container>
-							<Grid item xs={6} style={{ alignItems: 'center', display: 'flex' }}>
+							<Grid item xs={5} style={{ alignItems: 'center', display: 'flex' }}>
 								{/* <IconButton>
-									{open ? (
-										<MenuIcon onClick={handleDrawerClose} />
-									) : (
-										<ChevronRightIcon onClick={handleDrawerOpen} />
-									)}
-								</IconButton> */}
+								{open ? (
+									<MenuIcon onClick={handleDrawerClose} />
+								) : (
+									<ChevronRightIcon onClick={handleDrawerOpen} />
+								)}
+							</IconButton> */}
 								<Typography variant="h5" noWrap style={{ color: '#fff' }}>
 									Trang Quan Tri
 								</Typography>
@@ -315,7 +386,7 @@ const AdminLayout: React.FC = (props) => {
 							</Grid>
 							<Grid
 								item
-								xs={2}
+								xs={3}
 								style={{ alignItems: 'center', display: 'flex', paddingRight: '5vh' }}
 							>
 								<ListItem
@@ -390,204 +461,99 @@ const AdminLayout: React.FC = (props) => {
 						}}
 					>
 						<Divider />
-						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
-							<NavLink
-								to={AppURL.ADMIN_HOME}
-								activeClassName={classes.activeTagLi}
-								className={classes.tagLi}
-							>
-								<ListItem
-									button
-									onClick={() => {
-										history.push(AppURL.ADMIN_HOME);
-										setShowCategories(false);
-									}}
-								>
-									<HomeIcon style={{ color: '#fff', marginRight: '10px' }} />
 
-									<ListItemText style={{ display: 'flex' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-										>
-											Trang chu
-										</Typography>
-									</ListItemText>
-								</ListItem>
-								<Divider />
-							</NavLink>
-						</List>
-						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
-							<ListItem
-								button
-								onClick={() => {
-									setShowCategories(!showCategories);
-								}}
-							>
-								<AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />
-
-								<ListItemText style={{ display: 'flex' }}>
-									<Typography
-										variant="h6"
-										style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+						{menuData.map((item: any) => {
+							return item.children.length > 0 ? (
+								<List style={{ paddingTop: 0, paddingBottom: 0 }}>
+									<ListItem
+										button
+										onClick={() => {
+											showCategories === item.id
+												? setShowCategories('')
+												: setShowCategories(item.id);
+										}}
 									>
-										Quan tri danh muc
-									</Typography>
-								</ListItemText>
-								{showCategories ? (
-									<KeyboardArrowUpIcon style={{ color: '#fff' }} />
-								) : (
-									<KeyboardArrowDownIcon style={{ color: '#fff' }} />
-								)}
-							</ListItem>
+										{item.icon}
 
-							<Collapse in={showCategories} timeout="auto" unmountOnExit>
-								<NavLink
-									to="/admin/order/all"
-									activeClassName={classes.activeTagLi}
-									className={classes.tagLi}
-								>
-									<ListItem divider>
-										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
-											<Typography variant="h6" style={{ fontSize: '18px', fontWeight: 'bold' }}>
-												Loai san pham
-											</Typography>
-										</ListItemText>
-									</ListItem>
-								</NavLink>
-								<NavLink
-									to="/"
-									activeClassName={classes.link}
-									style={{ textDecoration: 'none', color: 'black' }}
-								>
-									<ListItem button>
-										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+										<ListItemText style={{ display: 'flex' }}>
 											<Typography
 												variant="h6"
 												style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
 											>
-												Thuong hieu
+												{item.name}
 											</Typography>
 										</ListItemText>
+										{showCategories === item.id ? (
+											<KeyboardArrowUpIcon style={{ color: '#fff' }} />
+										) : (
+											<KeyboardArrowDownIcon style={{ color: '#fff' }} />
+										)}
 									</ListItem>
-								</NavLink>
-								<NavLink
-									to="/"
-									//activeClassName={classes.link}
-									style={{ textDecoration: 'none', color: 'black' }}
-								>
-									<ListItem button>
-										<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
-											<Typography
-												variant="h6"
-												style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-											>
-												San pham
-											</Typography>
-										</ListItemText>
-									</ListItem>
-								</NavLink>
-							</Collapse>
 
-							<Divider />
-						</List>
-						<List style={{ paddingTop: 0, paddingBottom: 0 }}>
-							<NavLink
-								to={AppURL.MANAGER_USER}
-								activeClassName={classes.activeTagLi}
-								className={classes.tagLi}
-							>
-								<ListItem
-									button
-									onClick={() => {
-										history.push(AppURL.MANAGER_USER);
-										setShowCategories(false);
-									}}
-								>
-									<PersonIcon style={{ color: '#fff', marginRight: '10px' }} />
+									{item.children.length > 0 && (
+										<Collapse
+											in={showCategories === item.id ? true : false}
+											timeout="auto"
+											unmountOnExit
+										>
+											{item.children.map((item: any) => {
+												return (
+													<NavLink
+														to={handleNavLinkChildren(item.id)}
+														activeClassName={classes.activeTagLi}
+														className={classes.tagLi}
+														style={{ textDecoration: 'none', color: 'black' }}
+													>
+														<ListItem button>
+															<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
+																<Typography
+																	variant="h6"
+																	style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+																>
+																	{item.name}
+																</Typography>
+															</ListItemText>
+														</ListItem>
+													</NavLink>
+												);
+											})}
+										</Collapse>
+									)}
 
-									<ListItemText style={{ display: 'flex' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+									<Divider />
+								</List>
+							) : (
+								<List style={{ paddingTop: 0, paddingBottom: 0 }}>
+									<NavLink
+										to={handleNavLink(item.id)}
+										activeClassName={classes.activeTagLi}
+										className={classes.tagLi}
+									>
+										<ListItem
+											button
+											onClick={() => {
+												showCategories === item.id
+													? setShowCategories('')
+													: setShowCategories(item.id);
+											}}
 										>
-											Quan tri nguoi dung
-										</Typography>
-									</ListItemText>
-								</ListItem>
-								<Divider />
-							</NavLink>
-						</List>
-						<List style={{ paddingTop: 0 }}>
-							<NavLink
-								to="/"
-								//activeClassName={classes.link}
-								style={{ textDecoration: 'none', color: 'black' }}
-							>
-								<ListItem button>
-									<AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />
+											{item.icon}
 
-									<ListItemText style={{ display: 'flex' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-										>
-											Quan tri danh muc
-										</Typography>
-									</ListItemText>
-									<ArrowDropDownIcon style={{ color: '#fff' }} />
-								</ListItem>
-							</NavLink>
-							<NavLink
-								to="/"
-								//activeClassName={classes.link}
-								style={{ textDecoration: 'none', color: 'black' }}
-							>
-								<ListItem button>
-									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-										>
-											Quan tri danh muc
-										</Typography>
-									</ListItemText>
-								</ListItem>
-							</NavLink>
-							<NavLink
-								to="/"
-								//activeClassName={classes.link}
-								style={{ textDecoration: 'none', color: 'black' }}
-							>
-								<ListItem button>
-									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-										>
-											Quan tri danh muc
-										</Typography>
-									</ListItemText>
-								</ListItem>
-							</NavLink>
-							<NavLink
-								to="/"
-								//activeClassName={classes.link}
-								style={{ textDecoration: 'none', color: 'black' }}
-							>
-								<ListItem button>
-									<ListItemText style={{ display: 'flex', marginLeft: '32px' }}>
-										<Typography
-											variant="h6"
-											style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
-										>
-											Quan tri danh muc
-										</Typography>
-									</ListItemText>
-								</ListItem>
-							</NavLink>
-							<Divider />
-						</List>
+											<ListItemText style={{ display: 'flex' }}>
+												<Typography
+													variant="h6"
+													style={{ color: '#fff', fontSize: '18px', fontWeight: 'bold' }}
+												>
+													{item.name}
+												</Typography>
+											</ListItemText>
+										</ListItem>
+									</NavLink>
+
+									<Divider />
+								</List>
+							);
+						})}
 					</Drawer>
 				</Drawer>
 
@@ -597,6 +563,152 @@ const AdminLayout: React.FC = (props) => {
 					<Switch>
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
+						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
+					</Switch>
+				</main>
+			</div>
+		</Box>
+	) : (
+		<Box>
+			{handleCheckToken()}
+			<div className={classes.root}>
+				<CssBaseline />
+				<AppBar
+					position="fixed"
+					style={{
+						display: 'flex',
+						justifyContent: 'center',
+						backgroundColor: '#00695c',
+						height: '76px',
+					}}
+				>
+					<Toolbar>
+						<Grid container>
+							<Grid item xs={5} style={{ alignItems: 'center', display: 'flex' }}>
+								{/* <IconButton>
+								{open ? (
+									<MenuIcon onClick={handleDrawerClose} />
+								) : (
+									<ChevronRightIcon onClick={handleDrawerOpen} />
+								)}
+							</IconButton> */}
+								<IconButton>
+									<MenuIcon
+										style={{ color: '#fff', marginRight: '10px', fontSize: '36px' }}
+										onClick={() => setOpenMenu(true)}
+									/>
+								</IconButton>
+								<Typography variant="h5" noWrap style={{ color: '#fff' }}>
+									Trang Quan Tri
+								</Typography>
+							</Grid>
+							<Grid
+								item
+								xs={4}
+								style={{
+									textAlign: 'end',
+									paddingRight: '5vh',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'flex-end',
+								}}
+							>
+								<Button onClick={handleClickLng}>
+									<img src={item} />
+									&nbsp;
+									<i className="fa fa-angle-down" style={{ color: '#fff' }}></i>
+								</Button>
+								<Menu
+									id="fade-menu"
+									anchorEl={anchorEl}
+									keepMounted
+									open={open1}
+									onClose={handleClose}
+									TransitionComponent={Fade}
+								>
+									<MenuItem onClick={() => handleLanguage('en')}>
+										<img src={icon} />
+										&nbsp;English&nbsp;
+										{valueI18n === 'en' && <i className="fa fa-check" aria-hidden="true"></i>}
+									</MenuItem>
+									<MenuItem onClick={() => handleLanguage('vi')}>
+										<img src={iconvn} />
+										&nbsp;Vietnamese&nbsp;
+										{valueI18n === 'vi' && <i className="fa fa-check" aria-hidden="true"></i>}
+									</MenuItem>
+								</Menu>
+							</Grid>
+							<Grid
+								item
+								xs={3}
+								style={{ alignItems: 'center', display: 'flex', paddingRight: '5vh' }}
+							>
+								<ListItem
+									button
+									style={{
+										paddingBottom: 0,
+										paddingTop: 0,
+									}}
+									onClick={handleClickProfile}
+								>
+									<ListItemAvatar>
+										<Avatar>{profile?.charAt(0)}</Avatar>
+									</ListItemAvatar>
+									<div
+										style={{
+											overflow: 'hidden',
+											textOverflow: 'ellipsis',
+											whiteSpace: 'nowrap',
+											color: '#fff',
+										}}
+									>
+										<div>Xin chao!</div>
+										<div>
+											<Typography variant="body2" noWrap>
+												{profile}
+											</Typography>
+										</div>
+									</div>
+								</ListItem>
+								<Menu
+									id="simple-menu"
+									anchorEl={anchorElProfile}
+									keepMounted
+									open={Boolean(anchorElProfile)}
+									onClose={handleCloseProfile}
+								>
+									<MenuItem onClick={handleCloseProfile}>{t('tenant.profile')}</MenuItem>
+									<MenuItem onClick={handleCloseProfile}>My account</MenuItem>
+									<MenuItem onClick={handleLogout}>{t('tenant.log_out')}</MenuItem>
+								</Menu>
+							</Grid>
+						</Grid>
+					</Toolbar>
+				</AppBar>
+				<SwipeableDrawer
+					anchor="left"
+					open={openMenu}
+					onClose={() => setOpenMenu(false)}
+					onOpen={() => {}}
+					style={{ position: 'relative' }}
+				>
+					<IconButton className={classes.closeButton} onClick={() => setOpenMenu(false)}>
+						<Close style={{ color: '#fff' }} />
+					</IconButton>
+					<MenuAdmin
+						menuData={menuData}
+						receiveShowCategories={receiveShowCategories}
+						showCategories={showCategories}
+						closeMenu={closeMenu}
+					/>
+				</SwipeableDrawer>
+				<main className={classes.content}>
+					<div className={classes.toolbar} />
+					{/* {handleCheckToken(props.children)} */}
+					<Switch>
+						<Route path={AppURL.MANAGER_USER} component={User} />
+						<Route path={AppURL.ADMIN_HOME} component={Home} />
+						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
 					</Switch>
 				</main>
 			</div>

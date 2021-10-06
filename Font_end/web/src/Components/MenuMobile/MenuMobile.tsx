@@ -1,17 +1,22 @@
 import {
+	Avatar,
 	Box,
 	Button,
 	ButtonGroup,
+	Collapse,
 	DialogContent,
 	DialogTitle,
 	Divider,
 	FormHelperText,
 	IconButton,
 	InputBase,
+	ListItemAvatar,
+	ListItemText,
 	Theme,
 	Typography,
 } from '@material-ui/core';
 import React from 'react';
+import PersonIcon from '@material-ui/icons/Person';
 import { Close } from '@material-ui/icons';
 import RemoveIcon from '@material-ui/icons/Remove';
 import sp1 from './../../public/images/10047676-dien-thoai-vsmart-aris-8gb-128gb-xam-nhat-thuc-1.jpg';
@@ -20,13 +25,25 @@ import { makeStyles, createStyles } from '@material-ui/styles';
 import { AppURL } from '../../utils/const';
 import theme from '../../utils/theme';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteProduct, getCartData, updateQuantity } from '../Product/CartSlice';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
+import { updateValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
+import icon from '../../public/images/english.svg';
+import iconvn from '../../public/images/vietnamese.svg';
+import clsx from 'clsx';
+import { useMediaQuery } from 'react-responsive';
 interface CartProps {
-	receiveCart?: (result: boolean) => void;
+	receiveMenu?: (result: boolean) => void;
+	dataUser?: any;
+	dataMenu?: any;
+	logoutMenuMobile?: (result: boolean) => void;
+	changeLanguage?: (result: string) => void;
+	valueI18n?: string;
 }
+
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		bgHeader: {
@@ -49,11 +66,8 @@ const useStyles = makeStyles((theme: Theme) =>
 			right: theme.spacing(2),
 		},
 		adHover: {
-			color: 'black',
-			textDecoration: 'none',
-			fontWeight: 'bold',
 			'&:hover': {
-				color: '#2196f3',
+				color: `${theme.palette.primary.main} !important`,
 			},
 		},
 		styleSearch: { height: '7px !important' },
@@ -62,6 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		colorIcon: {
 			color: theme.palette.primary.main,
+			fontSize: '30px',
 		},
 		title: {
 			display: 'none',
@@ -135,6 +150,19 @@ const useStyles = makeStyles((theme: Theme) =>
 			zIndex: 1,
 		},
 		button: {},
+		styleLng: { borderBottom: `2px solid ${theme.palette.primary.main}` },
+		styleLink: {
+			textDecoration: 'none',
+			cursor: 'pointer',
+			color: 'black',
+			display: 'flex',
+			paddingLeft: '24px',
+			paddingRight: '18px',
+			alignItems: 'center',
+			'&:hover': {
+				color: theme.palette.primary.main,
+			},
+		},
 		sectionMobile: {
 			display: 'flex',
 			[theme.breakpoints.up('md')]: {
@@ -148,7 +176,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 	const [openCart, setOpenCart] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
-	const history = useHistory();
+
 	const cartData = useAppSelector(getCartData);
 	const dispatch = useAppDispatch();
 	//console.log(cartData);
@@ -175,211 +203,707 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 		str = str.replace(/-+$/g, '');
 		return str;
 	};
-	return (
+
+	const history = useHistory();
+	const [showBranch, setShowBranch] = React.useState('');
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
+	return isResponseivePhone ? (
 		<Box style={{ width: 400 }}>
 			<Box>
-				<DialogTitle id="form-dialog-title">
-					<Box>DANH MUC SAN PHAM</Box>
-				</DialogTitle>
-				{cartData.length === 0 ? (
-					<DialogContent style={{ textAlign: 'center' }}>
-						<img
-							width="70%"
-							src="https://bizweb.dktcdn.net/100/420/160/themes/825846/assets/mobile-shopping.svg?1631101741005"
-						/>
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={() => {
-								history.push('/');
-								props.receiveCart?.(false);
-								window.scrollTo(0, 0);
-							}}
-						>
-							Tiep tuc mua hang
-						</Button>
-					</DialogContent>
-				) : (
-					<React.Fragment>
-						<DialogContent style={{ height: `calc(${100}vh - ${250}px)` }}>
-							{cartData.map((item: any) => {
-								return (
-									<Box style={{ display: 'flex', marginBottom: '35px' }}>
-										<Box style={{ width: '32%' }}>
-											<img
-												width="100%"
-												style={{ cursor: 'pointer' }}
-												src={`http://localhost:8000/${item.link}`}
-												onClick={() => {
-													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
-													props.receiveCart?.(false);
-												}}
-											/>
-										</Box>
-										<Box style={{ marginLeft: '4px', width: '78%' }}>
-											<Typography
-												variant="body1"
-												style={{ fontWeight: 'bold', cursor: 'pointer' }}
-												onClick={() => {
-													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
-													props.receiveCart?.(false);
-												}}
-											>
-												{item.name}
-											</Typography>
-											<Box style={{ display: 'contents' }}>
-												<Box style={{ width: '50%', float: 'left' }}>
-													<Typography>So luong</Typography>
-													<ButtonGroup style={{ width: '69px' }}>
-														<Button
-															aria-label="reduce"
-															onClick={() => {
-																//setQuantity(Math.max(Number(quantity) - 1, 1));
-																setErr('');
-																dispatch(
-																	updateQuantity({ id: item.id, quantity: 1, status: 'decrease' })
-																);
-															}}
-															size="small"
-															disabled={item.quantity === 1 ? true : false}
-														>
-															<RemoveIcon fontSize="small" />
-														</Button>
-														<InputBase
-															style={{
-																paddingLeft: '4px',
-																paddingRight: '4px',
-																border: `1px solid rgba(${0}, ${0}, ${0}, ${0.23})`,
-																borderRight: 'none',
-															}}
-															inputProps={{ style: { textAlign: 'center' } }}
-															value={item.quantity}
-															onChange={(event: any) => {
-																// !isNaN(Number(event.target.value))
-																// 	? setQuantity(Math.max(Number(event.target.value), 1))
-																// 	: setQuantity(quantity);
-																if (event.target.value > item.storeQuantity) {
-																	setErr(item.id);
-																} else {
-																	setErr(false);
-																	dispatch(
-																		updateQuantity({
-																			id: item.id,
-																			quantity: !isNaN(Number(event.target.value))
-																				? Math.max(Number(event.target.value), 1)
-																				: item.quantity,
-																			status: 'replace',
-																		})
-																	);
-																}
-															}}
-														/>
-														<Button
-															aria-label="increase"
-															onClick={() => {
-																setErr('');
-																//setQuantity(Number(quantity) + 1);
-																dispatch(
-																	updateQuantity({ id: item.id, quantity: 1, status: 'increase' })
-																);
-															}}
-															size="small"
-															disabled={item.quantity >= item.storeQuantity ? true : false}
-														>
-															<AddIcon fontSize="small" />
-														</Button>
-													</ButtonGroup>
-													{err === item.id && (
-														<FormHelperText error>Khong du so luong</FormHelperText>
-													)}
-												</Box>
-												<Box style={{ width: '50%', float: 'right', textAlign: 'end' }}>
-													<Typography
-														style={{
-															fontWeight: 'bold',
-															color: theme.palette.primary.main,
-														}}
-													>
-														{Intl.NumberFormat('en-US').format(Number(item.promotion_price))}đ
-													</Typography>
-													<Button
-														style={{
-															padding: 0,
-															color: theme.palette.primary.main,
-															textTransform: 'inherit',
-															fontWeight: 'inherit',
-														}}
-														onClick={() => {
-															props.receiveCart?.(false);
-															Swal.fire({
-																title: 'Ban co chac chan muon xoa khong',
-																//text: t('confirmDelete.you_wont_be_able_to_revert_this'),
-																icon: 'warning',
-																confirmButtonColor: '#3085d6',
-																cancelButtonColor: '#d33',
-																confirmButtonText: 'Yes',
-																cancelButtonText: 'Cancel',
-																showCancelButton: true,
-																reverseButtons: true,
-															}).then((result) => {
-																if (result.isConfirmed) {
-																	toast.success('San pham da duoc xoa khoi gio hang');
-																	//Swal.fire('Da xoa', 'San pham da duoc xoa khoi gio hang', 'success');
-																	dispatch(deleteProduct({ id: item.id }));
-																	props.receiveCart?.(true);
-																} else {
-																	props.receiveCart?.(true);
-																}
-															});
-														}}
-													>
-														Xoa san pham
-													</Button>
-												</Box>
-											</Box>
-										</Box>
-									</Box>
-								);
-							})}
-						</DialogContent>
-
-						<Box style={{ paddingLeft: '26px', paddingRight: '28px' }}>
-							<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
-							<Box style={{ display: 'contents' }}>
-								<Box style={{ float: 'left' }}>
-									<Typography variant="h6">Tong tien:</Typography>
-								</Box>
-								<Box style={{ float: 'right' }}>
-									<Typography
-										style={{
-											fontWeight: 'bold',
-											color: theme.palette.primary.main,
-										}}
-										variant="h6"
-									>
-										{Intl.NumberFormat('en-US').format(Number(totalPrice()))}đ
-									</Typography>
-								</Box>
+				<DialogTitle
+					id="form-dialog-title"
+					style={{ backgroundColor: theme.palette.primary.main, paddingBottom: '7px' }}
+				>
+					{props.dataUser.name === '' ? (
+						<Box style={{ display: 'flex' }}>
+							<Box style={{ marginRight: '34px' }}>
+								<ListItemAvatar style={{ marginRight: '-8px' }}>
+									<Avatar style={{ backgroundColor: '#fff' }}>
+										<PersonIcon className={classes.colorIcon} />
+									</Avatar>
+								</ListItemAvatar>
 							</Box>
-							<Box style={{ marginTop: '70px' }}>
-								<Button
-									variant="contained"
-									color="primary"
-									fullWidth
-									style={{ textTransform: 'initial' }}
-									size="large"
-									onClick={() => {
-										history.push(AppURL.CHECKOUT);
-										//setOpenCart(false);
-										props.receiveCart?.(false);
-									}}
-								>
-									Thanh toan
-								</Button>
+							<Box style={{ display: 'flex', alignItems: 'center' }}>
+								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
+									<Typography
+										variant="body1"
+										style={{
+											color: 'white',
+											fontWeight: 'bold',
+											marginRight: '47px',
+											cursor: 'pointer',
+										}}
+									>
+										Dang nhap
+									</Typography>
+								</Link>
+								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
+									<Typography
+										variant="body1"
+										style={{
+											color: 'white',
+											fontWeight: 'bold',
+											marginRight: '47px',
+											cursor: 'pointer',
+										}}
+									>
+										Dang Ky
+									</Typography>
+								</Link>
 							</Box>
 						</Box>
-					</React.Fragment>
-				)}
+					) : (
+						<Box style={{ display: 'flex' }}>
+							<Box style={{ marginRight: '10px' }}>
+								<ListItemAvatar>
+									<Avatar className={classes.colorAvatar}>{props.dataUser.name.charAt(0)}</Avatar>
+								</ListItemAvatar>
+							</Box>
+							<div
+								style={{
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									whiteSpace: 'nowrap',
+								}}
+							>
+								<div>
+									<Typography variant="body2" noWrap style={{ color: '#fff' }}>
+										Xin chao!
+									</Typography>
+								</div>
+								<div style={{ display: 'grid' }}>
+									<Typography variant="h6" style={{ fontSize: '16px', color: '#fff' }} noWrap>
+										{props.dataUser.name}
+									</Typography>
+								</div>
+							</div>
+						</Box>
+					)}
+				</DialogTitle>
+
+				<DialogContent style={{ padding: 0 }}>
+					<Box
+						style={{ marginTop: '12px', marginLeft: '24px', display: 'flex', marginBottom: '10px' }}
+					>
+						<Box
+							style={{
+								marginRight: '20px',
+
+								cursor: 'pointer',
+							}}
+							className={clsx(classes.button, props.valueI18n === 'en' && classes.styleLng)}
+							onClick={() => {
+								props.changeLanguage?.('en');
+								props.receiveMenu?.(false);
+							}}
+						>
+							<img src={icon} />
+						</Box>
+						<Box
+							style={{
+								cursor: 'pointer',
+							}}
+							className={clsx(classes.button, props.valueI18n === 'vn' && classes.styleLng)}
+							onClick={() => {
+								props.changeLanguage?.('vn');
+								props.receiveMenu?.(false);
+							}}
+						>
+							<img src={iconvn} />
+						</Box>
+					</Box>
+					<Typography
+						variant="body1"
+						style={{
+							textTransform: 'uppercase',
+							textAlign: 'center',
+							fontWeight: 'bold',
+							backgroundColor: '#f3f3f3',
+							paddingTop: '11px',
+							paddingBottom: '8px',
+						}}
+					>
+						Menu
+					</Typography>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push('/');
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Trang chu
+						</Typography>
+					</Box>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push(AppURL.PROFILE_INFO);
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Gioi thieu
+						</Typography>
+					</Box>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push(AppURL.PROFILE_INFO);
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Tin tuc
+						</Typography>
+					</Box>
+					<Divider />
+					<Typography
+						variant="body1"
+						style={{
+							textTransform: 'uppercase',
+							textAlign: 'center',
+							fontWeight: 'bold',
+							backgroundColor: '#f3f3f3',
+							paddingTop: '11px',
+							paddingBottom: '8px',
+						}}
+					>
+						Danh muc san pham
+					</Typography>
+					<Divider />
+					{props.dataMenu.data?.map((item: any) => {
+						return (
+							<React.Fragment>
+								<Box className={classes.styleLink}>
+									<ListItemText
+										onClick={() => {
+											//history.push(AppURL.PROFILE_INFO);
+
+											props.receiveMenu?.(false);
+										}}
+									>
+										<Typography
+											variant="body1"
+											style={{
+												fontWeight: 500,
+												paddingTop: '8px',
+												paddingBottom: '8px',
+											}}
+										>
+											{item.name}
+										</Typography>
+									</ListItemText>
+									{item.branch?.length > 0 &&
+										(showBranch === item.id ? (
+											<RemoveIcon
+												className={classes.adHover}
+												style={{ color: '#595959' }}
+												onClick={() =>
+													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+												}
+											/>
+										) : (
+											<AddIcon
+												className={classes.adHover}
+												style={{ color: '#595959' }}
+												onClick={() =>
+													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+												}
+											/>
+										))}
+								</Box>
+								<Divider />
+								<Collapse in={showBranch === item.id ? true : false} timeout="auto" unmountOnExit>
+									<Box>
+										{item.branch?.map((item: any) => {
+											return (
+												<React.Fragment>
+													<Box className={classes.styleLink} style={{ paddingLeft: '45px' }}>
+														<ListItemText
+															onClick={() => {
+																//history.push(AppURL.PROFILE_INFO);
+																props.receiveMenu?.(false);
+															}}
+														>
+															<Typography
+																variant="body1"
+																style={{
+																	paddingTop: '8px',
+																	paddingBottom: '8px',
+																}}
+															>
+																{item.name}
+															</Typography>
+														</ListItemText>
+													</Box>
+													<Divider />
+												</React.Fragment>
+											);
+										})}
+									</Box>
+								</Collapse>
+							</React.Fragment>
+						);
+					})}
+
+					{props.dataUser.name !== '' && (
+						<React.Fragment>
+							<Typography
+								variant="body1"
+								style={{
+									textTransform: 'uppercase',
+									textAlign: 'center',
+									fontWeight: 'bold',
+									backgroundColor: '#f3f3f3',
+									paddingTop: '11px',
+									paddingBottom: '8px',
+								}}
+							>
+								Thong tin tai khoan
+							</Typography>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									history.push(AppURL.PROFILE_INFO);
+									props.receiveMenu?.(false);
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Quan ly thong tin
+								</Typography>
+							</Box>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									history.push(AppURL.ORDER_ALL);
+									props.receiveMenu?.(false);
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Quan ly don hang
+								</Typography>
+							</Box>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									props.logoutMenuMobile?.(true);
+									props.receiveMenu?.(false);
+									history.push('/');
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Thoat tai khoan
+								</Typography>
+							</Box>
+							<Divider />
+						</React.Fragment>
+					)}
+				</DialogContent>
+			</Box>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+		</Box>
+	) : (
+		<Box style={{ width: 306 }}>
+			<Box>
+				<DialogTitle
+					id="form-dialog-title"
+					style={{ backgroundColor: theme.palette.primary.main, paddingBottom: '7px' }}
+				>
+					{props.dataUser.name === '' ? (
+						<Box style={{ display: 'flex' }}>
+							<Box style={{ marginRight: '34px' }}>
+								<ListItemAvatar style={{ marginRight: '-8px' }}>
+									<Avatar style={{ backgroundColor: '#fff' }}>
+										<PersonIcon className={classes.colorIcon} />
+									</Avatar>
+								</ListItemAvatar>
+							</Box>
+							<Box style={{ display: 'flex', alignItems: 'center' }}>
+								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
+									<Typography
+										variant="body1"
+										style={{
+											color: 'white',
+											fontWeight: 'bold',
+											marginRight: '47px',
+											cursor: 'pointer',
+										}}
+									>
+										Dang nhap
+									</Typography>
+								</Link>
+								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
+									<Typography
+										variant="body1"
+										style={{
+											color: 'white',
+											fontWeight: 'bold',
+											marginRight: '47px',
+											cursor: 'pointer',
+										}}
+									>
+										Dang Ky
+									</Typography>
+								</Link>
+							</Box>
+						</Box>
+					) : (
+						<Box style={{ display: 'flex' }}>
+							<Box style={{ marginRight: '10px' }}>
+								<ListItemAvatar>
+									<Avatar className={classes.colorAvatar}>{props.dataUser.name.charAt(0)}</Avatar>
+								</ListItemAvatar>
+							</Box>
+							<div
+								style={{
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									whiteSpace: 'nowrap',
+								}}
+							>
+								<div>
+									<Typography variant="body2" noWrap style={{ color: '#fff' }}>
+										Xin chao!
+									</Typography>
+								</div>
+								<div style={{ display: 'grid' }}>
+									<Typography variant="h6" style={{ fontSize: '16px', color: '#fff' }} noWrap>
+										{props.dataUser.name}
+									</Typography>
+								</div>
+							</div>
+						</Box>
+					)}
+				</DialogTitle>
+
+				<DialogContent style={{ padding: 0 }}>
+					<Box
+						style={{ marginTop: '12px', marginLeft: '24px', display: 'flex', marginBottom: '10px' }}
+					>
+						<Box
+							style={{
+								marginRight: '20px',
+
+								cursor: 'pointer',
+							}}
+							className={clsx(classes.button, props.valueI18n === 'en' && classes.styleLng)}
+							onClick={() => {
+								props.changeLanguage?.('en');
+								props.receiveMenu?.(false);
+							}}
+						>
+							<img src={icon} />
+						</Box>
+						<Box
+							style={{
+								cursor: 'pointer',
+							}}
+							className={clsx(classes.button, props.valueI18n === 'vn' && classes.styleLng)}
+							onClick={() => {
+								props.changeLanguage?.('vn');
+								props.receiveMenu?.(false);
+							}}
+						>
+							<img src={iconvn} />
+						</Box>
+					</Box>
+					<Typography
+						variant="body1"
+						style={{
+							textTransform: 'uppercase',
+							textAlign: 'center',
+							fontWeight: 'bold',
+							backgroundColor: '#f3f3f3',
+							paddingTop: '11px',
+							paddingBottom: '8px',
+						}}
+					>
+						Menu
+					</Typography>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push('/');
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Trang chu
+						</Typography>
+					</Box>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push(AppURL.PROFILE_INFO);
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Gioi thieu
+						</Typography>
+					</Box>
+					<Divider />
+					<Box
+						className={classes.styleLink}
+						onClick={() => {
+							history.push(AppURL.PROFILE_INFO);
+							props.receiveMenu?.(false);
+						}}
+					>
+						<Typography
+							variant="body1"
+							style={{
+								fontWeight: 500,
+								paddingTop: '8px',
+								paddingBottom: '8px',
+							}}
+						>
+							Tin tuc
+						</Typography>
+					</Box>
+					<Divider />
+					<Typography
+						variant="body1"
+						style={{
+							textTransform: 'uppercase',
+							textAlign: 'center',
+							fontWeight: 'bold',
+							backgroundColor: '#f3f3f3',
+							paddingTop: '11px',
+							paddingBottom: '8px',
+						}}
+					>
+						Danh muc san pham
+					</Typography>
+					<Divider />
+					{props.dataMenu.data?.map((item: any) => {
+						return (
+							<React.Fragment>
+								<Box className={classes.styleLink}>
+									<ListItemText
+										onClick={() => {
+											//history.push(AppURL.PROFILE_INFO);
+
+											props.receiveMenu?.(false);
+										}}
+									>
+										<Typography
+											variant="body1"
+											style={{
+												fontWeight: 500,
+												paddingTop: '8px',
+												paddingBottom: '8px',
+											}}
+										>
+											{item.name}
+										</Typography>
+									</ListItemText>
+									{item.branch?.length > 0 &&
+										(showBranch === item.id ? (
+											<RemoveIcon
+												className={classes.adHover}
+												style={{ color: '#595959' }}
+												onClick={() =>
+													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+												}
+											/>
+										) : (
+											<AddIcon
+												className={classes.adHover}
+												style={{ color: '#595959' }}
+												onClick={() =>
+													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+												}
+											/>
+										))}
+								</Box>
+								<Divider />
+								<Collapse in={showBranch === item.id ? true : false} timeout="auto" unmountOnExit>
+									<Box>
+										{item.branch?.map((item: any) => {
+											return (
+												<React.Fragment>
+													<Box className={classes.styleLink} style={{ paddingLeft: '45px' }}>
+														<ListItemText
+															onClick={() => {
+																//history.push(AppURL.PROFILE_INFO);
+																props.receiveMenu?.(false);
+															}}
+														>
+															<Typography
+																variant="body1"
+																style={{
+																	paddingTop: '8px',
+																	paddingBottom: '8px',
+																}}
+															>
+																{item.name}
+															</Typography>
+														</ListItemText>
+													</Box>
+													<Divider />
+												</React.Fragment>
+											);
+										})}
+									</Box>
+								</Collapse>
+							</React.Fragment>
+						);
+					})}
+
+					{props.dataUser.name !== '' && (
+						<React.Fragment>
+							<Typography
+								variant="body1"
+								style={{
+									textTransform: 'uppercase',
+									textAlign: 'center',
+									fontWeight: 'bold',
+									backgroundColor: '#f3f3f3',
+									paddingTop: '11px',
+									paddingBottom: '8px',
+								}}
+							>
+								Thong tin tai khoan
+							</Typography>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									history.push(AppURL.PROFILE_INFO);
+									props.receiveMenu?.(false);
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Quan ly thong tin
+								</Typography>
+							</Box>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									history.push(AppURL.ORDER_ALL);
+									props.receiveMenu?.(false);
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Quan ly don hang
+								</Typography>
+							</Box>
+							<Divider />
+							<Box
+								className={classes.styleLink}
+								onClick={() => {
+									props.logoutMenuMobile?.(true);
+									props.receiveMenu?.(false);
+									history.push('/');
+								}}
+							>
+								<Typography
+									variant="body1"
+									style={{
+										fontWeight: 500,
+										paddingTop: '8px',
+										paddingBottom: '8px',
+									}}
+								>
+									Thoat tai khoan
+								</Typography>
+							</Box>
+							<Divider />
+						</React.Fragment>
+					)}
+				</DialogContent>
 			</Box>
 			<ToastContainer
 				position="top-right"

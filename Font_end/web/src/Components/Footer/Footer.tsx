@@ -12,12 +12,22 @@ import {
 	Divider,
 } from '@material-ui/core';
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { Link } from 'react-router-dom';
 import bocongthuong from './../../public/images/bocongthuong.png';
 const useStyles = makeStyles((theme) => ({
 	bgHeader: {
 		paddingRight: theme.spacing(13),
 		paddingLeft: theme.spacing(13),
+		backgroundColor: '#333333',
+		marginTop: '20px',
+		// marginBottom: '10px',
+		display: 'flex',
+		alignItems: 'center',
+	},
+	bgHeader3: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
 		backgroundColor: '#333333',
 		marginTop: '20px',
 		// marginBottom: '10px',
@@ -45,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
 		borderLeft: '0.5px solid #8c8c8c4f',
 		borderRight: '0.5px solid #8c8c8c4f',
 	},
+	bgHeaderMobile: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
+	},
 	button: {},
 	tagLi: {
 		textDecoration: 'none',
@@ -57,14 +71,56 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Footer: React.FC = () => {
 	const classes = useStyles();
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	return (
 		<React.Fragment>
-			<Grid container className={classes.bgHeader}>
-				<Grid item xs={3}>
-					<List>
-						<ListItem>
-							<ListItemAvatar>
-								<a title="Link youtube">
+			{isResponseiveMobile ? (
+				<React.Fragment>
+					<Grid container className={classes.bgHeader}>
+						<Grid item xs={3}>
+							<List>
+								<ListItem>
+									<ListItemAvatar>
+										<a title="Link youtube">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-youtube"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+									<ListItemAvatar>
+										<a title="Lick facebook">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-facebook"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={5} style={{ display: 'grid' }}>
+							<ListItem>
+								<ListItemAvatar>
 									<Avatar
 										style={{
 											backgroundColor: '#333333',
@@ -72,12 +128,42 @@ const Footer: React.FC = () => {
 											cursor: 'pointer',
 										}}
 									>
-										<i className="fa fa-youtube" aria-hidden="true" style={{ color: '#fff' }}></i>
+										<i className="fa fa-envelope" style={{ color: '#fff' }} aria-hidden="true"></i>
 									</Avatar>
-								</a>
-							</ListItemAvatar>
-							<ListItemAvatar>
-								<a title="Lick facebook">
+								</ListItemAvatar>
+								<div>
+									<div>
+										<Typography variant="body1" style={{ color: '#fff' }}>
+											Bạn muốn là người sớm nhất nhận khuyến mãi đặc biệt?
+										</Typography>
+									</div>
+									<div>
+										<Typography variant="body1" style={{ color: '#fff' }}>
+											Đăng ký ngay.
+										</Typography>
+									</div>
+								</div>
+							</ListItem>
+						</Grid>
+						<Grid item xs={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+							<TextField
+								size="small"
+								variant="outlined"
+								style={{ height: 'max-content', backgroundColor: '#fff' }}
+							/>
+							&nbsp;
+							<Button size="small" variant="contained" color="primary">
+								Dang ky
+							</Button>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			) : isResponseivePhone ? (
+				<React.Fragment>
+					<Grid container className={classes.bgHeader3}>
+						<Grid item xs={5} style={{ display: 'grid' }}>
+							<ListItem>
+								<ListItemAvatar>
 									<Avatar
 										style={{
 											backgroundColor: '#333333',
@@ -85,258 +171,640 @@ const Footer: React.FC = () => {
 											cursor: 'pointer',
 										}}
 									>
-										<i className="fa fa-facebook" aria-hidden="true" style={{ color: '#fff' }}></i>
+										<i className="fa fa-envelope" style={{ color: '#fff' }} aria-hidden="true"></i>
 									</Avatar>
-								</a>
-							</ListItemAvatar>
-						</ListItem>
-					</List>
-				</Grid>
-				<Grid item xs={5} style={{ display: 'grid' }}>
-					<ListItem>
-						<ListItemAvatar>
-							<Avatar
-								style={{
-									backgroundColor: '#333333',
-									border: '2px solid #fff',
-									cursor: 'pointer',
-								}}
-							>
-								<i className="fa fa-envelope" style={{ color: '#fff' }} aria-hidden="true"></i>
-							</Avatar>
-						</ListItemAvatar>
-						<div>
-							<div>
-								<Typography variant="body1" style={{ color: '#fff' }}>
-									Bạn muốn là người sớm nhất nhận khuyến mãi đặc biệt?
-								</Typography>
-							</div>
-							<div>
-								<Typography variant="body1" style={{ color: '#fff' }}>
-									Đăng ký ngay.
-								</Typography>
-							</div>
-						</div>
-					</ListItem>
-				</Grid>
-				<Grid item xs={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-					<TextField
-						size="small"
-						variant="outlined"
-						style={{ height: 'max-content', backgroundColor: '#fff' }}
-					/>
-					&nbsp;
-					<Button size="small" variant="contained" color="primary">
-						Dang ky
-					</Button>
-				</Grid>
-			</Grid>
-			<Grid container className={classes.bgHeader2}>
-				<Grid item xs={3}>
-					<List>
-						<ListItem>
-							<Typography style={{ fontWeight: 'bold' }} variant="body1">
-								Thông tin công ty
-							</Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Giới thiệu công ty</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Quy chế hoạt động sàn TMĐT</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Hệ thống cửa hàng</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Mua hàng doanh nghiệp</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Tuyển dụng</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Liên hệ</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<MuiLink href="http://online.gov.vn/Home/WebDetails/20090?AspxAutoDetectCookieSupport=1">
-								<Typography className={classes.iconBocongthuong}></Typography>
-							</MuiLink>
-						</ListItem>
-					</List>
-				</Grid>
-				<Grid item xs={3}>
-					<List>
-						<ListItem>
-							<Typography style={{ fontWeight: 'bold' }} variant="body1">
-								Chính sách
-							</Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Trả góp</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Ưu đãi đối tác</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Điều kiện giao dịch</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Bảo vệ thông tin người dùng</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Bảo mật giao dịch của khách hàng</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Chính sách bảo hành</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Chính sách và quy định thanh toán</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Chính sách 30 ngày đổi mới</Typography>
-							</Link>
-						</ListItem>
-					</List>
-				</Grid>
-				<Grid item xs={3}>
-					<List>
-						<ListItem>
-							<Typography style={{ fontWeight: 'bold' }} variant="body1">
-								Hỗ trợ khách hàng
-							</Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Hướng dẫn mua hàng</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Hóa đơn điện tử</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Câu hỏi thường gặp</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Vận chuyển và giao nhận</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Phương thức thanh toán</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Tra cứu đơn hàng</Typography>
-							</Link>
-						</ListItem>
-					</List>
-				</Grid>
-				<Grid item xs={3}>
-					<List>
-						<ListItem>
-							<Typography style={{ fontWeight: 'bold' }} variant="body1">
-								Thông tin khác
-							</Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Email:&nbsp;</Typography>
-							</Link>
-							<Typography variant="body1">
-								<a style={{ color: 'red' }} href="mailto:tranvansangg@gmail.com">
-									tranvansangg@gmail.com
-								</a>
-							</Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Mua hàng - Góp ý - Bảo hành</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Gọi:&nbsp;</Typography>
-							</Link>
-							<Typography variant="body1">
-								<a
-									style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
-									href="tel:1800.6800"
-								>
-									1800.6800&nbsp;
-								</a>
-							</Typography>
-							<Typography variant="body1"> Miễn phí </Typography>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1">Sơ đồ trang web</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1" style={{ color: 'red', fontWeight: 'bold' }}>
-									Cảnh báo giả mạo
-								</Typography>
-							</Link>
-						</ListItem>
-						<ListItem>
-							<Link to="/" className={classes.tagLi}>
-								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-									Kênh tiếp nhận phản ánh về hối lộ
-								</Typography>
-							</Link>
-						</ListItem>
-					</List>
-				</Grid>
-			</Grid>
+								</ListItemAvatar>
+								<div>
+									<div>
+										<Typography variant="body1" style={{ color: '#fff' }}>
+											Bạn muốn là người sớm nhất nhận khuyến mãi đặc biệt?
+										</Typography>
+									</div>
+									<div>
+										<Typography variant="body1" style={{ color: '#fff' }}>
+											Đăng ký ngay.
+										</Typography>
+									</div>
+								</div>
+							</ListItem>
+						</Grid>
+						<Grid item xs={7} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+							<TextField
+								size="small"
+								variant="outlined"
+								style={{ height: 'max-content', backgroundColor: '#fff' }}
+							/>
+							&nbsp;
+							<Button size="small" variant="contained" color="primary">
+								Dang ky
+							</Button>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			) : (
+				<React.Fragment>
+					<Grid container className={classes.bgHeader3}>
+						<Grid
+							item
+							xs={12}
+							style={{
+								display: 'flex',
+								justifyContent: 'flex-end',
+								marginBottom: '10px',
+								marginTop: '10px',
+							}}
+						>
+							<TextField
+								size="small"
+								variant="outlined"
+								placeholder="Tha emai nhan uu dai"
+								style={{ height: 'max-content', backgroundColor: '#fff' }}
+							/>
+							&nbsp;
+							<Button size="small" variant="contained" color="primary">
+								Dang ky
+							</Button>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			)}
+			{isResponseiveMobile ? (
+				<React.Fragment>
+					<Grid container className={classes.bgHeader2}>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Thông tin công ty
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Giới thiệu công ty</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Quy chế hoạt động sàn TMĐT</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hệ thống cửa hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Mua hàng doanh nghiệp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Tuyển dụng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Liên hệ</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Chính sách
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Trả góp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Ưu đãi đối tác</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Điều kiện giao dịch</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Bảo vệ thông tin người dùng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Bảo mật giao dịch của khách hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách bảo hành</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách và quy định thanh toán</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách 30 ngày đổi mới</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Hỗ trợ khách hàng
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hướng dẫn mua hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hóa đơn điện tử</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Câu hỏi thường gặp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Vận chuyển và giao nhận</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Phương thức thanh toán</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Tra cứu đơn hàng</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Thông tin khác
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Email:&nbsp;</Typography>
+									</Link>
+									<Typography variant="body1">
+										<a style={{ color: 'red' }} href="mailto:tranvansangg@gmail.com">
+											tranvansangg@gmail.com
+										</a>
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Mua hàng - Góp ý - Bảo hành</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Gọi:&nbsp;</Typography>
+									</Link>
+									<Typography variant="body1">
+										<a
+											style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
+											href="tel:1800.6800"
+										>
+											1800.6800&nbsp;
+										</a>
+									</Typography>
+									<Typography variant="body1"> Miễn phí </Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Sơ đồ trang web</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1" style={{ color: 'red', fontWeight: 'bold' }}>
+											Cảnh báo giả mạo
+										</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+											Kênh tiếp nhận phản ánh về hối lộ
+										</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<MuiLink href="http://online.gov.vn/Home/WebDetails/20090?AspxAutoDetectCookieSupport=1">
+										<Typography className={classes.iconBocongthuong}></Typography>
+									</MuiLink>
+								</ListItem>
+							</List>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			) : isResponseivePhone ? (
+				<React.Fragment>
+					<Grid container className={classes.bgHeaderMobile}>
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<ListItemAvatar>
+										<a title="Link youtube">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-youtube"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+									<ListItemAvatar>
+										<a title="Lick facebook">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-facebook"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Thông tin công ty
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Giới thiệu công ty</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Quy chế hoạt động sàn TMĐT</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hệ thống cửa hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Mua hàng doanh nghiệp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Tuyển dụng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Liên hệ</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Chính sách
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Trả góp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Ưu đãi đối tác</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Điều kiện giao dịch</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Bảo vệ thông tin người dùng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Bảo mật giao dịch của khách hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách bảo hành</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách và quy định thanh toán</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Chính sách 30 ngày đổi mới</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Hỗ trợ khách hàng
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hướng dẫn mua hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hóa đơn điện tử</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Câu hỏi thường gặp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Vận chuyển và giao nhận</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Phương thức thanh toán</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Tra cứu đơn hàng</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={6} lg={3} sm={6} md={3}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Thông tin khác
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Email:&nbsp;</Typography>
+									</Link>
+									<Typography variant="body1">
+										<a style={{ color: 'red' }} href="mailto:tranvansangg@gmail.com">
+											tranvansangg@gmail.com
+										</a>
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Mua hàng - Góp ý - Bảo hành</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Gọi:&nbsp;</Typography>
+									</Link>
+									<Typography variant="body1">
+										<a
+											style={{ color: 'red', textDecoration: 'none', fontWeight: 'bold' }}
+											href="tel:1800.6800"
+										>
+											1800.6800&nbsp;
+										</a>
+									</Typography>
+									<Typography variant="body1"> Miễn phí </Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Sơ đồ trang web</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1" style={{ color: 'red', fontWeight: 'bold' }}>
+											Cảnh báo giả mạo
+										</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+											Kênh tiếp nhận phản ánh về hối lộ
+										</Typography>
+									</Link>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<MuiLink href="http://online.gov.vn/Home/WebDetails/20090?AspxAutoDetectCookieSupport=1">
+										<Typography className={classes.iconBocongthuong}></Typography>
+									</MuiLink>
+								</ListItem>
+							</List>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			) : (
+				<React.Fragment>
+					<Grid container className={classes.bgHeaderMobile}>
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<ListItemAvatar>
+										<a title="Link youtube">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-youtube"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+									<ListItemAvatar>
+										<a title="Lick facebook">
+											<Avatar
+												style={{
+													backgroundColor: '#333333',
+													border: '2px solid #fff',
+													cursor: 'pointer',
+												}}
+											>
+												<i
+													className="fa fa-facebook"
+													aria-hidden="true"
+													style={{ color: '#fff' }}
+												></i>
+											</Avatar>
+										</a>
+									</ListItemAvatar>
+								</ListItem>
+							</List>
+						</Grid>
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<Typography style={{ fontWeight: 'bold' }} variant="body1">
+										Thông tin công ty
+									</Typography>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Giới thiệu công ty</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Quy chế hoạt động sàn TMĐT</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Hệ thống cửa hàng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Mua hàng doanh nghiệp</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Tuyển dụng</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Liên hệ</Typography>
+									</Link>
+								</ListItem>
+								<ListItem>
+									<Link to="/" className={classes.tagLi}>
+										<Typography variant="body1">Email:&nbsp;</Typography>
+									</Link>
+									<Typography variant="body1">
+										<a style={{ color: 'red' }} href="mailto:tranvansangg@gmail.com">
+											tranvansangg@gmail.com
+										</a>
+									</Typography>
+								</ListItem>
+							</List>
+						</Grid>
+
+						<Grid item xs={12}>
+							<List>
+								<ListItem>
+									<MuiLink href="http://online.gov.vn/Home/WebDetails/20090?AspxAutoDetectCookieSupport=1">
+										<Typography className={classes.iconBocongthuong}></Typography>
+									</MuiLink>
+								</ListItem>
+							</List>
+						</Grid>
+					</Grid>
+				</React.Fragment>
+			)}
 			<Divider />
-			<Grid container className={classes.bgHeader2}>
-				<Grid item xs={12} style={{ textAlign: 'center' }}>
-					<Typography variant="caption" display="block">
-						Copyright © 1999 - 2021 Công ty Cổ phần Thương mại SangTV
-					</Typography>
-					<Typography variant="caption" display="block">
-						Giấy chứng nhận đăng ký kinh doanh số 0302286281, cấp ngày 22/06/2006 bởi Sở Kế hoạch và
-						Đầu tư TP. Hồ Chí Minh.
-					</Typography>
-					<Typography variant="caption" display="block">
-						Địa chỉ đăng ký trụ sở chính: 63-65-67 Trần Hưng Đạo, P. Cầu Ông Lãnh, TP. Hồ Chí Minh
-					</Typography>
+			{isResponseivePhone ? (
+				<Grid container className={classes.bgHeader2}>
+					<Grid item xs={12} style={{ textAlign: 'center' }}>
+						<Typography variant="caption" display="block">
+							Copyright © 1999 - 2021 Công ty Cổ phần Thương mại SangTV
+						</Typography>
+						<Typography variant="caption" display="block">
+							Giấy chứng nhận đăng ký kinh doanh số 0302286281, cấp ngày 22/06/2006 bởi Sở Kế hoạch
+							và Đầu tư TP. Hồ Chí Minh.
+						</Typography>
+						<Typography variant="caption" display="block">
+							Địa chỉ đăng ký trụ sở chính: 63-65-67 Trần Hưng Đạo, P. Cầu Ông Lãnh, TP. Hồ Chí Minh
+						</Typography>
+					</Grid>
 				</Grid>
-			</Grid>
+			) : (
+				<Grid
+					container
+					className={classes.bgHeader2}
+					style={{ paddingLeft: '10px', paddingRight: '10px' }}
+				>
+					<Grid item xs={12} style={{ textAlign: 'center' }}>
+						<Typography variant="caption" display="block">
+							Copyright © 1999 - 2021 Công ty Cổ phần Thương mại SangTV
+						</Typography>
+						<Typography variant="caption" display="block">
+							Giấy chứng nhận đăng ký kinh doanh số 0302286281, cấp ngày 22/06/2006 bởi Sở Kế hoạch
+							và Đầu tư TP. Hồ Chí Minh.
+						</Typography>
+						<Typography variant="caption" display="block">
+							Địa chỉ đăng ký trụ sở chính: 63-65-67 Trần Hưng Đạo, P. Cầu Ông Lãnh, TP. Hồ Chí Minh
+						</Typography>
+					</Grid>
+				</Grid>
+			)}
 		</React.Fragment>
 	);
 };

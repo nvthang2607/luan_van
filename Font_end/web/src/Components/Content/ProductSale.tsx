@@ -39,6 +39,7 @@ import theme from './../../utils/theme/index';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import spsale from './../../public/images/4.png';
 import Countdown from 'react-countdown';
+import { useMediaQuery } from 'react-responsive';
 interface ProductProps {
 	unit_price?: number;
 	name?: any;
@@ -206,6 +207,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 		str = str.replace(/-+$/g, '');
 		return str;
 	};
+	const isResponseiveFsale = useMediaQuery({ query: '(min-width: 800px)' });
 	return (
 		<React.Fragment>
 			<Box style={{ display: 'flex' }}>
@@ -283,22 +285,18 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 						</Typography>
 					</Box>
 					<Box>
-						<Typography style={{ display: 'flex', alignItems: 'center' }}>
+						<Typography>
 							<Rating
 								name="read-only"
 								value={Number(Number(props.avg).toFixed(1))}
 								precision={0.04}
 								readOnly
 								style={{
-									paddingRight: '10px',
-									borderRight: '1px solid grey',
 									fontSize: '20px',
 								}}
 							/>
 							<Typography
-								component="span"
 								style={{
-									paddingLeft: '10px',
 									color: 'grey',
 								}}
 							>
@@ -327,136 +325,145 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 					} else {
 						// Render a countdown
 						return (
-							<Box
-								style={{
-									display: 'flex',
-									justifyContent: 'flex-end',
-									marginTop: '20px',
-									alignItems: 'center',
-									textAlign: 'center',
-								}}
-							>
-								<Typography component="span" style={{ marginRight: '10px' }}>
-									Ket thuc trong
-								</Typography>
-								{/* {days > 0 && (
-									<React.Fragment>
-										<Typography
-											component="span"
-											variant="h6"
-											style={{ fontWeight: 'bold', marginLeft: '10px', color: 'red' }}
-										>
-											{days < 10 ? '0' + days : days}
-										</Typography>
-										<Typography
-											component="span"
-											variant="h6"
-											style={{ marginRight: '10px', marginLeft: '10px' }}
-										>
-											ngay
-										</Typography>
-									</React.Fragment>
-								)} */}
-								<Box>
-									<Typography className={classes.coutdown}>
-										<Typography
-											style={{
-												fontSize: '23px',
-												paddingLeft: '15px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											{hours < 10 ? '0' + hours : hours}
-										</Typography>
-										<Divider style={{ backgroundColor: 'red' }} />
-										<Typography
-											style={{
-												fontSize: '15px',
-												paddingLeft: '15px',
-												paddingBottom: '7px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											Giờ
-										</Typography>
+							<React.Fragment>
+								{isResponseiveFsale === false && (
+									<Typography component="span" style={{ marginRight: '10px' }}>
+										Ket thuc trong
 									</Typography>
-								</Box>
-								<Typography
+								)}
+								<Box
 									style={{
-										fontSize: '30px',
-										fontWeight: 'bold',
-										marginRight: '10px',
-										paddingTop: '4px',
+										display: 'flex',
+										justifyContent: 'flex-end',
+										marginTop: '20px',
+										alignItems: 'center',
+										textAlign: 'center',
 									}}
 								>
-									:
-								</Typography>
-								<Box>
-									<Typography className={classes.coutdown}>
-										<Typography
-											style={{
-												fontSize: '23px',
-												paddingLeft: '15px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											{minutes < 10 ? '0' + minutes : minutes}
+									{isResponseiveFsale && (
+										<Typography component="span" style={{ marginRight: '10px' }}>
+											Ket thuc trong
 										</Typography>
-										<Divider style={{ backgroundColor: 'red' }} />
-										<Typography
-											style={{
-												fontSize: '15px',
-												paddingLeft: '15px',
-												paddingBottom: '5px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											Phút
-										</Typography>
+									)}
+									{/* {days > 0 && (
+								<React.Fragment>
+									<Typography
+										component="span"
+										variant="h6"
+										style={{ fontWeight: 'bold', marginLeft: '10px', color: 'red' }}
+									>
+										{days < 10 ? '0' + days : days}
 									</Typography>
-								</Box>
-								<Typography
-									style={{
-										fontSize: '30px',
-										fontWeight: 'bold',
-										marginRight: '10px',
-										paddingTop: '4px',
-									}}
-								>
-									:
-								</Typography>
-								<Box>
-									<Typography className={classes.coutdown}>
-										<Typography
-											style={{
-												fontSize: '23px',
-												paddingLeft: '15px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											{/* {seconds < 10 ? '0' + seconds : seconds} */}
-											{seconds}
-										</Typography>
-										<Divider style={{ backgroundColor: 'red' }} />
-										<Typography
-											style={{
-												fontSize: '15px',
-												paddingLeft: '15px',
-												paddingBottom: '5px',
-												paddingRight: '15px',
-												fontWeight: 'bold',
-											}}
-										>
-											Giây
-										</Typography>
+									<Typography
+										component="span"
+										variant="h6"
+										style={{ marginRight: '10px', marginLeft: '10px' }}
+									>
+										ngay
 									</Typography>
+								</React.Fragment>
+							)} */}
+									<Box>
+										<Typography className={classes.coutdown}>
+											<Typography
+												style={{
+													fontSize: '23px',
+													paddingLeft: '15px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												{hours < 10 ? '0' + hours : hours}
+											</Typography>
+											<Divider style={{ backgroundColor: 'red' }} />
+											<Typography
+												style={{
+													fontSize: '15px',
+													paddingLeft: '15px',
+													paddingBottom: '7px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												Giờ
+											</Typography>
+										</Typography>
+									</Box>
+									<Typography
+										style={{
+											fontSize: '30px',
+											fontWeight: 'bold',
+											marginRight: '10px',
+											paddingTop: '4px',
+										}}
+									>
+										:
+									</Typography>
+									<Box>
+										<Typography className={classes.coutdown}>
+											<Typography
+												style={{
+													fontSize: '23px',
+													paddingLeft: '15px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												{minutes < 10 ? '0' + minutes : minutes}
+											</Typography>
+											<Divider style={{ backgroundColor: 'red' }} />
+											<Typography
+												style={{
+													fontSize: '15px',
+													paddingLeft: '15px',
+													paddingBottom: '5px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												Phút
+											</Typography>
+										</Typography>
+									</Box>
+									<Typography
+										style={{
+											fontSize: '30px',
+											fontWeight: 'bold',
+											marginRight: '10px',
+											paddingTop: '4px',
+										}}
+									>
+										:
+									</Typography>
+									<Box>
+										<Typography className={classes.coutdown}>
+											<Typography
+												style={{
+													fontSize: '23px',
+													paddingLeft: '15px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												{/* {seconds < 10 ? '0' + seconds : seconds} */}
+												{seconds}
+											</Typography>
+											<Divider style={{ backgroundColor: 'red' }} />
+											<Typography
+												style={{
+													fontSize: '15px',
+													paddingLeft: '15px',
+													paddingBottom: '5px',
+													paddingRight: '15px',
+													fontWeight: 'bold',
+												}}
+											>
+												Giây
+											</Typography>
+										</Typography>
+									</Box>
 								</Box>
-							</Box>
+							</React.Fragment>
 						);
 					}
 				}}

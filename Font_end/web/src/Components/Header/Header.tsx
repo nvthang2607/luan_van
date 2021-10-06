@@ -76,6 +76,7 @@ import {
 import Cart from '../Cart/Cart';
 import { getCartData } from '../Product/CartSlice';
 import MenuMobile from '../MenuMobile/MenuMobile';
+import { TypeBranch } from '../../api/Product';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -125,8 +126,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		bgHeaderMobile: {
 			backgroundColor: theme.palette.primary.main,
-			paddingRight: theme.spacing(2),
-			paddingLeft: theme.spacing(2),
+			paddingRight: '29px',
 		},
 
 		grow: {
@@ -319,6 +319,10 @@ const Header: React.FC<Props> = (props) => {
 	const [valueType, setValueType] = React.useState('product');
 	const [valueSearch, setValueSearch] = React.useState('');
 	const [valuePlaceholder, setValuePlaceholder] = React.useState('');
+	const [dataMenu, setDataMenu] = React.useState<any>({
+		errorCode: null,
+		data: [],
+	});
 	React.useEffect(() => {
 		const cusor = '|';
 		let count = 1;
@@ -351,6 +355,16 @@ const Header: React.FC<Props> = (props) => {
 		} else {
 			setValueSearch('');
 		}
+		const fetchTypeBranch = async () => {
+			const getTypeBranch = await TypeBranch();
+			if (getTypeBranch) {
+				if (getTypeBranch.errorCode === null) {
+					console.log('getTypeBranch', getTypeBranch);
+					setDataMenu(getTypeBranch);
+				}
+			}
+		};
+		fetchTypeBranch();
 		const getDataUser = async () => {
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();
@@ -443,7 +457,19 @@ const Header: React.FC<Props> = (props) => {
 	const receiveCart: (result: boolean) => void = (result) => {
 		setOpenCart(result);
 	};
+	const receiveMenu: (result: boolean) => void = (result) => {
+		setOpenMenuMobile(result);
+	};
+	const logoutMenuMobile: (result: boolean) => void = (result) => {
+		if (result) {
+			handleClickLogout();
+		}
+	};
+	const changeLanguage: (result: string) => void = (result) => {
+		handleLanguage(result);
+	};
 	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 900px)' });
+
 	return (
 		<div className={classes.grow}>
 			{isHeader ? (
@@ -1059,9 +1085,16 @@ const Header: React.FC<Props> = (props) => {
 											className={classes.closeButton}
 											onClick={() => setOpenMenuMobile(false)}
 										>
-											<Close />
+											<Close style={{ color: '#fff' }} />
 										</IconButton>
-										<MenuMobile />
+										<MenuMobile
+											dataUser={dataUser}
+											receiveMenu={receiveMenu}
+											logoutMenuMobile={logoutMenuMobile}
+											changeLanguage={changeLanguage}
+											valueI18n={valueI18n}
+											dataMenu={dataMenu}
+										/>
 									</SwipeableDrawer>
 								</Grid>
 							</Toolbar>

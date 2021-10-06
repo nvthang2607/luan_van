@@ -2,6 +2,7 @@ import {
 	Avatar,
 	Box,
 	Chip,
+	CircularProgress,
 	Divider,
 	Grid,
 	List,
@@ -62,6 +63,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useMediaQuery } from 'react-responsive';
 import ProductMobile from '../Product/ProductMobile';
+import ProductPhone from '../Product/ProductPhone';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: '30px',
@@ -85,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 	bgHeaderMobile: {
 		paddingRight: theme.spacing(2),
 		paddingLeft: theme.spacing(2),
-		backgroundColor: 'red',
+		backgroundColor: '#f4f4f4',
 	},
 
 	showBox: {
@@ -209,6 +211,11 @@ const Content: React.FC = () => {
 	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
 	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
 	const [dataProductFsale, setDataProductFsale] = React.useState<any>([]);
+	const [progressProductNew, setProgressProductNew] = React.useState(false);
+	const [progressProductSell, setProgressProductSell] = React.useState(false);
+	const [progressProductFsale, setProgressProductFsale] = React.useState(false);
+	const [progressProductRecommend, setProgressProductRecommend] = React.useState(false);
+	const [progressNews, setProgressNews] = React.useState(false);
 	const dispatch = useAppDispatch();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	React.useEffect(() => {
@@ -227,30 +234,38 @@ const Content: React.FC = () => {
 					setDataProductFsale(getProductFSalePost.data.listData);
 				}
 			}
-			const responseNewsGet = await NewsGet({ page: 1, pageSize: 9 });
-			if (responseNewsGet) {
-				if (responseNewsGet.errorCode === null) {
-					setDataNews(responseNewsGet.data);
-					//console.log(responseNewsGet.data);
-				}
-			}
-			const responseProductSell = await ProductSellPost({ page: 1, pageSize: 4, type: 'sell' });
-			if (responseProductSell) {
-				if (responseProductSell.errorCode === null) {
-					setDataProductSell(responseProductSell.data.listData);
-					//console.log(responseProductSell.data.listData);
-				}
-			}
+
+			setProgressProductNew(true);
 			const responseProductNew = await ProductNewPost({ page: 1, pageSize: 4, type: 'new' });
 			if (responseProductNew) {
 				if (responseProductNew.errorCode === null) {
 					setDataProductNew(responseProductNew.data.listData);
 					//console.log(responseProductNew.data.listData);
+					setProgressProductNew(false);
+				}
+			}
+			setProgressProductSell(true);
+			const responseProductSell = await ProductSellPost({ page: 1, pageSize: 4, type: 'sell' });
+			if (responseProductSell) {
+				if (responseProductSell.errorCode === null) {
+					setDataProductSell(responseProductSell.data.listData);
+					//console.log(responseProductSell.data.listData);
+					setProgressProductSell(false);
+				}
+			}
+			setProgressNews(true);
+			const responseNewsGet = await NewsGet({ page: 1, pageSize: 9 });
+			if (responseNewsGet) {
+				if (responseNewsGet.errorCode === null) {
+					setDataNews(responseNewsGet.data);
+					//console.log(responseNewsGet.data);
+					setProgressNews(false);
 				}
 			}
 		};
 
 		const getDataRecommend = async () => {
+			setProgressProductRecommend(true);
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();
 			if (token) {
@@ -259,18 +274,21 @@ const Content: React.FC = () => {
 					localStorage.removeItem('token');
 					dispatch(updateValueRefreshPage(true));
 					setDataProductRecommend([]);
+					setProgressProductRecommend(false);
 				} else {
 					const response = await RecommendPost({ page: 1, pageSize: 4 });
 					if (response) {
 						if (response.errorCode === null) {
 							//dispatch(updateValueRefreshPage(true));
 							setDataProductRecommend(response.data.listData);
+							setProgressProductRecommend(false);
 							//dispatch(updateProfileUser(response.data));
 						}
 					}
 				}
 			} else {
 				setDataProductRecommend([]);
+				setProgressProductRecommend(false);
 			}
 		};
 		getDataRecommend();
@@ -300,11 +318,12 @@ const Content: React.FC = () => {
 		}
 	};
 	const [countSale, setCountSale] = React.useState(2);
+	const isResponseiveFsale = useMediaQuery({ query: '(min-width: 800px)' });
 	const settings = {
 		//dots: true,
 		infinite: true,
 		speed: 500,
-		slidesToShow: countSale,
+		slidesToShow: isResponseiveFsale ? countSale : countSale - 1,
 		//slidesToScroll: 3,
 		nextArrow: <SampleNextArrow />,
 		prevArrow: <SamplePrevArrow />,
@@ -312,6 +331,9 @@ const Content: React.FC = () => {
 	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
 	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
 	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
+
 	return (
 		<React.Fragment>
 			{isResponseiveMobile ? (
@@ -440,12 +462,12 @@ const Content: React.FC = () => {
 							<Grid container>
 								<Grid item xs={12} className={classes.borderTitle}>
 									<Grid container style={{ alignItems: 'baseline' }}>
-										<Grid item xs={3}>
+										<Grid item xs={4}>
 											<Link to={AppURL.RECOMMEND} className={classes.titles}>
 												SAN PHAM GOI Y<div className={classes.title}></div>
 											</Link>
 										</Grid>
-										<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 											<List style={{ display: 'flex' }}>
 												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 									return (
@@ -486,27 +508,64 @@ const Content: React.FC = () => {
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid container spacing={3} style={{ marginTop: '10px' }}>
-									{dataProductRecommend?.map((item: any) => {
-										return (
-											<Product
-												unit_price={item[0].unit_price}
-												name={item[0].name}
-												id={item[0].id}
-												promotion_price={item[0].promotion_price}
-												link={item.image}
-												avg={item.avg}
-												promotion={item.promotion}
-												rate_number={item.rate_number}
-												storeQuantity={item[0].quantity}
-												addToCart={addToCart}
-											/>
-										);
-									})}
-								</Grid>
+								{progressProductRecommend ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseiveProductMobile ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductRecommend?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<Product
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductRecommend?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
 							</Grid>
 						</Grid>
 					)}
+
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
 							<Grid item xs={12} className={classes.borderTitle}>
@@ -557,8 +616,18 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-
-							{isResponseiveProductMobile ? (
+							{progressProductNew ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : isResponseiveProductMobile ? (
 								<Grid container spacing={3} style={{ marginTop: '10px' }}>
 									{dataProductNew?.map((item: any) => {
 										return (
@@ -603,16 +672,17 @@ const Content: React.FC = () => {
 							)}
 						</Grid>
 					</Grid>
+
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
 							<Grid item xs={12} className={classes.borderTitle}>
 								<Grid container style={{ alignItems: 'baseline' }}>
-									<Grid item xs={3}>
+									<Grid item xs={4}>
 										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
 											DIEN THOAI BAN CHAY<div className={classes.title}></div>
 										</Link>
 									</Grid>
-									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
 											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 									return (
@@ -653,24 +723,61 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-							<Grid container spacing={3} style={{ marginTop: '10px' }}>
-								{dataProductSell?.map((item: any) => {
-									return (
-										<Product
-											unit_price={item[0].unit_price}
-											name={item[0].name}
-											id={item[0].id}
-											promotion_price={item[0].promotion_price}
-											link={item.image}
-											avg={item.avg}
-											promotion={item.promotion}
-											rate_number={item.rate_number}
-											storeQuantity={item[0].quantity}
-											addToCart={addToCart}
-										/>
-									);
-								})}
-							</Grid>
+
+							{progressProductSell ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : isResponseiveProductMobile ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductSell?.map((item: any) => {
+										return (
+											<Grid item md={4} lg={3} xl={3}>
+												<Product
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductSell?.map((item: any) => {
+										return (
+											<Grid item md={4} lg={3} xl={3}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
@@ -680,12 +787,12 @@ const Content: React.FC = () => {
 						<Grid container>
 							<Grid item xs={12} className={classes.borderTitle}>
 								<Grid container style={{ alignItems: 'baseline' }}>
-									<Grid item xs={3}>
+									<Grid item xs={4}>
 										<Link to="/" className={classes.titles}>
 											24H CONG NGHE<div className={classes.title}></div>
 										</Link>
 									</Grid>
-									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
 											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
 												<ListItem
@@ -705,20 +812,33 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-							<Grid container spacing={3} style={{ marginTop: '10px' }}>
-								{dataNews.listData?.map((item: any) => {
-									return (
-										<Grid item xs={4}>
-											<NewsSmall
-												title={item.title}
-												image={item.image}
-												id={item.id}
-												created_at={item.created_at}
-											/>
-										</Grid>
-									);
-								})}
-							</Grid>
+							{progressNews ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataNews.listData?.map((item: any) => {
+										return (
+											<Grid item xs={4}>
+												<NewsSmall
+													title={item.title}
+													image={item.image}
+													id={item.id}
+													created_at={item.created_at}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
 
@@ -896,14 +1016,14 @@ const Content: React.FC = () => {
 					{dataProductRecommend.length > 0 && (
 						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 							<Grid container>
-								<Grid item xs={12} className={classes.borderTitle}>
+								<Grid item xs={12}>
 									<Grid container style={{ alignItems: 'baseline' }}>
-										<Grid item xs={3}>
+										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 											<Link to={AppURL.RECOMMEND} className={classes.titles}>
-												SAN PHAM GOI Y<div className={classes.title}></div>
+												SAN PHAM GOI Y
 											</Link>
 										</Grid>
-										<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 											<List style={{ display: 'flex' }}>
 												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 										return (
@@ -944,24 +1064,75 @@ const Content: React.FC = () => {
 										</Grid>
 									</Grid>
 								</Grid>
-								<Grid container spacing={3} style={{ marginTop: '10px' }}>
-									{dataProductRecommend?.map((item: any) => {
-										return (
-											<Product
-												unit_price={item[0].unit_price}
-												name={item[0].name}
-												id={item[0].id}
-												promotion_price={item[0].promotion_price}
-												link={item.image}
-												avg={item.avg}
-												promotion={item.promotion}
-												rate_number={item.rate_number}
-												storeQuantity={item[0].quantity}
-												addToCart={addToCart}
-											/>
-										);
-									})}
-								</Grid>
+								{progressProductRecommend ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseivePhone ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductRecommend?.map((item: any) => {
+											return isResponseiveProduct1Mobile ? (
+												<Grid item xs={6} md={3} sm={4}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											) : (
+												<Grid item xs={6} sm={6}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductRecommend?.map((item: any) => {
+											return (
+												<Grid item xs={6}>
+													<ProductPhone
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
 							</Grid>
 						</Grid>
 					)}
@@ -1015,38 +1186,87 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-							<Grid container spacing={3} style={{ marginTop: '10px' }}>
-								{dataProductNew?.map((item: any) => {
-									return (
-										<Grid item xs={12} md={3} sm={4}>
-											<ProductMobile
-												unit_price={item[0].unit_price}
-												name={item[0].name}
-												id={item[0].id}
-												promotion_price={item[0].promotion_price}
-												link={item.image}
-												avg={item.avg}
-												promotion={item.promotion}
-												rate_number={item.rate_number}
-												storeQuantity={item[0].quantity}
-												addToCart={addToCart}
-											/>
-										</Grid>
-									);
-								})}
-							</Grid>
+							{progressProductNew ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : isResponseivePhone ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductNew?.map((item: any) => {
+										return isResponseiveProduct1Mobile ? (
+											<Grid item xs={6} md={3} sm={4}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										) : (
+											<Grid item xs={6} sm={6}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductNew?.map((item: any) => {
+										return (
+											<Grid item xs={6}>
+												<ProductPhone
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
-							<Grid item xs={12} className={classes.borderTitle}>
+							<Grid item xs={12}>
 								<Grid container style={{ alignItems: 'baseline' }}>
-									<Grid item xs={3}>
+									<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
-											DIEN THOAI BAN CHAY<div className={classes.title}></div>
+											DIEN THOAI BAN CHAY
 										</Link>
 									</Grid>
-									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
 											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
 										return (
@@ -1087,24 +1307,75 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-							<Grid container spacing={3} style={{ marginTop: '10px' }}>
-								{dataProductSell?.map((item: any) => {
-									return (
-										<Product
-											unit_price={item[0].unit_price}
-											name={item[0].name}
-											id={item[0].id}
-											promotion_price={item[0].promotion_price}
-											link={item.image}
-											avg={item.avg}
-											promotion={item.promotion}
-											rate_number={item.rate_number}
-											storeQuantity={item[0].quantity}
-											addToCart={addToCart}
-										/>
-									);
-								})}
-							</Grid>
+							{progressProductSell ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : isResponseivePhone ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductSell?.map((item: any) => {
+										return isResponseiveProduct1Mobile ? (
+											<Grid item xs={6} md={3} sm={4}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										) : (
+											<Grid item xs={6} sm={6}>
+												<ProductMobile
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataProductSell?.map((item: any) => {
+										return (
+											<Grid item xs={6}>
+												<ProductPhone
+													unit_price={item[0].unit_price}
+													name={item[0].name}
+													id={item[0].id}
+													promotion_price={item[0].promotion_price}
+													link={item.image}
+													avg={item.avg}
+													promotion={item.promotion}
+													rate_number={item.rate_number}
+													storeQuantity={item[0].quantity}
+													addToCart={addToCart}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
@@ -1112,14 +1383,14 @@ const Content: React.FC = () => {
 					</Grid>
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
-							<Grid item xs={12} className={classes.borderTitle}>
+							<Grid item xs={12}>
 								<Grid container style={{ alignItems: 'baseline' }}>
-									<Grid item xs={3}>
+									<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 										<Link to="/" className={classes.titles}>
-											24H CONG NGHE<div className={classes.title}></div>
+											24H CONG NGHE
 										</Link>
 									</Grid>
-									<Grid item xs={9} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+									<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
 											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
 												<ListItem
@@ -1139,20 +1410,48 @@ const Content: React.FC = () => {
 									</Grid>
 								</Grid>
 							</Grid>
-							<Grid container spacing={3} style={{ marginTop: '10px' }}>
-								{dataNews.listData?.map((item: any) => {
-									return (
-										<Grid item xs={4}>
-											<NewsSmall
-												title={item.title}
-												image={item.image}
-												id={item.id}
-												created_at={item.created_at}
-											/>
-										</Grid>
-									);
-								})}
-							</Grid>
+							{progressNews ? (
+								<Grid
+									item
+									xs={12}
+									style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+								>
+									<CircularProgress
+										color="secondary"
+										style={{ position: 'absolute', left: '50%' }}
+									/>
+								</Grid>
+							) : isResponseivePhone ? (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataNews.listData?.map((item: any) => {
+										return (
+											<Grid item xs={6} sm={6} md={4} lg={4}>
+												<NewsSmall
+													title={item.title}
+													image={item.image}
+													id={item.id}
+													created_at={item.created_at}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							) : (
+								<Grid container spacing={3} style={{ marginTop: '10px' }}>
+									{dataNews.listData?.map((item: any) => {
+										return (
+											<Grid item xs={12}>
+												<NewsSmall
+													title={item.title}
+													image={item.image}
+													id={item.id}
+													created_at={item.created_at}
+												/>
+											</Grid>
+										);
+									})}
+								</Grid>
+							)}
 						</Grid>
 					</Grid>
 

@@ -24,6 +24,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { deleteProduct, getCartData, updateQuantity } from '../Product/CartSlice';
 import Swal from 'sweetalert2';
 import { toast, ToastContainer } from 'react-toastify';
+import { useMediaQuery } from 'react-responsive';
 interface CartProps {
 	receiveCart?: (result: boolean) => void;
 }
@@ -175,7 +176,8 @@ const Cart: React.FC<CartProps> = (props) => {
 		str = str.replace(/-+$/g, '');
 		return str;
 	};
-	return (
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
+	return isResponseivePhone ? (
 		<Box style={{ width: 400 }}>
 			<Box>
 				<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
@@ -334,6 +336,222 @@ const Cart: React.FC<CartProps> = (props) => {
 														Xoa san pham
 													</Button>
 												</Box>
+											</Box>
+										</Box>
+									</Box>
+								);
+							})}
+						</DialogContent>
+
+						<Box style={{ paddingLeft: '26px', paddingRight: '28px' }}>
+							<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
+							<Box style={{ display: 'contents' }}>
+								<Box style={{ float: 'left' }}>
+									<Typography variant="h6">Tong tien:</Typography>
+								</Box>
+								<Box style={{ float: 'right' }}>
+									<Typography
+										style={{
+											fontWeight: 'bold',
+											color: theme.palette.primary.main,
+										}}
+										variant="h6"
+									>
+										{Intl.NumberFormat('en-US').format(Number(totalPrice()))}đ
+									</Typography>
+								</Box>
+							</Box>
+							<Box style={{ marginTop: '70px' }}>
+								<Button
+									variant="contained"
+									color="primary"
+									fullWidth
+									style={{ textTransform: 'initial' }}
+									size="large"
+									onClick={() => {
+										history.push(AppURL.CHECKOUT);
+										//setOpenCart(false);
+										props.receiveCart?.(false);
+									}}
+								>
+									Thanh toan
+								</Button>
+							</Box>
+						</Box>
+					</React.Fragment>
+				)}
+			</Box>
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+		</Box>
+	) : (
+		<Box style={{ width: 306 }}>
+			<Box>
+				<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
+				{cartData.length === 0 ? (
+					<DialogContent style={{ textAlign: 'center' }}>
+						<img
+							width="70%"
+							src="https://bizweb.dktcdn.net/100/420/160/themes/825846/assets/mobile-shopping.svg?1631101741005"
+						/>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => {
+								history.push('/');
+								props.receiveCart?.(false);
+								window.scrollTo(0, 0);
+							}}
+						>
+							Tiep tuc mua hang
+						</Button>
+					</DialogContent>
+				) : (
+					<React.Fragment>
+						<DialogContent style={{ height: `calc(${100}vh - ${250}px)` }}>
+							{cartData.map((item: any) => {
+								return (
+									<Box style={{ display: 'flex', marginBottom: '35px' }}>
+										<Box style={{ width: '32%' }}>
+											<img
+												width="100%"
+												style={{ cursor: 'pointer' }}
+												src={`http://localhost:8000/${item.link}`}
+												onClick={() => {
+													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
+													props.receiveCart?.(false);
+												}}
+											/>
+										</Box>
+										<Box style={{ marginLeft: '4px', width: '78%' }}>
+											<Typography
+												variant="body1"
+												style={{ fontWeight: 'bold', cursor: 'pointer' }}
+												onClick={() => {
+													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
+													props.receiveCart?.(false);
+												}}
+											>
+												{item.name}
+											</Typography>
+											<Box style={{ display: 'contents' }}>
+												<Box style={{ width: '50%', float: 'left' }}>
+													<Typography>So luong</Typography>
+													<ButtonGroup style={{ width: '69px' }}>
+														<Button
+															aria-label="reduce"
+															onClick={() => {
+																//setQuantity(Math.max(Number(quantity) - 1, 1));
+																setErr('');
+																dispatch(
+																	updateQuantity({ id: item.id, quantity: 1, status: 'decrease' })
+																);
+															}}
+															size="small"
+															disabled={item.quantity === 1 ? true : false}
+														>
+															<RemoveIcon fontSize="small" />
+														</Button>
+														<InputBase
+															style={{
+																paddingLeft: '4px',
+																paddingRight: '4px',
+																border: `1px solid rgba(${0}, ${0}, ${0}, ${0.23})`,
+																borderRight: 'none',
+															}}
+															inputProps={{ style: { textAlign: 'center' } }}
+															value={item.quantity}
+															onChange={(event: any) => {
+																// !isNaN(Number(event.target.value))
+																// 	? setQuantity(Math.max(Number(event.target.value), 1))
+																// 	: setQuantity(quantity);
+																if (event.target.value > item.storeQuantity) {
+																	setErr(item.id);
+																} else {
+																	setErr(false);
+																	dispatch(
+																		updateQuantity({
+																			id: item.id,
+																			quantity: !isNaN(Number(event.target.value))
+																				? Math.max(Number(event.target.value), 1)
+																				: item.quantity,
+																			status: 'replace',
+																		})
+																	);
+																}
+															}}
+														/>
+														<Button
+															aria-label="increase"
+															onClick={() => {
+																setErr('');
+																//setQuantity(Number(quantity) + 1);
+																dispatch(
+																	updateQuantity({ id: item.id, quantity: 1, status: 'increase' })
+																);
+															}}
+															size="small"
+															disabled={item.quantity >= item.storeQuantity ? true : false}
+														>
+															<AddIcon fontSize="small" />
+														</Button>
+													</ButtonGroup>
+													{err === item.id && (
+														<FormHelperText error>Khong du so luong</FormHelperText>
+													)}
+												</Box>
+											</Box>
+											<Box>
+												<Typography
+													style={{
+														fontWeight: 'bold',
+														color: theme.palette.primary.main,
+													}}
+												>
+													{Intl.NumberFormat('en-US').format(Number(item.promotion_price))}đ
+												</Typography>
+												<Button
+													style={{
+														padding: 0,
+														color: theme.palette.primary.main,
+														textTransform: 'inherit',
+														fontWeight: 'inherit',
+													}}
+													onClick={() => {
+														props.receiveCart?.(false);
+														Swal.fire({
+															title: 'Ban co chac chan muon xoa khong',
+															//text: t('confirmDelete.you_wont_be_able_to_revert_this'),
+															icon: 'warning',
+															confirmButtonColor: '#3085d6',
+															cancelButtonColor: '#d33',
+															confirmButtonText: 'Yes',
+															cancelButtonText: 'Cancel',
+															showCancelButton: true,
+															reverseButtons: true,
+														}).then((result) => {
+															if (result.isConfirmed) {
+																toast.success('San pham da duoc xoa khoi gio hang');
+																//Swal.fire('Da xoa', 'San pham da duoc xoa khoi gio hang', 'success');
+																dispatch(deleteProduct({ id: item.id }));
+																props.receiveCart?.(true);
+															} else {
+																props.receiveCart?.(true);
+															}
+														});
+													}}
+												>
+													Xoa san pham
+												</Button>
 											</Box>
 										</Box>
 									</Box>

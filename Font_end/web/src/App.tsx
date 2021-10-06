@@ -120,9 +120,23 @@ function App() {
 									</Route>
 								</Switch>
 							</Route>
-							<Route path={[AppURL.ORDER_ALL_ADMIN, AppURL.MANAGER_USER, AppURL.ADMIN_HOME]}>
+							<Route
+								path={[
+									AppURL.ORDER_ALL_ADMIN,
+									AppURL.MANAGER_USER,
+									AppURL.ADMIN_HOME,
+									AppURL.ADMIN_TYPE_PRODUCT,
+								]}
+							>
 								<Switch>
-									<Route path={[AppURL.ORDER_ALL_ADMIN, AppURL.MANAGER_USER, AppURL.ADMIN_HOME]}>
+									<Route
+										path={[
+											AppURL.ORDER_ALL_ADMIN,
+											AppURL.MANAGER_USER,
+											AppURL.ADMIN_HOME,
+											AppURL.ADMIN_TYPE_PRODUCT,
+										]}
+									>
 										<AdminLayout />
 									</Route>
 								</Switch>

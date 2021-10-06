@@ -305,7 +305,6 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				title: 'Co loi xay ra',
 			});
 		}
-		console.log(props.profileInfo);
 	};
 
 	return (
