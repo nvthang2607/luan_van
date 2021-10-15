@@ -60,19 +60,15 @@ class TypeProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
     }
-    public function get_delete_type_product(request $req){
+    public function delete_type_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $validator = Validator::make($req->all(), [
-                'id_type_product' => 'exists:type_product,id',
-            ]);
-            if ($validator->fails()) {
-                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Thể loại sản phẩm không tồn tại!'], 400);
-            }
-            if(TypeProduct::find($req->id_type_product)->delete()){
+            $type=TypeProduct::find($req->id_type_product);
+            if($type!=null){
+                $type->delete();
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc xóa!'], 401);
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy loại sản phẩm!'], 401);
             }
         }
         else{
@@ -101,11 +97,11 @@ class TypeProductController extends Controller
         }
         
     }
-    public function post_admin_change_type_product(request $req){
+    public function patch_admin_update_type_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
                 'name' => 'required|unique:type_product,name',
-                'id'=>'required|exists:type_product,id',
+                'id'=>'exists:type_product,id',
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Có lỗi đầu vào!'], 400);
@@ -122,5 +118,41 @@ class TypeProductController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
+    }
+
+    public function get_admin_search_type_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            if($req->search==null){
+                $typeproduct=TypeProduct::all()->sortByDesc("id");
+            }
+            else{
+                $typeproduct=TypeProduct::where('name','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+            }
+            $data=collect();
+            if(count($typeproduct)>0){
+                foreach($typeproduct as $i){
+                    $date= $i->created_at;
+                    $date = $date->format('Y/m/d H:i:s');
+                    $date1= $i->updated_at;
+                    $date1 = $date1->format('Y/m/d H:i:s');
+                    $data[]=[
+                        'id'=>$i->id,
+                        'name'=>$i->name,
+                        'created_at'=>$date,
+                        'updated_at'=>$date1,
+                    ];
+                }
+                $n=$data->count();
+                $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+            }else{
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+
     }
 }

@@ -43,7 +43,7 @@ class UserController extends Controller
         echo $size;
         // echo $url;
     }
-    public function post_admin_list_users(request $req){
+    public function get_admin_list_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $data=collect();
             if($req->type=='all'){
@@ -97,7 +97,7 @@ class UserController extends Controller
         }
     }
 
-    public function post_admin_update_users(request $req){
+    public function patch_admin_update_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $users=User::find($req->id_user);
             $users->fill($req->input())->save();
@@ -125,11 +125,14 @@ class UserController extends Controller
 
     }
 
-    public function get_admin_delete_users(request $req){
+    public function delete_admin_delete_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $active=User::find($req->id_user);
-            $active->delete();
-            return response()->json(['errorCode'=> null,'data'=>true], 200);
+            if($active!=null){
+                $active->delete();
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi không tìm thấy user!'], 401);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);

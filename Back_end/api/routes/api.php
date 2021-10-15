@@ -161,13 +161,28 @@ Route::group([
     'prefix' => 'admin'
 
 ], function ($router) {
-    Route::post('/list_users', [UserController::class, 'post_admin_list_users']);
-    Route::post('/update_users', [UserController::class, 'post_admin_update_users']);
+    //user
+    Route::get('/list_users', [UserController::class, 'get_admin_list_users']);
+    Route::patch('/update_users', [UserController::class, 'patch_admin_update_users']);
     Route::get('/active_users/{id_user}', [UserController::class, 'get_admin_active_users']);
-    Route::get('/delete_users/{id_user}', [UserController::class, 'get_admin_delete_users']);
+    Route::delete('/delete_users/{id_user}', [UserController::class, 'delete_admin_delete_users']);
     Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
+    //type
     Route::get('/list_type_product', [TypeProductController::class, 'get_list_type_product']);
-    Route::get('/delete_type_product/{id_type_product}', [TypeProductController::class, 'get_delete_type_product']);
+    Route::delete('/delete_type_product/{id_type_product}', [TypeProductController::class, 'delete_type_product']);
     Route::post('/create_type_product', [TypeProductController::class, 'post_admin_create_type_product']);
-    Route::post('/change_type_product', [TypeProductController::class, 'post_admin_change_type_product']);
+    Route::patch('/update_type_product', [TypeProductController::class, 'patch_admin_update_type_product']);
+    Route::get('/search_type_product', [TypeProductController::class, 'get_admin_search_type_product']);
+    //branch
+    Route::get('/list_branch_product', [BranchProductController::class, 'get_list_branch_product']);
+    Route::delete('/delete_branch_product/{id_branch_product}', [BranchProductController::class, 'delete_branch_product']);
+    Route::post('/create_branch_product', [BranchProductController::class, 'post_admin_create_branch_product']);
+    Route::patch('/update_branch_product', [BranchProductController::class, 'patch_admin_update_branch_product']);
+    Route::get('/search_branch_product', [BranchProductController::class, 'get_admin_search_branch_product']);
+    //product
+    Route::get('/list_product', [ProductController::class, 'get_list_product']);
+    Route::delete('/delete_branch_product/{id_branch_product}', [BranchProductController::class, 'delete_branch_product']);
+    Route::post('/create_branch_product', [BranchProductController::class, 'post_admin_create_branch_product']);
+    Route::patch('/update_branch_product', [BranchProductController::class, 'patch_admin_update_branch_product']);
+    Route::get('/search_branch_product', [BranchProductController::class, 'get_admin_search_branch_product']);
 });
