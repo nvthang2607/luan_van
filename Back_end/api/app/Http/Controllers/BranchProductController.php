@@ -113,13 +113,13 @@ class BranchProductController extends Controller
             $validator = Validator::make($req->all(), [
                 'name' => 'required|unique:branch_product,name',
                 'id'=>'exists:branch_product,id',
+                'id_type'=>'exists:type_product,id',
             ]);
             if ($validator->fails()) {
-                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Có lỗi đầu vào!'], 400);
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
             $branch_product=BranchProduct::find($req->id);
-            $branch_product->name=$req->name;
-            if($branch_product->save()){
+            if($branch_product->fill($req->input())->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{

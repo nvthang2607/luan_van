@@ -9,6 +9,10 @@ class BranchProduct extends Model
 {
     use HasFactory;
     protected $table ="branch_product";
+    protected $fillable = [
+        'name',
+        'id_type',
+    ];
     public function product(){
         return $this->hasMany('App\Models\Product','id_branch','id');
     }
