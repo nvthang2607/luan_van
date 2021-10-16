@@ -12,4 +12,7 @@ class BranchProduct extends Model
     public function product(){
         return $this->hasMany('App\Models\Product','id_branch','id');
     }
+    public function typeproduct(){
+        return $this->belongsTo('App\Models\TypeProduct','id_type','id');
+    }
 }

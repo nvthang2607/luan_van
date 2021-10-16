@@ -149,6 +149,7 @@ class BranchProductController extends Controller
                     $data[]=[
                         'id'=>$i->id,
                         'id_type'=>$i->id_type,
+                        'name_type'=>$i->typeproduct->name,
                         'name'=>$i->name,
                         'created_at'=>$date,
                         'updated_at'=>$date1,
