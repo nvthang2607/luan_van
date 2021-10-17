@@ -49,6 +49,8 @@ import Register from './Register';
 import { toast, ToastContainer } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
+import { useMediaQuery } from 'react-responsive';
+import clsx from 'clsx';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -96,6 +98,11 @@ const useStyles = makeStyles((theme: Theme) =>
 		root: {
 			backgroundColor: theme.palette.background.paper,
 			width: 800,
+		},
+		button: {},
+		rootMobile: {
+			backgroundColor: theme.palette.background.paper,
+			//width: 800,
 		},
 		paper: {
 			paddingTop: theme.spacing(1),
@@ -154,6 +161,11 @@ const Account: React.FC = () => {
 			}
 		}
 	};
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	return (
 		<div className={classes.grow}>
 			{checkToken()}
@@ -161,13 +173,13 @@ const Account: React.FC = () => {
 				<Toolbar style={{ height: '9ch' }}>
 					<Grid container>
 						<Grid item xs={6} style={{ display: 'flex', alignItems: 'center' }}>
-							<Link to="/" style={{ textDecoration: 'none', color: '#fff' }}>
+							<Link to="/" style={{ textDecoration: 'none', color: '#fff', display: 'contents' }}>
 								<Grid container style={{ display: 'flex', alignItems: 'center' }}>
-									<Grid item xs={5} style={{ display: 'flex', alignItems: 'center' }}>
-										<KeyboardArrowLeftRoundedIcon style={{ fontSize: '3vw' }} />
+									<Grid item xs={5} style={{ display: 'contents', alignItems: 'center' }}>
+										<KeyboardArrowLeftRoundedIcon style={{ fontSize: '27px' }} />
 									</Grid>
 									<Grid item xs={7}>
-										<Typography component="h2" style={{ fontSize: '1.5vw' }}>
+										<Typography component="h2" style={{ fontSize: '19px' }}>
 											Trở về
 										</Typography>
 									</Grid>
@@ -175,7 +187,7 @@ const Account: React.FC = () => {
 							</Link>
 						</Grid>
 						<Grid item xs={6} style={{ textAlign: 'end', marginTop: '1%' }}>
-							<img src={Logo} alt="logo" width="26%" />
+							<img src={Logo} alt="logo" width="157px" />
 						</Grid>
 					</Grid>
 				</Toolbar>
@@ -184,14 +196,15 @@ const Account: React.FC = () => {
 			</AppBar>
 
 			<Container style={{ marginTop: theme.spacing(10) }}>
-				<Grid
-					container
-					spacing={5}
-					style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-				>
+				<Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 					<Grid item className={classes.paper}>
 						<Box boxShadow={4}>
-							<div className={classes.root}>
+							<div
+								className={clsx(
+									classes.button,
+									isResponseiveMobile ? classes.root : classes.rootMobile
+								)}
+							>
 								<Tabs
 									value={value}
 									onChange={handleChange}
@@ -204,13 +217,13 @@ const Account: React.FC = () => {
 										disabled={propressRegister}
 										label={t('account.sign_in')}
 										{...a11yProps(0)}
-										style={{ fontSize: '1.5vw' }}
+										style={{ fontSize: '22px' }}
 									/>
 									<Tab
 										disabled={propressLogin}
 										label={t('account.sign_up')}
 										{...a11yProps(1)}
-										style={{ fontSize: '1.5vw' }}
+										style={{ fontSize: '22px' }}
 									/>
 								</Tabs>
 
@@ -218,7 +231,7 @@ const Account: React.FC = () => {
 									axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
 									index={value}
 									onChangeIndex={handleChangeIndex}
-									className={classes.content}
+									className={clsx(classes.button, isResponseiveMobile && classes.content)}
 								>
 									<TabPanel value={value} index={0} dir={theme.direction}>
 										<Login receivePropsLogin={receivePropsLogin} resultApiLogin={resultApiLogin} />

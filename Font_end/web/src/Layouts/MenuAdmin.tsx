@@ -218,7 +218,7 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 		if (id === 202) {
 			return AppURL.ADMIN_TYPE_PRODUCT;
 		} else if (id === 203) {
-			return AppURL.LOGIN;
+			return AppURL.ADMIN_BRANCH_PRODUCT;
 		} else if (id === 204) {
 			return AppURL.MANAGER_USER;
 		} else {

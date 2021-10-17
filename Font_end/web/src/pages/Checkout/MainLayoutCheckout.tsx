@@ -39,7 +39,6 @@ const MainLayoutCheckout: React.FC = () => {
 						if (profile.errorCode === null) {
 							setProfileInfo(profile.data);
 							setFlag(true);
-							console.log(profile);
 						}
 					}
 				}

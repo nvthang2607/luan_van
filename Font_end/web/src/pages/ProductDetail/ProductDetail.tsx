@@ -55,6 +55,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CommentPost } from '../../api/comment';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import jwtDecode from 'jwt-decode';
+import { useMediaQuery } from 'react-responsive';
+import ProductCarouselPhone from '../../Components/Product/ProductCarouselPhone';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -104,6 +106,11 @@ const useStyles = makeStyles((theme) => ({
 		backgroundColor: '#fff',
 		marginTop: '20px',
 		// marginBottom: '10px',
+	},
+	bgHeaderMobile: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
+		backgroundColor: '#f4f4f4',
 	},
 	discount_percent: {
 		padding: '2px',
@@ -185,15 +192,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 		4: 'Rất tốt',
 		5: 'Tuyệt vời quá',
 	};
-	const settings = {
-		//dots: true,
-		infinite: true,
-		speed: 500,
-		slidesToShow: 5,
-		//slidesToScroll: 3,
-		nextArrow: <SampleNextArrow />,
-		prevArrow: <SamplePrevArrow />,
-	};
+
 	const [value, setValue] = React.useState<number | null>(3);
 	const [hover, setHover] = React.useState(-1);
 	const classes = useStyles();
@@ -232,6 +231,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 		setProgress(true);
 	}, [dispatch]);
 	const [progress, setProgress] = React.useState(false);
+	const carouselOnclick: (result: boolean) => void = (result) => {
+		if (result) {
+			setProgress(true);
+		}
+	};
 	const { idProduct } = useParams<{ idProduct?: string }>();
 	const [dataProduct, setDataProduct] = React.useState<any>({});
 	const [dataComment, setDataComment] = React.useState<any>({});
@@ -246,6 +250,21 @@ const ProductDetail: React.FC<Props> = (props) => {
 	const [pageRating, setPageRating] = React.useState(1);
 	const [progressCmt, setProgressCmt] = React.useState(false);
 	const [progressRating, setProgressRating] = React.useState(false);
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
+
+	const settings = {
+		//dots: true,
+		infinite: true,
+		speed: 500,
+		slidesToShow: isResponseiveMobile ? 5 : 3,
+		//slidesToScroll: 3,
+		nextArrow: <SampleNextArrow />,
+		prevArrow: <SamplePrevArrow />,
+	};
 	React.useEffect(() => {
 		const fetchCmt = async () => {
 			setProgressCmt(true);
@@ -395,8 +414,6 @@ const ProductDetail: React.FC<Props> = (props) => {
 
 		fetchProductId();
 	}, [idProduct, refresh, dataProduct?.item?.id]);
-	console.log(rate);
-
 	const cartData = useAppSelector(getCartData);
 	const storeQuantity = () => {
 		let result = 1;
@@ -452,22 +469,39 @@ const ProductDetail: React.FC<Props> = (props) => {
 	};
 	const [idcmt, setIdCmt] = React.useState(-1);
 
-	return (
+	return isResponseiveMobile ? (
 		<Grid container className={classes.bgHeader}>
-			<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
-				<Breadcrumbs aria-label="breadcrumb">
-					<Link to="/" className={classes.link}>
-						<HomeIcon className={classes.icon} />
-						Trang chu
-					</Link>
-					<Link to="/" className={classes.link}>
-						Dien thoai
-					</Link>
-					{/* <Link to="/" className={classes.link}>
-						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
-					</Link> */}
-				</Breadcrumbs>
-			</Grid>
+			{isResponseive ? (
+				<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
+					<Breadcrumbs aria-label="breadcrumb">
+						<Link to="/" className={classes.link}>
+							<HomeIcon className={classes.icon} />
+							Trang chu
+						</Link>
+						<Link to="/" className={classes.link}>
+							Dien thoai
+						</Link>
+						{/* <Link to="/" className={classes.link}>
+					Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+				</Link> */}
+					</Breadcrumbs>
+				</Grid>
+			) : (
+				<Grid item xs={12} style={{ marginTop: '30px' }}>
+					<Breadcrumbs aria-label="breadcrumb">
+						<Link to="/" className={classes.link}>
+							<HomeIcon className={classes.icon} />
+							Trang chu
+						</Link>
+						<Link to="/" className={classes.link}>
+							Dien thoai
+						</Link>
+						{/* <Link to="/" className={classes.link}>
+					Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+				</Link> */}
+					</Breadcrumbs>
+				</Grid>
+			)}
 
 			{progress ? (
 				<CircularProgress
@@ -497,8 +531,8 @@ const ProductDetail: React.FC<Props> = (props) => {
 								</Carousel>
 
 								{/* <div style={{ position: 'absolute' }}>
-							<SliderImage data={data} showDescription={true} direction="right" />
-						</div> */}
+						<SliderImage data={data} showDescription={true} direction="right" />
+					</div> */}
 							</Box>
 						</Grid>
 						<Grid item xs={6}>
@@ -604,12 +638,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 												<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
 													{item.name}&nbsp;
 													{/* <Typography
-														component="span"
-														style={{ fontSize: '12px', fontWeight: 600 }}
-													>
-														(chi áp dụng cho san pham nay)
-													</Typography>
-													&nbsp; */}
+													component="span"
+													style={{ fontSize: '12px', fontWeight: 600 }}
+												>
+													(chi áp dụng cho san pham nay)
+												</Typography>
+												&nbsp; */}
 													<i
 														className="fa fa-hand-o-right"
 														aria-hidden="true"
@@ -685,17 +719,17 @@ const ProductDetail: React.FC<Props> = (props) => {
 								</Box>
 							</Button>
 							{/* <Button
-								variant="outlined"
-								color="primary"
-								style={{ display: 'block', marginTop: '10px' }}
-								fullWidth
-								size="large"
-								onClick={addToCart}
-							>
-								<Typography component="h6" style={{ fontSize: '1.2rem' }}>
-									Them vao gio hang
-								</Typography>
-							</Button> */}
+							variant="outlined"
+							color="primary"
+							style={{ display: 'block', marginTop: '10px' }}
+							fullWidth
+							size="large"
+							onClick={addToCart}
+						>
+							<Typography component="h6" style={{ fontSize: '1.2rem' }}>
+								Them vao gio hang
+							</Typography>
+						</Button> */}
 						</Grid>
 					</Grid>
 					<Grid item xs={12}>
@@ -1079,8 +1113,8 @@ const ProductDetail: React.FC<Props> = (props) => {
 									)}
 								</Box>
 								{/* <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
-							<Pagination count={10} color="primary" />
-						</Box> */}
+						<Pagination count={10} color="primary" />
+					</Box> */}
 								<Box>
 									<Typography
 										variant="h5"
@@ -1315,12 +1349,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 														<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
 															{item.name}&nbsp;
 															{/* <Typography
-														component="span"
-														style={{ fontSize: '12px', fontWeight: 600 }}
-													>
-														(chi áp dụng cho san pham nay)
-													</Typography>
-													&nbsp; */}
+													component="span"
+													style={{ fontSize: '12px', fontWeight: 600 }}
+												>
+													(chi áp dụng cho san pham nay)
+												</Typography>
+												&nbsp; */}
 															<i
 																className="fa fa-hand-o-right"
 																aria-hidden="true"
@@ -1398,25 +1432,6 @@ const ProductDetail: React.FC<Props> = (props) => {
 						</Grid>
 					</Grid>
 
-					<Grid item xs={12}>
-						<Typography
-							variant="h5"
-							className={classes.titleText}
-							gutterBottom
-							style={{ marginTop: '10px' }}
-						>
-							San pham cung loai
-						</Typography>
-
-						<Slider {...settings}>
-							<ProductCarousel />
-							<ProductCarousel />
-							<ProductCarousel />
-							<ProductCarousel />
-							<ProductCarousel />
-							<ProductCarousel />
-						</Slider>
-					</Grid>
 					{dataProductRecommend.length > 0 && (
 						<Grid item xs={12}>
 							<Typography
@@ -1430,7 +1445,1116 @@ const ProductDetail: React.FC<Props> = (props) => {
 
 							<Slider {...settings}>
 								{dataProductRecommend?.map((item: any) => {
-									return <ProductCarousel />;
+									return (
+										<ProductCarousel
+											unit_price={item[0].unit_price}
+											name={item[0].name}
+											id={item[0].id}
+											promotion_price={item[0].promotion_price}
+											link={item.image}
+											avg={item.avg}
+											promotion={item.promotion}
+											rate_number={item.rate_number}
+											storeQuantity={item[0].quantity}
+											carouselOnclick={carouselOnclick}
+										/>
+									);
+								})}
+							</Slider>
+						</Grid>
+					)}
+				</React.Fragment>
+			)}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+		</Grid>
+	) : (
+		<Grid container className={classes.bgHeaderMobile}>
+			{isResponseive ? (
+				<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
+					<Breadcrumbs aria-label="breadcrumb">
+						<Link to="/" className={classes.link}>
+							<HomeIcon className={classes.icon} />
+							Trang chu
+						</Link>
+						<Link to="/" className={classes.link}>
+							Dien thoai
+						</Link>
+						{/* <Link to="/" className={classes.link}>
+						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+					</Link> */}
+					</Breadcrumbs>
+				</Grid>
+			) : (
+				<Grid item xs={12} style={{ marginTop: '30px' }}>
+					<Breadcrumbs aria-label="breadcrumb">
+						<Link to="/" className={classes.link}>
+							<HomeIcon className={classes.icon} />
+							Trang chu
+						</Link>
+						<Link to="/" className={classes.link}>
+							Dien thoai
+						</Link>
+						{/* <Link to="/" className={classes.link}>
+						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
+					</Link> */}
+					</Breadcrumbs>
+				</Grid>
+			)}
+
+			{progress ? (
+				<CircularProgress
+					color="secondary"
+					style={{ position: 'fixed', top: '100px', left: '50%' }}
+				/>
+			) : (
+				<React.Fragment>
+					{isResponseivePhone ? (
+						<Grid container spacing={3}>
+							<Grid item xs={6}>
+								<Box style={{ paddingTop: '10px' }}>
+									<Carousel
+										infiniteLoop
+										stopOnHover
+										showThumbs={true}
+										showStatus={false}
+										showArrows={false}
+										showIndicators={false}
+									>
+										{dataProduct.image?.map((item: any) => {
+											return (
+												<div>
+													<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+												</div>
+											);
+										})}
+									</Carousel>
+
+									{/* <div style={{ position: 'absolute' }}>
+							<SliderImage data={data} showDescription={true} direction="right" />
+						</div> */}
+								</Box>
+							</Grid>
+							<Grid item xs={6}>
+								<Typography variant="h5" gutterBottom>
+									{dataProduct?.item?.name}
+								</Typography>
+								<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
+									<Typography component="span">{Number(dataProduct?.avg).toFixed(1)}</Typography>
+									<Rating
+										style={{ fontSize: '20px' }}
+										name="read-only"
+										value={Number(Number(dataProduct?.avg).toFixed(1))}
+										precision={0.04}
+										readOnly
+									/>
+									<Typography component="span">Co {dataProduct.rate_number} danh gia</Typography>
+								</Typography>
+								<Divider />
+								<Typography variant="h4" style={{ fontWeight: 'bold', paddingTop: '20px' }}>
+									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
+								</Typography>
+								<Typography component="span" className={classes.discount_percent}>
+									-6%
+								</Typography>
+								&nbsp;&nbsp;
+								<Typography
+									component="span"
+									style={{ color: 'grey', textDecoration: 'line-through' }}
+								>
+									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.unit_price))}đ
+								</Typography>
+								{dataProduct?.item?.quantity === 0 ? (
+									<Typography
+										variant="body1"
+										gutterBottom
+										style={{ marginTop: '20px', fontWeight: 'bold' }}
+									>
+										Tinh trang: het hang&nbsp;&nbsp;
+										<i
+											className="fa fa-times-circle"
+											aria-hidden="true"
+											style={{ color: '#ff0000', fontSize: '20px' }}
+										></i>
+									</Typography>
+								) : (
+									<Typography
+										variant="body1"
+										gutterBottom
+										style={{ marginTop: '20px', fontWeight: 'bold' }}
+									>
+										Tinh trang: con hang&nbsp;&nbsp;
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50', fontSize: '20px' }}
+										></i>
+									</Typography>
+								)}
+								<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
+									<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
+										<Typography
+											component="span"
+											className={classes.discount_percent}
+											style={{
+												position: 'absolute',
+												top: '-4px',
+												left: '10px',
+											}}
+										>
+											Khuyen mai
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+												Tặng sạc cáp Deimark chính hãng bảo hành 1 đổi 1 trong 12 tháng
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+												Đổi sạc nhanh 20W MIỄN PHÍ khi nâng cấp BH 12 tháng
+											</Typography>
+										</Typography>
+										{dataProduct?.promotion?.map((item: any) => {
+											return (
+												<Typography>
+													<i
+														className="fa fa-check-circle"
+														aria-hidden="true"
+														style={{ color: '#4caf50' }}
+													></i>
+													&nbsp;&nbsp;
+													<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+														{item.name}&nbsp;
+														{/* <Typography
+														component="span"
+														style={{ fontSize: '12px', fontWeight: 600 }}
+													>
+														(chi áp dụng cho san pham nay)
+													</Typography>
+													&nbsp; */}
+														<i
+															className="fa fa-hand-o-right"
+															aria-hidden="true"
+															style={{ color: 'indigo' }}
+														></i>
+														&nbsp; &nbsp;&nbsp;
+														<CopyToClipboard text={item.code} onCopy={() => setTxtCopy('Copied')}>
+															<Tooltip title={txtCopy} onOpen={() => setTxtCopy('Copy')}>
+																<i
+																	className="fa fa-clone"
+																	aria-hidden="true"
+																	style={{ fontSize: '22px', color: 'black', cursor: 'pointer' }}
+																></i>
+															</Tooltip>
+														</CopyToClipboard>
+													</Typography>
+												</Typography>
+											);
+										})}
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+												Bảo hành quốc tế trọn đời, đổi mới nếu bị Relock
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+												Hỗ trợ cài đặt, tạo tài khoản iCloud miễn phí
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span">
+												Mua Online: Giao hàng tận nhà- Nhận hàng thanh toán
+											</Typography>
+										</Typography>
+									</Card>
+								</Box>
+								<Button
+									variant="contained"
+									color="primary"
+									style={{ display: 'flex', marginTop: '10px', marginBottom: '20px' }}
+									fullWidth
+									size="large"
+									onClick={buyNow}
+								>
+									<Box style={{ display: 'contents' }}>
+										<AddShoppingCartIcon style={{ fontSize: '50px' }} />
+									</Box>
+									<Box>
+										<Typography component="h6" style={{ fontSize: '1.5rem' }}>
+											Mua ngay
+										</Typography>
+										<Typography variant="body1" style={{ textTransform: 'initial' }}>
+											Giao hang tan noi
+										</Typography>
+									</Box>
+								</Button>
+								{/* <Button
+								variant="outlined"
+								color="primary"
+								style={{ display: 'block', marginTop: '10px' }}
+								fullWidth
+								size="large"
+								onClick={addToCart}
+							>
+								<Typography component="h6" style={{ fontSize: '1.2rem' }}>
+									Them vao gio hang
+								</Typography>
+							</Button> */}
+							</Grid>
+						</Grid>
+					) : (
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<Typography variant="h5" gutterBottom>
+									{dataProduct?.item?.name}
+								</Typography>
+								<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
+									<Typography component="span">{Number(dataProduct?.avg).toFixed(1)}</Typography>
+									<Rating
+										style={{ fontSize: '20px' }}
+										name="read-only"
+										value={Number(Number(dataProduct?.avg).toFixed(1))}
+										precision={0.04}
+										readOnly
+									/>
+									<Typography component="span">Co {dataProduct.rate_number} danh gia</Typography>
+								</Typography>
+								<Divider />
+							</Grid>
+							<Grid item xs={12}>
+								<Box style={{ paddingTop: '10px' }}>
+									<Carousel
+										infiniteLoop
+										stopOnHover
+										showThumbs={true}
+										showStatus={false}
+										showArrows={false}
+										showIndicators={false}
+									>
+										{dataProduct.image?.map((item: any) => {
+											return (
+												<div>
+													<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+												</div>
+											);
+										})}
+									</Carousel>
+
+									{/* <div style={{ position: 'absolute' }}>
+							<SliderImage data={data} showDescription={true} direction="right" />
+						</div> */}
+								</Box>
+							</Grid>
+							<Grid item xs={12}>
+								<Divider />
+								<Typography variant="h4" style={{ fontWeight: 'bold', paddingTop: '20px' }}>
+									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
+								</Typography>
+								<Typography component="span" className={classes.discount_percent}>
+									-6%
+								</Typography>
+								&nbsp;&nbsp;
+								<Typography
+									component="span"
+									style={{ color: 'grey', textDecoration: 'line-through' }}
+								>
+									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.unit_price))}đ
+								</Typography>
+								{dataProduct?.item?.quantity === 0 ? (
+									<Typography
+										variant="body1"
+										gutterBottom
+										style={{ marginTop: '20px', fontWeight: 'bold' }}
+									>
+										Tinh trang: het hang&nbsp;&nbsp;
+										<i
+											className="fa fa-times-circle"
+											aria-hidden="true"
+											style={{ color: '#ff0000', fontSize: '20px' }}
+										></i>
+									</Typography>
+								) : (
+									<Typography
+										variant="body1"
+										gutterBottom
+										style={{ marginTop: '20px', fontWeight: 'bold' }}
+									>
+										Tinh trang: con hang&nbsp;&nbsp;
+										<i
+											className="fa fa-check-circle"
+											aria-hidden="true"
+											style={{ color: '#4caf50', fontSize: '20px' }}
+										></i>
+									</Typography>
+								)}
+								<Box style={{ position: 'relative', paddingTop: '10px', marginTop: '20px' }}>
+									<Card variant="outlined" style={{ padding: '20px', paddingTop: '30px' }}>
+										<Typography
+											component="span"
+											className={classes.discount_percent}
+											style={{
+												position: 'absolute',
+												top: '-4px',
+												left: '10px',
+											}}
+										>
+											Khuyen mai
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+												Tặng sạc cáp Deimark chính hãng bảo hành 1 đổi 1 trong 12 tháng
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+												Đổi sạc nhanh 20W MIỄN PHÍ khi nâng cấp BH 12 tháng
+											</Typography>
+										</Typography>
+										{dataProduct?.promotion?.map((item: any) => {
+											return (
+												<Typography>
+													<i
+														className="fa fa-check-circle"
+														aria-hidden="true"
+														style={{ color: '#4caf50' }}
+													></i>
+													&nbsp;&nbsp;
+													<Typography component="span" style={{ color: 'red', fontWeight: 600 }}>
+														{item.name}&nbsp;
+														{/* <Typography
+														component="span"
+														style={{ fontSize: '12px', fontWeight: 600 }}
+													>
+														(chi áp dụng cho san pham nay)
+													</Typography>
+													&nbsp; */}
+														<i
+															className="fa fa-hand-o-right"
+															aria-hidden="true"
+															style={{ color: 'indigo' }}
+														></i>
+														&nbsp; &nbsp;&nbsp;
+														<CopyToClipboard text={item.code} onCopy={() => setTxtCopy('Copied')}>
+															<Tooltip title={txtCopy} onOpen={() => setTxtCopy('Copy')}>
+																<i
+																	className="fa fa-clone"
+																	aria-hidden="true"
+																	style={{ fontSize: '22px', color: 'black', cursor: 'pointer' }}
+																></i>
+															</Tooltip>
+														</CopyToClipboard>
+													</Typography>
+												</Typography>
+											);
+										})}
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+												Bảo hành quốc tế trọn đời, đổi mới nếu bị Relock
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span" style={{ fontStyle: 'italic', fontWeight: 600 }}>
+												Hỗ trợ cài đặt, tạo tài khoản iCloud miễn phí
+											</Typography>
+										</Typography>
+										<Typography>
+											<i
+												className="fa fa-check-circle"
+												aria-hidden="true"
+												style={{ color: '#4caf50' }}
+											></i>
+											&nbsp;&nbsp;
+											<Typography component="span">
+												Mua Online: Giao hàng tận nhà- Nhận hàng thanh toán
+											</Typography>
+										</Typography>
+									</Card>
+								</Box>
+								<Button
+									variant="contained"
+									color="primary"
+									style={{ display: 'flex', marginTop: '10px', marginBottom: '20px' }}
+									fullWidth
+									size="large"
+									onClick={buyNow}
+								>
+									<Box style={{ display: 'contents' }}>
+										<AddShoppingCartIcon style={{ fontSize: '50px' }} />
+									</Box>
+									<Box>
+										<Typography component="h6" style={{ fontSize: '1.5rem' }}>
+											Mua ngay
+										</Typography>
+										<Typography variant="body1" style={{ textTransform: 'initial' }}>
+											Giao hang tan noi
+										</Typography>
+									</Box>
+								</Button>
+								{/* <Button
+								variant="outlined"
+								color="primary"
+								style={{ display: 'block', marginTop: '10px' }}
+								fullWidth
+								size="large"
+								onClick={addToCart}
+							>
+								<Typography component="h6" style={{ fontSize: '1.2rem' }}>
+									Them vao gio hang
+								</Typography>
+							</Button> */}
+							</Grid>
+						</Grid>
+					)}
+					<Grid item xs={12}>
+						<Grid container spacing={3}>
+							<Grid item xs={12}>
+								<Typography variant="h5" className={classes.titleText} gutterBottom>
+									Thong so ly thuuat
+								</Typography>
+								{dataProduct.information?.map((item: any, index: number) => {
+									return (
+										<Box style={{ backgroundColor: index % 2 === 0 ? '#ededed' : 'inherit' }}>
+											<Typography
+												variant="body1"
+												style={{
+													fontWeight: 'bold',
+
+													display: 'inline-block',
+													padding: '10px',
+													paddingRight: '162px',
+												}}
+											>
+												{item.name}
+											</Typography>
+											<Typography
+												variant="body1"
+												style={{ display: 'inline-block', padding: '10px' }}
+											>
+												{item.value}
+											</Typography>
+										</Box>
+									);
+								})}
+								<Typography
+									variant="h5"
+									className={classes.titleText}
+									gutterBottom
+									style={{ marginTop: '10px' }}
+								>
+									Bai viet danh gia
+								</Typography>
+								<Typography
+									variant="h5"
+									className={classes.titleText}
+									gutterBottom
+									style={{ marginTop: '10px' }}
+								>
+									Nhan xet va danh gia
+								</Typography>
+								<Card variant="outlined" style={{ padding: '10px' }}>
+									<Box style={{ display: 'flex' }}>
+										<Box style={{ width: '50%' }}>
+											<Typography variant="body1" style={{ display: 'flex', alignItems: 'center' }}>
+												Co {dataProduct.rate_number} danh gia
+											</Typography>
+											<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
+												<Typography variant="h5" style={{ color: '#ffb400', fontWeight: 'bold' }}>
+													{Number(dataProduct?.avg).toFixed(1)}
+												</Typography>
+												&nbsp;&nbsp;
+												<Rating
+													style={{ fontSize: '27px' }}
+													name="read-only"
+													value={Number(Number(dataProduct?.avg).toFixed(1))}
+													precision={0.04}
+													readOnly
+												/>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">5.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate == 5 ? rate.value : 0)
+														}
+														//style={{ color: '#ffb400 !important' }}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+														) + Number(rate.idRate == 5 ? rate.value : 0)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">4.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 4 ? rate.value : 0)
+														}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+														) + Number(rate.idRate === 4 ? rate.value : 0)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">3.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 3 ? rate.value : 0)
+														}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+														) + Number(rate.idRate === 3 ? rate.value : 0)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">2.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 2 ? rate.value : 0)
+														}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+														) + Number(rate.idRate === 2 ? rate.value : 0)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+											<Typography
+												gutterBottom
+												style={{ display: 'flex', paddingBottom: '5px', alignItems: 'center' }}
+											>
+												<Typography component="span">1.0 </Typography>&nbsp;&nbsp;
+												<i className="fa fa-star" style={{ paddingBottom: '5px' }}></i>&nbsp;&nbsp;
+												<Box width="100%">
+													<LinearProgress
+														variant="determinate"
+														value={
+															Math.round(
+																Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+															) + Number(rate.idRate === 1 ? rate.value : 0)
+														}
+													/>
+												</Box>
+												&nbsp;&nbsp;
+												<Box minWidth={35}>
+													<Typography
+														variant="body1"
+														style={{ color: '#4c70ba', fontWeight: 'bold' }}
+													>
+														{Math.round(
+															Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+														) + Number(rate.idRate === 1 ? rate.value : 0)}
+														%
+													</Typography>
+												</Box>
+											</Typography>
+										</Box>
+										<Box
+											style={{
+												justifyContent: 'center',
+												alignItems: 'center',
+												display: 'flex',
+											}}
+										>
+											<Button
+												variant="contained"
+												color="primary"
+												style={{ textTransform: 'initial', padding: '8px 25px' }}
+												onClick={() => {
+													setCollapse(!collapse);
+													collapse ? setCollapseForm(false) : setCollapseForm(true);
+													setValue(3);
+												}}
+											>
+												{collapse ? 'Dong lai' : 'Gui danh gia cua ban'}
+											</Button>
+										</Box>
+									</Box>
+									<Collapse in={collapse} timeout="auto" unmountOnExit>
+										<Typography variant="body1" style={{ paddingRight: '20px' }}>
+											Chon danh gia cua ban
+										</Typography>
+										<Box
+											style={{
+												display: 'flex',
+												alignItems: 'center',
+												marginTop: '25px',
+												marginBottom: '25px',
+											}}
+										>
+											<Rating
+												name="size-large"
+												defaultValue={3}
+												size="large"
+												onChange={(event, newValue) => {
+													setValue(newValue);
+													//console.log(newValue);
+
+													if (newValue === null) {
+														setCollapseForm(false);
+													} else {
+														setCollapseForm(true);
+													}
+												}}
+												onChangeActive={(event, newHover) => {
+													setHover(newHover);
+												}}
+											/>
+											{value !== null && (
+												<Box className={classes.discount_percent1}>
+													{labels[hover !== -1 ? hover : value]}
+												</Box>
+											)}
+										</Box>
+									</Collapse>
+									<Collapse in={collapseForm} timeout="auto" unmountOnExit>
+										<Box>
+											<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+												<Box style={{ marginBottom: '10px' }}>
+													<TextField
+														id="rate_content"
+														{...register('rate_content')}
+														multiline
+														name="rate_content"
+														rows={4}
+														placeholder="Nhập đánh giá về sản phẩm"
+														variant="outlined"
+														fullWidth
+													/>
+												</Box>
+												<Box style={{ display: 'inline-block' }}>
+													<TextField
+														{...register('name')}
+														id="name"
+														label="Ho ten *"
+														name="name"
+														variant="outlined"
+														fullWidth
+														error={errors.name ? true : false}
+														helperText={errors.name?.message}
+														style={{ marginBottom: '10px' }}
+													/>
+													<TextField
+														{...register('email')}
+														id="email"
+														name="email"
+														label="Email *"
+														variant="outlined"
+														fullWidth
+														error={errors.email ? true : false}
+														helperText={errors.email?.message}
+														style={{ marginBottom: '10px' }}
+													/>
+													<Button variant="contained" color="primary" type="submit">
+														gui danh gia
+													</Button>
+												</Box>
+											</form>
+										</Box>
+									</Collapse>
+								</Card>
+								<Divider style={{ marginTop: '10px', marginBottom: '10px' }} />
+								<Toolbar id="back-to-rating" />
+								<Box style={{ position: 'relative' }}>
+									{progressRating ? (
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', top: '50%', left: '50%' }}
+										/>
+									) : (
+										<React.Fragment>
+											{ratingListData.listdata?.map((item: any) => {
+												return (
+													<Box style={{ marginBottom: '10px' }}>
+														<Box style={{ display: 'flex', alignItems: 'center' }}>
+															<Avatar>S</Avatar> &nbsp;&nbsp;
+															<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+																{item.email_user.slice(0, item.email_user.indexOf('@'))}
+															</Typography>
+														</Box>
+														<Box style={{ marginLeft: '39px' }}>
+															<Typography variant="h6">
+																<Rating
+																	style={{ fontSize: '20px', display: 'flex' }}
+																	name="read-only"
+																	value={item.rating}
+																	readOnly
+																/>
+
+																<Typography color="textSecondary">Vao ngay {item.date}</Typography>
+															</Typography>
+															<Typography>{item.comment}</Typography>
+														</Box>
+													</Box>
+												);
+											})}
+											{ratingListData.total > 5 && (
+												<Box
+													style={{
+														display: 'flex',
+														justifyContent: 'flex-end',
+														marginTop: ' 30px',
+													}}
+												>
+													<Pagination
+														count={Math.ceil(ratingListData.total / 5)}
+														variant="outlined"
+														color="primary"
+														defaultPage={pageRating}
+														onClick={handleClickPageRating}
+														onChange={(event: object, page: number) => {
+															setPageRating(page);
+														}}
+													/>
+												</Box>
+											)}
+										</React.Fragment>
+									)}
+								</Box>
+								{/* <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+							<Pagination count={10} color="primary" />
+						</Box> */}
+								<Box>
+									<Typography
+										variant="h5"
+										className={classes.titleText}
+										gutterBottom
+										style={{ marginTop: '10px' }}
+									>
+										Hoi & Dap{' '}
+										<Typography component="span" className={classes.discount_percent}>
+											co {dataComment.total} binh luan
+										</Typography>
+									</Typography>
+
+									<Box>
+										<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+											<Box style={{ display: 'inline-block', width: '100%' }}>
+												<TextField
+													id="rate_content"
+													{...register('rate_content')}
+													multiline
+													name="rate_content"
+													rows={3}
+													placeholder="Nhập đánh giá về sản phẩm"
+													variant="outlined"
+													fullWidth
+													style={{ marginBottom: '10px' }}
+												/>
+												<Button variant="contained" color="primary" type="submit">
+													gui cau hoi
+												</Button>
+											</Box>
+										</form>
+									</Box>
+
+									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
+									<Box style={{ position: 'relative' }}>
+										{progressCmt ? (
+											<CircularProgress
+												color="secondary"
+												style={{ position: 'absolute', top: '50%', left: '50%' }}
+											/>
+										) : (
+											<React.Fragment>
+												{dataComment?.listdata?.map((item: any) => {
+													return (
+														<Box>
+															<Box style={{ marginBottom: '10px' }}>
+																<Box style={{ display: 'flex', alignItems: 'center' }}>
+																	<Avatar>{item?.email_comment?.charAt(0)}</Avatar> &nbsp;&nbsp;
+																	<Typography variant="h6" style={{ fontWeight: 'bold' }}>
+																		{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
+																	</Typography>
+																	&nbsp;&nbsp;
+																	<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+																</Box>
+																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
+																	<Typography>{item.comment_comment}</Typography>
+																	<Typography
+																		className={classes.reply}
+																		onClick={() => {
+																			setCollapseReply(!collapseReply);
+																			setIdCmt(item.id_comment);
+																		}}
+																	>
+																		Tra loi
+																	</Typography>
+																</Box>
+																{item?.feedback?.map((itemFeedback: any) => {
+																	return (
+																		<Box
+																			style={{
+																				marginLeft: '60px',
+																				borderLeft: '5px solid #dee2e6',
+																				paddingLeft: '10px',
+																				marginBottom: '10px',
+																			}}
+																		>
+																			<Typography style={{ display: 'flex', alignItems: 'center' }}>
+																				<Typography variant="h6">
+																					{itemFeedback.email_feedback.slice(
+																						0,
+																						itemFeedback.email_feedback.indexOf('@')
+																					)}
+																				</Typography>
+																				&nbsp;&nbsp;
+																				{itemFeedback.isadmin === 'admin' && (
+																					<Typography
+																						component="span"
+																						className={classes.discount_percent}
+																						style={{ fontSize: '11px', marginRight: '10px' }}
+																					>
+																						Quan tri vien
+																					</Typography>
+																				)}
+																				<Typography color="textSecondary">
+																					vao ngay 29/09/2021
+																				</Typography>
+																			</Typography>
+																			<Typography>{itemFeedback.comment_feedback}</Typography>
+																		</Box>
+																	);
+																})}
+
+																<Box
+																	style={{
+																		marginLeft: '60px',
+
+																		paddingLeft: '10px',
+																		marginBottom: '10px',
+																	}}
+																>
+																	<Collapse
+																		in={collapseReply && idcmt === item.id_comment}
+																		timeout="auto"
+																		unmountOnExit
+																	>
+																		<form
+																			onSubmit={handleSubmit(onSubmit)}
+																			style={{ display: 'contents' }}
+																		>
+																			<Box style={{ display: 'inline-block', width: '100%' }}>
+																				<TextField
+																					id="rate_content"
+																					{...register('rate_content')}
+																					multiline
+																					name="rate_content"
+																					rows={3}
+																					placeholder="Nhập đánh giá về sản phẩm"
+																					variant="outlined"
+																					fullWidth
+																					style={{ marginBottom: '10px' }}
+																				/>
+																				<Button variant="contained" color="primary" type="submit">
+																					gui cau hoi
+																				</Button>
+																			</Box>
+																		</form>
+																	</Collapse>
+																</Box>
+															</Box>
+														</Box>
+													);
+												})}
+												{dataComment.total > 5 && (
+													<Box
+														style={{
+															display: 'flex',
+															justifyContent: 'flex-end',
+															marginTop: ' 30px',
+														}}
+													>
+														<Pagination
+															count={Math.ceil(dataComment.total / 5)}
+															variant="outlined"
+															color="primary"
+															defaultPage={pageCmt}
+															onChange={(event: object, page: number) => {
+																setPageCmt(page);
+															}}
+														/>
+													</Box>
+												)}
+											</React.Fragment>
+										)}
+									</Box>
+								</Box>
+							</Grid>
+						</Grid>
+					</Grid>
+
+					{dataProductRecommend.length > 0 && (
+						<Grid item xs={12}>
+							<Typography
+								variant="h5"
+								className={classes.titleText}
+								gutterBottom
+								style={{ marginTop: '10px' }}
+							>
+								San pham goi y
+							</Typography>
+
+							<Slider {...settings}>
+								{dataProductRecommend?.map((item: any) => {
+									return isResponseivePhone ? (
+										<ProductCarousel
+											unit_price={item[0].unit_price}
+											name={item[0].name}
+											id={item[0].id}
+											promotion_price={item[0].promotion_price}
+											link={item.image}
+											avg={item.avg}
+											promotion={item.promotion}
+											rate_number={item.rate_number}
+											storeQuantity={item[0].quantity}
+											carouselOnclick={carouselOnclick}
+										/>
+									) : (
+										<ProductCarouselPhone
+											unit_price={item[0].unit_price}
+											name={item[0].name}
+											id={item[0].id}
+											promotion_price={item[0].promotion_price}
+											link={item.image}
+											avg={item.avg}
+											promotion={item.promotion}
+											rate_number={item.rate_number}
+											storeQuantity={item[0].quantity}
+											carouselOnclick={carouselOnclick}
+										/>
+									);
 								})}
 							</Slider>
 						</Grid>

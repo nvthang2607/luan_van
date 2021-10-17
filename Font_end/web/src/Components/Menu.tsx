@@ -160,13 +160,13 @@ const Menu: React.FC = () => {
 		if (dataMenu.data.length > 0) {
 			const data = dataMenu.data.map((item: any, index: number) => {
 				const showIcon = (item: any) => {
-					if (item.id === 1) {
+					if (item.name === 'Điện thoại') {
 						return <PhoneAndroidIcon />;
-					} else if (item.id === 2) {
+					} else if (item.name === 'Máy tính bảng') {
 						return <TabletAndroidIcon />;
-					} else if (item.id === 3) {
+					} else if (item.name === 'Máy tính') {
 						return <LaptopIcon />;
-					} else if (item.id === 4) {
+					} else if (item.name === 4) {
 						return <HeadsetIcon />;
 					}
 				};
@@ -190,11 +190,13 @@ const Menu: React.FC = () => {
 						{showIcon(item)}
 						&nbsp;&nbsp;
 						<ListItemText primary={item.name} />
-						<i
-							className="fa fa-angle-right"
-							aria-hidden="true"
-							style={{ paddingRight: '10px' }}
-						></i>
+						{item.branch?.length > 0 && (
+							<i
+								className="fa fa-angle-right"
+								aria-hidden="true"
+								style={{ paddingRight: '10px' }}
+							></i>
+						)}
 					</ListItem>
 				);
 			});
@@ -272,7 +274,8 @@ const Menu: React.FC = () => {
 							width: '-webkit-fill-available',
 							left: 0,
 							top: '96%',
-							//minHeight: '299px',
+							height: '360px',
+							backgroundColor: '#fff',
 							cursor: 'default',
 						}}
 					>
@@ -285,9 +288,9 @@ const Menu: React.FC = () => {
 					className={clsx(classes.button, showBoxBranch && classes.showBoxBranch)}
 					style={{
 						position: 'absolute',
-						top: '105%',
+						top: '97%',
 						display: 'none',
-
+						height: '360px',
 						zIndex: 2,
 						width: '-webkit-fill-available',
 						marginRight: '184px',

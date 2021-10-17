@@ -41,12 +41,18 @@ import { iteratorSymbol } from '@reduxjs/toolkit/node_modules/immer/dist/interna
 import Swal from 'sweetalert2';
 import { CityGet, CommunePost, DistrictPost } from '../../../api/Address';
 import { UpdateUserPost } from '../../../api/Admin/User';
-import { CreateProductTypePost, EditProductTypePost } from '../../../api/Admin/Product';
+import {
+	CreateBranchProductPost,
+	CreateProductTypePost,
+	EditBranchProductPatch,
+	EditProductTypePost,
+} from '../../../api/Admin/Product';
 interface ProfileInfoProps {
 	dataEdit?: any;
 	cancel?: (result: boolean) => void;
 	create?: (result: boolean) => void;
 	titleDialog?: string;
+	dataListTypeProduct?: any;
 }
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
@@ -86,11 +92,12 @@ const useStyles = makeStyles((theme) => ({
 		display: 'block',
 	},
 }));
-const UserEdit: React.FC<ProfileInfoProps> = (props) => {
+const BranchProductEdit: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
-
+	const [valueEdit, setValueEdit] = React.useState<any>(props.dataEdit);
 	const schema = yup.object().shape({
 		name: yup.string().required('Name không để trống'),
+		name_type: yup.string().required('Type product không để trống'),
 	});
 
 	const {
@@ -103,12 +110,13 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 		formState: { errors, isSubmitting },
 	} = useForm({
 		resolver: yupResolver(schema),
+		defaultValues: valueEdit,
 	});
-	const [progress, setProgress] = React.useState(false);
+	const [idType, setIdType] = React.useState(props.dataEdit.id_type);
 
 	const onSubmit = async (data: any) => {
 		if (props.dataEdit.id === 0) {
-			const response = await CreateProductTypePost({ name: data.name });
+			const response = await CreateBranchProductPost({ name: data.name, id_type: idType });
 			if (response) {
 				if (response.errorCode === null) {
 					Swal.fire({
@@ -125,23 +133,47 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				}
 			}
 		} else {
-			const response = await EditProductTypePost({ id: props.dataEdit.id, name: data.name });
-			if (response) {
-				if (response.errorCode === null) {
-					Swal.fire({
-						icon: 'success',
-						title: 'Cap nhat thong tin thanh cong',
-					});
-					props.create?.(true);
-				} else {
-					Swal.fire({
-						icon: 'error',
-						title: 'Co loi xay ra',
-					});
-					props.create?.(true);
+			let dataReq: any = {};
+			let flag = false;
+			if (idType !== props.dataEdit.id_type && data.name === props.dataEdit.name) {
+				dataReq = { id: props.dataEdit.id, id_type: idType };
+				flag = true;
+			} else if (idType === props.dataEdit.id_type && data.name !== props.dataEdit.name) {
+				dataReq = { id: props.dataEdit.id, name: data.name };
+				flag = true;
+			} else if (idType !== props.dataEdit.id_type && data.name !== props.dataEdit.name) {
+				dataReq = { id: props.dataEdit.id, name: data.name, id_type: idType };
+				flag = true;
+			}
+			if (flag) {
+				const response = await EditBranchProductPatch(dataReq);
+				if (response) {
+					if (response.errorCode === null) {
+						Swal.fire({
+							icon: 'success',
+							title: 'Cap nhat thong tin thanh cong',
+						});
+						props.create?.(true);
+					} else {
+						Swal.fire({
+							icon: 'error',
+							title: 'Co loi xay ra',
+						});
+						props.create?.(true);
+					}
 				}
+				console.log(dataReq);
+			} else {
+				Swal.fire({
+					icon: 'success',
+					title: 'Cap nhat thong tin thanh cong',
+				});
+				props.create?.(true);
 			}
 		}
+	};
+	const onChangeTypeProduct = (option: any) => {
+		setIdType(option.id);
 	};
 
 	return (
@@ -167,7 +199,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				<DialogContent dividers>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							Ten loai san pham
+							Ten thuong hieu
 						</Typography>
 						<Controller
 							control={control}
@@ -184,6 +216,31 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 									error={errors.name ? true : false}
 									helperText={errors.name?.message}
 									onChange={(e) => onChange(e.target.value)}
+								/>
+							)}
+						/>
+					</Grid>
+					<Grid item xs={12} style={{ marginTop: '26px' }}>
+						<Typography variant="body1" gutterBottom className={classes.titleInput}>
+							Loai san pham
+						</Typography>
+
+						<Autocomplete
+							options={props.dataListTypeProduct}
+							{...register('typeProduct')}
+							defaultValue={{ name: valueEdit.name_type }}
+							onChange={(e, options: any) => onChangeTypeProduct(options)}
+							getOptionLabel={(option: any) => option.name}
+							getOptionSelected={(option, value) => option.id === option.id}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									variant="outlined"
+									name="name_type"
+									fullWidth
+									//defaultValue={props.dataEdit.name_type}
+									error={errors.name_type ? true : false}
+									helperText={errors.name_type?.message}
 								/>
 							)}
 						/>
@@ -233,4 +290,4 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 		</React.Fragment>
 	);
 };
-export default UserEdit;
+export default BranchProductEdit;

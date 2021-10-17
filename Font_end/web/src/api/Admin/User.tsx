@@ -16,7 +16,7 @@ export const SearchUserGet = (data: any) => {
 	return response;
 };
 export const UpdateUserPost = (data: any) => {
-	const response = callApi('POST', '/api/admin/update_users', data).catch((res) => {
+	const response = callApi('PATCH', '/api/admin/update_users', data).catch((res) => {
 		return res;
 	});
 	return response;
@@ -33,8 +33,8 @@ export const UserGet = () => {
 	});
 	return response;
 };
-export const ActiveUserGet = () => {
-	const response = callApi('GET', '/api/admin/active_users/:id_user', null, true).catch((res) => {
+export const ActiveUserGet = (id_user: any) => {
+	const response = callApi('GET', `/api/admin/active_users/${id_user}`, null, true).catch((res) => {
 		return res;
 	});
 	return response;

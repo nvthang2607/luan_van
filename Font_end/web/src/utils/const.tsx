@@ -27,4 +27,5 @@ export const AppURL = {
 	MANAGER_USER: '/admin/manager/user',
 	ADMIN_HOME: '/admin/home',
 	ADMIN_TYPE_PRODUCT: '/admin/type_product',
+	ADMIN_BRANCH_PRODUCT: '/admin/branch_product',
 };

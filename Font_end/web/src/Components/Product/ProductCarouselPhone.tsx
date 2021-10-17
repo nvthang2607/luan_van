@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-const ProductCarousel: React.FC<ProductProps> = (props) => {
+const ProductCarouselPhone: React.FC<ProductProps> = (props) => {
 	const classes = useStyles();
 	const [hoverProduct, setHoverProduct] = React.useState(false);
 	const onMouseOverProduct = () => {
@@ -136,6 +136,7 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 		str = str.replace(/-+$/g, '');
 		return str;
 	};
+	const history = useHistory();
 	return (
 		<Link
 			to={`/product_detail/${toURL(props?.name)}-${props?.id}.html`}
@@ -152,7 +153,12 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 				<Chip
 					label="-6%"
 					color="primary"
-					style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
+					style={{
+						position: 'absolute',
+						right: '9px',
+						top: '8px',
+						fontSize: '13px',
+					}}
 				/>
 				<Box
 					style={{
@@ -162,7 +168,7 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 						justifyContent: 'center',
 					}}
 				>
-					<img width="90%" src={`http://localhost:8000/${props.link}`} />
+					<img width="100%" src={`http://localhost:8000/${props.link}`} />
 				</Box>
 				<Box style={{ marginBottom: '10px' }}>
 					<Link
@@ -171,14 +177,14 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 					>
 						<Typography
 							style={{
-								height: '55px',
+								height: '45px',
 								overflow: 'hidden',
 								display: '-webkit-box',
 								textOverflow: 'ellipsis',
 								WebkitLineClamp: 2,
 								WebkitBoxOrient: 'vertical',
 							}}
-							variant="h6"
+							variant="body1"
 						>
 							{props.name}
 						</Typography>
@@ -192,6 +198,7 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 							fontWeight: 'bold',
 							display: 'inline-block',
 							paddingRight: '15px',
+							fontSize: '13px',
 						}}
 					>
 						{Intl.NumberFormat('en-US').format(Number(props.promotion_price))}đ
@@ -201,6 +208,7 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 							textDecoration: 'line-through',
 							color: 'grey',
 							display: 'inline-block',
+							fontSize: '12px',
 						}}
 					>
 						{Intl.NumberFormat('en-US').format(Number(props.unit_price))}đ
@@ -240,4 +248,4 @@ const ProductCarousel: React.FC<ProductProps> = (props) => {
 		</Link>
 	);
 };
-export default ProductCarousel;
+export default ProductCarouselPhone;

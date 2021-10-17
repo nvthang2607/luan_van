@@ -304,6 +304,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				icon: 'error',
 				title: 'Co loi xay ra',
 			});
+			props.create?.(false);
 		}
 	};
 
@@ -328,7 +329,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 								<Grid container spacing={3}>
 									{flagOnchangeEmail ? (
 										<React.Fragment>
-											<Grid item xs={4}>
+											<Grid lg={4} xl={4} md={4} sm={12} xs={12}>
 												<Typography variant="body1" gutterBottom>
 													Email
 												</Typography>
@@ -358,7 +359,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 										</React.Fragment>
 									) : (
-										<Grid item xs={4}>
+										<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Email
 											</Typography>
@@ -389,7 +390,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 									)}
 									{flagOnchangeName ? (
 										<React.Fragment>
-											<Grid item xs={4}>
+											<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 												<Typography variant="body1" gutterBottom>
 													Họ và tên
 												</Typography>
@@ -416,7 +417,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 										</React.Fragment>
 									) : (
-										<Grid item xs={4}>
+										<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Họ và tên
 											</Typography>
@@ -445,7 +446,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 									)}
 									{flagOnchangePhone ? (
 										<React.Fragment>
-											<Grid item xs={4}>
+											<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 												<Typography variant="body1" gutterBottom>
 													Số điện thoại
 												</Typography>
@@ -472,7 +473,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 										</React.Fragment>
 									) : (
-										<Grid item xs={4}>
+										<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Số điện thoại
 											</Typography>
@@ -498,7 +499,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											/>
 										</Grid>
 									)}
-									<Grid item xs={4}>
+									<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 										<Typography variant="body1" gutterBottom>
 											Thành phố/Tỉnh
 										</Typography>
@@ -546,7 +547,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 									</Grid>
 									{flagOnChangeCity ? (
 										<React.Fragment>
-											<Grid item xs={4}>
+											<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 												<Typography variant="body1" gutterBottom>
 													Quận/Huyện
 												</Typography>
@@ -591,7 +592,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 										</React.Fragment>
 									) : (
-										<Grid item xs={4}>
+										<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Quận/Huyện
 											</Typography>
@@ -638,7 +639,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 
 									{flagOnChangeDistrict ? (
 										<React.Fragment>
-											<Grid item xs={4}>
+											<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 												<Typography variant="body1" gutterBottom>
 													Phường/Xã
 												</Typography>
@@ -690,7 +691,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 										</React.Fragment>
 									) : (
-										<Grid item xs={4}>
+										<Grid item lg={4} xl={4} md={4} sm={12} xs={12}>
 											<Typography variant="body1" gutterBottom>
 												Phường/Xã
 											</Typography>

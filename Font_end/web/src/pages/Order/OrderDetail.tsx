@@ -329,7 +329,7 @@ const OrderDetail: React.FC = () => {
 						</Grid>
 						<Grid item xs={12}>
 							<Grid container spacing={3}>
-								<Grid item xs={6}>
+								<Grid item lg={6} xl={6} md={6} sm={6} xs={12}>
 									<Typography variant="body1">ĐỊA CHỈ NGƯỜI NHẬN</Typography>
 									<Typography
 										style={{ marginLeft: '10px', marginTop: '30px', backgroundColor: '#fff' }}
@@ -372,7 +372,7 @@ const OrderDetail: React.FC = () => {
 										</Typography>
 									</Typography>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item lg={6} xl={6} md={6} sm={6} xs={12}>
 									<Typography variant="body1">HÌNH THỨC GIAO HÀNG</Typography>
 									<Typography
 										style={{ marginLeft: '10px', marginTop: '30px', backgroundColor: '#fff' }}

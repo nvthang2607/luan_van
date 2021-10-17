@@ -86,7 +86,7 @@ const ChangePwd: React.FC = () => {
 			<Grid item xs={12}>
 				<form onSubmit={handleSubmit(onSubmit)} style={{ position: 'relative' }}>
 					<Grid container>
-						<Grid item xs={6}>
+						<Grid item lg={6} xl={6} md={6} sm={12} xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
@@ -149,7 +149,7 @@ const ChangePwd: React.FC = () => {
 							</Grid>
 						</Grid>
 
-						<Grid item xs={6}></Grid>
+						<Grid item lg={6} xl={6} md={6} sm={12} xs={12}></Grid>
 					</Grid>
 				</form>
 			</Grid>

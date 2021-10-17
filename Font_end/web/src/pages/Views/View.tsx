@@ -35,6 +35,9 @@ import { getDataFilter, updateDataFilter } from './FilterSlice';
 import { ShowChart } from '@material-ui/icons';
 import { AppURL } from '../../utils/const';
 import jwtDecode from 'jwt-decode';
+import { useMediaQuery } from 'react-responsive';
+import ProductMobile from '../../Components/Product/ProductMobile';
+import ProductPhone from '../../Components/Product/ProductPhone';
 interface ViewProps {
 	name?: string;
 }
@@ -58,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 	stylePriceAbout: {
 		border: '1px solid red',
+	},
+	bgHeaderMobile: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
+		backgroundColor: '#f4f4f4',
 	},
 	icon: {
 		marginRight: theme.spacing(0.5),
@@ -467,29 +475,429 @@ const View: React.FC<ViewProps> = (props) => {
 				</Grid>
 			);
 	};
-	return (
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
+	return isResponseiveMobile ? (
 		<Grid container className={classes.bgHeader}>
 			{redirect && <Redirect to={AppURL.ACCOUNT} />}
 			<React.Fragment>
-				<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
+				{isResponseive ? (
+					<Grid item xs={9} style={{ position: 'absolute', top: '93px', left: '362px' }}>
+						<Breadcrumbs aria-label="breadcrumb">
+							<Link to="/" className={classes.link}>
+								<HomeIcon className={classes.icon} />
+								Trang chu
+							</Link>
+							<Link to="/" className={classes.link}>
+								Ket qua tim kiem
+							</Link>
+						</Breadcrumbs>
+					</Grid>
+				) : (
+					<Grid item xs={12} style={{ marginTop: '20px' }}>
+						<Breadcrumbs aria-label="breadcrumb">
+							<Link to="/" className={classes.link}>
+								<HomeIcon className={classes.icon} />
+								Trang chu
+							</Link>
+							<Link to="/" className={classes.link}>
+								Ket qua tim kiem
+							</Link>
+						</Breadcrumbs>
+					</Grid>
+				)}
+				{(priceAbout1_3 || priceAbout3_5 || priceAbout5_7 || priceAboutTren7) && (
+					<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
+						<Box boxShadow={1} mt={2}>
+							<List style={{ width: 'max-content' }}>
+								<ListItem>
+									{priceAbout1_3 && (
+										<Button
+											variant="contained"
+											style={{
+												backgroundColor: '#0099e5',
+												color: '#fff',
+												textTransform: 'inherit',
+												marginRight: '9px',
+											}}
+											onClick={() => handlePriceAbout('1_3', '1000000-3000000')}
+										>
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;1.000.000d -
+											3.000.000d
+										</Button>
+									)}
+									{priceAbout3_5 && (
+										<Button
+											variant="contained"
+											style={{
+												backgroundColor: '#34bf49',
+												color: '#fff',
+												textTransform: 'inherit',
+												marginRight: '9px',
+											}}
+											onClick={() => handlePriceAbout('3_5', '3000000-5000000')}
+										>
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;3.000.000d -
+											5.000.000d
+										</Button>
+									)}
+									{priceAbout5_7 && (
+										<Button
+											variant="contained"
+											style={{
+												backgroundColor: '#fbb034',
+												color: '#fff',
+												textTransform: 'inherit',
+												marginRight: '9px',
+											}}
+											onClick={() => handlePriceAbout('5_7', '5000000-7000000')}
+										>
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;5.000.000d -
+											7.000.000d
+										</Button>
+									)}
+									{priceAboutTren7 && (
+										<Button
+											variant="contained"
+											style={{
+												backgroundColor: '#da1884',
+												color: '#fff',
+												textTransform: 'inherit',
+												marginRight: '9px',
+											}}
+											onClick={() => handlePriceAbout('7_', 'tren7trieu')}
+										>
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Tren 7 trieu
+										</Button>
+									)}
+
+									<Button
+										variant="contained"
+										style={{
+											backgroundColor: '#ff0000',
+											color: '#fff',
+											textTransform: 'inherit',
+										}}
+										onClick={() => {
+											setPriceAbout1_3(false);
+											setPriceAbout3_5(false);
+											setPriceAbout5_7(false);
+											setPriceAboutTren7(false);
+											history.replace({
+												pathname: (window.location.pathname + window.location.search).slice(
+													0,
+													(window.location.pathname + window.location.search).lastIndexOf('filter')
+												),
+											});
+										}}
+									>
+										<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Bo het
+									</Button>
+								</ListItem>
+							</List>
+						</Box>
+					</Grid>
+				)}
+				{ShowFilter(
+					<Grid item xs={12} style={{ backgroundColor: '#fff', marginBottom: '20px' }}>
+						<Box>
+							<List>
+								<ListItem>
+									<Card
+										variant="outlined"
+										style={{
+											padding: '10px',
+											display: 'flex',
+											cursor: 'pointer',
+											alignItems: 'center',
+										}}
+									>
+										<i className="fa fa-filter" aria-hidden="true"></i>&nbsp;
+										<Typography variant="body1">Bo loc</Typography>
+									</Card>
+									&nbsp;&nbsp;
+									<Card
+										variant="outlined"
+										style={{ padding: '10px', display: 'flex', cursor: 'pointer' }}
+										onClick={handleClickPrice}
+									>
+										<Typography variant="body1">Gia san pham</Typography>
+
+										<ArrowDropDownIcon />
+									</Card>
+									<Popover
+										id={idPrice}
+										open={openPrice}
+										anchorEl={anchorElPrice}
+										onClose={handleClosePrice}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'center',
+										}}
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'center',
+										}}
+									>
+										<List>
+											<ListItem>
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('1_3', '1000000-3000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout1_3,
+													})}
+												>
+													1.000.000d - 3.000.000d
+												</Button>
+												&nbsp;&nbsp;
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('3_5', '3000000-5000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout3_5,
+													})}
+												>
+													3.000.000d - 5.000.000d
+												</Button>
+											</ListItem>
+											<ListItem>
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('5_7', '5000000-7000000')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAbout5_7,
+													})}
+												>
+													5.000.000d - 7.000.000d
+												</Button>
+												&nbsp;&nbsp;
+												<Button
+													variant="outlined"
+													style={{ textTransform: 'inherit' }}
+													onClick={() => handlePriceAbout('7_', 'tren7trieu')}
+													className={clsx(classes.button, {
+														[classes.stylePriceAbout]: priceAboutTren7,
+													})}
+												>
+													Tren 7 trieu
+												</Button>
+											</ListItem>
+										</List>
+									</Popover>
+								</ListItem>
+								<ListItem style={{ display: 'contents' }}>
+									{!progress && (
+										<Box style={{ float: 'left', marginLeft: '16px' }}>
+											{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										 san pham duoc tim thay
+									</Typography> */}
+											<Typography variant="h6" style={{ display: 'contents' }}>
+												<Typography
+													variant="h6"
+													style={{ fontWeight: 'bold', display: 'contents' }}
+												>
+													{dataFilter.totalCount}
+												</Typography>
+												&nbsp;san pham duoc tim thay
+											</Typography>
+										</Box>
+									)}
+									<Box
+										style={{
+											float: 'right',
+											display: 'flex',
+											alignItems: 'center',
+											cursor: 'pointer',
+											paddingRight: '20px',
+										}}
+										aria-describedby={idSort}
+										onClick={handleClickSort}
+									>
+										<i className="fa fa-sort-alpha-desc" aria-hidden="true"></i>
+										&nbsp;
+										<Typography variant="body1">Xep theo</Typography>
+									</Box>
+									<Popover
+										id={idSort}
+										open={openSort}
+										anchorEl={anchorElSort}
+										onClose={handleCloseSort}
+										anchorOrigin={{
+											vertical: 'bottom',
+											horizontal: 'center',
+										}}
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'center',
+										}}
+									>
+										<List>
+											<ListItem button divider onClick={() => handleSortBy('nameASC')}>
+												<Typography variant="body1">Ten A-Z</Typography>
+												{option === 'nameASC' && <i className="fa fa-check" aria-hidden="true"></i>}
+											</ListItem>
+											<ListItem button divider>
+												<Typography variant="body1" onClick={() => handleSortBy('nameDESC')}>
+													Ten Z-A
+												</Typography>
+												{option === 'nameDESC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+											<ListItem button divider onClick={() => handleSortBy('priceDESC')}>
+												<Typography variant="body1">Gia thap den cao</Typography>
+												{option === 'priceDESC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+											<ListItem button onClick={() => handleSortBy('priceASC')}>
+												<Typography variant="body1">Gia cao xuong thap</Typography>
+												{option === 'priceASC' && (
+													<i className="fa fa-check" aria-hidden="true"></i>
+												)}
+											</ListItem>
+										</List>
+									</Popover>
+								</ListItem>
+							</List>
+						</Box>
+					</Grid>
+				)}
+
+				<Grid item xs={12} style={{ backgroundColor: '#fff' }}>
+					<Grid container>
+						{progress ? (
+							<CircularProgress
+								color="secondary"
+								style={{ position: 'fixed', top: '110px', left: '50%' }}
+							/>
+						) : (
+							<React.Fragment>
+								{isResponseiveProductMobile ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataFilter?.listData?.map((item: any, index: number) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<Product
+														key={index}
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataFilter?.listData?.map((item: any, index: number) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<ProductMobile
+														key={index}
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+								{dataFilter.totalCount > 24 && (
+									<Grid
+										item
+										xs={12}
+										style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#fff' }}
+									>
+										<Pagination
+											count={Math.ceil(dataFilter.totalCount / 24)}
+											color="primary"
+											size="large"
+											defaultPage={page}
+											onChange={(event: object, page: number) => {
+												//console.log(event, page);
+												const searchParams = new URLSearchParams(window.location.search);
+												let pathName = `page=${page}`;
+												if (searchParams.has('sortBy')) {
+													const valueSortBy = searchParams.get('sortBy');
+													pathName = `page=${page}&sortBy=${valueSortBy}`;
+												}
+												if (searchParams.has('filter')) {
+													const valueFilter = searchParams.get('filter');
+													pathName = `page=${page}&filter=${valueFilter}`;
+												}
+												if (searchParams.has('sortBy') && searchParams.has('filter')) {
+													const valueSortBy = searchParams.get('sortBy');
+													const valueFilter = searchParams.get('filter');
+													pathName = `page=${page}&sortBy=${valueSortBy}&filter=${valueFilter}`;
+												}
+												history.replace({
+													pathname: window.location.pathname,
+													search: pathName,
+												});
+												setPage(page);
+											}}
+										/>
+									</Grid>
+								)}
+							</React.Fragment>
+						)}
+					</Grid>
+				</Grid>
+			</React.Fragment>
+
+			{/* <Button onClick={onClick}>Click me</Button> */}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
+		</Grid>
+	) : (
+		<Grid container className={classes.bgHeaderMobile}>
+			{redirect && <Redirect to={AppURL.ACCOUNT} />}
+			<React.Fragment>
+				<Grid item xs={12} style={{ marginTop: '40px' }}>
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
 							Trang chu
 						</Link>
 						<Link to="/" className={classes.link}>
-							Dien thoai
+							Ket qua tim kiem
 						</Link>
-
-						{/* <Link to="/" className={classes.link}>
-						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
-					</Link> */}
 					</Breadcrumbs>
 				</Grid>
 				{(priceAbout1_3 || priceAbout3_5 || priceAbout5_7 || priceAboutTren7) && (
-					<Grid item xs={12}>
+					<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
 						<Box boxShadow={1} mt={2}>
-							<List>
+							<List style={{ width: 'max-content' }}>
 								<ListItem>
 									{priceAbout1_3 && (
 										<Button
@@ -753,30 +1161,68 @@ const View: React.FC<ViewProps> = (props) => {
 						{progress ? (
 							<CircularProgress
 								color="secondary"
-								style={{ position: 'fixed', top: '100px', left: '50%' }}
+								style={{ position: 'fixed', top: '250px', left: '50%' }}
 							/>
 						) : (
 							<React.Fragment>
-								<Grid container spacing={3} style={{ marginTop: '10px' }}>
-									{dataFilter?.listData?.map((item: any, index: number) => {
-										return (
-											<Grid item xs={3}>
-												<Product
-													key={index}
-													unit_price={item[0].unit_price}
-													name={item[0].name}
-													id={item[0].id}
-													promotion_price={item[0].promotion_price}
-													link={item.image}
-													avg={item.avg}
-													rate_number={item.rate_number}
-													storeQuantity={item[0].quantity}
-													addToCart={addToCart}
-												/>
-											</Grid>
-										);
-									})}
-								</Grid>
+								{isResponseivePhone ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataFilter?.listData?.map((item: any, index: number) => {
+											return isResponseiveProduct1Mobile ? (
+												<Grid item xs={6}>
+													<ProductMobile
+														key={index}
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											) : (
+												<Grid item xs={6} sm={6}>
+													<ProductMobile
+														key={index}
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataFilter?.listData?.map((item: any, index: number) => {
+											return (
+												<Grid item xs={6}>
+													<ProductPhone
+														key={index}
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
 								{dataFilter.totalCount > 24 && (
 									<Grid
 										item

@@ -49,6 +49,8 @@ import { LoginDTO } from '../../DTO/Login/LoginDTO';
 import GoogleLogin from 'react-google-login';
 import Swal from 'sweetalert2';
 import jwtDecode from 'jwt-decode';
+import { useMediaQuery } from 'react-responsive';
+import clsx from 'clsx';
 interface loginprops {
 	receivePropsLogin?: (result: boolean) => void;
 	resultApiLogin?: (result: any) => void;
@@ -80,11 +82,27 @@ const useStyles = makeStyles((theme: Theme) =>
 				color: theme.palette.secondary.main,
 			},
 		},
+		login: {
+			backgroundColor: theme.palette.primary.light,
+			color: '#fff',
+			fontSize: '22px',
+			height: '57px',
+			justifyContent: 'left',
+			paddingLeft: '42px',
+		},
+		loginMobile: {
+			backgroundColor: theme.palette.primary.light,
+			color: '#fff',
+			fontSize: '17px',
+			height: '57px',
+			justifyContent: 'left',
+			paddingLeft: '42px',
+		},
 		otherLogin: {
 			'&::after': {
 				content: '""',
 				position: 'absolute',
-				top: '65%',
+				top: '66.2%',
 				left: '50%',
 				transform: `translate(${-50 + '%'},${-50 + '%'})`,
 				width: '91%',
@@ -99,6 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			backgroundColor: theme.palette.background.paper,
 			width: 800,
 		},
+		button: {},
 		paper: {
 			paddingTop: theme.spacing(1),
 			paddingBottom: theme.spacing(1),
@@ -170,6 +189,7 @@ const Login: React.FC<loginprops> = (props) => {
 	const responseFacebook = (response: any) => {
 		console.log(response);
 	};
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Grid container spacing={3}>
@@ -236,8 +256,8 @@ const Login: React.FC<loginprops> = (props) => {
 						color="primary"
 						style={{
 							color: '#fff',
-							fontSize: '1.5vw',
-							height: '4vw',
+							fontSize: '22px',
+							height: '57px',
 						}}
 						fullWidth
 						type="submit"
@@ -272,14 +292,10 @@ const Login: React.FC<loginprops> = (props) => {
 					>
 						<Button
 							variant="contained"
-							style={{
-								backgroundColor: theme.palette.primary.light,
-								color: '#fff',
-								fontSize: '1.5vw',
-								height: '4vw',
-								justifyContent: 'left',
-								paddingLeft: '42px',
-							}}
+							className={clsx(
+								classes.button,
+								isResponseivePhone ? classes.login : classes.loginMobile
+							)}
 							fullWidth
 							startIcon={<img src={ggIcon} alt="google" width="35px" />}
 							disabled={isSubmitting}
@@ -300,14 +316,10 @@ const Login: React.FC<loginprops> = (props) => {
 						icon={
 							<Button
 								variant="contained"
-								style={{
-									backgroundColor: theme.palette.primary.dark,
-									color: '#fff',
-									fontSize: '1.5vw',
-									height: '4vw',
-									justifyContent: 'left',
-									paddingLeft: '42px',
-								}}
+								className={clsx(
+									classes.button,
+									isResponseivePhone ? classes.login : classes.loginMobile
+								)}
 								fullWidth
 								startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
 								disabled={isSubmitting}

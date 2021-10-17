@@ -28,7 +28,7 @@ import { useEffect } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { toast, ToastContainer } from 'react-toastify';
 import MUIDataTableComponent from '../../../Components/Table/MUIDataTableComponent';
-import { DeleteUserGet, SearchUserGet, UserPost } from '../../../api/Admin/User';
+import { ActiveUserGet, DeleteUserGet, SearchUserGet, UserPost } from '../../../api/Admin/User';
 import UserEdit from './UserEdit';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
@@ -120,8 +120,15 @@ const User: React.FC = () => {
 			},
 		},
 		{
-			name: 'create_at',
+			name: 'created_at',
 			label: 'Ngay dang ky',
+			options: {
+				sort: false,
+			},
+		},
+		{
+			name: 'updated_at',
+			label: 'Ngay cap nhat',
 			options: {
 				sort: false,
 			},
@@ -225,7 +232,8 @@ const User: React.FC = () => {
 						email: item.email,
 						phone: item.phone,
 						address: item.nameCommune + ' ' + item.nameDistrict + ' ' + item.nameCity,
-						create_at: item.created_at,
+						created_at: item.created_at,
+						updated_at: item.updated_at,
 						idCity: item.idCity,
 						idDistrict: item.idDistrict,
 						idCommune: item.idCommune,
@@ -248,13 +256,15 @@ const User: React.FC = () => {
 		if (result) {
 			setOpen(false);
 			setFlag(!flag);
+		} else {
+			setOpen(false);
 		}
 	};
 	const cancel: (result: boolean) => void = (result) => {
 		setOpen(result);
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
-
+	const [showTable, setShowTable] = useState(true);
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			<Grid container spacing={3}>
@@ -338,77 +348,172 @@ const User: React.FC = () => {
 				</Grid>
 			</Grid>
 			<Box mt={3}>
-				<MUIDataTableComponent
-					columns={column}
-					data={data}
-					options={{
-						rowsPerPageOption: [5, 10, 20],
-						rowsPerPage: rowPage,
-						count: totalDoc,
-						page: pageTB,
-						pagination: true,
-						jumpToPage: true,
-						download: false,
-						filter: false,
-						responsive: 'vertical',
-						viewColumns: false,
-						print: false,
-						search: false,
-						textLabels: textTable,
-
-						customToolbarSelect: (selectedRows: any) => (
-							<Box mr={3}>
-								<Button
-									variant="contained"
-									color="primary"
-									children="DELETE"
-									onClick={() => {
-										Swal.fire({
-											title: 'Are you sure?',
-											text: "You won't be able to revert this!",
-											icon: 'warning',
-											showCancelButton: true,
-											confirmButtonColor: '#3085d6',
-											cancelButtonColor: '#d33',
-											confirmButtonText: 'Yes',
-											reverseButtons: true,
-										}).then((result) => {
-											if (result.isConfirmed) {
-												let count = 0;
-												selectedRows.data?.map(async (item: any) => {
-													const response = await DeleteUserGet(data[item.index].id);
-													if (response) {
-														if (response.errorCode === null) {
-															count++;
+				{showTable ? (
+					<MUIDataTableComponent
+						columns={column}
+						data={data}
+						options={{
+							rowsPerPageOption: [5, 10, 20],
+							rowsPerPage: rowPage,
+							count: totalDoc,
+							page: pageTB,
+							pagination: true,
+							jumpToPage: true,
+							download: false,
+							filter: false,
+							responsive: 'vertical',
+							viewColumns: false,
+							print: false,
+							search: false,
+							textLabels: textTable,
+							customToolbarSelect: (selectedRows: any, setSelectedRows: any) => (
+								<Box mr={3}>
+									<Button
+										variant="contained"
+										color="primary"
+										children="DELETE"
+										onClick={() => {
+											Swal.fire({
+												title: 'Are you sure?',
+												text: "You won't be able to revert this!",
+												icon: 'warning',
+												showCancelButton: true,
+												confirmButtonColor: '#3085d6',
+												cancelButtonColor: '#d33',
+												confirmButtonText: 'Yes',
+												reverseButtons: true,
+											}).then((result) => {
+												if (result.isConfirmed) {
+													let count = 0;
+													selectedRows.data?.map(async (item: any) => {
+														const response = await ActiveUserGet(data[item.index].id);
+														if (response) {
+															if (response.errorCode === null) {
+																count++;
+															}
 														}
-													}
-												});
+														if (count === selectedRows.data?.length) {
+															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
 
-												Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
-											}
-										});
-									}}
-								></Button>
-							</Box>
-						),
-						onChangePage: (currentPage: number) => {
-							setFilterSearch({
-								...filterSearch,
-								PageSize: currentPage * rowPage + rowPage,
-							});
+															selectedRows.data = [];
+															selectedRows.lookup = {};
+															setSelectedRows = [];
+															setFlag(!flag);
+															setShowTable(false);
+														}
+													});
+													// selectedRows.data = [];
+													// selectedRows.lookup = {};
+													// setFlag(!flag);
+													// setSelectedRows = [];
+													// setShowTable(false);
+												}
+											});
+										}}
+									></Button>
+								</Box>
+							),
+							onChangePage: (currentPage: number) => {
+								setFilterSearch({
+									...filterSearch,
+									PageSize: currentPage * rowPage + rowPage,
+								});
 
-							setPageTB(currentPage);
-						},
-						onChangeRowsPerPage: (numberOfRows: number) => {
-							setFilterSearch({
-								...filterSearch,
-								PageSize: numberOfRows,
-							});
-							setRowPage(numberOfRows);
-							setPageTB(0);
-						},
-					}}
-				></MUIDataTableComponent>
+								setPageTB(currentPage);
+							},
+							onChangeRowsPerPage: (numberOfRows: number) => {
+								setFilterSearch({
+									...filterSearch,
+									PageSize: numberOfRows,
+								});
+								setRowPage(numberOfRows);
+								setPageTB(0);
+							},
+						}}
+					></MUIDataTableComponent>
+				) : (
+					<MUIDataTableComponent
+						columns={column}
+						data={data}
+						options={{
+							rowsPerPageOption: [5, 10, 20],
+							rowsPerPage: rowPage,
+							count: totalDoc,
+							page: pageTB,
+							pagination: true,
+							jumpToPage: true,
+							download: false,
+							filter: false,
+							responsive: 'vertical',
+							viewColumns: false,
+							print: false,
+							search: false,
+							textLabels: textTable,
+							customToolbarSelect: (selectedRows: any, setSelectedRows: any) => (
+								<Box mr={3}>
+									<Button
+										variant="contained"
+										color="primary"
+										children="DELETE"
+										onClick={() => {
+											Swal.fire({
+												title: 'Are you sure?',
+												text: "You won't be able to revert this!",
+												icon: 'warning',
+												showCancelButton: true,
+												confirmButtonColor: '#3085d6',
+												cancelButtonColor: '#d33',
+												confirmButtonText: 'Yes',
+												reverseButtons: true,
+											}).then((result) => {
+												if (result.isConfirmed) {
+													let count = 0;
+													selectedRows.data?.map(async (item: any) => {
+														const response = await ActiveUserGet(data[item.index].id);
+														if (response) {
+															if (response.errorCode === null) {
+																count++;
+															}
+														}
+														if (count === selectedRows.data?.length) {
+															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+
+															selectedRows.data = [];
+															selectedRows.lookup = {};
+															setSelectedRows = [];
+															setFlag(!flag);
+															setShowTable(true);
+														}
+													});
+													// selectedRows.data = [];
+													// selectedRows.lookup = {};
+													// setFlag(!flag);
+													// setShowTable(true);
+												}
+											});
+										}}
+									></Button>
+								</Box>
+							),
+							onChangePage: (currentPage: number) => {
+								setFilterSearch({
+									...filterSearch,
+									PageSize: currentPage * rowPage + rowPage,
+								});
+
+								setPageTB(currentPage);
+							},
+							onChangeRowsPerPage: (numberOfRows: number) => {
+								setFilterSearch({
+									...filterSearch,
+									PageSize: numberOfRows,
+								});
+								setRowPage(numberOfRows);
+								setPageTB(0);
+							},
+						}}
+					></MUIDataTableComponent>
+				)}
 			</Box>
 			<Dialog
 				//disableBackdropClick

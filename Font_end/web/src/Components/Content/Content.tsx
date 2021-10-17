@@ -438,7 +438,7 @@ const Content: React.FC = () => {
 												promotion={item.promotion}
 												rate_number={item.rate_number}
 												storeQuantity={item[0].quantity}
-												timeout="29 Sep, 2021 20:35:00"
+												timeout="29 Sep, 2022 20:35:00"
 											/>
 										);
 									})}

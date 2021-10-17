@@ -136,7 +136,7 @@ const News: React.FC<ProductProps> = (props) => {
 	const history = useHistory();
 
 	return (
-		<Grid item xs={4}>
+		<React.Fragment>
 			<Box
 				//boxShadow={hoverProduct && 5}
 				style={{ padding: '20px', position: 'relative' }}
@@ -207,7 +207,7 @@ const News: React.FC<ProductProps> = (props) => {
 					<Button color="secondary">Doc tiep</Button>
 				</Box>
 			</Box>
-		</Grid>
+		</React.Fragment>
 	);
 };
 export default News;

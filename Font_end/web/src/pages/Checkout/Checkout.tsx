@@ -49,6 +49,8 @@ import theme from '../../utils/theme';
 import { iteratorSymbol } from '@reduxjs/toolkit/node_modules/immer/dist/internal';
 import Swal from 'sweetalert2';
 import { OrderPost } from '../../api/Product';
+import { useMediaQuery } from 'react-responsive';
+import clsx from 'clsx';
 interface ProfileInfoProps {
 	profileInfo?: any;
 }
@@ -67,7 +69,13 @@ const useStyles = makeStyles((theme) => ({
 		color: theme.palette.grey[500],
 		zIndex: 1,
 	},
+	responsiveRight: { paddingLeft: '64px', backgroundColor: '##fafafa' },
+	responsiveLeft: { paddingRight: '66px', borderRight: '1px solid #ededed' },
+
 	button: {},
+	bgResponsive: {
+		marginTop: '30px',
+	},
 	activeTagLi: {
 		borderLeft: `4px solid ${theme.palette.primary.main}`,
 		color: `${theme.palette.primary.main} !important`,
@@ -452,8 +460,13 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 			checkVoucher();
 		}
 	};
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	return (
-		<Container>
+		<Container className={clsx(classes.button, classes.bgResponsive)}>
 			{cartData?.length > 0 ? (
 				<React.Fragment>
 					<Grid item xs={12}>
@@ -461,8 +474,10 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 							<Grid container spacing={3}>
 								<Grid
 									item
-									xs={7}
-									style={{ paddingRight: '66px', borderRight: '1px solid #ededed' }}
+									xs={12}
+									lg={7}
+									xl={12}
+									className={clsx(classes.button, classes.responsiveLeft)}
 								>
 									<Collapse in={!showInforOrder} timeout="auto" unmountOnExit>
 										<Grid container spacing={3}>
@@ -793,7 +808,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													/>
 												</Grid>
 											)}
-											<Grid item xs={4}>
+											<Grid item xs={12} lg={4} xl={4} md={4} sm={12}>
 												<Typography variant="body1" gutterBottom>
 													Thành phố/Tỉnh
 												</Typography>
@@ -841,7 +856,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											</Grid>
 											{flagOnChangeCity ? (
 												<React.Fragment>
-													<Grid item xs={4}>
+													<Grid item xs={12} lg={4} xl={4} md={4} sm={12}>
 														<Typography variant="body1" gutterBottom>
 															Quận/Huyện
 														</Typography>
@@ -886,7 +901,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													</Grid>
 												</React.Fragment>
 											) : (
-												<Grid item xs={4}>
+												<Grid item xs={12} lg={4} xl={4} md={4} sm={12}>
 													<Typography variant="body1" gutterBottom>
 														Quận/Huyện
 													</Typography>
@@ -933,7 +948,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 
 											{flagOnChangeDistrict ? (
 												<React.Fragment>
-													<Grid item xs={4}>
+													<Grid item xs={12} lg={4} xl={4} md={4} sm={12}>
 														<Typography variant="body1" gutterBottom>
 															Phường/Xã
 														</Typography>
@@ -985,7 +1000,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													</Grid>
 												</React.Fragment>
 											) : (
-												<Grid item xs={4}>
+												<Grid item xs={12} lg={4} xl={4} md={4} sm={12}>
 													<Typography variant="body1" gutterBottom>
 														Phường/Xã
 													</Typography>
@@ -1149,7 +1164,13 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										</Grid>
 									</Collapse>
 								</Grid>
-								<Grid item xs={5} style={{ paddingLeft: '64px', backgroundColor: '##fafafa' }}>
+								<Grid
+									item
+									xs={12}
+									lg={5}
+									xl={12}
+									className={clsx(classes.button, classes.responsiveRight)}
+								>
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
 											<Typography variant="h5">Don hang ({countQuantity()} san pham)</Typography>

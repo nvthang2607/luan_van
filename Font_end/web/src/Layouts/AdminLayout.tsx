@@ -56,6 +56,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Close } from '@material-ui/icons';
 import MenuAdmin from './MenuAdmin';
 import TypeProduct from '../pages/Admin/ProductType/TypeProduct';
+import BranchProduct from '../pages/Admin/BranchProduct/BranchProduct';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -304,7 +305,7 @@ const AdminLayout: React.FC = (props) => {
 		if (id === 202) {
 			return AppURL.ADMIN_TYPE_PRODUCT;
 		} else if (id === 203) {
-			return AppURL.LOGIN;
+			return AppURL.ADMIN_BRANCH_PRODUCT;
 		} else if (id === 204) {
 			return AppURL.MANAGER_USER;
 		} else {
@@ -564,6 +565,7 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
+						<Route path={AppURL.ADMIN_BRANCH_PRODUCT} component={BranchProduct} />
 					</Switch>
 				</main>
 			</div>
@@ -709,6 +711,7 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
+						<Route path={AppURL.ADMIN_BRANCH_PRODUCT} component={BranchProduct} />
 					</Switch>
 				</main>
 			</div>

@@ -126,6 +126,7 @@ function App() {
 									AppURL.MANAGER_USER,
 									AppURL.ADMIN_HOME,
 									AppURL.ADMIN_TYPE_PRODUCT,
+									AppURL.ADMIN_BRANCH_PRODUCT,
 								]}
 							>
 								<Switch>
@@ -135,6 +136,7 @@ function App() {
 											AppURL.MANAGER_USER,
 											AppURL.ADMIN_HOME,
 											AppURL.ADMIN_TYPE_PRODUCT,
+											AppURL.ADMIN_BRANCH_PRODUCT,
 										]}
 									>
 										<AdminLayout />

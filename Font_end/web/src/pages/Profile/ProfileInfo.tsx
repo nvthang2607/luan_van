@@ -43,6 +43,7 @@ import {
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
 import InputPassword from './InputPassword';
+import { useMediaQuery } from 'react-responsive';
 interface ProfileInfoProps {
 	profileInfo?: any;
 }
@@ -293,12 +294,13 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 			setOpen(false);
 		}
 	};
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
 	return (
 		<Container>
 			<Grid item xs={12}>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Grid container spacing={3}>
-						<Grid item xs={6}>
+						<Grid item lg={6} xl={6} md={6} sm={12} xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Typography variant="h5">Thong tin ca nhan</Typography>
@@ -504,23 +506,25 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 										)}
 									</Grid>
 								)}
-								<Grid item xs={12}>
-									<Button
-										variant="contained"
-										color="primary"
-										size="large"
-										type="submit"
-										//disabled={true}
-										style={{ position: 'relative' }}
-									>
-										cap nhat thong tin
-										{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
-									</Button>
-								</Grid>
+								{isResponseiveMobile && (
+									<Grid item xs={12}>
+										<Button
+											variant="contained"
+											color="primary"
+											size="large"
+											type="submit"
+											//disabled={true}
+											style={{ position: 'relative' }}
+										>
+											cap nhat thong tin
+											{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
+										</Button>
+									</Grid>
+								)}
 							</Grid>
 						</Grid>
 
-						<Grid item xs={6}>
+						<Grid item lg={6} xl={6} md={6} sm={12} xs={12}>
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Typography variant="h5">Thong tin dia chi</Typography>
@@ -637,7 +641,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 												<TextField
 													{...params}
 													variant="outlined"
-													name="nameDistrict"
+													name="district"
 													fullWidth
 													//defaultValue={valueDistrict.name}
 													error={errors.nameDistrict ? true : false}
@@ -764,6 +768,21 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 										/>
 										{/* )}
 									/> */}
+									</Grid>
+								)}
+								{!isResponseiveMobile && (
+									<Grid item xs={12}>
+										<Button
+											variant="contained"
+											color="primary"
+											size="large"
+											type="submit"
+											//disabled={true}
+											style={{ position: 'relative' }}
+										>
+											cap nhat thong tin
+											{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
+										</Button>
 									</Grid>
 								)}
 							</Grid>

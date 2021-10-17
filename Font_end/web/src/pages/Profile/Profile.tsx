@@ -24,10 +24,19 @@ import jwtDecode from 'jwt-decode';
 import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
 import OrderStatus from '../Order/OrderStatus';
 import OrderDetail from '../Order/OrderDetail';
+import { useMediaQuery } from 'react-responsive';
+import clsx from 'clsx';
 const useStyles = makeStyles((theme) => ({
 	bgHeader2: {
 		paddingRight: theme.spacing(13),
 		paddingLeft: theme.spacing(13),
+		backgroundColor: '#f4f4f4',
+		marginTop: '20px',
+		// marginBottom: '10px',
+	},
+	bgHeaderResponse: {
+		paddingRight: theme.spacing(2),
+		paddingLeft: theme.spacing(2),
 		backgroundColor: '#f4f4f4',
 		marginTop: '20px',
 		// marginBottom: '10px',
@@ -46,6 +55,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 const Profile: React.FC = (props) => {
+	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
+	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
+	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
+	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
+	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	const classes = useStyles();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
@@ -84,9 +98,12 @@ const Profile: React.FC = (props) => {
 		}
 	};
 	return (
-		<Grid container className={classes.bgHeader2}>
+		<Grid
+			container
+			className={clsx(isResponseiveMobile ? classes.bgHeader2 : classes.bgHeaderResponse)}
+		>
 			{checkToken()}
-			<Grid item xs={3} style={{ backgroundColor: '#f1f4f7' }}>
+			<Grid item lg={3} xl={3} md={12} xs={12} style={{ backgroundColor: '#f1f4f7' }}>
 				<Card variant="outlined">
 					<Box
 						style={{
@@ -212,7 +229,7 @@ const Profile: React.FC = (props) => {
 					</Card>
 				</Card>
 			</Grid>
-			<Grid item xs={9} style={{ position: 'relative' }}>
+			<Grid item lg={9} xl={9} md={12} xs={12} style={{ position: 'relative' }}>
 				<Switch>
 					<Route
 						path={[
