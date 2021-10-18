@@ -180,6 +180,7 @@ class ProductController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }
         else{
+            
             $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             $data2=[];
             foreach($datas as $i){
@@ -291,136 +292,68 @@ class ProductController extends Controller
     }
 
     public function get_list_product(request $req){
-        $type=$req->type;
-        $id=$req->id;
-        $datas=collect();
-        switch($type){
-            case 'type':
-                $branch=BranchProduct::where('id_type',$req->id)->get();
-                foreach($branch as $i){
-                    $data=$i->product;
-                    foreach($data as $data){
-                        $datas[]=$data;
-                    }
-                }
-                break;
-            case 'branch':
-                $product=Product::where('id_branch',$req->id)->get();
-                foreach($product as $i){
-                    $datas[]=$i;
-                }
-                break;
-            
+        if(Auth()->user()->isadmin=='user'){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
-        $n=$datas->count();
-        $data1=collect();
-        $i=0;
-        $result=collect();
-        if(count($pice)>0){
-            while(isset($pice[$i])){
-                $str = $pice[$i];
-                $t=strpos($str,'-');
-                if($t!=false){
-                    $value=explode("-", $str);
-                    foreach($datas as $data){
-                        if($data->promotion_price>0){
-                            if($data->promotion_price>=$value[0]&&$data->promotion_price<=$value[1]){
-                                $result[]=$data;
-                            }
-                        }
-                        else{
-                            if($data->unit_price>=$value[0]&&$data->unit_price<=$value[1]){
-                                $result[]=$data;
-                            }
-                        }
-                    }
-                }
-                else{
-                    $t=substr($str,  0, 1);
-                    $value=substr($str,  1, strlen($str)-1);
-                    if($t=='>'){
-                        foreach($datas as $data){
-                            if($data->promotion_price>$value){
-                                if($data->promotion_price>$value){
-                                    $result[]=$data;
-                                }
-                            }
-                            else{
-                                if($data->unit_price>$value){
-                                    $result[]=$data;
-                                }
-                            }
-                        }  
-                    }
-                    if($t=='<'){
-                        foreach($datas as $data){
-                            if($data->promotion_price<$value){
-                                if($data->promotion_price<$value){
-                                    $result[]=$data;
-                                }
-                            }
-                            else{
-                                if($data->unit_price<$value){
-                                    $result[]=$data;
-                                }
-                            }
-                        }
-                    }  
-                }
-                $data1=$result->merge($data1);
-                $data1=$data1->unique('id');
-                $i++;
+        $datas=collect();
+        if($req->id!=null){
+            $product=Product::all();
+            foreach($product as $i){
+                $datas[]=$i;
             }
-            $n=$data1->count();
-            $data1=$data1->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            $data2=[];
-            foreach($data1 as $i){
-                $promotions=[];
-                $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                $rate=BillDetail::where('id_product',$i->id)->where('rate','>',0)->get(['rate']);
-                $rate_number=$rate->count();
-                $avg=5;
-                if($rate_number>0){
-                    $t=0;
-                    foreach($rate as $r){
-                        $t=$t+$r->rate;
-                    }
-                    $avg=$t/$rate_number;
-                }
-                $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
-                foreach($promotion as $u){
-                    $promotions[count($promotions)]=$u;
-                }
-                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
-            }
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }
         else{
-            $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            $data2=[];
-            foreach($datas as $i){
-                $promotions=[];
-                $image=Product::find($i->id)->image_product()->pluck('image')->first();
-                $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
-                $rate_number=$rate->count();
-                $avg=5;
-                if($rate_number>0){
-                    $t=0;
-                    foreach($rate as $r){
-                        $t=$t+$r->rate;
+            $type=$req->type;
+            $id=$req->id;
+            switch($type){
+                case 'type':
+                    $branch=BranchProduct::where('id_type',$req->id)->get();
+                    foreach($branch as $i){
+                        $data=$i->product;
+                        foreach($data as $data){
+                            $datas[]=$data;
+                        }
                     }
-                    $avg=$t/$rate_number;
-                    
-                }
-                $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
-                foreach($promotion as $u){
-                    $promotions[count($promotions)]=$u;
-                }
-                $data2[count($data2)]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+                    break;
+                case 'branch':
+                    $product=Product::where('id_branch',$req->id)->get();
+                    foreach($product as $i){
+                        $datas[]=$i;
+                    }
+                    break;
             }
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
         }
-        
+        $n=$datas->count();
+        $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $data2=collect();
+        foreach($datas as $i){
+            $id=$i->id;
+            $name=$i->name;
+            $id_branch=$i->id_branch;
+            $name_branch=$i->branch->name;
+            $id_type=$i->branch->id_type;
+            $name_type=$i->branch->typeproduct->name;
+            $quantity=$i->quantity;
+            $unitprice=$i->unit_price;
+            $promotionprice=$i->promotion_price;
+            $count=$i->count;
+            $active=$i->active;
+            $image=Product::find($i->id)->image_product()->get();
+            $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+            $rate_number=$rate->count();
+            $avg=5;
+            if($rate_number>0){
+                $t=0;
+                foreach($rate as $r){
+                    $t=$t+$r->rate;
+                }
+                $avg=$t/$rate_number;
+                
+            }
+            $promotion=Promotion::where('id_product',$i->id)->get();
+            $data2[count($data2)]=$image;
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
     }
 
 

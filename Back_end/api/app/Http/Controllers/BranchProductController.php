@@ -111,7 +111,7 @@ class BranchProductController extends Controller
     public function patch_admin_update_branch_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'name' => 'required|unique:branch_product,name',
+                'name' => 'unique:branch_product,name',
                 'id'=>'exists:branch_product,id',
                 'id_type'=>'exists:type_product,id',
             ]);
