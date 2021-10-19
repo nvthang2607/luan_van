@@ -11,6 +11,10 @@ class Product extends Model
     use HasFactory;
     protected $fillable = ['id_branch','name','quantity','unit_price','promotion_price','active','count'];
     protected $table ="product";
+    protected $casts = [
+        'created_at'  => 'datetime:Y/m/d H:i:s',
+        'updated_at' => 'datetime:Y/m/d H:i:s',
+    ];
     public function branch(){
         return $this->belongsTo('App\Models\BranchProduct','id_branch','id');
     }

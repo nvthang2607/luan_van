@@ -185,7 +185,6 @@ Route::group([
     Route::delete('/delete_product/{id_product}', [ProductController::class, 'delete_product']);
     Route::post('/create_product', [ProductController::class, 'post_admin_create_product']);
     Route::patch('/update_product', [ProductController::class, 'patch_admin_update_product']);
-    Route::get('/search_product', [ProductController::class, 'get_admin_search_product']);
 
     //image
     Route::get('/list_image', [ImageController::class, 'get_list_image']);

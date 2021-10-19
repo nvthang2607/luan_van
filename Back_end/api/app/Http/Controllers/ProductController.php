@@ -299,8 +299,9 @@ class ProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
         $datas=collect();
+
         if($req->id==null){
-            $product=Product::all();
+            $product=Product::where('name','like','%'.$req->search.'%')->get();
             foreach($product as $i){
                 $datas[]=$i;
             }
@@ -310,7 +311,7 @@ class ProductController extends Controller
             $id=$req->id;
             switch($type){
                 case 'type':
-                    $branch=BranchProduct::where('id_type',$req->id)->get();
+                    $branch=BranchProduct::where('id_type',$req->id)->where('name','like','%'.$req->search.'%')->get();
                     foreach($branch as $i){
                         $data=$i->product;
                         foreach($data as $data){
@@ -319,7 +320,7 @@ class ProductController extends Controller
                     }
                     break;
                 case 'branch':
-                    $product=Product::where('id_branch',$req->id)->get();
+                    $product=Product::where('id_branch',$req->id)->where('name','like','%'.$req->search.'%')->get();
                     foreach($product as $i){
                         $datas[]=$i;
                     }
@@ -343,8 +344,25 @@ class ProductController extends Controller
             $count=$i->count;
             $active=$i->active;
             $informations=$i->information_product;
+            //$informations->updated_at->format('Y/m/d H:i:s');
+            foreach($informations as $t){
+                $t->created_at->format('Y/m/d H:i:s');
+                $t->updated_at ->format('Y/m/d H:i:s');
+            }
+            $date= $i->created_at;
+            $date = $date->format('Y/m/d H:i:s');
+            $date1= $i->updated_at;
+            $date1 = $date1->format('Y/m/d H:i:s');
             $images=Product::find($i->id)->image_product()->get();
+            foreach($images as $t){
+                $t->created_at->format('Y/m/d H:i:s');
+                $t->updated_at ->format('Y/m/d H:i:s');
+            }
             $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+            foreach($rate as $t){
+                $t->created_at->format('Y/m/d H:i:s');
+                $t->updated_at ->format('Y/m/d H:i:s');
+            }
             $rate_number=$rate->count();
             $avg=5;
             if($rate_number>0){
@@ -355,6 +373,10 @@ class ProductController extends Controller
                 $avg=$t/$rate_number;
             }
             $promotions=Promotion::where('id_product',$i->id)->get();
+            foreach($promotions as $t){
+                $t->created_at->format('Y/m/d H:i:s');
+                $t->updated_at ->format('Y/m/d H:i:s');
+            }
             $data2[count($data2)]=[
                 'id'=>$id,
                 'name'=>$name,
@@ -368,6 +390,8 @@ class ProductController extends Controller
                 'description'=>$description,
                 'count'=>$count,
                 'active'=>$active,
+                'created_at'=>$date,
+                'updated_at'=>$date1,
                 'informations'=>$informations,
                 'images'=>$images,
                 'avg'=>$avg,
@@ -444,77 +468,5 @@ class ProductController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
-    }
-
-
-    public function get_admin_search_product(request $req){
-        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            if($req->search==null){
-                $product=Product::all()->sortByDesc("id");;
-            }
-            else{
-                $product=Product::where('name','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
-            }
-            if(count($product)>0){
-                $n=$product->count();
-                $data=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-                $data2=collect();
-                foreach($data as $i){
-                    $id=$i->id;
-                    $name=$i->name;
-                    $id_branch=$i->id_branch;
-                    $name_branch=$i->branch->name;
-                    $id_type=$i->branch->id_type;
-                    $name_type=$i->branch->typeproduct->name;
-                    $quantity=$i->quantity;
-                    $unitprice=$i->unit_price;
-                    $promotionprice=$i->promotion_price;
-                    $description=$i->description;
-                    $count=$i->count;
-                    $active=$i->active;
-                    $informations=$i->information_product;
-                    $images=Product::find($i->id)->image_product()->get();
-                    $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
-                    $rate_number=$rate->count();
-                    $avg=5;
-                    if($rate_number>0){
-                        $t=0;
-                        foreach($rate as $r){
-                            $t=$t+$r->rate;
-                        }
-                        $avg=$t/$rate_number;
-                    }
-                    $promotions=Promotion::where('id_product',$i->id)->get();
-                    $data2[count($data2)]=[
-                        'id'=>$id,
-                        'name'=>$name,
-                        'id_branch'=>$id_branch,
-                        'name_branch'=>$name_branch,
-                        'id_type'=>$id_type,
-                        'name_type'=>$name_type,
-                        'quantity'=>$quantity,
-                        'quantity'=>$quantity,
-                        'promotionprice'=>$promotionprice,
-                        'count'=>$count,
-                        'active'=>$active,
-                        'informations'=>$informations,
-                        'description'=>$description,
-                        'images'=>$images,
-                        'avg'=>$avg,
-                        'rate'=>$rate,
-                        'rate_number'=>$rate_number,
-                        'promotions'=>$promotions,
-                    ];
-                }
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
-            }else{
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
-            }
-            
-        }
-        else{
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
-        }
-
     }
 }
