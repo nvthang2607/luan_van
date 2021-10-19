@@ -25,6 +25,7 @@ class ProductController extends Controller
             $informations=[];
             $rates=[];
             $promotions=[];
+            $description=$product->description;
             $image_key=ImageProduct::where('id_product',$req->id)->pluck('image')->first();
             $image=ImageProduct::where('id_product',$req->id)->get('image');
             $image=$image->slice(1);
@@ -64,6 +65,7 @@ class ProductController extends Controller
                 'rate'=>$rates,
                 'image_key'=>$image_key,
                 'promotion'=>$promotions,
+                'description'=>$description,
             ];
             return response()->json(['errorCode'=> null,'data'=>$data], 200);
             }
@@ -337,6 +339,7 @@ class ProductController extends Controller
             $quantity=$i->quantity;
             $unitprice=$i->unit_price;
             $promotionprice=$i->promotion_price;
+            $description=$i->description;
             $count=$i->count;
             $active=$i->active;
             $informations=$i->information_product;
@@ -362,6 +365,7 @@ class ProductController extends Controller
                 'quantity'=>$quantity,
                 'quantity'=>$quantity,
                 'promotionprice'=>$promotionprice,
+                'description'=>$description,
                 'count'=>$count,
                 'active'=>$active,
                 'informations'=>$informations,
@@ -465,6 +469,7 @@ class ProductController extends Controller
                     $quantity=$i->quantity;
                     $unitprice=$i->unit_price;
                     $promotionprice=$i->promotion_price;
+                    $description=$i->description;
                     $count=$i->count;
                     $active=$i->active;
                     $informations=$i->information_product;
@@ -493,6 +498,7 @@ class ProductController extends Controller
                         'count'=>$count,
                         'active'=>$active,
                         'informations'=>$informations,
+                        'description'=>$description,
                         'images'=>$images,
                         'avg'=>$avg,
                         'rate'=>$rate,
