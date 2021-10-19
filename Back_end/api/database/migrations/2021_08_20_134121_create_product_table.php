@@ -23,6 +23,7 @@ class CreateProductTable extends Migration
             $table->integer('quantity');
             $table->bigInteger('unit_price');
             $table->bigInteger('promotion_price');
+            $table->string('description',1000);
             $table->integer('count')->default(0);
             $table->boolean('active')->default(0);
             $table->timestamp('created_at')->useCurrent();
@@ -46,6 +47,7 @@ class CreateProductTable extends Migration
                     'promotion_price'=>$promotion_price,
                     'count' => mt_rand(1,$n),
                     'active'=>$faker->randomElement([0, 1]),
+                    'description'=>'mô tả',
                 )
             );
         }
