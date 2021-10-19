@@ -50,7 +50,7 @@ class ImageController extends Controller
         
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $image=ImageProduct::find($req->id_image);
-            $productImage = str_replace('storage', '', $image->image);
+            $productImage = str_replace('/storage', '', $image->image);
             Storage::delete('/public' . $productImage);
             $image->delete();
             return response()->json(['errorCode'=> null,'data'=>true], 200);
@@ -95,15 +95,60 @@ class ImageController extends Controller
             // Filename cực shock để khỏi bị trùng
             $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
             $file = $req->file('image');
-            $path=$file->storeAs(
-                'public/image/product', $fileName
-            );
-            $url = Storage::url($path);
+            $image = Image::make($file);
+            $image->widen(300)->save('storage/image/product/'.$fileName);
+            $url = Storage::url('image/product/'.$fileName);
             $image=new ImageProduct;
             $image->id_product=$req->id_product;
             $image->parent=$req->parent;
             $image->image=$url;
             if($image->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else {
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc thêm!'], 401);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+
+    public function post_admin_update_image(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $validator = Validator::make($req->all(), [
+                'id'=>'required|exists:image_product,id',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $image1=ImageProduct::find($req->id);
+            if($req->has('image')) {
+                //xóa ảnh cũ
+                $productImage = str_replace('/storage', '', $image1->image);
+                Storage::delete('/public' . $productImage);
+
+                //thêm ảnh mới
+                $old_image=$image1->image;
+                $name=$image1->product->name;
+                $name=$this->convert_name($name);
+                $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file
+                        
+                // Filename cực shock để khỏi bị trùng
+                $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
+                $file = $req->file('image');
+                $image = Image::make($file);
+                $image->widen(300)->save('storage/image/product/'.$fileName);
+                $url = Storage::url('image/product/'.$fileName);
+                $image1->image=$url;
+            }
+            if($req->has('id_product')){
+                $image1->id_product=$req->id_product;
+            }
+            if($req->has('parent')){
+                $image1->parent=$req->parent;
+            }
+            if($image1->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
