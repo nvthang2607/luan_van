@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    
     use HasFactory;
-    protected $fillable = ['quantity','count'];
+    protected $fillable = ['id_branch','name','quantity','unit_price','promotion_price','active','count'];
     protected $table ="product";
     public function branch(){
         return $this->belongsTo('App\Models\BranchProduct','id_branch','id');

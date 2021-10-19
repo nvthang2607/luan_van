@@ -12,6 +12,6 @@
         <input type="file" name="hinh">
         <input type="submit" value="nộp">
     </form>
-    <img src="/storage/images/thangne1.png" alt="">
+    <img src="/storage/image/product/thangne1.png" alt="">
 </body>
 </html>

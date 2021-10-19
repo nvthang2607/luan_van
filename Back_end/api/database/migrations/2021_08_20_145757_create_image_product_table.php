@@ -32,7 +32,7 @@ class CreateImageProductTable extends Migration
                 DB::table('image_product')->insert(
                     array(
                         'id_product'=>$i,
-                        'image'=>'source/image/product/'.$t.'.png',
+                        'image'=>'storage/image/product/'.$t.'.png',
                     )
                 );
             }

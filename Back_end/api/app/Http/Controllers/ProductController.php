@@ -10,6 +10,7 @@ use App\Models\BillDetail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Validator;
 
 class ProductController extends Controller
 {
@@ -296,7 +297,7 @@ class ProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
         $datas=collect();
-        if($req->id!=null){
+        if($req->id==null){
             $product=Product::all();
             foreach($product as $i){
                 $datas[]=$i;
@@ -338,7 +339,8 @@ class ProductController extends Controller
             $promotionprice=$i->promotion_price;
             $count=$i->count;
             $active=$i->active;
-            $image=Product::find($i->id)->image_product()->get();
+            $informations=$i->information_product;
+            $images=Product::find($i->id)->image_product()->get();
             $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
             $rate_number=$rate->count();
             $avg=5;
@@ -348,13 +350,165 @@ class ProductController extends Controller
                     $t=$t+$r->rate;
                 }
                 $avg=$t/$rate_number;
-                
             }
-            $promotion=Promotion::where('id_product',$i->id)->get();
-            $data2[count($data2)]=$image;
+            $promotions=Promotion::where('id_product',$i->id)->get();
+            $data2[count($data2)]=[
+                'id'=>$id,
+                'name'=>$name,
+                'id_branch'=>$id_branch,
+                'name_branch'=>$name_branch,
+                'id_type'=>$id_type,
+                'name_type'=>$name_type,
+                'quantity'=>$quantity,
+                'quantity'=>$quantity,
+                'promotionprice'=>$promotionprice,
+                'count'=>$count,
+                'active'=>$active,
+                'informations'=>$informations,
+                'images'=>$images,
+                'avg'=>$avg,
+                'rate'=>$rate,
+                'rate_number'=>$rate_number,
+                'promotions'=>$promotions,
+            ];
         }
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
     }
 
+    public function delete_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $product=BranchProduct::find($req->id_product);
+            if($product!=null){
+                $product->delete();
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else {
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy thương hiệu sản phẩm!'], 401);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+    public function post_admin_create_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $validator = Validator::make($req->all(), [
+                'id_branch'=>'required|exists:branch_product,id',
+                'name' => 'required|unique:product,name',
+                'quantity'=>'required',
+                'unit_price'=>'required',
+                'promotion_price'=>'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $product=new Product;
+            $product->fill($req->input())->save();
+            if($product->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else {
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc thêm!'], 401);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+        
+    }
 
+    public function patch_admin_update_branch_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $validator = Validator::make($req->all(), [
+                'id_branch'=>'required|exists:branch_product,id',
+                'name' => 'required|unique:product,name',
+                'quantity'=>'required',
+                'unit_price'=>'required',
+                'promotion_price'=>'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $product=Product::find($req->id);
+            if($product->fill($req->input())->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc đổi!'], 401);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+
+
+    public function get_admin_search_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            if($req->search==null){
+                $product=Product::all()->sortByDesc("id");;
+            }
+            else{
+                $product=Product::where('name','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+            }
+            if(count($product)>0){
+                $n=$product->count();
+                $data=$product->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                $data2=collect();
+                foreach($data as $i){
+                    $id=$i->id;
+                    $name=$i->name;
+                    $id_branch=$i->id_branch;
+                    $name_branch=$i->branch->name;
+                    $id_type=$i->branch->id_type;
+                    $name_type=$i->branch->typeproduct->name;
+                    $quantity=$i->quantity;
+                    $unitprice=$i->unit_price;
+                    $promotionprice=$i->promotion_price;
+                    $count=$i->count;
+                    $active=$i->active;
+                    $informations=$i->information_product;
+                    $images=Product::find($i->id)->image_product()->get();
+                    $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+                    $rate_number=$rate->count();
+                    $avg=5;
+                    if($rate_number>0){
+                        $t=0;
+                        foreach($rate as $r){
+                            $t=$t+$r->rate;
+                        }
+                        $avg=$t/$rate_number;
+                    }
+                    $promotions=Promotion::where('id_product',$i->id)->get();
+                    $data2[count($data2)]=[
+                        'id'=>$id,
+                        'name'=>$name,
+                        'id_branch'=>$id_branch,
+                        'name_branch'=>$name_branch,
+                        'id_type'=>$id_type,
+                        'name_type'=>$name_type,
+                        'quantity'=>$quantity,
+                        'quantity'=>$quantity,
+                        'promotionprice'=>$promotionprice,
+                        'count'=>$count,
+                        'active'=>$active,
+                        'informations'=>$informations,
+                        'images'=>$images,
+                        'avg'=>$avg,
+                        'rate'=>$rate,
+                        'rate_number'=>$rate_number,
+                        'promotions'=>$promotions,
+                    ];
+                }
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
+            }else{
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+
+    }
 }

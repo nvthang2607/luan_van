@@ -18,6 +18,7 @@ use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,8 +182,15 @@ Route::group([
     Route::get('/search_branch_product', [BranchProductController::class, 'get_admin_search_branch_product']);
     //product
     Route::get('/list_product', [ProductController::class, 'get_list_product']);
-    Route::delete('/delete_branch_product/{id_branch_product}', [BranchProductController::class, 'delete_branch_product']);
-    Route::post('/create_branch_product', [BranchProductController::class, 'post_admin_create_branch_product']);
-    Route::patch('/update_branch_product', [BranchProductController::class, 'patch_admin_update_branch_product']);
-    Route::get('/search_branch_product', [BranchProductController::class, 'get_admin_search_branch_product']);
+    Route::delete('/delete_product/{id_product}', [ProductController::class, 'delete_product']);
+    Route::post('/create_product', [ProductController::class, 'post_admin_create_product']);
+    Route::patch('/update_product', [ProductController::class, 'patch_admin_update_product']);
+    Route::get('/search_product', [ProductController::class, 'get_admin_search_product']);
+
+    //image
+    Route::get('/list_image', [ImageController::class, 'get_list_image']);
+    Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
+    Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
+    Route::patch('/update_product', [ImageController::class, 'patch_admin_update_product']);
+    Route::get('/search_product', [ImageController::class, 'get_admin_search_product']);
 });
