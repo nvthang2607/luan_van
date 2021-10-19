@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Validator;
+use Image;
 
 class ImageController extends Controller
 {
@@ -92,8 +93,9 @@ class ImageController extends Controller
             $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file
                     
             // Filename cực shock để khỏi bị trùng
-            $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) . $name."." . $fileExtension;
-            $path = $req->file('image')->storeAs(
+            $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
+            $file = $req->file('image');
+            $path=$file->storeAs(
                 'public/image/product', $fileName
             );
             $url = Storage::url($path);
