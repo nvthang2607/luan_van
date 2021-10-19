@@ -88,7 +88,7 @@ class ImageController extends Controller
             }
             $product=Product::find($req->id_product);
             $name=$product->name;
-            $image=$this->convert_name($name);
+            $name=$this->convert_name($name);
             $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file
                     
             // Filename cực shock để khỏi bị trùng
