@@ -53,14 +53,12 @@ class UserController extends Controller
     public function get_admin_list_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $data=collect();
-            if($req->type=='all'){
-                $users=User::where('isadmin','user')->orderBy('id', 'DESC')->get();
-            }
-            elseif($req->type=='active'){
-                $users=User::where('isadmin','user')->where('active',1)->orderBy('id', 'DESC')->get();
+            $users=User::where('name','like','%'.$req->search.'%')->where('isadmin','user')->get();
+            if($req->type=='active'){
+                $users= $users->where('active',1);
             }
             elseif($req->type=='noactive'){
-                $users=User::where('isadmin','user')->where('active',0)->orderBy('id', 'DESC')->get();
+                $users= $users->where('active',0);
             }
             foreach($users as $i){
                 $address=$i->address;

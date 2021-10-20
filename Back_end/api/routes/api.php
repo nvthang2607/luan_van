@@ -19,7 +19,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ImageController;
-
+use App\Http\Controllers\InformationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -180,6 +180,7 @@ Route::group([
     Route::post('/create_branch_product', [BranchProductController::class, 'post_admin_create_branch_product']);
     Route::patch('/update_branch_product', [BranchProductController::class, 'patch_admin_update_branch_product']);
     Route::get('/search_branch_product', [BranchProductController::class, 'get_admin_search_branch_product']);
+    
     //product
     Route::get('/list_product', [ProductController::class, 'get_list_product']);
     Route::delete('/active_product/{id_product}', [ProductController::class, 'active_product']);
@@ -191,4 +192,10 @@ Route::group([
     Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
     Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
     Route::post('/update_image', [ImageController::class, 'post_admin_update_image']);
+    //information
+    Route::get('/list_information', [ImageController::class, 'get_list_information']);
+    Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
+    Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
+    Route::post('/update_image', [ImageController::class, 'post_admin_update_image']);
+
 });

@@ -327,6 +327,12 @@ class ProductController extends Controller
                     break;
             }
         }
+        if($req->active=='active'){
+            $datas= $datas->where('active',1);
+        }
+        elseif($req->active=='noactive'){
+            $datas= $datas->where('active',0);
+        }
         $n=$datas->count();
         $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         $data2=collect();
@@ -385,7 +391,7 @@ class ProductController extends Controller
                 'id_type'=>$id_type,
                 'name_type'=>$name_type,
                 'quantity'=>$quantity,
-                'quantity'=>$quantity,
+                'unitprice'=>$unitprice,
                 'promotionprice'=>$promotionprice,
                 'description'=>$description,
                 'count'=>$count,
