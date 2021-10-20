@@ -403,11 +403,16 @@ class ProductController extends Controller
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
     }
 
-    public function delete_product(request $req){
+    public function active_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $product=Product::find($req->id_product);
             if($product!=null){
-                $product->delete();
+                if($product->active==0){
+                    $product->active=1;
+                }
+                if($product->active==1){
+                    $product->active=0;
+                }
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
