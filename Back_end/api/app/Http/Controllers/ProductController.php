@@ -405,13 +405,13 @@ class ProductController extends Controller
 
     public function delete_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $product=BranchProduct::find($req->id_product);
+            $product=Product::find($req->id_product);
             if($product!=null){
                 $product->delete();
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy thương hiệu sản phẩm!'], 401);
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy sản phẩm!'], 401);
             }
         }
         else{
