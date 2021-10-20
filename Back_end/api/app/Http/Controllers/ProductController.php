@@ -412,7 +412,6 @@ class ProductController extends Controller
     public function get_active_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $product=Product::find($req->id_product);
-            dd($product->active);
             if($product!=null){
                 if($product->active==0){
                     $product->active=1;
