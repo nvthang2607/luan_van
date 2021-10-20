@@ -183,7 +183,7 @@ Route::group([
     
     //product
     Route::get('/list_product', [ProductController::class, 'get_list_product']);
-    Route::delete('/active_product/{id_product}', [ProductController::class, 'active_product']);
+    Route::get('/active_product/{id_product}', [ProductController::class, 'get_active_product']);
     Route::post('/create_product', [ProductController::class, 'post_admin_create_product']);
     Route::patch('/update_product', [ProductController::class, 'patch_admin_update_product']);
 

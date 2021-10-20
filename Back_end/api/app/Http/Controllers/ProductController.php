@@ -409,9 +409,10 @@ class ProductController extends Controller
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
     }
 
-    public function active_product(request $req){
+    public function get_active_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $product=Product::find($req->id_product);
+            dd($product->active);
             if($product!=null){
                 if($product->active==0){
                     $product->active=1;
@@ -419,6 +420,7 @@ class ProductController extends Controller
                 if($product->active==1){
                     $product->active=0;
                 }
+                $product->save();
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
