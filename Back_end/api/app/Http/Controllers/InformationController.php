@@ -44,15 +44,33 @@ class InformationController extends Controller
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
                 'id_product'=>'required|exists:product,id',
-                'name'=>'required|unique:information_product,name',
-                'content'=>'required',
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
-            $information=new InformationProduct;
-            $information->fill($req->input())->save();
-            return response()->json(['errorCode'=> null,'data'=>true], 200);
+            $errors=[];
+            $t=0;
+            foreach($req->data as $i){
+                $validator = Validator::make($i, [
+                    'name'=>'required',
+                    'content'=>'required',
+                ]);
+                $e=0;
+                if ($validator->fails()) {
+                    $e++;
+                    $p="Has error in raw ".$t.": ".$validator->messages();
+                    $p = str_replace('"', '', $p);
+                    $errors[count($errors)]=$p;
+                }
+                $t++;
+                if($e>0){
+                    continue;
+                }
+                $information=new InformationProduct;
+                $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save();
+                
+            }
+            return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
@@ -61,21 +79,30 @@ class InformationController extends Controller
 
     public function patch_admin_update_information(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $validator = Validator::make($req->all(), [
-                'id_product'=>'exists:product,id',
-                'name' => 'unique:information_product,name',
-                'id'=>'required|exists:information_product,id',
-            ]);
-            if ($validator->fails()) {
-                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            $errors=[];
+            $t=0;
+            foreach($req->data as $i){
+                $validator = Validator::make($i, [
+                    'id'=>'exists:information_product,id',
+                    'id_product'=>'exists:product,id',
+                    'name'=>'required',
+                    'content'=>'required',
+                ]);
+                $e=0;
+                if ($validator->fails()) {
+                    $e++;
+                    $p="Has error in raw ".$t.": ".$validator->messages();
+                    $p = str_replace('"', '', $p);
+                    $errors[count($errors)]=$p;
+                }
+                $t++;
+                if($e>0){
+                    continue;
+                }
+                $information=InformationProduct::find($i['id']);
+                $information->fill($i)->save();
             }
-            $information=InformationProduct::find($req->id);
-            if($information->fill($req->input())->save()){
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
-            }
-            else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc đổi!'], 401);
-            }
+            return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);

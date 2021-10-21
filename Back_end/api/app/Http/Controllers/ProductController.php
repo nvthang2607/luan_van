@@ -443,9 +443,9 @@ class ProductController extends Controller
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
             $product=new Product;
-            $product->fill($req->input())->save();
-            if($product->save()){
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            if($product->fill($req->input())->save()){
+                $id_product=Product::max('id');
+                return response()->json(['errorCode'=> null,'data'=>$id_product], 200);
             }
             else {
                 return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc thêm!'], 401);
