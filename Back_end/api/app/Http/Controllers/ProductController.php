@@ -416,7 +416,7 @@ class ProductController extends Controller
                 if($product->active==0){
                     $product->active=1;
                 }
-                if($product->active==1){
+                else{
                     $product->active=0;
                 }
                 $product->save();
