@@ -9,14 +9,14 @@ class Product extends Model
 {
     
     use HasFactory;
-    protected $fillable = ['id_branch','name','quantity','description','unit_price','promotion_price','active','count'];
+    protected $fillable = ['id_brand','name','quantity','description','unit_price','promotion_price','active','count'];
     protected $table ="product";
     protected $casts = [
         'created_at'  => 'datetime:Y/m/d H:i:s',
         'updated_at' => 'datetime:Y/m/d H:i:s',
     ];
-    public function branch(){
-        return $this->belongsTo('App\Models\BranchProduct','id_branch','id');
+    public function brand(){
+        return $this->belongsTo('App\Models\BrandProduct','id_brand','id');
     }
     public function image_product(){
         return $this->hasMany('App\Models\ImageProduct','id_product','id');

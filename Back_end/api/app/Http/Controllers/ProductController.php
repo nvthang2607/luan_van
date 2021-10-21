@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
-use App\Models\BranchProduct;
+use App\Models\BrandProduct;
 use App\Models\ImageProduct;
 use App\Models\InformationProduct;
 use App\Models\Promotion;
@@ -81,8 +81,8 @@ class ProductController extends Controller
         $datas=collect();
         switch($type){
             case 'type':
-                $branch=BranchProduct::where('id_type',$req->id)->get();
-                foreach($branch as $i){
+                $brand=BrandProduct::where('id_type',$req->id)->get();
+                foreach($brand as $i){
                     $data=$i->product;
                     foreach($data as $data){
                         if($data->active==1){
@@ -91,8 +91,8 @@ class ProductController extends Controller
                     }
                 }
                 break;
-            case 'branch':
-                $product=Product::where('id_branch',$req->id)->where('active',1)->get();
+            case 'brand':
+                $product=Product::where('id_brand',$req->id)->where('active',1)->get();
                 foreach($product as $i){
                     $datas[]=$i;
                 }
@@ -311,16 +311,16 @@ class ProductController extends Controller
             $id=$req->id;
             switch($type){
                 case 'type':
-                    $branch=BranchProduct::where('id_type',$req->id)->where('name','like','%'.$req->search.'%')->get();
-                    foreach($branch as $i){
+                    $brand=BrandProduct::where('id_type',$req->id)->where('name','like','%'.$req->search.'%')->get();
+                    foreach($brand as $i){
                         $data=$i->product;
                         foreach($data as $data){
                             $datas[]=$data;
                         }
                     }
                     break;
-                case 'branch':
-                    $product=Product::where('id_branch',$req->id)->where('name','like','%'.$req->search.'%')->get();
+                case 'brand':
+                    $product=Product::where('id_brand',$req->id)->where('name','like','%'.$req->search.'%')->get();
                     foreach($product as $i){
                         $datas[]=$i;
                     }
@@ -339,10 +339,10 @@ class ProductController extends Controller
         foreach($datas as $i){
             $id=$i->id;
             $name=$i->name;
-            $id_branch=$i->id_branch;
-            $name_branch=$i->branch->name;
-            $id_type=$i->branch->id_type;
-            $name_type=$i->branch->typeproduct->name;
+            $id_brand=$i->id_brand;
+            $name_brand=$i->brand->name;
+            $id_type=$i->brand->id_type;
+            $name_type=$i->brand->typeproduct->name;
             $quantity=$i->quantity;
             $unitprice=$i->unit_price;
             $promotionprice=$i->promotion_price;
@@ -386,8 +386,8 @@ class ProductController extends Controller
             $data2[count($data2)]=[
                 'id'=>$id,
                 'name'=>$name,
-                'id_branch'=>$id_branch,
-                'name_branch'=>$name_branch,
+                'id_brand'=>$id_brand,
+                'name_brand'=>$name_brand,
                 'id_type'=>$id_type,
                 'name_type'=>$name_type,
                 'quantity'=>$quantity,
@@ -433,7 +433,7 @@ class ProductController extends Controller
     public function post_admin_create_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'id_branch'=>'required|exists:branch_product,id',
+                'id_brand'=>'required|exists:brand_product,id',
                 'name' => 'required|unique:product,name',
                 'quantity'=>'required',
                 'unit_price'=>'required',
@@ -457,10 +457,10 @@ class ProductController extends Controller
         
     }
 
-    public function patch_admin_update_branch_product(request $req){
+    public function patch_admin_update_brand_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'id_branch'=>'required|exists:branch_product,id',
+                'id_brand'=>'required|exists:brand_product,id',
                 'name' => 'required|unique:product,name',
                 'quantity'=>'required',
                 'unit_price'=>'required',

@@ -9,7 +9,7 @@ class TypeProduct extends Model
 {
     use HasFactory;
     protected $table ="type_product";
-    public function branchproduct(){
-        return $this->hasMany('App\Models\BranchProduct','id_type','id');
+    public function brandproduct(){
+        return $this->hasMany('App\Models\BrandProduct','id_type','id');
     }
 }

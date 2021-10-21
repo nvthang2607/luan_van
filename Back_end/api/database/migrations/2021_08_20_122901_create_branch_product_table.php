@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBranchProductTable extends Migration
+class CreateBrandProductTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateBranchProductTable extends Migration
      */
     public function up()
     {
-        Schema::create('branch_product', function (Blueprint $table) {
+        Schema::create('brand_product', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_type')
             ->constrained('type_product')
@@ -23,19 +23,19 @@ class CreateBranchProductTable extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-        DB::table('branch_product')->insert(
+        DB::table('brand_product')->insert(
             array(
                 'id_type'=>mt_rand(1,2),
                 'name'=>'SangSung'
             )
         );
-        DB::table('branch_product')->insert(
+        DB::table('brand_product')->insert(
             array(
                 'id_type'=>mt_rand(1,2),
                 'name'=>'Apple'
             )
         );
-        DB::table('branch_product')->insert(
+        DB::table('brand_product')->insert(
             array(
                 'id_type'=>mt_rand(1,2),
                 'name'=>'VMart'
@@ -50,6 +50,6 @@ class CreateBranchProductTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('branch_product');
+        Schema::dropIfExists('brand_product');
     }
 }

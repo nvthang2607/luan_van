@@ -15,8 +15,8 @@ class CreateProductTable extends Migration
     {
         Schema::create('product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_branch')
-            ->constrained('branch_product')
+            $table->foreignId('id_brand')
+            ->constrained('brand_product')
             ->onUpdate('cascade')
             ->onDelete('cascade');
             $table->string('name',100);
@@ -32,15 +32,15 @@ class CreateProductTable extends Migration
         $faker=Faker\Factory::create('vi_VN');
         $n=300;
         for($i=0;$i<$n;$i++){
-            $branch= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng','phụ kiện','']);
+            $brand= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng','phụ kiện','']);
             $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512','']);
             $r= $faker->randomElement(['A', 'B','C','D','E','F','G','H','I','K','L','U','V','R','']);
-            $name= $branch." ".$r.''.$g."GB";
+            $name= $brand." ".$r.''.$g."GB";
             $unit_price=mt_rand(1,$n)*1000000;
             $promotion_price=$unit_price-$unit_price*mt_rand(1,50)/100;
             DB::table('product')->insert(
                 array(
-                    'id_branch'=>mt_rand(1,3),
+                    'id_brand'=>mt_rand(1,3),
                     'name'=>$name,
                     'quantity'=>mt_rand(1,$n),
                     'unit_price'=>$unit_price,
