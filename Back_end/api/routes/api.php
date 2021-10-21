@@ -193,9 +193,9 @@ Route::group([
     Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
     Route::post('/update_image', [ImageController::class, 'post_admin_update_image']);
     //information
-    Route::get('/list_information', [ImageController::class, 'get_list_information']);
-    Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
-    Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
-    Route::post('/update_image', [ImageController::class, 'post_admin_update_image']);
+    Route::get('/list_information', [InformationController::class, 'get_list_information']);
+    Route::delete('/delete_information/{id_information}', [InformationController::class, 'delete_information']);
+    Route::post('/create_information', [InformationController::class, 'post_admin_create_information']);
+    Route::patch('/update_information', [InformationController::class, 'patch_admin_update_information']);
 
 });

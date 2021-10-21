@@ -9,7 +9,7 @@ class Product extends Model
 {
     
     use HasFactory;
-    protected $fillable = ['id_branch','name','quantity','unit_price','promotion_price','active','count'];
+    protected $fillable = ['id_branch','name','quantity','description','unit_price','promotion_price','active','count'];
     protected $table ="product";
     protected $casts = [
         'created_at'  => 'datetime:Y/m/d H:i:s',
