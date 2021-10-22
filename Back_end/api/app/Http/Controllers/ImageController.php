@@ -96,7 +96,7 @@ class ImageController extends Controller
             $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
             $file = $req->file('image');
             $image = Image::make($file);
-            $image->widen(300)->save('storage/image/product/'.$fileName);
+            $image->resize(300,200)->save('storage/image/product/'.$fileName);
             $url = Storage::url('image/product/'.$fileName);
             $image=new ImageProduct;
             $image->id_product=$req->id_product;
@@ -138,7 +138,7 @@ class ImageController extends Controller
                 $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
                 $file = $req->file('image');
                 $image = Image::make($file);
-                $image->widen(300)->save('storage/image/product/'.$fileName);
+                $image->resize(300,200)->save('storage/image/product/'.$fileName);
                 $url = Storage::url('image/product/'.$fileName);
                 $image1->image=$url;
             }
