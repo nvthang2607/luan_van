@@ -23,7 +23,7 @@ class CreateProductTable extends Migration
             $table->integer('quantity');
             $table->bigInteger('unit_price');
             $table->bigInteger('promotion_price');
-            $table->string('description',1000)->nullable();
+            $table->text('description')->nullable();
             $table->integer('count')->default(0);
             $table->boolean('active')->default(0);
             $table->timestamp('created_at')->useCurrent();

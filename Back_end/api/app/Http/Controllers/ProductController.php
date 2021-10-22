@@ -457,7 +457,7 @@ class ProductController extends Controller
         
     }
 
-    public function patch_admin_update_brand_product(request $req){
+    public function patch_admin_update_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
                 'id_brand'=>'required|exists:brand_product,id',
@@ -471,6 +471,29 @@ class ProductController extends Controller
             }
             $product=Product::find($req->id);
             if($product->fill($req->input())->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc đổi!'], 401);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+
+    public function patch_admin_update_quantity_product(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'||Auth()->user()->isadmin=='warehouse'){
+            $validator = Validator::make($req->all(), [
+                'id_product'=>'required|exists:product,id',
+                'quantity'=>'required|gt:0'
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $product=Product::find($req->id_product);
+            $product->quantity=$product->quantity+$req->quantity;
+            if($product->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{

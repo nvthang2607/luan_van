@@ -25,14 +25,15 @@ class InformationController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
-
-        
     }
 
 
     public function delete_information(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $information=InformationProduct::find($req->id_information);
+            if($information==null){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy thông tin!'], 401);
+            }
             $information->delete();
             return response()->json(['errorCode'=> null,'data'=>true], 200);
         }

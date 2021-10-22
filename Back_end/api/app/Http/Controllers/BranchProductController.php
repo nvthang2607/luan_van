@@ -123,7 +123,7 @@ class BrandProductController extends Controller
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc đổi!'], 401);
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong lúc đổi thương hiệu!'], 401);
             }
         }
         else{

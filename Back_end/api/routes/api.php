@@ -186,7 +186,8 @@ Route::group([
     Route::get('/active_product/{id_product}', [ProductController::class, 'get_active_product']);
     Route::post('/create_product', [ProductController::class, 'post_admin_create_product']);
     Route::patch('/update_product', [ProductController::class, 'patch_admin_update_product']);
-
+    Route::patch('/update_quantity_product', [ProductController::class, 'patch_admin_update_quantity_product']);
+    
     //image
     Route::get('/list_image', [ImageController::class, 'get_list_image']);
     Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
@@ -198,4 +199,9 @@ Route::group([
     Route::post('/create_information', [InformationController::class, 'post_admin_create_information']);
     Route::patch('/update_information', [InformationController::class, 'patch_admin_update_information']);
 
+    //information
+    Route::get('/list_promotion', [PromotionController::class, 'get_list_promotion']);
+    Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_promotion']);
+    Route::post('/create_promotion', [PromotionController::class, 'post_admin_create_promotion']);
+    Route::patch('/update_promotion', [PromotionController::class, 'patch_admin_update_promotion']);
 });

@@ -175,49 +175,63 @@ class BillController extends Controller
     }
 
     public function post_bill_approve(request $req){
-        if(auth()->user()->isadmin!='Quản lý đơn hàng'){
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
-        }
-        $status1=Status::where('id_bill',$req->id_bill)->get();
-        if($status1->count()>0){
-            $status2=Status::where('id_bill',$req->id_bill)->max('status');
-            if($status2=='4'){
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Đơn hàng có id: '.$req->id_bill.' đã hoàn thành trước đó!'], 401);
-            }
-            $status=new Status;
-            $status->id_user=auth()->user()->id;
-            $status->id_bill=$req->id_bill;
-            $status->status=$status2+1;
-            if($status->save()){
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
+        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')){
+            $status1=Status::where('id_bill',$req->id_bill)->get();
+            if($status1->count()>0){
+                $status2=Status::where('id_bill',$req->id_bill)->max('status');
+                if($status2=='4'){
+                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Đơn hàng có id: '.$req->id_bill.' đã hoàn thành trước đó!'], 401);
+                }
+                $status=new Status;
+                $status->id_user=auth()->user()->id;
+                $status->id_bill=$req->id_bill;
+                $status->status=$status2+1;
+                if($status->save()){
+                    return response()->json(['errorCode'=> null,'data'=>true], 200);
+                }
+                else{
+                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
+                }
             }
             else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
+                $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
+                $data=[];
+                foreach($bill_detail as $bill_detail){
+                    $product = Product::find($bill_detail->product->id);
+                    if($bill_detail->product->quantity<$bill_detail->quantity){
+                        $data[count($data)]=['id_product'=>$product->id,'name'=>$product->name,'quantity'=>$product->quantity];
+                    }
+                }
+                if(count($data)>0){
+                    return response()->json(['errorCode'=> 4, 'data'=>$data], 401);
+                }
+                else{
+                    foreach($bill_detail as $bill_detail){
+                        $product = Product::find($bill_detail->product->id);
+                        $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
+                        $product->count =$bill_detail->product->count+$bill_detail->quantity;
+                        if(!$product->save()){
+                            $status3=Status::where('id_bill',$req->id_bill)->get();
+                            $status3->delete();
+                            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình trừ số lượng sản phẩm ra khỏi kho hàng!'], 401);
+                        }
+                    }
+                }
+                $status=new Status;
+                $status->id_user=auth()->user()->id;
+                $status->id_bill=$req->id_bill;
+                $status->status=2;
+                if($status->save()){
+                    return response()->json(['errorCode'=> null,'data'=>true], 200);
+                }
+                else{
+                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình duyệt hóa đơn!'], 401);
+                }
+                
             }
         }
         else{
-            $status=new Status;
-            $status->id_user=auth()->user()->id;
-            $status->id_bill=$req->id_bill;
-            $status->status=2;
-            if($status->save()){
-                $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
-                foreach($bill_detail as $bill_detail){
-                    $product = Product::find($bill_detail->product->id);
-                    $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
-                    $product->count =$bill_detail->product->count+$bill_detail->quantity;
-                    if(!$product->save()){
-                        $status3=Status::where('id_bill',$req->id_bill)->get();
-                        $status3->delete();
-                        return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình trừ số lượng sản phẩm ra khỏi kho hàng!'], 401);
-                    }
-                }
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
-            }
-            else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi kết nối cơ sở dữ liệu!'], 401);
-            }
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
         }
-        
     }
 }
