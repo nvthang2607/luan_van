@@ -70,9 +70,9 @@ class InformationController extends Controller
                     return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
                 }
                 $information=new InformationProduct;
-                $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save(); 
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
+                $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save();   
             }
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
@@ -104,8 +104,8 @@ class InformationController extends Controller
                 }
                 $information=InformationProduct::find($i['id']);
                 $information->fill($i)->save();
-                return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
