@@ -16,7 +16,7 @@ class ImageController extends Controller
     }
     public function get_list_image(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $image=ImageProduct::where('id_product',$req->id_product)->orderBy('id', 'DESC')->get();
+            $image=ImageProduct::where('id_product',$req->id_product)->orderBy('parent', 'DESC')->get();
             $data=collect();
             if(count($image)>0){
                 foreach($image as $i){
