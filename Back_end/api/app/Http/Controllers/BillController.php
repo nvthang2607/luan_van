@@ -174,7 +174,7 @@ class BillController extends Controller
         }
     }
 
-    public function post_bill_approve(request $req){
+    public function post_approve_bill(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')){
             $status1=Status::where('id_bill',$req->id_bill)->get();
             if($status1->count()>0){
@@ -237,7 +237,14 @@ class BillController extends Controller
 
     public function get_list_bill(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
-            $bill=Bill::all()->sortByDesc("id");
+            $c=Customer::where('phone','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
+            if($c->count()==0){
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'data'=>[]]], 200);
+            }
+            $bill=collect();
+            foreach($c as $c){
+                $bill[]=$c->bill;
+            }
             $data=collect();
             if($req->status==1){
                 foreach($bill as $i){
@@ -299,7 +306,40 @@ class BillController extends Controller
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'data'=>$datas]], 200);
         }
         else{
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
+        }
+    }
+
+    public function post_cancel_bill(request $req){
+        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $email=Bill::find($req->id_bill)->customer->email;
+            $stt=Bill::find($req->id_bill)->status->last();
+            if($stt->status==4){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không thể hủy đơn hàng có id: '.$req->id_bill.' vì đơn hàng đã hoàn thành!'], 500);
+            }
+            else{
+                $status=new Status;
+                $status->id_bill=$req->id_bill;
+                $status->id_user=auth()->user()->id;
+                $status->status=5;
+                if($status->save()){
+                    $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
+                    foreach($bill_detail as $item){
+                        $qty=$item->quantity;
+                        $id_product=$item->id_product;
+                        $product=Product::find($id_product);
+                        $n=$product->quantity+$qty;
+                        $product->quantity=$n;
+                        $product->save();
+                    }
+                    return response()->json(['errorCode'=> null, 'data'=>true], 200);
+                }else{
+                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);
+                }
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
         }
     }
 }

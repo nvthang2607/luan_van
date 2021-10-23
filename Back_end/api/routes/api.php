@@ -154,7 +154,7 @@ Route::group([
     Route::post('/user_list_bill', [BillController::class, 'post_bill_user_list_bill']);
     Route::get('/user_list_billdetail/{id_bill}', [BillDetailController::class, 'get_billdetail_user_list_billdetail']);
     Route::post('/user_cancel_bill', [BillController::class, 'post_bill_user_cancel_bill']);
-    Route::post('/approve', [BillController::class, 'post_bill_approve']);
+    
 });
 
 Route::group([
@@ -207,7 +207,6 @@ Route::group([
 
     //bill
     Route::get('/list_bill', [BillController::class, 'get_list_bill']);
-    Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_promotion']);
-    Route::post('/create_promotion', [PromotionController::class, 'post_admin_create_promotion']);
-    Route::patch('/update_promotion', [PromotionController::class, 'patch_admin_update_promotion']);
+    Route::post('/approve_bill', [BillController::class, 'post_approve_bill']);
+    Route::post('/cancel_bill', [BillController::class, 'post_cancel_bill']);
 });
