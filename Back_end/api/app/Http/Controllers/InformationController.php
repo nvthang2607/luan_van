@@ -71,6 +71,7 @@ class InformationController extends Controller
                 }
                 $information=new InformationProduct;
                 $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save(); 
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
         }
         else{
@@ -103,6 +104,7 @@ class InformationController extends Controller
                 }
                 $information=InformationProduct::find($i['id']);
                 $information->fill($i)->save();
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
         }
         else{
