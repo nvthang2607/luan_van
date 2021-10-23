@@ -460,10 +460,8 @@ class ProductController extends Controller
     public function patch_admin_update_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'id_brand'=>'required|exists:brand_product,id',
-                'name' => 'required|unique:product,name',
-                'unit_price'=>'required',
-                'promotion_price'=>'required',
+                'id_brand'=>'exists:brand_product,id',
+                'name' => 'unique:product,name',
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
