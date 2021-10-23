@@ -462,7 +462,6 @@ class ProductController extends Controller
             $validator = Validator::make($req->all(), [
                 'id_brand'=>'required|exists:brand_product,id',
                 'name' => 'required|unique:product,name',
-                'quantity'=>'required',
                 'unit_price'=>'required',
                 'promotion_price'=>'required',
             ]);
