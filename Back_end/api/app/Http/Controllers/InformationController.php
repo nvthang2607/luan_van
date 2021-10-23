@@ -88,6 +88,8 @@ class InformationController extends Controller
                 $validator = Validator::make($i, [
                     'id'=>'exists:information_product,id',
                     'id_product'=>'exists:product,id',
+                    'content'=>'required',
+                    'name'=>'required',
                 ]);
                
                 if ($validator->fails()) {

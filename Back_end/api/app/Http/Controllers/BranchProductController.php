@@ -88,6 +88,7 @@ class BrandProductController extends Controller
             $validator = Validator::make($req->all(), [
                 'id_type'=>'exists:type_product,id',
                 'name' => 'unique:brand_product,name',
+                'content'=>''
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Lỗi đầu vào!'], 400);
