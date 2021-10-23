@@ -461,7 +461,6 @@ class ProductController extends Controller
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
                 'id_brand'=>'exists:brand_product,id',
-                'name' => 'unique:product,name',
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
