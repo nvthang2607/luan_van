@@ -9,6 +9,10 @@ class Status extends Model
 {
     use HasFactory;
     protected $table ="status";
+    protected $casts = [
+        'created_at'  => 'datetime:Y/m/d H:i:s',
+        'updated_at' => 'datetime:Y/m/d H:i:s',
+    ];
     public function bill(){
         return $this->belongsTo('App\Models\Bill','id_bill','id');
     }

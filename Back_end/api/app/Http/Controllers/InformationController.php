@@ -51,12 +51,12 @@ class InformationController extends Controller
             }
             $errors=[];
             $t=0;
+            $e=0;
             foreach($req->data as $i){
                 $validator = Validator::make($i, [
                     'name'=>'required',
                     'content'=>'required',
                 ]);
-                $e=0;
                 if ($validator->fails()) {
                     $e++;
                     $p="Has error in raw ".$t.": ".$validator->messages();
@@ -64,14 +64,14 @@ class InformationController extends Controller
                     $errors[count($errors)]=$p;
                 }
                 $t++;
+            }
+            foreach($req->data as $i){
                 if($e>0){
-                    continue;
+                    return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
                 }
                 $information=new InformationProduct;
-                $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save();
-                
+                $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save(); 
             }
-            return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
@@ -82,6 +82,7 @@ class InformationController extends Controller
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $errors=[];
             $t=0;
+            $e=0;
             foreach($req->data as $i){
                 $validator = Validator::make($i, [
                     'id'=>'exists:information_product,id',
@@ -89,7 +90,7 @@ class InformationController extends Controller
                     'name'=>'required',
                     'content'=>'required',
                 ]);
-                $e=0;
+               
                 if ($validator->fails()) {
                     $e++;
                     $p="Has error in raw ".$t.": ".$validator->messages();
@@ -97,13 +98,14 @@ class InformationController extends Controller
                     $errors[count($errors)]=$p;
                 }
                 $t++;
+            }
+            foreach($req->data as $i){
                 if($e>0){
-                    continue;
+                    return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
                 }
                 $information=InformationProduct::find($i['id']);
                 $information->fill($i)->save();
             }
-            return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);

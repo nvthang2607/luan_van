@@ -9,6 +9,10 @@ class Customer extends Model
 {
     use HasFactory;
     protected $table ="customer";
+    protected $casts = [
+        'created_at'  => 'datetime:Y/m/d H:i:s',
+        'updated_at' => 'datetime:Y/m/d H:i:s',
+    ];
     public function bill(){
         return $this->hasOne('App\Models\Bill','id_customer','id');
     }

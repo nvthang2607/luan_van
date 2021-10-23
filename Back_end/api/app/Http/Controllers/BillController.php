@@ -277,9 +277,22 @@ class BillController extends Controller
             $datas=collect();
             foreach($data as $i){
                 $customer=$i->customer;
+                $i->billdetail;
                 $datas[]=[
-                    'customer'=>$customer,
-                    'bill'=>$i,
+                    'id_customer'=>$customer->id,
+                    'name_customer'=>$customer->name,
+                    'gender_customer'=>$customer->gender,
+                    'email_customer'=>$customer->email,
+                    'phone_customer'=>$customer->phone,
+                    'address_customer'=>$customer->address,
+                    'id_bill'=>$i->id,
+                    'total'=>$i->total,
+                    'payment'=>$i->payment,
+                    'not'=>$i->note,
+                    'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
+                    'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
+                    'bill_detail'=>$i->billdetail,
+                    'bill_status'=>$i->status,
                 ];
             }
             $n=$datas->count();

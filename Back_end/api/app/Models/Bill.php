@@ -9,6 +9,10 @@ class Bill extends Model
 {
     use HasFactory;
     protected $table ="bill";
+    protected $casts = [
+        'created_at'  => 'datetime:Y/m/d H:i:s',
+        'updated_at' => 'datetime:Y/m/d H:i:s',
+    ];
     public function customer(){
         return $this->belongsTo('App\Models\Customer','id_customer','id');
     }
