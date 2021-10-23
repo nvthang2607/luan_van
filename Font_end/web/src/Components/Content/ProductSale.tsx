@@ -33,7 +33,7 @@ import clsx from 'clsx';
 import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
-import { PhoneBranch, SearchPhoneGet } from '../../api/Product';
+import { PhoneBrand, SearchPhoneGet } from '../../api/Product';
 import { AppURL } from '../../utils/const';
 import theme from './../../utils/theme/index';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRight: '0.5px solid #8c8c8c4f',
 	},
 	button: {},
-	stylePhoneBranch: {
+	stylePhoneBrand: {
 		textDecoration: 'none',
 		color: 'black',
 		fontWeight: 'bold',
@@ -214,7 +214,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 				<Box>
 					<img
 						width="100%"
-						src={`http://localhost:8000/${props.link}`}
+						src={`http://localhost:8000${props.link}`}
 						onClick={() => {
 							history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
 						}}

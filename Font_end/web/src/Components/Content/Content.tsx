@@ -35,7 +35,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { relative } from 'path';
 import { Rating } from '@material-ui/lab';
 import {
-	PhoneBranch,
+	PhoneBrand,
 	ProductFSalePost,
 	ProductNewPost,
 	ProductSellPost,
@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 		borderRight: '0.5px solid #8c8c8c4f',
 	},
 	button: {},
-	stylePhoneBranch: {
+	stylePhoneBrand: {
 		textDecoration: 'none',
 		color: 'black',
 		fontWeight: 'bold',
@@ -206,7 +206,7 @@ const Content: React.FC = () => {
 		setHoverProduct(false);
 	};
 	const [dataProductRecommend, setDataProductRecommend] = React.useState<any>([]);
-	const [dataPhoneBranch, setDataPhoneBranch] = React.useState<any>([]);
+	const [dataPhoneBrand, setDataPhoneBrand] = React.useState<any>([]);
 	const [dataNews, setDataNews] = React.useState<any>({});
 	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
 	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
@@ -219,12 +219,12 @@ const Content: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	React.useEffect(() => {
-		const fetchPhoneBranch = async () => {
-			const getPhoneBranch = await PhoneBranch();
-			if (getPhoneBranch) {
-				if (getPhoneBranch.errorCode === null) {
-					//console.log(getPhoneBranch);
-					setDataPhoneBranch(getPhoneBranch.data);
+		const fetchPhoneBrand = async () => {
+			const getPhoneBrand = await PhoneBrand();
+			if (getPhoneBrand) {
+				if (getPhoneBrand.errorCode === null) {
+					//console.log(getPhoneBrand);
+					setDataPhoneBrand(getPhoneBrand.data);
 				}
 			}
 			const getProductFSalePost = await ProductFSalePost({ page: 1, pageSize: 4, type: 'fsale' });
@@ -292,7 +292,7 @@ const Content: React.FC = () => {
 			}
 		};
 		getDataRecommend();
-		fetchPhoneBranch();
+		fetchPhoneBrand();
 	}, [dispatch, valueRefreshPage]);
 
 	const toURL = (str: string) => {
@@ -469,11 +469,11 @@ const Content: React.FC = () => {
 										</Grid>
 										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 											<List style={{ display: 'flex' }}>
-												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
 									return (
 										<Link
 											to={`/views/${toURL(item.name)}-${item.id}`}
-											className={classes.stylePhoneBranch}
+											className={classes.stylePhoneBrand}
 										>
 											<ListItem
 												style={{
@@ -577,11 +577,11 @@ const Content: React.FC = () => {
 									</Grid>
 									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											{dataPhoneBranch?.listData?.map((item: any, index: number) => {
+											{dataPhoneBrand?.listData?.map((item: any, index: number) => {
 												return (
 													<Link
 														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-														className={classes.stylePhoneBranch}
+														className={classes.stylePhoneBrand}
 													>
 														<ListItem
 															style={{
@@ -684,11 +684,11 @@ const Content: React.FC = () => {
 									</Grid>
 									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+											{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
 									return (
 										<Link
 											to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-											className={classes.stylePhoneBranch}
+											className={classes.stylePhoneBrand}
 										>
 											<ListItem
 												style={{
@@ -1025,11 +1025,11 @@ const Content: React.FC = () => {
 										</Grid>
 										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 											<List style={{ display: 'flex' }}>
-												{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
 										return (
 											<Link
 												to={`/views/${toURL(item.name)}-${item.id}`}
-												className={classes.stylePhoneBranch}
+												className={classes.stylePhoneBrand}
 											>
 												<ListItem
 													style={{
@@ -1147,11 +1147,11 @@ const Content: React.FC = () => {
 									</Grid>
 									<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
 										<List style={{ display: 'flex', width: 'max-content' }}>
-											{dataPhoneBranch?.listData?.map((item: any, index: number) => {
+											{dataPhoneBrand?.listData?.map((item: any, index: number) => {
 												return (
 													<Link
 														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-														className={classes.stylePhoneBranch}
+														className={classes.stylePhoneBrand}
 													>
 														<ListItem
 															style={{
@@ -1268,11 +1268,11 @@ const Content: React.FC = () => {
 									</Grid>
 									<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											{/* {dataPhoneBranch?.listData?.map((item: any, index: number) => {
+											{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
 										return (
 											<Link
 												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-												className={classes.stylePhoneBranch}
+												className={classes.stylePhoneBrand}
 											>
 												<ListItem
 													style={{

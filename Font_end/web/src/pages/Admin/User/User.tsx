@@ -33,7 +33,8 @@ import UserEdit from './UserEdit';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
 import { Link, NavLink } from 'react-router-dom';
-
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import { Menu, MenuItem } from '@mui/material';
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
 		position: 'absolute',
@@ -64,11 +65,15 @@ const User: React.FC = () => {
 	const [open, setOpen] = React.useState(false);
 	const [refresh, setRefresh] = React.useState(0);
 	const [t] = useTranslation();
+	const [valueActive, setValueActive] = useState({
+		id: 0,
+		value: 'Danh sach nguoi dung da duoc kich hoat',
+	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
 		Page: 0,
-		type: 'all',
 		PageSize: 5,
+		type: 'active',
 	});
 	const [valChange, setValChange] = React.useState<any>('');
 	const [data, setData] = React.useState<any[]>([]);
@@ -216,11 +221,13 @@ const User: React.FC = () => {
 	useEffect(() => {
 		const fetchUser = async () => {
 			setProgressData(true);
+			setTotalDoc(0);
 			setData([]);
 			const result = await SearchUserGet({
 				page: filterSearch.Page + 1,
 				pageSize: filterSearch.PageSize,
 				search: filterSearch.Search,
+				type: filterSearch.type,
 			});
 			if (result?.data?.listData) {
 				const dataNew = result.data.listData?.map((item: any, index: number) => {
@@ -265,6 +272,14 @@ const User: React.FC = () => {
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
 	const [showTable, setShowTable] = useState(true);
+	const [anchorElActive, setAnchorElActive] = React.useState<null | HTMLElement>(null);
+	const openActive = Boolean(anchorElActive);
+	const handleClickActive = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorElActive(event.currentTarget);
+	};
+	const handleCloseActive = () => {
+		setAnchorElActive(null);
+	};
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			<Grid container spacing={3}>
@@ -346,6 +361,79 @@ const User: React.FC = () => {
 						</Collapse>
 					</Box>
 				</Grid>
+				<Grid item xs={12} style={{ paddingBottom: 0 }}>
+					<div>
+						<Button
+							id="basic-button"
+							aria-controls="basic-menu"
+							aria-haspopup="true"
+							aria-expanded={openActive ? 'true' : undefined}
+							onClick={handleClickActive}
+							style={{
+								border: '1px solid',
+								padding: '2px',
+								paddingRight: 0,
+								paddingLeft: '7px',
+								textTransform: 'inherit',
+							}}
+						>
+							{valueActive.value}
+							<ArrowDropDownIcon />
+						</Button>
+						<Menu
+							id="basic-menu"
+							anchorEl={anchorElActive}
+							open={openActive}
+							onClose={handleCloseActive}
+							MenuListProps={{
+								'aria-labelledby': 'basic-button',
+							}}
+						>
+							<MenuItem
+								onClick={() => {
+									setAnchorElActive(null);
+									setValueActive({ id: 0, value: 'Danh sach nguoi dung da duoc kich hoat' });
+									setFilterSearch({
+										...filterSearch,
+										Page: 0,
+										type: 'active',
+									});
+									setPageTB(0);
+								}}
+							>
+								Danh sach nguoi dung da duoc kich hoat&nbsp;
+								{valueActive.id === 0 && (
+									<i
+										className="fa fa-check"
+										aria-hidden="true"
+										style={{ marginLeft: '14px', color: 'red' }}
+									></i>
+								)}
+							</MenuItem>
+							<MenuItem
+								onClick={() => {
+									setAnchorElActive(null);
+									setValueActive({ id: 1, value: 'Danh sach nguoi dung dang tam khoa' });
+									setFilterSearch({
+										...filterSearch,
+										Page: 0,
+										type: 'noactive',
+									});
+									setPageTB(0);
+								}}
+							>
+								Danh sach nguoi dung dang tam khoa&nbsp;
+								{valueActive.id === 1 && (
+									<i
+										className="fa fa-check"
+										aria-hidden="true"
+										style={{ marginLeft: '14px', color: 'red' }}
+									></i>
+								)}
+							</MenuItem>
+						</Menu>
+					</div>
+				</Grid>
 			</Grid>
 			<Box mt={3}>
 				{showTable ? (
@@ -371,7 +459,7 @@ const User: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 0 ? 'Xoa' : 'Khoi phuc'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',

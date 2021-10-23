@@ -129,7 +129,7 @@ const View: React.FC<ViewProps> = (props) => {
 	const [priceAbout5_7, setPriceAbout5_7] = React.useState(false);
 	const [priceAboutTren7, setPriceAboutTren7] = React.useState(false);
 	const [redirect, setRedirect] = React.useState(false);
-	const { phoneBranchId } = useParams<{ phoneBranchId?: string }>();
+	const { phoneBrandId } = useParams<{ phoneBrandId?: string }>();
 	React.useEffect(() => {
 		const searchParams = new URLSearchParams(window.location.search);
 		if (searchParams.has('filter')) {
@@ -280,8 +280,8 @@ const View: React.FC<ViewProps> = (props) => {
 				const getDataFilter = await FilterPost({
 					page: page,
 					pageSize: 24,
-					type: 'branch',
-					id: phoneBranchId,
+					type: 'brand',
+					id: phoneBrandId,
 					piceAbout: valueFilter,
 				});
 				if (getDataFilter) {
@@ -298,7 +298,7 @@ const View: React.FC<ViewProps> = (props) => {
 	}, [
 		valueRefreshPage.value,
 		page,
-		phoneBranchId,
+		phoneBrandId,
 		priceAbout1_3,
 		priceAbout3_5,
 		priceAbout5_7,

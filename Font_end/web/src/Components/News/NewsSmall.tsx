@@ -89,7 +89,7 @@ const NewsSmall: React.FC<NewsProps> = (props) => {
 			onMouseOut={onMouseOutProduct}
 		>
 			<Box>
-				<img width="110px" src={`http://localhost:8000/${props.image}`} />
+				<img width="110px" src={`http://localhost:8000${props.image}`} />
 			</Box>
 			<Box style={{ marginLeft: '10px' }}>
 				<Typography

@@ -168,7 +168,7 @@ const ProductCarouselPhone: React.FC<ProductProps> = (props) => {
 						justifyContent: 'center',
 					}}
 				>
-					<img width="100%" src={`http://localhost:8000/${props.link}`} />
+					<img width="100%" src={`http://localhost:8000${props.link}`} />
 				</Box>
 				<Box style={{ marginBottom: '10px' }}>
 					<Link

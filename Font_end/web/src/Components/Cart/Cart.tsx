@@ -209,7 +209,7 @@ const Cart: React.FC<CartProps> = (props) => {
 											<img
 												width="100%"
 												style={{ cursor: 'pointer' }}
-												src={`http://localhost:8000/${item.link}`}
+												src={`http://localhost:8000${item.link}`}
 												onClick={() => {
 													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
 													props.receiveCart?.(false);
@@ -425,7 +425,7 @@ const Cart: React.FC<CartProps> = (props) => {
 											<img
 												width="100%"
 												style={{ cursor: 'pointer' }}
-												src={`http://localhost:8000/${item.link}`}
+												src={`http://localhost:8000${item.link}`}
 												onClick={() => {
 													history.push(`/product_detail/${toURL(item?.name)}-${item?.id}.html`);
 													props.receiveCart?.(false);

@@ -524,7 +524,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									{dataProduct.image?.map((item: any) => {
 										return (
 											<div>
-												<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+												<img style={{ width: '82%' }} src={`http://localhost:8000${item}`} />
 											</div>
 										);
 									})}
@@ -705,6 +705,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 								fullWidth
 								size="large"
 								onClick={buyNow}
+								disabled={dataProduct?.item?.quantity === 0 ? true : false}
 							>
 								<Box style={{ display: 'contents' }}>
 									<AddShoppingCartIcon style={{ fontSize: '50px' }} />
@@ -748,7 +749,8 @@ const ProductDetail: React.FC<Props> = (props) => {
 
 													display: 'inline-block',
 													padding: '10px',
-													paddingRight: '162px',
+													paddingRight: 0,
+													width: '30%',
 												}}
 											>
 												{item.name}
@@ -770,6 +772,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 								>
 									Bai viet danh gia
 								</Typography>
+								<Box style={{ overflow: 'hidden' }}>
+									<div dangerouslySetInnerHTML={{ __html: dataProduct?.description }} />
+								</Box>
 								<Typography
 									variant="h5"
 									className={classes.titleText}
@@ -778,6 +783,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 								>
 									Nhan xet va danh gia
 								</Typography>
+
 								<Card variant="outlined" style={{ padding: '10px' }}>
 									<Box style={{ display: 'flex' }}>
 										<Box style={{ width: '50%' }}>
@@ -811,9 +817,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate == 5 ? rate.value : 0)
+															dataProduct?.rate?.rate5 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 5 ? rate.value : 0)
 														}
 														//style={{ color: '#ffb400 !important' }}
 													/>
@@ -824,9 +834,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate == 5 ? rate.value : 0)}
+														{dataProduct?.rate?.rate5 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 5 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -841,9 +853,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 4 ? rate.value : 0)
+															dataProduct?.rate?.rate4 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 4 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -853,9 +869,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 4 ? rate.value : 0)}
+														{dataProduct?.rate?.rate4 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 4 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -870,9 +888,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 3 ? rate.value : 0)
+															dataProduct?.rate?.rate3 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 3 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -882,9 +904,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 3 ? rate.value : 0)}
+														{dataProduct?.rate?.rate3 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 3 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -899,9 +923,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 2 ? rate.value : 0)
+															dataProduct?.rate?.rate2 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 2 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -911,9 +939,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 2 ? rate.value : 0)}
+														{dataProduct?.rate?.rate2 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 2 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -928,9 +958,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 1 ? rate.value : 0)
+															dataProduct?.rate?.rate1 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 1 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -940,9 +974,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 1 ? rate.value : 0)}
+														{dataProduct?.rate?.rate1 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 1 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -1422,6 +1458,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										fullWidth
 										size="large"
 										onClick={buyNow}
+										disabled={dataProduct?.item?.quantity === 0 ? true : false}
 									>
 										<Typography component="h6" style={{ fontSize: '1.1rem' }}>
 											Mua ngay
@@ -1533,7 +1570,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										{dataProduct.image?.map((item: any) => {
 											return (
 												<div>
-													<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+													<img style={{ width: '82%' }} src={`http://localhost:8000${item}`} />
 												</div>
 											);
 										})}
@@ -1714,6 +1751,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									fullWidth
 									size="large"
 									onClick={buyNow}
+									disabled={dataProduct?.item?.quantity === 0 ? true : false}
 								>
 									<Box style={{ display: 'contents' }}>
 										<AddShoppingCartIcon style={{ fontSize: '50px' }} />
@@ -1773,7 +1811,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										{dataProduct.image?.map((item: any) => {
 											return (
 												<div>
-													<img style={{ width: '82%' }} src={`http://localhost:8000/${item}`} />
+													<img style={{ width: '82%' }} src={`http://localhost:8000${item}`} />
 												</div>
 											);
 										})}
@@ -1939,6 +1977,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									style={{ display: 'flex', marginTop: '10px', marginBottom: '20px' }}
 									fullWidth
 									size="large"
+									disabled={dataProduct?.item?.quantity === 0 ? true : false}
 									onClick={buyNow}
 								>
 									<Box style={{ display: 'contents' }}>
@@ -1984,7 +2023,8 @@ const ProductDetail: React.FC<Props> = (props) => {
 
 													display: 'inline-block',
 													padding: '10px',
-													paddingRight: '162px',
+													paddingRight: 0,
+													width: '30%',
 												}}
 											>
 												{item.name}
@@ -2006,6 +2046,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 								>
 									Bai viet danh gia
 								</Typography>
+								<Box style={{ overflow: 'hidden' }}>
+									<div dangerouslySetInnerHTML={{ __html: dataProduct?.description }} />
+								</Box>
 								<Typography
 									variant="h5"
 									className={classes.titleText}
@@ -2043,9 +2086,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate == 5 ? rate.value : 0)
+															dataProduct?.rate?.rate5 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 5 ? rate.value : 0)
 														}
 														//style={{ color: '#ffb400 !important' }}
 													/>
@@ -2056,9 +2103,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate == 5 ? rate.value : 0)}
+														{dataProduct?.rate?.rate5 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate5 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 5 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -2073,9 +2122,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 4 ? rate.value : 0)
+															dataProduct?.rate?.rate4 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 4 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -2085,9 +2138,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 4 ? rate.value : 0)}
+														{dataProduct?.rate?.rate4 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate4 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 4 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -2102,9 +2157,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 3 ? rate.value : 0)
+															dataProduct?.rate?.rate3 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 3 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -2114,9 +2173,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 3 ? rate.value : 0)}
+														{dataProduct?.rate?.rate3 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate3 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 3 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -2131,9 +2192,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 2 ? rate.value : 0)
+															dataProduct?.rate?.rate2 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 2 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -2143,9 +2208,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 2 ? rate.value : 0)}
+														{dataProduct?.rate?.rate2 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate2 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 2 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>
@@ -2160,9 +2227,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<LinearProgress
 														variant="determinate"
 														value={
-															Math.round(
-																Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
-															) + Number(rate.idRate === 1 ? rate.value : 0)
+															dataProduct?.rate?.rate1 === undefined
+																? 0
+																: Math.round(
+																		Number(
+																			(dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100
+																		)
+																  ) + Number(rate.idRate === 1 ? rate.value : 0)
 														}
 													/>
 												</Box>
@@ -2172,9 +2243,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 														variant="body1"
 														style={{ color: '#4c70ba', fontWeight: 'bold' }}
 													>
-														{Math.round(
-															Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
-														) + Number(rate.idRate === 1 ? rate.value : 0)}
+														{dataProduct?.rate?.rate1 === undefined
+															? 0
+															: Math.round(
+																	Number((dataProduct?.rate?.rate1 / dataProduct.rate_number) * 100)
+															  ) + Number(rate.idRate === 1 ? rate.value : 0)}
 														%
 													</Typography>
 												</Box>

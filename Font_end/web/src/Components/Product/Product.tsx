@@ -194,7 +194,7 @@ const Product: React.FC<ProductProps> = (props) => {
 				<Box style={{ textAlign: 'center', marginBottom: '35px' }}>
 					<img
 						width="100%"
-						src={`http://localhost:8000/${props.link}`}
+						src={`http://localhost:8000${props.link}`}
 						onClick={() => {
 							history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
 						}}

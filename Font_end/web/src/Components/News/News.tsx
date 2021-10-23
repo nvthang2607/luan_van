@@ -152,7 +152,7 @@ const News: React.FC<ProductProps> = (props) => {
 				>
 					<img
 						width="100%"
-						src={`http://localhost:8000/${props.link}`}
+						src={`http://localhost:8000${props.link}`}
 						onClick={() => {
 							history.push(`/news_detail/${toURL(props?.title)}-${props?.id}.html`);
 						}}
