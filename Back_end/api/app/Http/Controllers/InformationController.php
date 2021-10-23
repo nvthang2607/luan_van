@@ -67,7 +67,7 @@ class InformationController extends Controller
             }
             foreach($req->data as $i){
                 if($e>0){
-                    return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
+                    return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
                 }
                 $information=new InformationProduct;
                 $information->fill(['id_product'=>$req->id_product,'name'=>$i['name'],'content'=>$i['content']])->save(); 
@@ -99,7 +99,7 @@ class InformationController extends Controller
             }
             foreach($req->data as $i){
                 if($e>0){
-                    return response()->json(['errorCode'=> null,'data'=>true,'errors'=>$errors], 200);
+                    return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
                 }
                 $information=InformationProduct::find($i['id']);
                 $information->fill($i)->save();
