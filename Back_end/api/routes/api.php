@@ -204,4 +204,10 @@ Route::group([
     Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_promotion']);
     Route::post('/create_promotion', [PromotionController::class, 'post_admin_create_promotion']);
     Route::patch('/update_promotion', [PromotionController::class, 'patch_admin_update_promotion']);
+
+    //bill
+    Route::get('/list_bill', [BillController::class, 'get_list_bill']);
+    Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_promotion']);
+    Route::post('/create_promotion', [PromotionController::class, 'post_admin_create_promotion']);
+    Route::patch('/update_promotion', [PromotionController::class, 'patch_admin_update_promotion']);
 });

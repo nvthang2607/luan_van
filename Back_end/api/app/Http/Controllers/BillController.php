@@ -234,4 +234,59 @@ class BillController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
         }
     }
+
+    public function get_list_bill(request $req){
+        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $bill=Bill::all()->sortByDesc("id");
+            $data=collect();
+            if($req->status==1){
+                foreach($bill as $i){
+                    if($i->status->max('status')==null){
+                        $data[]=$i;
+                    }
+                }
+            }
+            elseif($req->status==2){
+                foreach($bill as $i){
+                    if($i->status->max('status')==2){
+                        $data[]=$i;
+                    }
+                }
+            }
+            elseif($req->status==3){
+                foreach($bill as $i){
+                    if($i->status->max('status')==3){
+                        $data[]=$i;
+                    }
+                }
+            }
+            elseif($req->status==4){
+                foreach($bill as $i){
+                    if($i->status->max('status')==4){
+                        $data[]=$i;
+                    }
+                }
+            }
+            elseif($req->status==5){
+                foreach($bill as $i){
+                    if($i->status->max('status')==5){
+                        $data[]=$i;
+                    }
+                }
+            }
+            $datas=collect();
+            foreach($data as $i){
+                $customer=$i->customer;
+                $datas[]=[
+                    'customer'=>$customer,
+                    'bill'=>$i,
+                ];
+            }
+            $n=$datas->count();
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'data'=>$datas]], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quền duyệt đơn hàng có id: '.$req->id_bill.'!'], 401);
+        }
+    }
 }
