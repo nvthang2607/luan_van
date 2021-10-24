@@ -1,7 +1,7 @@
 export const AppURL = {
 	HOME: '/',
 	ACCOUNT: '/account',
-	VIEWS_PHONE: '/views/dien-thoai/*-:phoneBranchId',
+	VIEWS_PHONE: '/views/dien-thoai/*-:phoneBrandId',
 	VIEWS: '/views/*',
 	PROFILE_INFO: '/profile/info',
 	PROFILE: '/profile',
@@ -27,5 +27,6 @@ export const AppURL = {
 	MANAGER_USER: '/admin/manager/user',
 	ADMIN_HOME: '/admin/home',
 	ADMIN_TYPE_PRODUCT: '/admin/type_product',
-	ADMIN_BRANCH_PRODUCT: '/admin/branch_product',
+	ADMIN_BRAND_PRODUCT: '/admin/brand_product',
+	ADMIN_PRODUCT: '/admin/product',
 };

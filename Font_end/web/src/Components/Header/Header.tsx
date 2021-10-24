@@ -76,7 +76,7 @@ import {
 import Cart from '../Cart/Cart';
 import { getCartData } from '../Product/CartSlice';
 import MenuMobile from '../MenuMobile/MenuMobile';
-import { TypeBranch } from '../../api/Product';
+import { TypeBrand } from '../../api/Product';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -355,16 +355,16 @@ const Header: React.FC<Props> = (props) => {
 		} else {
 			setValueSearch('');
 		}
-		const fetchTypeBranch = async () => {
-			const getTypeBranch = await TypeBranch();
-			if (getTypeBranch) {
-				if (getTypeBranch.errorCode === null) {
-					console.log('getTypeBranch', getTypeBranch);
-					setDataMenu(getTypeBranch);
+		const fetchTypeBrand = async () => {
+			const getTypeBrand = await TypeBrand();
+			if (getTypeBrand) {
+				if (getTypeBrand.errorCode === null) {
+					console.log('getTypeBrand', getTypeBrand);
+					setDataMenu(getTypeBrand);
 				}
 			}
 		};
-		fetchTypeBranch();
+		fetchTypeBrand();
 		const getDataUser = async () => {
 			const token: any = window.localStorage.getItem('token');
 			const date = Date.now();

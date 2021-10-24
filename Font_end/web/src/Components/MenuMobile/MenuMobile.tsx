@@ -205,7 +205,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 	};
 
 	const history = useHistory();
-	const [showBranch, setShowBranch] = React.useState('');
+	const [showBrand, setShowBrand] = React.useState('');
 	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	return isResponseivePhone ? (
 		<Box style={{ width: 400 }}>
@@ -419,13 +419,13 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											{item.name}
 										</Typography>
 									</ListItemText>
-									{item.branch?.length > 0 &&
-										(showBranch === item.id ? (
+									{item.brand?.length > 0 &&
+										(showBrand === item.id ? (
 											<RemoveIcon
 												className={classes.adHover}
 												style={{ color: '#595959' }}
 												onClick={() =>
-													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+													showBrand === item.id ? setShowBrand('') : setShowBrand(item.id)
 												}
 											/>
 										) : (
@@ -433,15 +433,15 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 												className={classes.adHover}
 												style={{ color: '#595959' }}
 												onClick={() =>
-													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+													showBrand === item.id ? setShowBrand('') : setShowBrand(item.id)
 												}
 											/>
 										))}
 								</Box>
 								<Divider />
-								<Collapse in={showBranch === item.id ? true : false} timeout="auto" unmountOnExit>
+								<Collapse in={showBrand === item.id ? true : false} timeout="auto" unmountOnExit>
 									<Box>
-										{item.branch?.map((item: any) => {
+										{item.brand?.map((item: any) => {
 											return (
 												<React.Fragment>
 													<Box className={classes.styleLink} style={{ paddingLeft: '45px' }}>
@@ -774,13 +774,13 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											{item.name}
 										</Typography>
 									</ListItemText>
-									{item.branch?.length > 0 &&
-										(showBranch === item.id ? (
+									{item.brand?.length > 0 &&
+										(showBrand === item.id ? (
 											<RemoveIcon
 												className={classes.adHover}
 												style={{ color: '#595959' }}
 												onClick={() =>
-													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+													showBrand === item.id ? setShowBrand('') : setShowBrand(item.id)
 												}
 											/>
 										) : (
@@ -788,15 +788,15 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 												className={classes.adHover}
 												style={{ color: '#595959' }}
 												onClick={() =>
-													showBranch === item.id ? setShowBranch('') : setShowBranch(item.id)
+													showBrand === item.id ? setShowBrand('') : setShowBrand(item.id)
 												}
 											/>
 										))}
 								</Box>
 								<Divider />
-								<Collapse in={showBranch === item.id ? true : false} timeout="auto" unmountOnExit>
+								<Collapse in={showBrand === item.id ? true : false} timeout="auto" unmountOnExit>
 									<Box>
-										{item.branch?.map((item: any) => {
+										{item.brand?.map((item: any) => {
 											return (
 												<React.Fragment>
 													<Box className={classes.styleLink} style={{ paddingLeft: '45px' }}>

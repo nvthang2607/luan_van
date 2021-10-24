@@ -30,7 +30,7 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
-import img from 'http://localhost:8000/source/image/product/test.png';
+import img from 'http://localhost:8000source/image/product/test.png';
 import Pagination from '@material-ui/lab/Pagination';
 import { toast, ToastContainer } from 'react-toastify';
 import News from '../../Components/News/News';
@@ -174,7 +174,7 @@ const Search: React.FC = () => {
 	return isResponseiveMobile ? (
 		<Grid container className={classes.bgHeader}>
 			{/* <Button onClick={onClick}>Click me</Button> */}
-			{/* <img src="http://localhost:8000/source/image/product/test.png" /> */}
+			{/* <img src="http://localhost:8000source/image/product/test.png" /> */}
 			{progress ? (
 				<CircularProgress
 					color="secondary"
@@ -360,7 +360,7 @@ const Search: React.FC = () => {
 	) : (
 		<Grid container className={classes.bgHeaderMobile}>
 			{/* <Button onClick={onClick}>Click me</Button> */}
-			{/* <img src="http://localhost:8000/source/image/product/test.png" /> */}
+			{/* <img src="http://localhost:8000source/image/product/test.png" /> */}
 			{progress ? (
 				<Box style={{ marginTop: '60px' }}>
 					<CircularProgress

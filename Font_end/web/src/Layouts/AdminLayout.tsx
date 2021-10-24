@@ -56,7 +56,9 @@ import { useMediaQuery } from 'react-responsive';
 import { Close } from '@material-ui/icons';
 import MenuAdmin from './MenuAdmin';
 import TypeProduct from '../pages/Admin/ProductType/TypeProduct';
-import BranchProduct from '../pages/Admin/BranchProduct/BranchProduct';
+
+import Product from '../pages/Admin/Product/Product';
+import BrandProduct from '../pages/Admin/BrandProduct/BrandProduct';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -258,6 +260,8 @@ const AdminLayout: React.FC = (props) => {
 				localStorage.removeItem('tokenAdmin');
 				return <Redirect to={AppURL.LOGIN} />;
 			} else if (checkToken.isAdmin === false) {
+				console.log(checkToken);
+
 				return <Redirect to="404" />;
 			}
 		} else {
@@ -305,9 +309,9 @@ const AdminLayout: React.FC = (props) => {
 		if (id === 202) {
 			return AppURL.ADMIN_TYPE_PRODUCT;
 		} else if (id === 203) {
-			return AppURL.ADMIN_BRANCH_PRODUCT;
+			return AppURL.ADMIN_BRAND_PRODUCT;
 		} else if (id === 204) {
-			return AppURL.MANAGER_USER;
+			return AppURL.ADMIN_PRODUCT;
 		} else {
 			return AppURL.ADMIN_HOME;
 		}
@@ -565,7 +569,8 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
-						<Route path={AppURL.ADMIN_BRANCH_PRODUCT} component={BranchProduct} />
+						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
+						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
 					</Switch>
 				</main>
 			</div>
@@ -711,7 +716,8 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
-						<Route path={AppURL.ADMIN_BRANCH_PRODUCT} component={BranchProduct} />
+						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
+						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
 					</Switch>
 				</main>
 			</div>

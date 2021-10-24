@@ -21,7 +21,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Close } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
-import { AppURL } from './../../../utils/const';
+import { AppURL } from '../../../utils/const';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect } from 'react';
@@ -33,12 +33,14 @@ import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
 import { Link, NavLink, Redirect } from 'react-router-dom';
 import {
+	DeleteBrandProductDelete,
 	DeleteProductTypeGet,
+	ListTypeProductGet,
 	ProductTypeGet,
-	SearchTypeProductGet,
+	SearchBrandProductGet,
 } from '../../../api/Admin/Product';
-import TypeProductEdit from './TypeProductEdit';
 import jwtDecode from 'jwt-decode';
+import BrandProductEdit from './BrandProductEdit';
 
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
@@ -63,9 +65,15 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const TypeProduct: React.FC = () => {
+const BrandProduct: React.FC = () => {
 	const classes = useStyles();
-	const [dataEdit, setDataEdit] = React.useState<any>({ id: 0, name: '' });
+	const [dataEdit, setDataEdit] = React.useState<any>({
+		id: 0,
+		name: '',
+		id_type: '',
+		name_type: 0,
+	});
+	const [dataListTypeProduct, setDataListTypeProduct] = React.useState<any>([]);
 	const [progressData, setProgressData] = useState(false);
 	const [open, setOpen] = React.useState(false);
 	const [refresh, setRefresh] = React.useState(0);
@@ -99,6 +107,13 @@ const TypeProduct: React.FC = () => {
 			},
 		},
 		{
+			name: 'name_type',
+			label: 'Loai san pham',
+			options: {
+				sort: false,
+			},
+		},
+		{
 			name: 'created_at',
 			label: 'Ngay tao',
 			options: {
@@ -112,6 +127,7 @@ const TypeProduct: React.FC = () => {
 				sort: false,
 			},
 		},
+
 		{
 			name: 'id',
 			label: 'Hanh dong',
@@ -126,13 +142,23 @@ const TypeProduct: React.FC = () => {
 								className="fa fa-pencil-square-o"
 								aria-hidden="true"
 								style={{ fontSize: '30px', cursor: 'pointer' }}
-								onClick={() => {
+								onClick={async () => {
 									setDataEdit({
 										name: data[index].name,
 										id: data[index].id,
+										id_type: data[index].id_type,
+										name_type: data[index].name_type,
 									});
-									setTitleDialog('Cap nhat thong tin loai san pham');
-									setOpen(true);
+									setTitleDialog('Cap nhat thong tin thuong hieu ');
+									setProgressListTypeProduct(true);
+									const response = await ListTypeProductGet();
+									if (response) {
+										if (response.errorCode === null) {
+											setDataListTypeProduct(response.data.listData);
+											setOpen(true);
+											setProgressListTypeProduct(false);
+										}
+									}
 								}}
 							></i>
 						</React.Fragment>
@@ -197,7 +223,7 @@ const TypeProduct: React.FC = () => {
 			setProgressData(true);
 			setTotalDoc(0);
 			setData([]);
-			const result = await SearchTypeProductGet({
+			const result = await SearchBrandProductGet({
 				page: filterSearch.Page + 1,
 				pageSize: filterSearch.PageSize,
 				search: filterSearch.Search,
@@ -206,6 +232,8 @@ const TypeProduct: React.FC = () => {
 				const dataNew = result.data.listData?.map((item: any, index: number) => {
 					return {
 						id: item.id,
+						id_type: item.id_type,
+						name_type: item.name_type,
 						stt: index + 1,
 						name: item.name,
 						created_at: item.created_at,
@@ -234,6 +262,7 @@ const TypeProduct: React.FC = () => {
 		setOpen(result);
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
+	const [progressListTypeProduct, setProgressListTypeProduct] = useState(false);
 
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
@@ -246,7 +275,7 @@ const TypeProduct: React.FC = () => {
 							Trang chu
 						</Link>
 						<Link to="/" className={classes.link}>
-							Loai san pham
+							Thuong hieu
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -255,6 +284,12 @@ const TypeProduct: React.FC = () => {
 				</Grid>
 
 				<Grid item xs={12}>
+					{progressListTypeProduct && (
+						<CircularProgress
+							color="secondary"
+							style={{ position: 'fixed', top: '38%', left: '50%' }}
+						/>
+					)}
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
@@ -269,10 +304,18 @@ const TypeProduct: React.FC = () => {
 								</Tooltip>
 								<Tooltip title="Tao moi" placement="top">
 									<IconButton
-										onClick={() => {
-											setTitleDialog('Tao moi loai san pham');
-											setDataEdit({ id: 0, name: '' });
-											setOpen(true);
+										onClick={async () => {
+											setTitleDialog('Tao moi thuong hieu');
+											setDataEdit({ id: 0, name: '', id_type: '', name_type: '' });
+											setProgressListTypeProduct(true);
+											const response = await ListTypeProductGet();
+											if (response) {
+												if (response.errorCode === null) {
+													setDataListTypeProduct(response.data.listData);
+													setOpen(true);
+													setProgressListTypeProduct(false);
+												}
+											}
 										}}
 									>
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
@@ -369,7 +412,7 @@ const TypeProduct: React.FC = () => {
 												if (result.isConfirmed) {
 													let count = 0;
 													selectedRows.data?.map(async (item: any) => {
-														const response = await DeleteProductTypeGet(data[item.index].id);
+														const response = await DeleteBrandProductDelete(data[item.index].id);
 														if (response) {
 															if (response.errorCode === null) {
 																count++;
@@ -498,11 +541,12 @@ const TypeProduct: React.FC = () => {
 				aria-labelledby="form-dialog-title"
 				fullWidth
 			>
-				<TypeProductEdit
+				<BrandProductEdit
 					dataEdit={dataEdit}
 					cancel={cancel}
 					create={create}
 					titleDialog={titleDialog}
+					dataListTypeProduct={dataListTypeProduct}
 				/>
 			</Dialog>
 			<ToastContainer
@@ -519,4 +563,4 @@ const TypeProduct: React.FC = () => {
 		</Container>
 	);
 };
-export default TypeProduct;
+export default BrandProduct;

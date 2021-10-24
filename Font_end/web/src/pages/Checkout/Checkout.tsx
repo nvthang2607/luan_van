@@ -1182,7 +1182,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													return (
 														<Box style={{ display: 'flex', marginBottom: '35px' }}>
 															<Box style={{ width: '20%' }}>
-																<img width="100%" src={`http://localhost:8000/${item.link}`} />
+																<img width="100%" src={`http://localhost:8000${item.link}`} />
 															</Box>
 															<Box style={{ marginLeft: '4px', width: '80%' }}>
 																<Typography variant="body1" style={{ fontWeight: 'bold' }}>

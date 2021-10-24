@@ -2,21 +2,27 @@ import React, { useState } from 'react';
 import {
 	Box,
 	Breadcrumbs,
-	Button,
 	CircularProgress,
 	Collapse,
 	Container,
 	Dialog,
 	DialogActions,
 	DialogTitle,
+	Divider,
+	Fade,
 	Grid,
 	IconButton,
 	makeStyles,
 	TextField,
 	Tooltip,
+	Menu as MenuMui,
+	MenuItem as MenuItemMui,
+	Typography,
 } from '@material-ui/core';
 import DialogContent from '@material-ui/core/DialogContent';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SearchBar from 'material-ui-search-bar';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { Close } from '@material-ui/icons';
@@ -31,16 +37,29 @@ import MUIDataTableComponent from '../../../Components/Table/MUIDataTableCompone
 import { DeleteUserGet, SearchUserGet, UserPost } from '../../../api/Admin/User';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import { Link, NavLink, Redirect } from 'react-router-dom';
 import {
-	DeleteBranchProductDelete,
+	DeleteBrandProductDelete,
+	DeleteProductDelete,
 	DeleteProductTypeGet,
+	GetImageGet,
+	ListProductGet,
 	ListTypeProductGet,
 	ProductTypeGet,
-	SearchBranchProductGet,
+	SearchBrandProductGet,
 } from '../../../api/Admin/Product';
 import jwtDecode from 'jwt-decode';
-import BranchProductEdit from './BranchProductEdit';
+import { Autocomplete } from '@material-ui/lab';
+import Card from '@mui/material/Card/Card';
+import { TypeBrand } from '../../../api/Product';
+import { type } from 'os';
+import UpdateQuantity from './UpdateQuantity';
+import { boolean } from 'yup/lib/locale';
+import CreateProduct from './CreateProduct';
+import EditProduct from './EditProduct';
 
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
@@ -49,6 +68,14 @@ const useStyles = makeStyles((theme) => ({
 		right: theme.spacing(1),
 		color: theme.palette.grey[500],
 		zIndex: 1,
+	},
+	hoverRate: {
+		color: 'blue',
+		cursor: 'pointer',
+		'&:hover': {
+			textDecoration: 'underline',
+			color: '#ff6600',
+		},
 	},
 	inputSearch: {
 		fontSize: '20px',
@@ -65,15 +92,11 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const BranchProduct: React.FC = () => {
+const Product: React.FC = () => {
 	const classes = useStyles();
-	const [dataEdit, setDataEdit] = React.useState<any>({
-		id: 0,
-		name: '',
-		id_type: '',
-		name_type: 0,
-	});
+	const [dataEdit, setDataEdit] = React.useState<any>({});
 	const [dataListTypeProduct, setDataListTypeProduct] = React.useState<any>([]);
+	const [showDialog, setShowDialog] = React.useState(0);
 	const [progressData, setProgressData] = useState(false);
 	const [open, setOpen] = React.useState(false);
 	const [refresh, setRefresh] = React.useState(0);
@@ -82,10 +105,14 @@ const BranchProduct: React.FC = () => {
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
 		Page: 0,
-		type: 'all',
+		type: 'type',
 		PageSize: 5,
+		id: '',
+		active: 'active',
 	});
 	const [valChange, setValChange] = React.useState<any>('');
+	const [idProduct, setIdProduct] = React.useState<any>(0);
+	const [idBrandDef, setIdBrandDef] = React.useState<any>(0);
 	const [data, setData] = React.useState<any[]>([]);
 	const [flag, setFlag] = React.useState(false);
 	const [totalDoc, setTotalDoc] = useState<number>(0);
@@ -100,6 +127,16 @@ const BranchProduct: React.FC = () => {
 			},
 		},
 		{
+			name: 'mainImg',
+			label: 'Hinh anh',
+			options: {
+				sort: false,
+				customBodyRender: (mainImg: any) => {
+					return <img width="104px" src={`http://localhost:8000${mainImg}`} />;
+				},
+			},
+		},
+		{
 			name: 'name',
 			label: 'Ten',
 			options: {
@@ -109,6 +146,41 @@ const BranchProduct: React.FC = () => {
 		{
 			name: 'name_type',
 			label: 'Loai san pham',
+			options: {
+				sort: false,
+			},
+		},
+		{
+			name: 'name_brand',
+			label: 'Thuong hieu',
+			options: {
+				sort: false,
+			},
+		},
+		{
+			name: 'unit_price',
+			label: 'Gia goc',
+			options: {
+				sort: false,
+				customBodyRender: (unit_price: number) => {
+					return (
+						<Typography variant="body1">
+							{Intl.NumberFormat('en-US').format(Number(unit_price))}đ
+						</Typography>
+					);
+				},
+			},
+		},
+		{
+			name: 'quantity',
+			label: 'So luong',
+			options: {
+				sort: false,
+			},
+		},
+		{
+			name: 'rate_number',
+			label: 'Danh gia',
 			options: {
 				sort: false,
 			},
@@ -129,38 +201,68 @@ const BranchProduct: React.FC = () => {
 		},
 
 		{
-			name: 'id',
+			name: 'id_product',
 			label: 'Hanh dong',
 			options: {
-				filter: false,
 				sort: false,
-				empty: true,
-				customBodyRenderLite: (index: number) => {
+				customBodyRenderLite: (index: any) => {
 					return (
 						<React.Fragment>
-							<i
-								className="fa fa-pencil-square-o"
-								aria-hidden="true"
-								style={{ fontSize: '30px', cursor: 'pointer' }}
-								onClick={async () => {
-									setDataEdit({
-										name: data[index].name,
-										id: data[index].id,
-										id_type: data[index].id_type,
-										name_type: data[index].name_type,
-									});
-									setTitleDialog('Cap nhat thong tin thuong hieu ');
-									setProgressListTypeProduct(true);
-									const response = await ListTypeProductGet();
-									if (response) {
-										if (response.errorCode === null) {
-											setDataListTypeProduct(response.data.listData);
-											setOpen(true);
-											setProgressListTypeProduct(false);
-										}
-									}
+							<MoreHorizIcon
+								style={{ cursor: 'pointer', color: 'blue' }}
+								onClick={(event: any) => {
+									handleClickProduct(event, index);
 								}}
-							></i>
+							/>
+
+							<MenuMui
+								id="basic-menu"
+								anchorEl={anchorElProduct}
+								open={Boolean(data[index].id_product === idProduct ? anchorElProduct : null)}
+								onClose={handleCloseProduct}
+								keepMounted
+							>
+								{/* <MenuItem>Xem chi tiet</MenuItem> */}
+								<MenuItemMui
+									onClick={() => {
+										setAnchorElProduct(null);
+										setDataEditQuantity({ id: data[index].id_product, name: data[index].quantity });
+										setTitleDialog('Cap nhat so luong ');
+										setShowDialog(0);
+										setOpen(true);
+									}}
+								>
+									Cap nhat so luong
+								</MenuItemMui>
+								<MenuItemMui
+									onClick={async () => {
+										setProgressListTypeProduct(true);
+										setAnchorElProduct(null);
+										setDataEdit(data[index]);
+										setTitleDialog('Cap nhat thong tin ');
+										setShowDialog(2);
+
+										const response = await GetImageGet(data[index].id_product);
+										if (response)
+											if (response.errorCode === null) {
+												setProgressListTypeProduct(false);
+
+												const data = response.data.listData?.map((item: any) => {
+													return {
+														id: item.id,
+														id_product: item.id_product,
+														image: item.image,
+														delete: false,
+													};
+												});
+												setDataEditImage(data);
+												setOpen(true);
+											}
+									}}
+								>
+									Cap nhat thong tin
+								</MenuItemMui>
+							</MenuMui>
 						</React.Fragment>
 					);
 				},
@@ -218,27 +320,63 @@ const BranchProduct: React.FC = () => {
 			}
 		}
 	};
+
 	useEffect(() => {
 		const fetchProductType = async () => {
 			setProgressData(true);
+			setTotalDoc(0);
 			setData([]);
-			const result = await SearchBranchProductGet({
+			const result = await ListProductGet({
 				page: filterSearch.Page + 1,
 				pageSize: filterSearch.PageSize,
 				search: filterSearch.Search,
+				type: filterSearch.type,
+				id: filterSearch.id,
+				active: filterSearch.active,
 			});
+			const getTypeBrand = await TypeBrand();
+			if (getTypeBrand) {
+				if (getTypeBrand.errorCode === null) {
+					let id = 0;
+					setDataListTypeProduct(getTypeBrand);
+					getTypeBrand.data?.map((item: any) => {
+						if (item.brand?.length > 0) {
+							if (id === 0) {
+								item.brand?.map((itemChildren: any) => {
+									id = itemChildren.id;
+								});
+							}
+						}
+					});
+					setIdBrandDef(id);
+				}
+			}
 			if (result?.data?.listData) {
 				const dataNew = result.data.listData?.map((item: any, index: number) => {
 					return {
-						id: item.id,
+						id_product: item.id,
 						id_type: item.id_type,
+						id_brand: item.id_brand,
 						name_type: item.name_type,
+						avg: item.avg,
+						images: item.images,
+						informations: item.informations,
+						name_brand: item.name_brand,
+						promotion_price: item.promotionprice,
+						promotions: item.promotions,
+						quantity: item.quantity,
+						rate: item.rate,
+						rate_number: item.rate_number,
 						stt: index + 1,
 						name: item.name,
+						description: item.description,
+						unit_price: item.unitprice,
+						mainImg: item.images[0].image,
 						created_at: item.created_at,
 						updated_at: item.updated_at,
 					};
 				});
+				console.log(result?.data);
 
 				setData(dataNew);
 				setProgressData(false);
@@ -249,6 +387,8 @@ const BranchProduct: React.FC = () => {
 		};
 		fetchProductType();
 	}, [filterSearch, flag, refresh]);
+	const [dataEditQuantity, setDataEditQuantity] = React.useState({ id: 0, name: '' });
+	const [dataEditImage, setDataEditImage] = React.useState<any>([]);
 	const create: (result: boolean) => void = async (result) => {
 		if (result) {
 			setOpen(false);
@@ -261,8 +401,70 @@ const BranchProduct: React.FC = () => {
 		setOpen(result);
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
+	const [valueFilter, setValueFilter] = useState({ id: 0, value: 'Tat ca san pham', type: 'all' });
 	const [progressListTypeProduct, setProgressListTypeProduct] = useState(false);
-
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+	const openFilter = Boolean(anchorEl);
+	const handleClickFilter = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorEl(event.currentTarget);
+	};
+	const handleCloseFilter = () => {
+		setAnchorEl(null);
+	};
+	const [valueActive, setValueActive] = useState({
+		id: 0,
+		value: 'Danh sach san pham dang duoc kich hoat',
+	});
+	const [anchorElActive, setAnchorElActive] = React.useState<null | HTMLElement>(null);
+	const openActive = Boolean(anchorElActive);
+	const handleClickActive = (event: React.MouseEvent<HTMLButtonElement>) => {
+		setAnchorElActive(event.currentTarget);
+	};
+	const handleCloseActive = () => {
+		setAnchorElActive(null);
+	};
+	const [anchorElProduct, setAnchorElProduct] = React.useState<null | HTMLElement>(null);
+	const openProduct = Boolean(anchorElProduct);
+	const handleClickProduct = (event: React.MouseEvent<HTMLButtonElement>, index: number) => {
+		setAnchorElProduct(event.currentTarget);
+		setIdProduct(data[index].id_product);
+	};
+	const handleCloseProduct = () => {
+		setAnchorElProduct(null);
+	};
+	const handleShowDialog = () => {
+		if (showDialog === 0) {
+			return (
+				<UpdateQuantity
+					dataEdit={dataEditQuantity}
+					cancel={cancel}
+					create={create}
+					titleDialog={titleDialog}
+				/>
+			);
+		} else if (showDialog === 1) {
+			return (
+				<CreateProduct
+					dataEdit={dataEdit}
+					cancel={cancel}
+					create={create}
+					titleDialog={titleDialog}
+					dataBrand={dataListTypeProduct}
+				/>
+			);
+		} else if (showDialog === 2) {
+			return (
+				<EditProduct
+					dataEdit={dataEdit}
+					cancel={cancel}
+					create={create}
+					titleDialog={titleDialog}
+					dataBrand={dataListTypeProduct}
+					dataEditImage={dataEditImage}
+				/>
+			);
+		}
+	};
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
@@ -274,7 +476,10 @@ const BranchProduct: React.FC = () => {
 							Trang chu
 						</Link>
 						<Link to="/" className={classes.link}>
-							Thuong hieu
+							Quan ly danh muc
+						</Link>
+						<Link to="/" className={classes.link}>
+							San pham
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -282,7 +487,197 @@ const BranchProduct: React.FC = () => {
 					</Breadcrumbs>
 				</Grid>
 
-				<Grid item xs={12}>
+				<Grid item xs={12} style={{ paddingBottom: 0 }}>
+					<div>
+						<Button
+							id="basic-button"
+							aria-controls="basic-menu"
+							aria-haspopup="true"
+							aria-expanded={openFilter ? 'true' : undefined}
+							onClick={handleClickFilter}
+							style={{
+								border: '1px solid',
+								padding: '2px',
+								paddingRight: 0,
+								paddingLeft: '7px',
+								textTransform: 'inherit',
+							}}
+						>
+							{valueFilter.value}
+							<ArrowDropDownIcon />
+						</Button>
+						<Menu
+							id="basic-menu"
+							anchorEl={anchorEl}
+							open={openFilter}
+							onClose={handleCloseFilter}
+							MenuListProps={{
+								'aria-labelledby': 'basic-button',
+							}}
+						>
+							<MenuItem
+								onClick={() => {
+									setAnchorEl(null);
+									setValueFilter({ id: 0, value: 'Tat ca san pham', type: 'all' });
+									setFilterSearch({
+										...filterSearch,
+										Page: 0,
+										type: 'type',
+										id: '',
+									});
+									setPageTB(0);
+								}}
+								style={{ fontWeight: 'bold' }}
+							>
+								Tat ca san pham
+								{valueFilter.id === 0 && (
+									<i
+										className="fa fa-check"
+										aria-hidden="true"
+										style={{ marginLeft: '14px', color: 'red' }}
+									></i>
+								)}
+							</MenuItem>
+							{dataListTypeProduct.data?.map((item: any) => {
+								return (
+									<React.Fragment>
+										<MenuItem
+											onClick={() => {
+												setAnchorEl(null);
+												setValueFilter({ id: item.id, value: item.name, type: 'type' });
+												setFilterSearch({
+													...filterSearch,
+													Page: 0,
+													type: 'type',
+
+													id: item.id,
+												});
+												setPageTB(0);
+											}}
+											style={{ fontWeight: 'bold' }}
+										>
+											{item.name}
+											{valueFilter.id === item.id && valueFilter.type === 'type' && (
+												<i
+													className="fa fa-check"
+													aria-hidden="true"
+													style={{ marginLeft: '14px', color: 'red' }}
+												></i>
+											)}
+										</MenuItem>
+										{item.brand?.map((itemChildren: any) => {
+											return (
+												<MenuItem
+													onClick={() => {
+														setAnchorEl(null);
+														setValueFilter({
+															id: itemChildren.id,
+															value: itemChildren.name,
+															type: 'brand',
+														});
+														setFilterSearch({
+															...filterSearch,
+															Page: 0,
+															type: 'brand',
+
+															id: itemChildren.id,
+														});
+														setPageTB(0);
+													}}
+													style={{ paddingLeft: '35px' }}
+												>
+													{itemChildren.name}
+													{valueFilter.id === itemChildren.id && valueFilter.type === 'brand' && (
+														<i
+															className="fa fa-check"
+															aria-hidden="true"
+															style={{ marginLeft: '14px', color: 'red' }}
+														></i>
+													)}
+												</MenuItem>
+											);
+										})}
+									</React.Fragment>
+								);
+							})}
+						</Menu>
+					</div>
+				</Grid>
+				<Grid item xs={12} style={{ paddingBottom: 0 }}>
+					<div>
+						<Button
+							id="basic-button"
+							aria-controls="basic-menu"
+							aria-haspopup="true"
+							aria-expanded={openActive ? 'true' : undefined}
+							onClick={handleClickActive}
+							style={{
+								border: '1px solid',
+								padding: '2px',
+								paddingRight: 0,
+								paddingLeft: '7px',
+								textTransform: 'inherit',
+							}}
+						>
+							{valueActive.value}
+							<ArrowDropDownIcon />
+						</Button>
+						<Menu
+							id="basic-menu"
+							anchorEl={anchorElActive}
+							open={openActive}
+							onClose={handleCloseActive}
+							MenuListProps={{
+								'aria-labelledby': 'basic-button',
+							}}
+						>
+							<MenuItem
+								onClick={() => {
+									setAnchorElActive(null);
+									setValueActive({ id: 0, value: 'Danh sach san pham dang duoc kich hoat' });
+									setFilterSearch({
+										...filterSearch,
+										Page: 0,
+										active: 'active',
+									});
+									setPageTB(0);
+								}}
+							>
+								Danh sach nguoi dung da duoc kich hoat&nbsp;
+								{valueActive.id === 0 && (
+									<i
+										className="fa fa-check"
+										aria-hidden="true"
+										style={{ marginLeft: '14px', color: 'red' }}
+									></i>
+								)}
+							</MenuItem>
+							<MenuItem
+								onClick={() => {
+									setAnchorElActive(null);
+									setValueActive({ id: 1, value: 'Danh sach san pham dang tam khoa' });
+									setFilterSearch({
+										...filterSearch,
+										Page: 0,
+										active: 'noactive',
+									});
+									setPageTB(0);
+								}}
+							>
+								Danh sach nguoi dung dang tam khoa&nbsp;
+								{valueActive.id === 1 && (
+									<i
+										className="fa fa-check"
+										aria-hidden="true"
+										style={{ marginLeft: '14px', color: 'red' }}
+									></i>
+								)}
+							</MenuItem>
+						</Menu>
+					</div>
+				</Grid>
+
+				<Grid item xs={12} style={{ paddingTop: 0 }}>
 					{progressListTypeProduct && (
 						<CircularProgress
 							color="secondary"
@@ -304,17 +699,19 @@ const BranchProduct: React.FC = () => {
 								<Tooltip title="Tao moi" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi thuong hieu');
-											setDataEdit({ id: 0, name: '', id_type: '', name_type: '' });
-											setProgressListTypeProduct(true);
-											const response = await ListTypeProductGet();
-											if (response) {
-												if (response.errorCode === null) {
-													setDataListTypeProduct(response.data.listData);
-													setOpen(true);
-													setProgressListTypeProduct(false);
-												}
-											}
+											setTitleDialog('Tao moi san pham');
+											setDataEdit({
+												id: 0,
+												name: '',
+												quantity: 0,
+												id_brand: idBrandDef,
+												unit_price: 0,
+												promotion_price: 0,
+												description: '',
+											});
+
+											setOpen(true);
+											setShowDialog(1);
 										}}
 									>
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
@@ -411,7 +808,7 @@ const BranchProduct: React.FC = () => {
 												if (result.isConfirmed) {
 													let count = 0;
 													selectedRows.data?.map(async (item: any) => {
-														const response = await DeleteBranchProductDelete(data[item.index].id);
+														const response = await DeleteProductDelete(data[item.index].id_product);
 														if (response) {
 															if (response.errorCode === null) {
 																count++;
@@ -490,7 +887,7 @@ const BranchProduct: React.FC = () => {
 												if (result.isConfirmed) {
 													let count = 0;
 													selectedRows.data?.map(async (item: any) => {
-														const response = await DeleteProductTypeGet(data[item.index].id);
+														const response = await DeleteProductDelete(data[item.index].id_product);
 														if (response) {
 															if (response.errorCode === null) {
 																count++;
@@ -539,14 +936,17 @@ const BranchProduct: React.FC = () => {
 				onClose={handleClose}
 				aria-labelledby="form-dialog-title"
 				fullWidth
+				maxWidth={showDialog === 0 ? 'sm' : 'lg'}
 			>
-				<BranchProductEdit
+				{/* <BrandProductEdit
 					dataEdit={dataEdit}
 					cancel={cancel}
 					create={create}
 					titleDialog={titleDialog}
 					dataListTypeProduct={dataListTypeProduct}
-				/>
+
+				/> */}
+				{handleShowDialog()}
 			</Dialog>
 			<ToastContainer
 				position="top-right"
@@ -562,4 +962,4 @@ const BranchProduct: React.FC = () => {
 		</Container>
 	);
 };
-export default BranchProduct;
+export default Product;

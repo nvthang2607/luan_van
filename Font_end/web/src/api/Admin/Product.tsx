@@ -35,10 +35,10 @@ export const SearchTypeProductGet = (data: any) => {
 	});
 	return response;
 };
-export const SearchBranchProductGet = (data: any) => {
+export const SearchBrandProductGet = (data: any) => {
 	const response = callApi(
 		'GET',
-		`/api/admin/search_branch_product?page=${data.page}&pageSize=${data.pageSize}&search=${data.search}`
+		`/api/admin/search_brand_product?page=${data.page}&pageSize=${data.pageSize}&search=${data.search}`
 	).catch((res) => {
 		return res;
 	});
@@ -50,23 +50,100 @@ export const ListTypeProductGet = () => {
 	});
 	return response;
 };
-export const CreateBranchProductPost = (data: any) => {
-	const response = callApi('POST', '/api/admin/create_branch_product', data).catch((res) => {
+export const CreateBrandProductPost = (data: any) => {
+	const response = callApi('POST', '/api/admin/create_brand_product', data).catch((res) => {
 		return res;
 	});
 	return response;
 };
-export const EditBranchProductPatch = (data: any) => {
-	const response = callApi('PATCH', '/api/admin/update_branch_product', data).catch((res) => {
+export const EditBrandProductPatch = (data: any) => {
+	const response = callApi('PATCH', '/api/admin/update_brand_product', data).catch((res) => {
 		return res;
 	});
 	return response;
 };
-export const DeleteBranchProductDelete = (id_branch_product: any) => {
-	const response = callApi('DELETE', `/api/admin/delete_branch_product/${id_branch_product}`).catch(
+export const DeleteBrandProductDelete = (id_brand_product: any) => {
+	const response = callApi('DELETE', `/api/admin/delete_brand_product/${id_brand_product}`).catch(
 		(res) => {
 			return res;
 		}
 	);
+	return response;
+};
+export const ListProductGet = (data: any) => {
+	const response = callApi(
+		'GET',
+		`/api/admin/list_product?page=${data.page}&pageSize=${data.pageSize}&type=${data.type}&id=${data.id}&search=${data.search}&active=${data.active}`
+	).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const DeleteProductDelete = (id_product: any) => {
+	const response = callApi('GET', `/api/admin/active_product/${id_product}`).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const CreateProductPost = (data: any) => {
+	const response = callApi('POST', '/api/admin/create_product', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const CreateImagePost = (data: any) => {
+	const response = callApi('POST', '/api/admin/create_image', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const CreateInformationPost = (data: any) => {
+	const response = callApi('POST', '/api/admin/create_information', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const UpdateInformationPatch = (data: any) => {
+	const response = callApi('PATCH', '/api/admin/update_product', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const UpdateQuantityProductPatch = (data: any) => {
+	const response = callApi('PATCH', '/api/admin/update_quantity_product', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const UpdateDescriptionPatch = (data: any) => {
+	const response = callApi('PATCH', '/api/admin/update_information', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const DeleteInformationDelete = (id_information: any) => {
+	const response = callApi('DELETE', `/api/admin/delete_information/${id_information}`).catch(
+		(res) => {
+			return res;
+		}
+	);
+	return response;
+};
+export const GetImageGet = (id_product: any) => {
+	const response = callApi('GET', `/api/admin/list_image?id_product=${id_product}`).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const DeleteImageDelete = (id_image: any) => {
+	const response = callApi('DELETE', `/api/admin/delete_image/${id_image}`).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const UpdateImagePost = (data: any) => {
+	const response = callApi('POST', '/api/admin/update_image', data).catch((res) => {
+		return res;
+	});
 	return response;
 };

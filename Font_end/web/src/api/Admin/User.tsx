@@ -9,7 +9,7 @@ export const UserPost = (data: any) => {
 export const SearchUserGet = (data: any) => {
 	const response = callApi(
 		'GET',
-		`/api/admin/search_users?page=${data.page}&pageSize=${data.pageSize}&search=${data.search}`
+		`/api/admin/list_users?page=${data.page}&pageSize=${data.pageSize}&search=${data.search}&type=${data.type}`
 	).catch((res) => {
 		return res;
 	});

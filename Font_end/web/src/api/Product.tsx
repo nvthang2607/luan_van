@@ -1,17 +1,15 @@
 import { callApi } from './api';
 
-export const TypeBranch = () => {
-	const response = callApi('GET', '/api/type_and_branch/select_list').catch((res) => {
+export const TypeBrand = () => {
+	const response = callApi('GET', '/api/type_and_brand/select_list').catch((res) => {
 		return res;
 	});
 	return response;
 };
-export const PhoneBranch = () => {
-	const response = callApi('POST', '/api/branch_product/select_list', { idType: 1 }).catch(
-		(res) => {
-			return res;
-		}
-	);
+export const PhoneBrand = () => {
+	const response = callApi('POST', '/api/brand_product/select_list', { idType: 1 }).catch((res) => {
+		return res;
+	});
 	return response;
 };
 export const SearchPhoneGet = (data: any) => {

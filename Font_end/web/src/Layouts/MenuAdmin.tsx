@@ -201,7 +201,7 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 	};
 
 	const history = useHistory();
-	const [showBranch, setShowBranch] = React.useState('');
+	const [showBrand, setShowBrand] = React.useState('');
 	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	const handleNavLink = (id: number) => {
 		if (id === 1) {
@@ -218,9 +218,9 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 		if (id === 202) {
 			return AppURL.ADMIN_TYPE_PRODUCT;
 		} else if (id === 203) {
-			return AppURL.ADMIN_BRANCH_PRODUCT;
+			return AppURL.ADMIN_BRAND_PRODUCT;
 		} else if (id === 204) {
-			return AppURL.MANAGER_USER;
+			return AppURL.ADMIN_PRODUCT;
 		} else {
 			return AppURL.ADMIN_HOME;
 		}

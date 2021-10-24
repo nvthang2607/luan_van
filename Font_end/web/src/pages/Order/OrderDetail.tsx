@@ -412,7 +412,7 @@ const OrderDetail: React.FC = () => {
 											return (
 												<TableRow>
 													<TableCell style={{ paddingRight: 0 }}>
-														<img width="71px" src={`http://localhost:8000/${item.image}`} />
+														<img width="71px" src={`http://localhost:8000${item.image}`} />
 													</TableCell>
 													<TableCell>
 														<Typography gutterBottom>{item.name_product}</Typography>

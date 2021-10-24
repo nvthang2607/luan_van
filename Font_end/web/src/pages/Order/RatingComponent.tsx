@@ -108,7 +108,7 @@ const RatingComponent: React.FC<RatingProps> = (props) => {
 					<DialogTitle id="form-dialog-title">
 						<Box style={{ display: 'flex' }}>
 							<Box style={{ marginRight: '20px' }}>
-								<img width="50px" src={`http://localhost:8000/${props.data.link}`} />
+								<img width="50px" src={`http://localhost:8000${props.data.link}`} />
 							</Box>
 							<Box>
 								<Typography style={{ fontWeight: 500 }}>{props.data.name}</Typography>

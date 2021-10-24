@@ -20,7 +20,7 @@ import LaptopIcon from '@material-ui/icons/Laptop';
 import TabletAndroidIcon from '@material-ui/icons/TabletAndroid';
 import HeadsetIcon from '@material-ui/icons/Headset';
 import clsx from 'clsx';
-import { TypeBranch } from '../api/Product';
+import { TypeBrand } from '../api/Product';
 import { Link } from 'react-router-dom';
 const useStyles = makeStyles((theme: Theme) => ({
 	bgHeader: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 		marginTop: '20px',
 		marginBottom: '10px',
 	},
-	stylePhoneBranch: {
+	stylePhoneBrand: {
 		textDecoration: 'none',
 		color: 'black',
 		fontWeight: 'bold',
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 			color: '#ff6600',
 		},
 	},
-	showBoxBranch: {
+	showBoxBrand: {
 		display: 'inline-flex !important',
 	},
 	bgCategory: {
@@ -98,46 +98,46 @@ const Menu: React.FC = () => {
 		return str;
 	};
 	React.useEffect(() => {
-		const fetchTypeBranch = async () => {
-			const getTypeBranch = await TypeBranch();
-			if (getTypeBranch) {
-				if (getTypeBranch.errorCode === null) {
-					//	console.log(getTypeBranch);
-					setDataMenu(getTypeBranch);
+		const fetchTypeBrand = async () => {
+			const getTypeBrand = await TypeBrand();
+			if (getTypeBrand) {
+				if (getTypeBrand.errorCode === null) {
+					//	console.log(getTypeBrand);
+					setDataMenu(getTypeBrand);
 				}
 			}
 		};
-		fetchTypeBranch();
+		fetchTypeBrand();
 	}, []);
-	const [showBoxBranch, setShowBoxBranch] = React.useState(false);
+	const [showBoxBrand, setShowBoxBrand] = React.useState(false);
 	const [showBoxCategories, setShowBoxCategories] = React.useState(false);
 	const [idProduct, setIdProduct] = React.useState(0);
-	const [dataBranch, setDataBranch] = React.useState<any>([]);
+	const [dataBrand, setDataBrand] = React.useState<any>([]);
 	const onMouseOverProduct = (item: any) => {
 		setIdProduct(item.id);
 
-		setDataBranch(item.branch);
-		if (item.branch.length > 0) {
-			setShowBoxBranch(true);
+		setDataBrand(item.brand);
+		if (item.brand.length > 0) {
+			setShowBoxBrand(true);
 		}
 	};
-	const onMouseOverBoxBranch = () => {
-		setShowBoxBranch(true);
+	const onMouseOverBoxBrand = () => {
+		setShowBoxBrand(true);
 		setShowBoxCategories(true);
 	};
-	const onMouseOutBoxBranch = () => {
-		setShowBoxBranch(false);
+	const onMouseOutBoxBrand = () => {
+		setShowBoxBrand(false);
 		setShowBoxCategories(false);
 		//setIdProduct(0);
 	};
-	const showBranch = () => {
-		if (dataBranch.length > 0) {
-			const data = dataBranch.map((item: any) => {
+	const showBrand = () => {
+		if (dataBrand.length > 0) {
+			const data = dataBrand.map((item: any) => {
 				return (
 					<React.Fragment>
 						<Link
 							to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-							className={classes.stylePhoneBranch}
+							className={classes.stylePhoneBrand}
 						>
 							<ListItem>
 								<Typography>{item.name}</Typography>
@@ -150,10 +150,10 @@ const Menu: React.FC = () => {
 		}
 	};
 	const onMouseOutProduct = (item: any) => {
-		setShowBoxBranch(false);
+		setShowBoxBrand(false);
 		//setIdProduct(0);
 	};
-	const onClickBranch = (item: any) => {
+	const onClickBrand = (item: any) => {
 		console.log(item);
 	};
 	const showListCategories = () => {
@@ -171,10 +171,10 @@ const Menu: React.FC = () => {
 					}
 				};
 
-				// const showBranch = item.branch.map((item: any, index: number) => {
+				// const showBrand = item.brand.map((item: any, index: number) => {
 				// 	return (
 				// 		<React.Fragment>
-				// 			<ListItem button onClick={() => onClickBranch(item)} divider>
+				// 			<ListItem button onClick={() => onClickBrand(item)} divider>
 				// 				<ListItemText primary={item.name} />
 				// 			</ListItem>
 				// 		</React.Fragment>
@@ -190,7 +190,7 @@ const Menu: React.FC = () => {
 						{showIcon(item)}
 						&nbsp;&nbsp;
 						<ListItemText primary={item.name} />
-						{item.branch?.length > 0 && (
+						{item.brand?.length > 0 && (
 							<i
 								className="fa fa-angle-right"
 								aria-hidden="true"
@@ -285,7 +285,7 @@ const Menu: React.FC = () => {
 					</Box>
 				</Box>
 				<Box
-					className={clsx(classes.button, showBoxBranch && classes.showBoxBranch)}
+					className={clsx(classes.button, showBoxBrand && classes.showBoxBrand)}
 					style={{
 						position: 'absolute',
 						top: '97%',
@@ -298,11 +298,11 @@ const Menu: React.FC = () => {
 						paddingLeft: '63px',
 						//minHeight: '295px',
 					}}
-					onMouseOver={onMouseOverBoxBranch}
-					onMouseOut={onMouseOutBoxBranch}
+					onMouseOver={onMouseOverBoxBrand}
+					onMouseOut={onMouseOutBoxBrand}
 				>
 					<Box boxShadow={3} className={classes.bgProduct}>
-						<List>{showBranch()}</List>
+						<List>{showBrand()}</List>
 					</Box>
 				</Box>
 			</Grid>
