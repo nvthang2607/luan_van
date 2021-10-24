@@ -14,7 +14,7 @@ class ImageController extends Controller
     public function __construct() {
         $this->middleware('auth:api', ['except' => ['convert_name']]);
     }
-    public function get_list_image(request $req){
+    public function get_admin_list_image(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $image=ImageProduct::where('id_product',$req->id_product)->orderBy('parent', 'DESC')->get();
             $data=collect();
@@ -46,15 +46,19 @@ class ImageController extends Controller
         }
 
     }
-    public function delete_image(request $req){
-        
+    public function delete_admin_delete_image(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $image=ImageProduct::find($req->id_image);
-            $productImage = str_replace('/storage', '', $image->image);
-            Storage::delete('/public' . $productImage);
-            $image->delete();
-            return response()->json(['errorCode'=> null,'data'=>true], 200);
+            if($image){
+                $productImage = str_replace('/storage', '', $image->image);
+                Storage::delete('/public' . $productImage);
+                $image->delete();
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            } 
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy hình ảnh!'], 401);
             }
+        }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
@@ -129,7 +133,6 @@ class ImageController extends Controller
                 Storage::delete('/public' . $productImage);
 
                 //thêm ảnh mới
-                $old_image=$image1->image;
                 $name=$image1->product->name;
                 $name=$this->convert_name($name);
                 $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file

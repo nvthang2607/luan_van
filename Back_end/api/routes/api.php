@@ -20,6 +20,7 @@ use App\Http\Controllers\BillDetailController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\SlideController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -169,47 +170,59 @@ Route::group([
     Route::delete('/delete_users/{id_user}', [UserController::class, 'delete_admin_delete_users']);
     Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
     //type
-    Route::get('/list_type_product', [TypeProductController::class, 'get_list_type_product']);
-    Route::delete('/delete_type_product/{id_type_product}', [TypeProductController::class, 'delete_type_product']);
+    Route::get('/list_type_product', [TypeProductController::class, 'get_admin_list_type_product']);
+    Route::delete('/delete_type_product/{id_type_product}', [TypeProductController::class, 'delete_admin_delete_type_product']);
     Route::post('/create_type_product', [TypeProductController::class, 'post_admin_create_type_product']);
     Route::patch('/update_type_product', [TypeProductController::class, 'patch_admin_update_type_product']);
     Route::get('/search_type_product', [TypeProductController::class, 'get_admin_search_type_product']);
     //brand
-    Route::get('/list_brand_product', [BrandProductController::class, 'get_list_brand_product']);
-    Route::delete('/delete_brand_product/{id_brand_product}', [BrandProductController::class, 'delete_brand_product']);
+    Route::get('/list_brand_product', [BrandProductController::class, 'get_admin_list_brand_product']);
+    Route::delete('/delete_brand_product/{id_brand_product}', [BrandProductController::class, 'delete_admin_delete_brand_product']);
     Route::post('/create_brand_product', [BrandProductController::class, 'post_admin_create_brand_product']);
     Route::patch('/update_brand_product', [BrandProductController::class, 'patch_admin_update_brand_product']);
     Route::get('/search_brand_product', [BrandProductController::class, 'get_admin_search_brand_product']);
     
     //product
-    Route::get('/list_product', [ProductController::class, 'get_list_product']);
-    Route::get('/active_product/{id_product}', [ProductController::class, 'get_active_product']);
+    Route::get('/list_product', [ProductController::class, 'get_admin_list_product']);
+    Route::get('/active_product/{id_product}', [ProductController::class, 'get_admin_active_product']);
     Route::post('/create_product', [ProductController::class, 'post_admin_create_product']);
     Route::patch('/update_product', [ProductController::class, 'patch_admin_update_product']);
     Route::patch('/update_quantity_product', [ProductController::class, 'patch_admin_update_quantity_product']);
     
     //image
-    Route::get('/list_image', [ImageController::class, 'get_list_image']);
-    Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_image']);
+    Route::get('/list_image', [ImageController::class, 'get_admin_list_image']);
+    Route::delete('/delete_image/{id_image}', [ImageController::class, 'delete_admin_delete_image']);
     Route::post('/create_image', [ImageController::class, 'post_admin_create_image']);
     Route::post('/update_image', [ImageController::class, 'post_admin_update_image']);
     //information
-    Route::get('/list_information', [InformationController::class, 'get_list_information']);
-    Route::delete('/delete_information/{id_information}', [InformationController::class, 'delete_information']);
+    Route::get('/list_information', [InformationController::class, 'get_admin_list_information']);
+    Route::delete('/delete_information/{id_information}', [InformationController::class, 'delete_admin_delete_information']);
     Route::post('/create_information', [InformationController::class, 'post_admin_create_information']);
     Route::patch('/update_information', [InformationController::class, 'patch_admin_update_information']);
 
-    //information
-    Route::get('/list_promotion', [PromotionController::class, 'get_list_promotion']);
-    Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_promotion']);
+    //promotion
+    Route::get('/list_promotion', [PromotionController::class, 'get_admin_list_promotion']);
+    Route::delete('/delete_promotion/{id_promotion}', [PromotionController::class, 'delete_admin_delete_promotion']);
     Route::post('/create_promotion', [PromotionController::class, 'post_admin_create_promotion']);
     Route::patch('/update_promotion', [PromotionController::class, 'patch_admin_update_promotion']);
 
     //bill
-    Route::get('/list_bill', [BillController::class, 'get_list_bill']);
+    Route::get('/list_bill', [BillController::class, 'get_admin_list_bill']);
     Route::post('/approve_bill', [BillController::class, 'post_approve_bill']);
     Route::post('/cancel_bill', [BillController::class, 'post_cancel_bill']);
 
     //billdetail
     Route::patch('/delete_billdetail', [BillDetailController::class, 'patch_admin_delete_billdetail']);
+
+    //slide
+    Route::get('/list_slide', [SlideController::class, 'get_admin_list_slide']);
+    Route::delete('/delete_slide/{id_slide}', [SlideController::class, 'delete_admin_delete_slide']);
+    Route::post('/create_slide', [SlideController::class, 'post_admin_create_slide']);
+    Route::post('/update_slide', [SlideController::class, 'post_admin_update_slide']);
+
+    //news
+    Route::get('/list_news', [NewsController::class, 'get_admin_list_news']);
+    Route::delete('/delete_news/{id_news}', [NewsController::class, 'delete_admin_delete_news']);
+    Route::post('/create_news', [NewsController::class, 'post_admin_create_news']);
+    Route::post('/update_news', [NewsController::class, 'post_admin_update_news']);
 });

@@ -23,7 +23,7 @@ class PromotionController extends Controller
         }
     }
 
-    public function get_list_promotion(request $req){
+    public function get_admin_list_promotion(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $now=Carbon::now('Asia/Ho_Chi_Minh');
             $promotion=Promotion::where('name','like','%'.$req->search.'%')->get();
@@ -46,7 +46,7 @@ class PromotionController extends Controller
         }
     }
 
-    public function delete_promotion(request $req){
+    public function delete_admin_delete_promotion(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $promotion=Promotion::find($req->id_promotion);
             if($promotion==null){

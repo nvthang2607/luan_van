@@ -52,7 +52,7 @@ class TypeProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
         }
     }
-    public function get_list_type_product(request $req){
+    public function get_admin_list_type_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             return $this->get_type_product_select_list($req);
         }
@@ -60,7 +60,7 @@ class TypeProductController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
     }
-    public function delete_type_product(request $req){
+    public function delete_admin_delete_type_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $type=TypeProduct::find($req->id_type_product);
             if($type!=null){

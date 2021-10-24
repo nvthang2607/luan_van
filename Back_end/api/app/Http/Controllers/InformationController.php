@@ -7,7 +7,7 @@ use App\Models\Product;
 use App\Models\InformationProduct;
 class InformationController extends Controller
 {
-    public function get_list_information(request $req){
+    public function get_admin_list_information(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
                 'id_product'=>'required|exists:product,id',
@@ -28,7 +28,7 @@ class InformationController extends Controller
     }
 
 
-    public function delete_information(request $req){
+    public function delete_admin_delete_information(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $information=InformationProduct::find($req->id_information);
             if($information==null){

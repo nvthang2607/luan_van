@@ -235,7 +235,7 @@ class BillController extends Controller
         }
     }
 
-    public function get_list_bill(request $req){
+    public function get_admin_list_bill(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             $c=Customer::where('phone','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
             if($c->count()==0){

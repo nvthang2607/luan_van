@@ -1,66 +1,38 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\News;
+
+use Illuminate\Http\Request;
+use App\Models\Slide;
+use App\Models\Product;
+use App\Models\ImageProduct;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 use Image;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
 
-class NewsController extends Controller
+class SlideController extends Controller
 {
+    //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_news_id','post_news','convert_name']]);
+        $this->middleware('auth:api', ['except' => ['convert_name']]);
     }
-    public function get_news_id(request $req){
-        $news=News::find($req->id);
-        if($news){
-            $data=$news;
-            return response()->json(['errorCode'=> null,'data'=>$data], 200);
-            }
-        else{
-            return response()->json(['errorCode'=> 4, 'data'=>null], 404);
-        }
-    }
-    public function post_news(request $req){
-        $news=News::all()->sortByDesc("id");
-        $n=$news->count();
-        $data=[];
-        $datas=$news->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-        if(count($datas)>0){
-            $u=0;
-            foreach($datas as $i){
-                $date= $i->created_at;
-                $date = Carbon::parse($date);
-                $thu=$date->dayOfWeek;
-                if($thu==0){
-                    $t='Chủ nhật, ';
-                }
-                else{
-                    $thu=$thu+1;
-                    $t='Thứ '.$thu.', ';
-                }
-                $day=$date->day;
-                $month=$date->month;
-                $year=$date->year;
-                $date=$t.$day.'/'.$month.'/'.$year;
-                $data[$u]=['id'=>$i->id,'id_user'=>$i->id_user,'image'=>$i->image,'title'=>$i->title,'created_at'=>$date];
-                $u++;
-            }
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
-            }
-        else{
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>[]]], 200);
-        }
-    }
-
-    public function get_admin_list_news(request $req){
+    public function get_admin_list_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $news=News::where('title','like','%'.$req->search.'%')->get();
-            $n=$news->count();
-            $news=$news->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$news]], 200);
+
+            if($req->id_product==null){
+                $image=Slide::all()->sortByDesc("id");
+            }
+            else{
+                $image=Slide::where('id_product',$req->id_product)->get();
+            }
+            if(count($image)>0){
+                $n=$image->count();
+                $image=$image->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$image]], 200);
+            }else{
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
@@ -87,30 +59,30 @@ class NewsController extends Controller
 		$str = preg_replace("/( )/", '-', $str);
 		return $str;
 	}
-
-    public function post_admin_create_news(request $req){
+    public function post_admin_create_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'image'=>'required',
-                'title'=>'required',
-                'content'=>'required',
+                'id_product'=>'required|exists:product,id',
+                'image'=>'required'
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
+            $product=Product::find($req->id_product);
+            $name=$product->name;
+            $name=$this->convert_name($name);
             $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file
+                    
             // Filename cực shock để khỏi bị trùng
-            $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."." . $fileExtension;
+            $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
             $file = $req->file('image');
             $image = Image::make($file);
-            $image->save('storage/image/news/'.$fileName);
-            $url = Storage::url('image/news/'.$fileName);
-            $news=new News;
-            $news->image=$url;
-            $news->id_user=auth()->user()->id;
-            $news->title=$req->title;
-            $news->content=$req->content;
-            if($news->save()){
+            $image->save('storage/image/slide/'.$fileName);
+            $url = Storage::url('image/slide/'.$fileName);
+            $slide=new Slide;
+            $slide->id_product=$req->id_product;
+            $slide->image=$url;
+            if($slide->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {
@@ -122,17 +94,17 @@ class NewsController extends Controller
         }
     }
 
-    public function delete_admin_delete_news(request $req){
+    public function delete_admin_delete_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $news=News::find($req->id_news);
-            if($news){
-                $productNews = str_replace('/storage', '', $news->image);
-                Storage::delete('/public' . $productNews);
-                $news->delete();
+            $slide=Slide::find($req->id_slide);
+            if($slide){
+                $productSlide = str_replace('/storage', '', $slide->image);
+                Storage::delete('/public' . $productSlide);
+                $slide->delete();
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy tin tức!'], 401);
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy slide!'], 401);
             }
         }
         else{
@@ -140,39 +112,38 @@ class NewsController extends Controller
         }
     }
 
-    public function post_admin_update_news(request $req){
+
+    public function post_admin_update_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $validator = Validator::make($req->all(), [
-                'id_news'=>'required|exists:news,id',
+                'id_slide'=>'required|exists:slide,id',
             ]);
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
-            $news=News::find($req->id_news);
+            $slide=Slide::find($req->id_slide);
             if($req->has('image')) {
                 //xóa ảnh cũ
-                $productNews = str_replace('/storage', '', $news->image);
-                Storage::delete('/public' . $productNews);
+                $productSlide = str_replace('/storage', '', $slide->image);
+                Storage::delete('/public' . $productSlide);
 
                 //thêm ảnh mới
+                $name=$slide->product->name;
+                $name=$this->convert_name($name);
                 $fileExtension = $req->file('image')->getClientOriginalExtension(); // Lấy . của file
                         
                 // Filename cực shock để khỏi bị trùng
-                $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999))."." . $fileExtension;
+                $fileName = time() . "_" . rand(0,9999999) . "_" . md5(rand(0,9999999)) ."_" . $name."." . $fileExtension;
                 $file = $req->file('image');
                 $image = Image::make($file);
-                $image->save('storage/image/news/'.$fileName);
-                $url = Storage::url('image/news/'.$fileName);
-                $news->image=$url;
+                $image->save('storage/image/slide/'.$fileName);
+                $url = Storage::url('image/slide/'.$fileName);
+                $slide->image=$url;
             }
-            $news->id_user=auth()->user()->id;
-            if($req->has('title')){
-                $news->title=$req->title;
+            if($req->has('id_product')){
+                $slide->id_product=$req->id_product;
             }
-            if($req->has('content')){
-                $news->content=$req->content;
-            }
-            if($news->save()){
+            if($slide->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else {

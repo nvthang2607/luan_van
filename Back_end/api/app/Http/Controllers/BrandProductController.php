@@ -45,7 +45,7 @@ class BrandProductController extends Controller
         }
     }
 
-    function get_list_brand_product(request $req){
+    function get_admin_list_brand_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             if($req->id_type==null){
                 $brand_product=BrandProduct::all('id','name')->sortByDesc("id");
@@ -67,7 +67,7 @@ class BrandProductController extends Controller
         }
     }
 
-    public function delete_brand_product(request $req){
+    public function delete_admin_delete_brand_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $brand_product=BrandProduct::find($req->id_brand_product);
             if($brand_product!=null){

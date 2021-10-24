@@ -33,4 +33,7 @@ class Product extends Model
     public function billdetail(){
         return $this->hasMany('App\Models\BillDetail','id_product','id');
     }
+    public function slide(){
+        return $this->hasOne('App\Models\Slide','id_product','id');
+    }
 }

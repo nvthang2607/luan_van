@@ -294,7 +294,7 @@ class ProductController extends Controller
         }
     }
 
-    public function get_list_product(request $req){
+    public function get_admin_list_product(request $req){
         if(Auth()->user()->isadmin=='user'){
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
@@ -409,7 +409,7 @@ class ProductController extends Controller
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data2]], 200);
     }
 
-    public function get_active_product(request $req){
+    public function get_admin_active_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $product=Product::find($req->id_product);
             if($product!=null){
