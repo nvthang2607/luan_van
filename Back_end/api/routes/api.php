@@ -209,4 +209,7 @@ Route::group([
     Route::get('/list_bill', [BillController::class, 'get_list_bill']);
     Route::post('/approve_bill', [BillController::class, 'post_approve_bill']);
     Route::post('/cancel_bill', [BillController::class, 'post_cancel_bill']);
+
+    //billdetail
+    Route::patch('/delete_billdetail', [BillDetailController::class, 'patch_admin_delete_billdetail']);
 });

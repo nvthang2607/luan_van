@@ -27,6 +27,7 @@ class PromotionController extends Controller
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $now=Carbon::now('Asia/Ho_Chi_Minh');
             $promotion=Promotion::where('name','like','%'.$req->search.'%')->get();
+            $promotion=$promotion->where('id_product',$req->id_product);
             if($req->type==1){
                 $promotion=$promotion->where('start','<=',$now)->where('finish','>=',$now);
             }

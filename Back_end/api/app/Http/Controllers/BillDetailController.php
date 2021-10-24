@@ -7,6 +7,7 @@ use App\Models\BillDetail;
 use App\Models\User;
 use League\Csv\Writer;
 use Carbon\Carbon;
+use Validator;
 use Illuminate\Http\Request;
 
 class BillDetailController extends Controller
@@ -136,5 +137,42 @@ class BillDetailController extends Controller
             }    
             
         }        
+    }
+
+    public function patch_admin_delete_billdetail(request $req){
+        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            if($req->bill_detail==null){
+                return response()->json(['errorCode'=> null, 'data'=>true], 200);
+            }
+            $errors=[];
+            $t=0;
+            $e=0;
+            foreach($req->bill_detail as $i){
+                $validator = Validator::make($i,[
+                    'id_billdetail'=>'exists:bill_detail,id',
+                ]);
+               
+                if ($validator->fails()) {
+                    $e++;
+                    $p="Has error in raw ".$t.": ".$validator->messages();
+                    $p = str_replace('"', '', $p);
+                    $errors[count($errors)]=$p;
+                }
+                $t++;
+            }
+            if($e>0){
+                return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
+            }
+            foreach($req->bill_detail as $i){
+                $a=BillDetail::find($i);
+                foreach($a as $a){
+                    $a->delete();
+                }
+            }
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền chỉnh sửa chi tiết đơn hàng!'], 401);
+        }
     }
 }
