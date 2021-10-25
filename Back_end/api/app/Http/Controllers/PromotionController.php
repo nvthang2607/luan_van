@@ -28,6 +28,8 @@ class PromotionController extends Controller
             $now=Carbon::now('Asia/Ho_Chi_Minh');
             $promotion=Promotion::where('name','like','%'.$req->search.'%')->get();
             $promotion=$promotion->where('id_product',$req->id_product);
+            $data=collect();
+            
             if($req->type==1){
                 $promotion=$promotion->where('start','<=',$now)->where('finish','>=',$now);
             }
@@ -37,9 +39,12 @@ class PromotionController extends Controller
             elseif($req->type==3){
                 $promotion=$promotion->where('start','>',$now);
             }
-            $n=$promotion->count();
-            $promotion=$promotion->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            return response()->json(['errorCode'=> null,'totalCount'=>$n,'data'=>$promotion],200);
+            foreach($promotion as $i){
+                $data[]=$i;
+            }
+            $n=$data->count();
+            $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null,'totalCount'=>$n,'data'=>$data],200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
