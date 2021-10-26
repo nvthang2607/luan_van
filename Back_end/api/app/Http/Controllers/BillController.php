@@ -289,7 +289,32 @@ class BillController extends Controller
             $datas=collect();
             foreach($data as $i){
                 $customer=$i->customer;
-                $i->billdetail;
+                $bill_dt=$i->billdetail;
+                $bill_stt=$i->status;
+                $bill_status=collect();
+                $bill_detail=collect();
+                foreach($bill_stt as $u){
+                    $bill_status[]=[
+                        'status'=>$u->status,
+                        'user'=>$u->admin->name,
+                        'created_at'=>$u->updated_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$u->updated_at->format('Y/m/d H:i:s'),
+                    ];
+                }
+                foreach($bill_dt as $u){
+                    dd($u->product->image_product->image);
+                    $bill_detail[]=[
+                        'id_detail'=>$u->id,
+                        'id_product'=>$u->id_product,
+                        'image'=>$u->product->image_product->image,
+                        'name_product'=>$u->product->name,
+                        'price'=>$u->price,
+                        'quantity'=>$u->quantity,
+                        'rate'=>$u->rate,
+                        'created_at'=>$u->updated_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$u->updated_at->format('Y/m/d H:i:s'),
+                    ];
+                }
                 $datas[]=[
                     'id_customer'=>$customer->id,
                     'name_customer'=>$customer->name,
@@ -303,8 +328,8 @@ class BillController extends Controller
                     'not'=>$i->note,
                     'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
                     'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
-                    'bill_detail'=>$i->billdetail,
-                    'bill_status'=>$i->status,
+                    'bill_detail'=>$bill_billdetail,
+                    'bill_status'=>$bill_status,
                 ];
             }
             $n=$datas->count();
