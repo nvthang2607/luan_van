@@ -239,7 +239,7 @@ class BillController extends Controller
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             $c=Customer::where('phone','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
             if($c->count()==0){
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'data'=>[]]], 200);
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
             }
             $bill=collect();
             foreach($c as $c){
