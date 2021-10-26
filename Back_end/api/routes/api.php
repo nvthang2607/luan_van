@@ -212,6 +212,7 @@ Route::group([
     Route::post('/cancel_bill', [BillController::class, 'post_cancel_bill']);
 
     //billdetail
+    Route::get('/list_rated', [BillDetailController::class, 'get_admin_list_rated']);
     Route::patch('/delete_billdetail', [BillDetailController::class, 'patch_admin_delete_billdetail']);
 
     //slide

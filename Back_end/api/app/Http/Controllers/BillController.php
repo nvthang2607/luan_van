@@ -303,7 +303,7 @@ class BillController extends Controller
                 ];
             }
             $n=$datas->count();
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'data'=>$datas]], 200);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$datas]], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);

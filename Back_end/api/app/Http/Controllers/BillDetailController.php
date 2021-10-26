@@ -5,6 +5,7 @@ use App\Models\Bill;
 use App\Models\Customer;
 use App\Models\BillDetail;
 use App\Models\User;
+use App\Models\Product;
 use League\Csv\Writer;
 use Carbon\Carbon;
 use Validator;
@@ -138,7 +139,36 @@ class BillDetailController extends Controller
             
         }        
     }
-
+    public function get_admin_list_rated(request $req){
+        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            if($req->id_product==null){
+                $rated=BillDetail::all();
+            }
+            else{
+                $rated=BillDetail::where('id_product',$req->id_product)->get();
+            }
+            if($rated->count()>0){
+                $n=$rated->count();
+                $rated=$rated->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                $t=0;
+                foreach($rated as $i){
+                    if($i->rate==0){
+                        continue;
+                    }
+                    $t=$t+$i->rate;
+                }
+                $avg=$t/$n;
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'avg'=>$avg,'listData'=>$rated]], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'avg'=>0,'listData'=>[]]], 200);
+            }
+            
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền chỉnh sửa chi tiết đơn hàng!'], 401);
+        }
+    }
     public function patch_admin_delete_billdetail(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             if($req->bill_detail==null){
