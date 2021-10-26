@@ -169,7 +169,7 @@ class BillDetailController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền chỉnh sửa chi tiết đơn hàng!'], 401);
         }
     }
-    public function patch_admin_delete_billdetail(request $req){
+    public function post_admin_delete_billdetail(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             if($req->bill_detail==null){
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
