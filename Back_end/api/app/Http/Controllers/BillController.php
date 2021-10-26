@@ -319,28 +319,28 @@ class BillController extends Controller
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             $email=Bill::find($req->id_bill)->customer->email;
             $stt=Bill::find($req->id_bill)->status->last();
-            if($stt->status==4){
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không thể hủy đơn hàng có id: '.$req->id_bill.' vì đơn hàng đã hoàn thành!'], 500);
-            }
-            else{
-                $status=new Status;
-                $status->id_bill=$req->id_bill;
-                $status->id_user=auth()->user()->id;
-                $status->status=5;
-                if($status->save()){
-                    $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
-                    foreach($bill_detail as $item){
-                        $qty=$item->quantity;
-                        $id_product=$item->id_product;
-                        $product=Product::find($id_product);
-                        $n=$product->quantity+$qty;
-                        $product->quantity=$n;
-                        $product->save();
-                    }
-                    return response()->json(['errorCode'=> null, 'data'=>true], 200);
-                }else{
-                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);
+            if($stt){
+                if($stt->status==4){
+                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không thể hủy đơn hàng có id: '.$req->id_bill.' vì đơn hàng đã hoàn thành!'], 500);
                 }
+            }
+            $status=new Status;
+            $status->id_bill=$req->id_bill;
+            $status->id_user=auth()->user()->id;
+            $status->status=5;
+            if($status->save()){
+                $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
+                foreach($bill_detail as $item){
+                    $qty=$item->quantity;
+                    $id_product=$item->id_product;
+                    $product=Product::find($id_product);
+                    $n=$product->quantity+$qty;
+                    $product->quantity=$n;
+                    $product->save();
+                }
+                return response()->json(['errorCode'=> null, 'data'=>true], 200);
+            }else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Thao tác hủy đơn hàng có id: '.$req->id_bill.' thất bại!'], 500);
             }
         }
         else{

@@ -28,4 +28,8 @@ class ContactController extends Controller
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Có lỗi trong quá trình gửi thông tin liên hệ!'], 400);
         }
     }
+
+    public function get_admin_list_contact(request $req){
+        
+    }
 }
