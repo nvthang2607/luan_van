@@ -206,28 +206,30 @@ class BillController extends Controller
                     return response()->json(['errorCode'=> 4, 'data'=>$data], 401);
                 }
                 else{
-                    dd($bill_detail);
                     foreach($bill_detail as $bill_detail){
-                        $product = Product::find($bill_detail->product->id);
-                        $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
-                        $product->count =$bill_detail->product->count+$bill_detail->quantity;
-                        if(!$product->save()){
-                            $status3=Status::where('id_bill',$req->id_bill)->get();
-                            $status3->delete();
-                            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình trừ số lượng sản phẩm ra khỏi kho hàng!'], 401);
-                        }
+                        echo $bill_detail."<br>";
                     }
+                    // foreach($bill_detail as $bill_detail){
+                    //     $product = Product::find($bill_detail->product->id);
+                    //     $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
+                    //     $product->count =$bill_detail->product->count+$bill_detail->quantity;
+                    //     if(!$product->save()){
+                    //         $status3=Status::where('id_bill',$req->id_bill)->get();
+                    //         $status3->delete();
+                    //         return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình trừ số lượng sản phẩm ra khỏi kho hàng!'], 401);
+                    //     }
+                    // }
                 }
-                $status=new Status;
-                $status->id_user=auth()->user()->id;
-                $status->id_bill=$req->id_bill;
-                $status->status=2;
-                if($status->save()){
-                    return response()->json(['errorCode'=> null,'data'=>true], 200);
-                }
-                else{
-                    return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình duyệt hóa đơn!'], 401);
-                }
+                // $status=new Status;
+                // $status->id_user=auth()->user()->id;
+                // $status->id_bill=$req->id_bill;
+                // $status->status=2;
+                // if($status->save()){
+                //     return response()->json(['errorCode'=> null,'data'=>true], 200);
+                // }
+                // else{
+                //     return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Có lỗi trong quá trình duyệt hóa đơn!'], 401);
+                // }
                 
             }
         }
