@@ -23,6 +23,7 @@ class CreateNewsTable extends Migration
             $table->string('image',100);
             $table->longText('title',100);
             $table->text('content');
+            $table->boolean('active')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

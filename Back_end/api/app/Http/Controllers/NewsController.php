@@ -24,7 +24,7 @@ class NewsController extends Controller
         }
     }
     public function post_news(request $req){
-        $news=News::all()->sortByDesc("id");
+        $news=News::where('active',1)->orderBy('id', 'DESC')->get();
         $n=$news->count();
         $data=[];
         $datas=$news->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
@@ -122,16 +122,20 @@ class NewsController extends Controller
         }
     }
 
-    public function delete_admin_delete_news(request $req){
+    public function get_admin_active_news(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $news=News::find($req->id_news);
-            if($news){
-                $productNews = str_replace('/storage', '', $news->image);
-                Storage::delete('/public' . $productNews);
-                $news->delete();
+            if($news!=null){
+                if($news->active==0){
+                    $news->active=1;
+                }
+                else{
+                    $news->active=0;
+                }
+                $news->save();
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
-            else{
+            else {
                 return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Không tìm thấy tin tức!'], 401);
             }
         }

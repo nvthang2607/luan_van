@@ -5,13 +5,31 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Comment;
 use App\Models\Feedback;
+use Validator;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_product_comment']]);
+        $this->middleware('auth:api', ['except' => ['post_product_comment','post_comment_create']]);
+    }
+    public function post_comment_create(request $req){
+        $validator = Validator::make($req->all(), [
+            'id_product'=>'required|exists:product,id',
+            'email'=>'required|email',
+            'comment'=>'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+        }
+        $comment=new Comment;
+        if($comment->fill($req->input())->save()){
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Có lỗi trong quá trình gửi bình luận!'], 400);
+        }
     }
     public function post_product_comment(request $req){
         $product=Product::find($req->id);

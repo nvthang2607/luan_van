@@ -21,6 +21,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\SlideController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FeedbackController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -157,6 +159,27 @@ Route::group([
     Route::post('/user_cancel_bill', [BillController::class, 'post_bill_user_cancel_bill']);
     
 });
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'contact'
+
+], function ($router) {
+    Route::post('/create', [ContactController::class, 'post_contact_create']);  
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'comment'
+
+], function ($router) {
+    Route::post('/create', [CommentController::class, 'post_comment_create']);  
+});
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'feedback'
+
+], function ($router) {
+    Route::post('/create', [CommentController::class, 'post_feedback_create']);  
+});
 
 Route::group([
     'middleware' => 'api',
@@ -223,7 +246,7 @@ Route::group([
 
     //news
     Route::get('/list_news', [NewsController::class, 'get_admin_list_news']);
-    Route::delete('/delete_news/{id_news}', [NewsController::class, 'delete_admin_delete_news']);
+    Route::get('/active_news/{id_news}', [NewsController::class, 'get_admin_active_news']);
     Route::post('/create_news', [NewsController::class, 'post_admin_create_news']);
     Route::post('/update_news', [NewsController::class, 'post_admin_update_news']);
 });

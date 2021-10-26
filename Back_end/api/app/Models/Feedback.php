@@ -9,6 +9,15 @@ class Feedback extends Model
 {
     use HasFactory;
     protected $table ="feed_back";
+    protected $fillable = [
+        'name',
+        'email',
+        'comment',
+    ];
+    protected $casts = [
+        'created_at'  => 'datetime:Y/m/d H:i:s',
+        'updated_at' => 'datetime:Y/m/d H:i:s',
+    ];
     public function comment(){
         return $this->belongsTo('App\Models\Comment','id_comment','id');
     }
