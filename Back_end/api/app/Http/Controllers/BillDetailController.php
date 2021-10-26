@@ -174,7 +174,7 @@ class BillDetailController extends Controller
             if($req->bill_detail==null){
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
             }
-            $validator = Validator::make($i,[
+            $validator = Validator::make($req->all(),[
                 'bill_detail'=>'exists:bill_detail,id',
             ]);
             if ($validator->fails()) {
