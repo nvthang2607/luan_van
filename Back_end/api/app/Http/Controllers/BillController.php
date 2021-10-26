@@ -302,11 +302,10 @@ class BillController extends Controller
                     ];
                 }
                 foreach($bill_dt as $u){
-                    dd($u->product->image_product->image);
                     $bill_detail[]=[
                         'id_detail'=>$u->id,
                         'id_product'=>$u->id_product,
-                        'image'=>$u->product->image_product->image,
+                        'image'=>$u->product->image_product->sortBy(['parent', 'desc'])->last(),
                         'name_product'=>$u->product->name,
                         'price'=>$u->price,
                         'quantity'=>$u->quantity,
@@ -328,7 +327,7 @@ class BillController extends Controller
                     'not'=>$i->note,
                     'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
                     'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
-                    'bill_detail'=>$bill_billdetail,
+                    'bill_detail'=>$bill_detail,
                     'bill_status'=>$bill_status,
                 ];
             }
