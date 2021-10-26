@@ -355,13 +355,15 @@ class BillController extends Controller
             $status->status=5;
             if($status->save()){
                 $bill_detail=BillDetail::where('id_bill',$req->id_bill)->get();
-                foreach($bill_detail as $item){
-                    $qty=$item->quantity;
-                    $id_product=$item->id_product;
-                    $product=Product::find($id_product);
-                    $n=$product->quantity+$qty;
-                    $product->quantity=$n;
-                    $product->save();
+                if($stt){
+                    foreach($bill_detail as $item){
+                        $qty=$item->quantity;
+                        $id_product=$item->id_product;
+                        $product=Product::find($id_product);
+                        $n=$product->quantity+$qty;
+                        $product->quantity=$n;
+                        $product->save();
+                    }
                 }
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
             }else{

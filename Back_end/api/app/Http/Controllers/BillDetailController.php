@@ -193,12 +193,18 @@ class BillDetailController extends Controller
             if($e>0){
                 return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
             }
+            $bill=Bill::find($req->id_bill);
+            $total=$bill->total;
             foreach($req->bill_detail as $i){
                 $a=BillDetail::find($i);
                 foreach($a as $a){
+                    $total=$total-($a->price*$a->quantity);
                     $a->delete();
                 }
             }
+            $bill=Bill::find($req->id_bill);
+            $bill->total=$total;
+            $bill->save();
             return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
         else{
