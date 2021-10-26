@@ -365,10 +365,6 @@ class ProductController extends Controller
                 $t->updated_at ->format('Y/m/d H:i:s');
             }
             $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
-            foreach($rate as $t){
-                $t->created_at->format('Y/m/d H:i:s');
-                $t->updated_at ->format('Y/m/d H:i:s');
-            }
             $rate_number=$rate->count();
             $avg=5;
             if($rate_number>0){
