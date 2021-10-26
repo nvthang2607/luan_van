@@ -246,7 +246,12 @@ class BillController extends Controller
                 $bill[]=$c->bill;
             }
             $data=collect();
-            if($req->status==1){
+            if($req->status==0){
+                foreach($bill as $i){
+                    $data[]=$i;
+                }
+            }
+            elseif($req->status==1){
                 foreach($bill as $i){
                     if($i->status->max('status')==null){
                         $data[]=$i;
