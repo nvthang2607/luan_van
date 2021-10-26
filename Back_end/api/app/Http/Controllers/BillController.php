@@ -333,6 +333,7 @@ class BillController extends Controller
                 ];
             }
             $n=$datas->count();
+            $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
             return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$datas]], 200);
         }
         else{
