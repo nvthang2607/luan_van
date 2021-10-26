@@ -174,33 +174,18 @@ class BillDetailController extends Controller
             if($req->bill_detail==null){
                 return response()->json(['errorCode'=> null, 'data'=>true], 200);
             }
-            $errors=[];
-            $t=0;
-            $e=0;
-            foreach($req->bill_detail as $i){
-                $validator = Validator::make($i,[
-                    'id_billdetail'=>'exists:bill_detail,id',
-                ]);
-               
-                if ($validator->fails()) {
-                    $e++;
-                    $p="Has error in raw ".$t.": ".$validator->messages();
-                    $p = str_replace('"', '', $p);
-                    $errors[count($errors)]=$p;
-                }
-                $t++;
-            }
-            if($e>0){
+            $validator = Validator::make($i,[
+                'bill_detail'=>'exists:bill_detail,id',
+            ]);
+            if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
             }
             $bill=Bill::find($req->id_bill);
             $total=$bill->total;
-            foreach($req->bill_detail as $i){
-                $a=BillDetail::find($i);
-                foreach($a as $a){
-                    $total=$total-($a->price*$a->quantity);
-                    $a->delete();
-                }
+            $a=BillDetail::find($req->bill_detail);
+            foreach($a as $a){
+                $total=$total-($a->price*$a->quantity);
+                $a->delete();
             }
             $bill=Bill::find($req->id_bill);
             $bill->total=$total;
