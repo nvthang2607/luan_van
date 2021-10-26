@@ -183,10 +183,8 @@ class BillDetailController extends Controller
             $bill=Bill::find($req->id_bill);
             $total=$bill->total;
             $a=BillDetail::find($req->bill_detail);
-            foreach($a as $a){
-                $total=$total-($a->price*$a->quantity);
-                $a->delete();
-            }
+            $total=$total-($a->price*$a->quantity);
+            $a->delete();
             $bill=Bill::find($req->id_bill);
             $bill->total=$total;
             $bill->save();
