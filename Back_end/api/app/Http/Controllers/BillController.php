@@ -206,6 +206,7 @@ class BillController extends Controller
                     return response()->json(['errorCode'=> 4, 'data'=>$data], 401);
                 }
                 else{
+                    dd($bill_detail);
                     foreach($bill_detail as $bill_detail){
                         $product = Product::find($bill_detail->product->id);
                         $product->quantity=$bill_detail->product->quantity-$bill_detail->quantity;
