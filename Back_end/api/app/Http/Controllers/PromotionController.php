@@ -26,7 +26,7 @@ class PromotionController extends Controller
     public function get_admin_list_promotion(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $now=Carbon::now('Asia/Ho_Chi_Minh');
-            $promotion=Promotion::where('code','like','%'.$req->search.'%')->get();
+            $promotion=Promotion::where('code',$req->search)->get();
             $promotion=$promotion->where('id_product',$req->id_product);
             $data=collect();
             
