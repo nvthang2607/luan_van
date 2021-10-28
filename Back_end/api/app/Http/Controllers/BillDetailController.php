@@ -171,23 +171,20 @@ class BillDetailController extends Controller
     }
     public function post_admin_delete_billdetail(request $req){
         if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
-            if($req->bill_detail==null){
-                return response()->json(['errorCode'=> null, 'data'=>true], 200);
-            }
             $validator = Validator::make($req->all(),[
-                'bill_detail'=>'exists:bill_detail,id',
+                'bill_detail'=>'required|exists:bill_detail,id',
+                'id_bill'=>'required',
             ]);
             if ($validator->fails()) {
-                return response()->json(['errorCode'=> 1,'data'=>null,'errors'=>$errors], 401);
+                return response()->json(['errorCode'=> 1,'data'=>null,'error'=>$validator->messages()], 401);
             }
             $bill=Bill::find($req->id_bill);
-            $total=$bill->total;
+            $status=$bill->status->max('status');
+            if($status!=null){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'không thể xóa sản phẩm vì đơn hàng đã được duyệt!'], 401);
+            }
             $a=BillDetail::find($req->bill_detail);
-            $total=$total-($a->price*$a->quantity);
             $a->delete();
-            $bill=Bill::find($req->id_bill);
-            $bill->total=$total;
-            $bill->save();
             return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
         else{
