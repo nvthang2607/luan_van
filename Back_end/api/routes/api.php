@@ -251,6 +251,12 @@ Route::group([
     Route::post('/update_news', [NewsController::class, 'post_admin_update_news']);
 
     //news
-    //Route::get('/list_contact', [ContactController::class, 'get_admin_list_contact']);
+    Route::get('/list_contact', [ContactController::class, 'get_admin_list_contact']);
+    Route::post('/checked_contact', [ContactController::class, 'post_admin_checked_contact']);
 
+    //comment
+    Route::get('/list_comment', [CommentController::class, 'get_admin_list_comment']);
+    Route::get('/active_news/{id_news}', [NewsController::class, 'get_admin_active_news']);
+    Route::post('/create_news', [NewsController::class, 'post_admin_create_news']);
+    Route::post('/update_news', [NewsController::class, 'post_admin_update_news']);
 });

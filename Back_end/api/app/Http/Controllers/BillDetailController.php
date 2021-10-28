@@ -140,7 +140,7 @@ class BillDetailController extends Controller
         }        
     }
     public function get_admin_list_rated(request $req){
-        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             if($req->id_product==null){
                 $rated=BillDetail::all();
             }
@@ -170,7 +170,7 @@ class BillDetailController extends Controller
         }
     }
     public function post_admin_delete_billdetail(request $req){
-        if((auth()->user()->isadmin=='Quản lý đơn hàng')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             $validator = Validator::make($req->all(),[
                 'bill_detail'=>'required|exists:bill_detail,id',
                 'id_bill'=>'required',

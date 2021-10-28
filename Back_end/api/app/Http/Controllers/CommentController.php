@@ -82,4 +82,31 @@ class CommentController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null], 404);
         }
     }
+
+    public function get_admin_list_comment(request $req){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $product=Product::where('name','like','%'.$req->search.'%')->get();
+            $comment=collect();
+            foreach($product as $i){
+                $name=$i->name;
+                $data=$i->comment;
+                foreach($data as $u){
+                    $comment[]=[
+                        'name_product'=>$name,
+                        'id_product'=>$u->id_product,
+                        'email'=>$u->id_produc,
+                        'comment'=>$u->comment,
+                        'created_at'=>$u->created_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$u->updated_at->format('Y/m/d H:i:s'),
+                    ];
+                }
+            }
+            $n=$comment->count();
+            $comment=$comment->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$comment]],200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền xem liên hệ!'], 401);
+        }
+    }
 }

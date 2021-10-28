@@ -30,6 +30,41 @@ class ContactController extends Controller
     }
 
     public function get_admin_list_contact(request $req){
-        
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')){
+            $contact=Contact::where('name','like','%'.$req->search.'%')->orwhere('phone',$req->search)->orderBy('id', 'DESC')->get();
+            if($contact->count()==0){
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
+            }
+            if($req->check=='0'){
+                $contact=$contact->where('check','0');
+            }
+            if($req->check=='1'){
+                $contact=$contact->where('check','1');
+            }
+            $n=$contact->count();
+            $contact=$contact->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$contact]], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
+        }
+    }
+
+    public function post_admin_checked_contact(request $req){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')){
+            $validator = Validator::make($req->all(),[
+                'id_contact'=>'required|exists:contact,id',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $contact=Contact::find($req->id_contact);
+            $contact->check=1;
+            $contact->save();
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền xem liên hệ!'], 401);
+        }
     }
 }
