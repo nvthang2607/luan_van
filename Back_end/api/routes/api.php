@@ -256,7 +256,8 @@ Route::group([
 
     //comment
     Route::get('/list_comment', [CommentController::class, 'get_admin_list_comment']);
-    Route::get('/active_news/{id_news}', [NewsController::class, 'get_admin_active_news']);
-    Route::post('/create_news', [NewsController::class, 'post_admin_create_news']);
-    Route::post('/update_news', [NewsController::class, 'post_admin_update_news']);
+
+    //comment
+    Route::get('/list_feedback', [FeedbackController::class, 'get_admin_list_feedback']);
+    Route::post('/create_feedback', [NewsController::class, 'post_admin_create_feedback']);
 });

@@ -41,9 +41,24 @@ class ContactController extends Controller
             if($req->check=='1'){
                 $contact=$contact->where('check','1');
             }
-            $n=$contact->count();
-            $contact=$contact->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$contact]], 200);
+            $data=collect();
+            if(count($contact)>0){
+                foreach($contact as $i){
+                    $data[]=[
+                        "id"=> $i->id,
+                        "name"=>$i->name,
+                        "comment"=>$i->comment,
+                        "email"=>$i->email,
+                        "phone"=>$i->phone,
+                        "check"=>$i->check,
+                        'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
+                    ] ;
+                }
+                $n=$data->count();
+                $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+            }
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);

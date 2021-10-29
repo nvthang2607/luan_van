@@ -29,4 +29,34 @@ class FeedbackController extends Controller
         }
         
     }
+    public function get_admin_list_feedback(request $req){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $validator = Validator::make($req->all(), [
+                'id_comment'=>'required|exists:comment,id',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
+            $feedback=Feedback::where('id_comment',$req->id_comment)->get();
+            $data=collect();
+            foreach($feedback as $i){
+                $data[]=$i;
+            }
+            $n=$data->count();
+            $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
+        }
+    }
+    public function post_admin_create_feedback(request $req){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $email=auth()->user()->email;
+            dd($email);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
+        }
+    }
 }

@@ -92,6 +92,7 @@ class CommentController extends Controller
                 $data=$i->comment;
                 foreach($data as $u){
                     $comment[]=[
+                        'id_comment'=>$u->id,
                         'name_product'=>$name,
                         'id_product'=>$u->id_product,
                         'email'=>$u->id_produc,

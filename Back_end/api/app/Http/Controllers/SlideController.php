@@ -27,7 +27,14 @@ class SlideController extends Controller
             $data=collect();
             if(count($image)>0){
                 foreach($image as $i){
-                    $data[]=$i;
+                    $data[]=[
+                        'id'=>$i->id,
+                        'id_product'=>$i->id_product,
+                        'name_product'=>$i->product->name,
+                        'image'=>$i->image,
+                        'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
+                    ];
                 }
                 $n=$data->count();
                 $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
