@@ -87,7 +87,7 @@ class CommentController extends Controller
         if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
             $product=Product::where('name','like','%'.$req->search.'%')->get();
             $comment=collect();
-            if(count($comment)>0){
+            if($product->count()>0){
                 foreach($product as $i){
                     $name=$i->name;
                     $data=$i->comment;
@@ -96,7 +96,7 @@ class CommentController extends Controller
                             'id_comment'=>$u->id,
                             'name_product'=>$name,
                             'id_product'=>$u->id_product,
-                            'email'=>$u->id_produc,
+                            'email'=>$u->email,
                             'comment'=>$u->comment,
                             'created_at'=>$u->created_at->format('Y/m/d H:i:s'),
                             'updated_at'=>$u->updated_at->format('Y/m/d H:i:s'),

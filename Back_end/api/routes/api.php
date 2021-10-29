@@ -259,5 +259,5 @@ Route::group([
 
     //comment
     Route::get('/list_feedback', [FeedbackController::class, 'get_admin_list_feedback']);
-    Route::post('/create_feedback', [NewsController::class, 'post_admin_create_feedback']);
+    Route::post('/create_feedback', [FeedbackController::class, 'post_admin_create_feedback']);
 });

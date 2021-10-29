@@ -64,8 +64,26 @@ class FeedbackController extends Controller
     }
     public function post_admin_create_feedback(request $req){
         if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+            $validator = Validator::make($req->all(), [
+                'id_comment'=>'required|exists:comment,id',
+                'comment'=>'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+            }
             $email=auth()->user()->email;
-            dd($email);
+            $data=[
+                'id_comment'=>$req->id_comment,
+                'email'=>$email,
+                'comment'=>$req->comment,
+            ];
+            $comment=new Comment;
+            if($comment->fill($data)->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>'Có lỗi trong quá trình gửi bình luận!'], 400);
+            }
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
