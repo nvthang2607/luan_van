@@ -55,10 +55,10 @@ class ContactController extends Controller
                         'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
                     ] ;
                 }
-                $n=$data->count();
-                $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }
+            $n=$data->count();
+            $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);

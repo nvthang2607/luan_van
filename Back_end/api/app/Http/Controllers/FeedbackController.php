@@ -39,12 +39,24 @@ class FeedbackController extends Controller
             }
             $feedback=Feedback::where('id_comment',$req->id_comment)->get();
             $data=collect();
-            foreach($feedback as $i){
-                $data[]=$i;
+            if(count($feedback)>0){
+                foreach($feedback as $i){
+                    $data[]=[
+                        "id"=> $i->id,
+                        "name"=>$i->name,
+                        "comment"=>$i->comment,
+                        "email"=>$i->email,
+                        "phone"=>$i->phone,
+                        "check"=>$i->check,
+                        'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
+                        'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
+                    ] ;
+                }
+                
             }
             $n=$data->count();
             $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-            return response()->json(['errorCode'=> null, 'data'=>['total'=>$n,'listdata'=>$data]],200);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Bạn không có quyền list đơn hàng!'], 401);
