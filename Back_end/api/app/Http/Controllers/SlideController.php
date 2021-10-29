@@ -18,21 +18,23 @@ class SlideController extends Controller
     }
     public function get_admin_list_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-
             if($req->id_product==null){
                 $image=Slide::all()->sortByDesc("id");
             }
             else{
                 $image=Slide::where('id_product',$req->id_product)->get();
             }
+            $data=collect();
             if(count($image)>0){
-                $n=$image->count();
-                $image=$image->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$image]], 200);
+                foreach($image as $i){
+                    $data[]=$i;
+                }
+                $n=$data->count();
+                $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+                return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
             }else{
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
             }
-            
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
