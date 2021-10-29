@@ -10,7 +10,7 @@ class Feedback extends Model
     use HasFactory;
     protected $table ="feed_back";
     protected $fillable = [
-        'name',
+        'id_comment',
         'email',
         'comment',
     ];
@@ -18,7 +18,7 @@ class Feedback extends Model
         'created_at'  => 'datetime:Y/m/d H:i:s',
         'updated_at' => 'datetime:Y/m/d H:i:s',
     ];
-    public function comment(){
+    public function comment2(){
         return $this->belongsTo('App\Models\Comment','id_comment','id');
     }
 }

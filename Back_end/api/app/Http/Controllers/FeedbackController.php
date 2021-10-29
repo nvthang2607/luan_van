@@ -37,17 +37,16 @@ class FeedbackController extends Controller
             if ($validator->fails()) {
                 return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
             }
-            $feedback=Feedback::where('id_comment',$req->id_comment)->get();
+            $feedback=Feedback::where('id_comment',$req->id_comment)->orderBy('id', 'DESC')->get();
             $data=collect();
             if(count($feedback)>0){
                 foreach($feedback as $i){
                     $data[]=[
                         "id"=> $i->id,
-                        "name"=>$i->name,
+                        'name_product'=>$i->comment2->product->name,
+                        'id_product'=>$i->comment2->product->id,
                         "comment"=>$i->comment,
                         "email"=>$i->email,
-                        "phone"=>$i->phone,
-                        "check"=>$i->check,
                         'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
                         'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
                     ] ;
@@ -77,8 +76,8 @@ class FeedbackController extends Controller
                 'email'=>$email,
                 'comment'=>$req->comment,
             ];
-            $comment=new Comment;
-            if($comment->fill($data)->save()){
+            $feedback=new Feedback;
+            if($feedback->fill($data)->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
