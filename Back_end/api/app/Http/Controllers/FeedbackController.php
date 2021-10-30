@@ -20,8 +20,8 @@ class FeedbackController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
-        $comment=new Comment;
-        if($comment->fill($req->input())->save()){
+        $feedback=new Feedback;
+        if($feedback->fill($req->input())->save()){
             return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
         else{

@@ -67,8 +67,13 @@ class AuthController extends Controller
         $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
         $user->phone=$req->phone;
         $user->isadmin='user';
-        $user->active=1;
+        $user->active=0;
         if($user->Save()){
+            // Mail::send('pages.email',['user'=>$user], function ($message) use($user){
+            //     $message->from('vanthang260799@gmail.com',"VRRDE");
+            //     $message->to($user->email,$user->full_name);
+            //     $message->subject('Xác nhận tài khoản VRRDE Shop');
+            // });
             return response()->json(['errorCode'=> null,'data'=>true], 200);
         }
     }

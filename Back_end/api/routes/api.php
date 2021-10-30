@@ -178,7 +178,7 @@ Route::group([
     'prefix' => 'feedback'
 
 ], function ($router) {
-    Route::post('/create', [CommentController::class, 'post_feedback_create']);  
+    Route::post('/create', [FeedbackController::class, 'post_feedback_create']);  
 });
 
 Route::group([
@@ -257,7 +257,13 @@ Route::group([
     //comment
     Route::get('/list_comment', [CommentController::class, 'get_admin_list_comment']);
 
-    //comment
+    //feedback
     Route::get('/list_feedback', [FeedbackController::class, 'get_admin_list_feedback']);
     Route::post('/create_feedback', [FeedbackController::class, 'post_admin_create_feedback']);
+    
+    //news
+    Route::get('/list_admin', [UserController::class, 'get_admin_list_admin']);
+    Route::get('/active_admin/{id_admin}', [UserController::class, 'get_admin_active_admin']);
+    Route::post('/create_admin', [UserController::class, 'post_admin_create_admin']);
+    Route::post('/update_admin', [UserController::class, 'post_admin_update_admin']);
 });

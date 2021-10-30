@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\Promotion;
 use Carbon\Carbon;
 use Image;
+use Validator;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -104,6 +105,9 @@ class UserController extends Controller
 
     public function patch_admin_update_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            if($active->isadmin=='admin'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+            }
             $users=User::find($req->id_user);
             $users->fill($req->input())->save();
             return response()->json(['errorCode'=> null,'data'=>true], 200);
@@ -115,6 +119,9 @@ class UserController extends Controller
     public function get_admin_active_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
             $active=User::find($req->id_user);
+            if($active->isadmin=='admin'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+            }
             if($active->active=='0'){
                 $active->update(['active'=>1]);
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
@@ -132,6 +139,9 @@ class UserController extends Controller
 
     public function delete_admin_delete_users(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            if($active->isadmin=='admin'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+            }
             $active=User::find($req->id_user);
             if($active!=null){
                 $active->delete();
@@ -250,6 +260,126 @@ class UserController extends Controller
         }
         fclose($handle);
         echo 'Xong!<br>';
+    }
+    
+    public function get_admin_list_admin(request $req){
+        if(Auth()->user()->isadmin=='admin'){
+            $data=collect();
+            $users=User::where('name','like','%'.$req->search.'%')->where('isadmin','<>','user')->get();
+            if($req->type=='active'){
+                $users= $users->where('active',1);
+            }
+            elseif($req->type=='noactive'){
+                $users= $users->where('active',0);
+            }
+            foreach($users as $i){
+                $address=$i->address;
+                $address = explode(", ", $address);
+                $idCommune=$address[0];
+                $idDistrict=$address[1];
+                $idCity=$address[2];
+                $nameCommune=commune::where('xaid',$idCommune)->pluck('name')->first();
+                // $nameCommune=$nameCommune->name;
+                $nameDistrict=district::where('maqh',$idDistrict)->pluck('name')->first();
+                // $nameDistrict=$nameDistrict->name;
+                $nameCity=City::where('matp',$idCity)->pluck('name')->first();
+                // $nameCity=$nameCity->name;
+                $date= $i->created_at;
+                $date = $date->format('Y/m/d H:i:s');
+                $date1= $i->updated_at;
+                $date1 = $date1->format('Y/m/d H:i:s');
+                $data[]=[
+                    'id'=>$i->id,
+                    'name'=>$i->name,
+                    'gender'=>$i->gender,
+                    'email'=>$i->email,
+                    'phone'=>$i->phone,
+                    'idCommune'=>$idCommune,
+                    'idDistrict'=>$idDistrict,
+                    'idCity'=>$idCity,
+                    'nameCommune'=>$nameCommune,
+                    'nameDistrict'=>$nameDistrict,
+                    'nameCity'=>$nameCity,
+                    'active'=>$i->active,
+                    'created_at'=>$date,
+                    'updated_at'=>$date1,
+                ];
+            }
+            $n=$data->count();
+            $data=$data->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+            return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+    public function post_admin_update_admin(request $req){
+        if(Auth()->user()->isadmin=='admin'){
+            $users=User::find($req->id_admin);
+            $users->fill($req->input())->save();
+            return response()->json(['errorCode'=> null,'data'=>true], 200);
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+    }
+    public function post_admin_create_admin(request $req){
+        if(Auth()->user()->isadmin=='admin'){
+            $validator = Validator::make($req->all(), [
+                'name' => 'required|string|between:2,50',
+                'gender' => 'required',
+                'email' => 'required|string|email|max:50|unique:users',
+                'password' => 'required|string|min:8',
+                'phone'=>'required|numeric',
+                'idCommue'=>'required',
+                'idDistrict'=>'required',
+                'idCity'=>'required'
+            ]);
+    
+            if($validator->fails()){
+                return response()->json(['errorCode'=> 1,$validator->errors()->toJson()], 400);
+            }
+            $user=new User;
+            $user->name=$req->name;
+            $user->gender=$req->gender;
+            $user->email=$req->email;
+            $user->password=bcrypt($req->password);
+            $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
+            $user->phone=$req->phone;
+            $user->isadmin=$req->isadmin;
+            $user->active=0;
+            if($user->Save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+        
+    }
+
+    public function get_admin_active_admin(request $req){
+        if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
+            $active=User::find($req->id_admin);
+            if($active->isadmin=='admin'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+            }
+            if($active->isadmin=='admin'){
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+            }
+            if($active->active=='0'){
+                $active->update(['active'=>1]);
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            if($active->active=='1'){
+                $active->update(['active'=>0]);
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+        }
+        else{
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
+        }
+
     }
 
 }

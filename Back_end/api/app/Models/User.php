@@ -23,7 +23,6 @@ class User extends Authenticatable implements JWTSubject
         'gender',
         'phone',
         'address',
-        'isadmin',
         'active'
     ];
     public function status(){
