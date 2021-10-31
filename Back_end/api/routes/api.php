@@ -45,6 +45,7 @@ Route::group([
 ], function ($router) {
     Route::get('/rating', [UserController::class, 'get_insert']);
     Route::get('/csv', [UserController::class, 'get_write_rating_to_csv']);
+    
 });
 
 Route::group([
@@ -266,4 +267,5 @@ Route::group([
     Route::get('/active_admin/{id_admin}', [UserController::class, 'get_admin_active_admin']);
     Route::post('/create_admin', [UserController::class, 'post_admin_create_admin']);
     Route::post('/update_admin', [UserController::class, 'post_admin_update_admin']);
+    
 });

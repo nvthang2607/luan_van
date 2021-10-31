@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\Facades\JWTFactory;
 use File;
 use App\Models\User;
@@ -16,6 +17,7 @@ use App\Models\district;
 use App\Models\commune;
 use Validator;
 use Hash;
+
 
 use Carbon\Carbon;
 
@@ -67,15 +69,14 @@ class AuthController extends Controller
         $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
         $user->phone=$req->phone;
         $user->isadmin='user';
-        $user->active=0;
-        if($user->Save()){
-            // Mail::send('pages.email',['user'=>$user], function ($message) use($user){
-            //     $message->from('vanthang260799@gmail.com',"VRRDE");
-            //     $message->to($user->email,$user->full_name);
-            //     $message->subject('Xác nhận tài khoản VRRDE Shop');
-            // });
-            return response()->json(['errorCode'=> null,'data'=>true], 200);
-        }
+        $user->active=1;
+        Mail::send('email.active_account',['user'=>$user], function ($message) use($user){
+            $message->from('vanthang260799@gmail.com','VRRDE');
+            $message->to($user->email,$user->name);
+            $message->subject('Xác nhận tài khoản VRRDE shop');
+        });
+        return response()->json(['errorCode'=> null,'data'=>true], 200);
+        
     }
 
     public function changepass(Request $request) {
@@ -121,8 +122,7 @@ class AuthController extends Controller
                 'isAdmin'=>'admin'
             ];
         }
-        $credentials = $request->only('email', 'password');
-        if (! $token = auth::claims($payloadable)->attempt($credentials)) {
+        if (! $token = auth::claims($payloadable)->attempt(['email'=>$request->email, 'password'=>$request->password,'active'=>1])) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }
         

@@ -23,4 +23,8 @@ Route::get('test', function () {
     echo strlen($str); // 7
     //return view('upfile');
 });
+route::get('/active',[
+    'as'=>'active',
+    'uses'=>'App\Http\Controllers\PageController@get_xac_nhan_tu_email'
+]);
 Route::post('/upload', [UserController::class, 'file']);
