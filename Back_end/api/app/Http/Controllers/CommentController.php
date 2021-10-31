@@ -62,7 +62,7 @@ class CommentController extends Controller
                                 'isadmin'=>$t,
                                 'email_feedback'=>$u->email,
                                 'comment_feedback'=>$u->comment,
-                                'date'=>$u->created_at->format('Y/m/d H:i:s'),
+                                'date'=>$u->created_at->format('d/m/Y'),
                             ];
                         }
                     }
@@ -70,7 +70,7 @@ class CommentController extends Controller
                         'id_comment'=>$i->id,
                         'email_comment'=>$i->email,
                         'comment_comment'=>$i->comment,
-                        'date'=>$i->created_at->format('Y/m/d H:i:s'),
+                        'date'=>$i->created_at->format('d/m/Y'),
                         'feedback'=>$feedbacks,
                     ];
                 }
