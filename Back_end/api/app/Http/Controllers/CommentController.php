@@ -35,7 +35,7 @@ class CommentController extends Controller
         $product=Product::find($req->id);
         if($product){
             $data=[];
-            $comment=Comment::where('id_product',$req->id);
+            $comment=Comment::where('id_product',$req->id)->orderBy('id', 'DESC');
             $n=$comment->count();
             $comment=$comment->skip(($req->page-1)*$req->pageSize)->take($req->pageSize)->get();
             if($n>0){
