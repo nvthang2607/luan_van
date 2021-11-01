@@ -19,6 +19,7 @@ use Validator;
 use Hash;
 use Illuminate\Http\Response;
 Use Cookie;
+use Session;
 
 use Carbon\Carbon;
 
@@ -286,9 +287,10 @@ class AuthController extends Controller
         //tạo 1 dãy số 4 chữ số ngẫu nhiêu làm mã xác nhận
         $rand=rand(1000,9999);
         //biến để set cookie
-        $response=new Response;
-        //set cookie với thời gian 1 phút
-        Cookie::queue('a', $rand, 5);
+        // $response=new Response;
+        // //set cookie với thời gian 1 phút
+        // Cookie::queue('a', $rand, 5);
+        Session::put($req->email,$rand);
         $data = [
             'email'=>$req->email,
             'rand'=>$rand,
@@ -308,7 +310,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
-        if(Cookie::get($req->email)==null){
+        if(Session::get($req->email)==null){
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
         }
         //nếu chưa quá hạn
@@ -321,30 +323,19 @@ class AuthController extends Controller
             }
         }
     }
-    public function a(request $req){
+    public function post_reset_password(request $req){
         $validator = Validator::make($req->all(), [
             'email' => 'exists:users,email',
+            'password' => 'required|string|min:8',
         ]);
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
-        
-        if(Cookie::get($req->email)==null){
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
-        }
-        //nếu chưa quá hạn
-        else{
-            if($req->code==Cookie::get($req->email)){
-                $user=User::where('email',$req->email)->get();
-                foreach($user as $i){
-                    $i->password=$req->code;
-                    if($i->save()){
-                        return response()->json(['errorCode'=> null,'data'=>true], 200);
-                    }
-                }
-            }
-            else{
-                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận không hợp lệ!'], 401);
+        $user=User::where('email',$req->email)->get();
+        foreach($user as $i){
+            $i->password=$req->password;
+            if($i->save()){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
         }
     }

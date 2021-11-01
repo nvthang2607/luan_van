@@ -348,7 +348,7 @@ class UserController extends Controller
             $user->address=$req->idCommue.', '.$req->idDistrict.', '.$req->idCity;
             $user->phone=$req->phone;
             $user->isadmin=$req->isadmin;
-            $user->active=0;
+            $user->active=1;
             if($user->Save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
