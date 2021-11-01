@@ -290,7 +290,6 @@ class AuthController extends Controller
         // //set cookie với thời gian 1 phút
         // Cookie::queue('a', $rand, 5);
         Session::put($req->email,$rand);
-        echo Session::get($req->email);
         $data = [
             'email'=>$req->email,
             'rand'=>$rand,
