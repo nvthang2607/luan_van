@@ -38,7 +38,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password','post_send_mail','post_check_code']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password','post_send_mail','post_check_code','post_reset_password']]);
     }
 
 
