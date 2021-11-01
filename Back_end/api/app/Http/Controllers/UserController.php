@@ -314,7 +314,7 @@ class UserController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
     }
-    public function post_admin_update_admin(request $req){
+    public function patch_admin_update_admin(request $req){
         if(Auth()->user()->isadmin=='admin'){
             $users=User::find($req->id_admin);
             $users->fill($req->input())->save();

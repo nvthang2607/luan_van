@@ -37,7 +37,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password','post_send_mail']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password','post_send_mail','post_check_code']]);
     }
 
 
@@ -288,7 +288,7 @@ class AuthController extends Controller
         //biến để set cookie
         $response=new Response;
         //set cookie với thời gian 1 phút
-        Cookie::queue($req->email, $rand, 1);
+        Cookie::queue('a', $rand, 5);
         $data = [
             'email'=>$req->email,
             'rand'=>$rand,
@@ -301,13 +301,34 @@ class AuthController extends Controller
         });
         return response()->json(['errorCode'=> null,'data'=>true], 200);
     }
-    public function post_reset_password(request $req){
+    public function post_check_code(request $req){
         $validator = Validator::make($req->all(), [
             'email' => 'exists:users,email',
         ]);
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
+        if(Cookie::get($req->email)==null){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
+        }
+        //nếu chưa quá hạn
+        else{
+            if($req->code==Cookie::get($req->email)){
+                return response()->json(['errorCode'=> null,'data'=>true], 200);
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>false], 401);
+            }
+        }
+    }
+    public function a(request $req){
+        $validator = Validator::make($req->all(), [
+            'email' => 'exists:users,email',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+        }
+        
         if(Cookie::get($req->email)==null){
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
         }
