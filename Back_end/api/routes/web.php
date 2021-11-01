@@ -39,8 +39,12 @@ Route::get('test2', function () {
     // echo strlen($str); // 7
     //return view('upfile');
 });
+Route::get('test3', function () {
+    return view('test3');
+});
 route::get('/active',[
     'as'=>'active',
     'uses'=>'App\Http\Controllers\PageController@get_xac_nhan_tu_email'
 ]);
+Route::get('/test4', [UserController::class, 'test4']);
 Route::post('/upload', [UserController::class, 'file']);

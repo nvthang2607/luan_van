@@ -23,7 +23,7 @@ class UserController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_insert','get_write_rating_to_csv','file']]);
+        $this->middleware('auth:api', ['except' => ['get_insert','get_write_rating_to_csv','file','test4']]);
     }
     public function file(request $req){
         //hien hinh : /storage/image/product/thangne1.png
@@ -381,6 +381,25 @@ class UserController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
 
+        
+
+    }
+    public function test4(request $req){
+        echo 'a1='.$req->a1.'<br>';
+        echo 'a2='.$req->a2.'<br>';
+        echo 'a3='.$req->a3.'<br>';
+        echo 'a4='.$req->a4.'<br>';
+        echo 'a5='.$req->a5.'<br>';
+        echo 'b1='.$req->b1.'<br>';
+        echo 'b2='.$req->b2.'<br>';
+        echo 'b3='.$req->b3.'<br>';
+        echo 'b4='.$req->b4.'<br>';
+        echo 'b5='.$req->b5.'<br>';
+        $tu=$req->a1*$req->b1+$req->a2*$req->b2+$req->a3*$req->b3+$req->a4*$req->b4+$req->a5*$req->b5;
+        $mau1=sqrt(($req->a1*$req->a1)+($req->a2*$req->a2)+($req->a3*$req->a3)+($req->a4*$req->a4)+($req->a5*$req->a5));
+        $mau2=sqrt(($req->b1*$req->b1)+($req->b2*$req->b2)+($req->b3*$req->b3)+($req->b4*$req->b4)+($req->b5*$req->b5));
+        
+        echo $tu/($mau1*$mau2);
     }
 
 }
