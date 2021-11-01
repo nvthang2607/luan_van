@@ -178,6 +178,7 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function get_profile(){
+        $id=auth()->user()->id;
         $name=auth()->user()->name;
         $email=auth()->user()->email;
         if(!auth()->user()->gender){
@@ -218,7 +219,7 @@ class AuthController extends Controller
             // $nameCity=$nameCity->name;
         }
         
-        return response()->json(['errorCode'=> null, 'data'=>['name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,
+        return response()->json(['errorCode'=> null, 'data'=>['id'=>$id,'name'=>$name,'email'=>$email,'gender'=>$gender,'phone'=>$phone,
             'idCity'=>$idCity,'idDistrict'=>$idDistrict,'idCommune'=>$idCommune,'nameCommune'=>$nameCommune,'nameDistrict'=>$nameDistrict,'nameCity'=>$nameCity]]);
     }
     public function post_update_profile(request $req){
@@ -287,7 +288,7 @@ class AuthController extends Controller
         //tạo 1 dãy số 4 chữ số ngẫu nhiêu làm mã xác nhận
         $rand=rand(1000,9999);
         //biến để set cookie
-        // $response=new Response;
+        $response=new Response;
         // //set cookie với thời gian 1 phút
         // Cookie::queue('a', $rand, 5);
         Session::put($req->email,$rand);

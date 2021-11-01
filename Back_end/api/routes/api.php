@@ -45,7 +45,6 @@ Route::group([
     Route::post('/send_mail', [AuthController::class, 'post_send_mail']);
     Route::post('/check_code', [AuthController::class, 'post_check_code']);
     Route::post('/reset_password', [AuthController::class, 'post_reset_password']);
-    
 });
 
 Route::group([
@@ -280,10 +279,11 @@ Route::group([
     Route::get('/list_feedback', [FeedbackController::class, 'get_admin_list_feedback']);
     Route::post('/create_feedback', [FeedbackController::class, 'post_admin_create_feedback']);
     
-    //news
+    //admin
     Route::get('/list_admin', [UserController::class, 'get_admin_list_admin']);
     Route::get('/active_admin/{id_admin}', [UserController::class, 'get_admin_active_admin']);
     Route::post('/create_admin', [UserController::class, 'post_admin_create_admin']);
     Route::patch('/update_admin', [UserController::class, 'patch_admin_update_admin']);
-    
+    Route::get('/test1', [AuthController::class, 'post_send_mail']);
+    Route::get('/test2', [AuthController::class, 'post_check_code']);
 });
