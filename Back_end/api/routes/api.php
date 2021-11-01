@@ -37,6 +37,16 @@ use App\Http\Controllers\FeedbackController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'forgot_password'
+
+], function ($router) {
+    Route::post('/send_mail', [AuthController::class, 'post_send_mail']);
+    Route::post('/reset_password', [AuthController::class, 'post_reset_password']);
+    
+});
+Route::post('/send_mai', [AuthController::class, 'post_send_mail']);
 
 Route::group([
     'middleware' => 'api',
@@ -159,6 +169,14 @@ Route::group([
     Route::get('/user_list_billdetail/{id_bill}', [BillDetailController::class, 'get_billdetail_user_list_billdetail']);
     Route::post('/user_cancel_bill', [BillController::class, 'post_bill_user_cancel_bill']);
     
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'slide'
+
+], function ($router) {
+    Route::get('/list', [SlideController::class, 'get_slide_list']);  
 });
 Route::group([
     'middleware' => 'api',

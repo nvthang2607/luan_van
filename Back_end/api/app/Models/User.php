@@ -23,7 +23,8 @@ class User extends Authenticatable implements JWTSubject
         'gender',
         'phone',
         'address',
-        'active'
+        'active',
+        'isadmin'
     ];
     public function status(){
         return $this->hasMany('App\Models\Status','id_user','id');

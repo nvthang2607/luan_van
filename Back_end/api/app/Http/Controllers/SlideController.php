@@ -14,7 +14,27 @@ class SlideController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['convert_name']]);
+        $this->middleware('auth:api', ['except' => ['convert_name','get_slide_list']]);
+    }
+    public function get_slide_list(request $req){
+        $image=Slide::all()->sortByDesc("id");
+        $data=collect();
+        if(count($image)>0){
+            foreach($image as $i){
+                $data[]=[
+                    'id'=>$i->id,
+                    'id_product'=>$i->id_product,
+                    'name_product'=>$i->product->name,
+                    'image'=>$i->image,
+                    'created_at'=>$i->created_at->format('Y/m/d H:i:s'),
+                    'updated_at'=>$i->updated_at->format('Y/m/d H:i:s'),
+                ];
+            }
+            return response()->json(['errorCode'=> null,'data'=>$data], 200);
+        }else{
+            return response()->json(['errorCode'=> null,'data'=>[]], 200);
+        }
+
     }
     public function get_admin_list_slide(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){

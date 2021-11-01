@@ -17,7 +17,8 @@ use App\Models\district;
 use App\Models\commune;
 use Validator;
 use Hash;
-
+use Illuminate\Http\Response;
+Use Cookie;
 
 use Carbon\Carbon;
 
@@ -36,7 +37,7 @@ class AuthController extends Controller
      */
 
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password']]);
+        $this->middleware('auth:api', ['except' => ['post_login', 'post_register','post_login_google','post_change_password','post_send_mail']]);
     }
 
 
@@ -70,11 +71,7 @@ class AuthController extends Controller
         $user->phone=$req->phone;
         $user->isadmin='user';
         $user->active=1;
-        Mail::send('email.active_account',['user'=>$user], function ($message) use($user){
-            $message->from('vanthang260799@gmail.com','VRRDE');
-            $message->to($user->email,$user->name);
-            $message->subject('Xác nhận tài khoản VRRDE shop');
-        });
+        
         return response()->json(['errorCode'=> null,'data'=>true], 200);
         
     }
@@ -275,5 +272,59 @@ class AuthController extends Controller
             //'expires_in' => auth()->factory()->getTTL() * 60,
             //'user' => auth()->user()
         ]);
+    }
+
+    public function post_send_mail(request $req){
+        $validator = Validator::make($req->all(), [
+            'email' => 'exists:users,email',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+        }
+
+        
+        //tạo 1 dãy số 4 chữ số ngẫu nhiêu làm mã xác nhận
+        $rand=rand(1000,9999);
+        //biến để set cookie
+        $response=new Response;
+        //set cookie với thời gian 1 phút
+        Cookie::queue($req->email, $rand, 1);
+        $data = [
+            'email'=>$req->email,
+            'rand'=>$rand,
+        ];
+        //gửi data['rand']cho mail data['email']
+        Mail::send('email.email_pass',['data'=>$data], function ($message) use($data){
+            $message->from('vanthang260799@gmail.com',"SANGTV");
+            $message->to($data['email']);
+            $message->subject('Xác nhận tài khoản SANGTV Shop');
+        });
+        return response()->json(['errorCode'=> null,'data'=>true], 200);
+    }
+    public function post_reset_password(request $req){
+        $validator = Validator::make($req->all(), [
+            'email' => 'exists:users,email',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
+        }
+        if(Cookie::get($req->email)==null){
+            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
+        }
+        //nếu chưa quá hạn
+        else{
+            if($req->code==Cookie::get($req->email)){
+                $user=User::where('email',$req->email)->get();
+                foreach($user as $i){
+                    $i->password=$req->code;
+                    if($i->save()){
+                        return response()->json(['errorCode'=> null,'data'=>true], 200);
+                    }
+                }
+            }
+            else{
+                return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận không hợp lệ!'], 401);
+            }
+        }
     }
 }

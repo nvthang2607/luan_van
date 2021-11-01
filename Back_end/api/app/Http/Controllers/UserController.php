@@ -291,6 +291,7 @@ class UserController extends Controller
                 $data[]=[
                     'id'=>$i->id,
                     'name'=>$i->name,
+                    'isadmin'=>$i->isadmin,
                     'gender'=>$i->gender,
                     'email'=>$i->email,
                     'phone'=>$i->phone,
