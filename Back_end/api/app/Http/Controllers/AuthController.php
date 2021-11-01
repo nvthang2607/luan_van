@@ -72,7 +72,7 @@ class AuthController extends Controller
         $user->phone=$req->phone;
         $user->isadmin='user';
         $user->active=1;
-        
+        $user->save();
         return response()->json(['errorCode'=> null,'data'=>true], 200);
         
     }
@@ -290,6 +290,7 @@ class AuthController extends Controller
         // //set cookie với thời gian 1 phút
         // Cookie::queue('a', $rand, 5);
         Session::put($req->email,$rand);
+        echo Session::get($req->email);
         $data = [
             'email'=>$req->email,
             'rand'=>$rand,
@@ -310,6 +311,7 @@ class AuthController extends Controller
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
         //return response()->json(['errorCode'=> null,'data'=>$req->email], 200);
+
         if(Session::get($req->email)==null){
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
         }
@@ -333,7 +335,7 @@ class AuthController extends Controller
         }
         $user=User::where('email',$req->email)->get();
         foreach($user as $i){
-            $i->password=$req->password;
+            $i->password=bcrypt($req->password);
             if($i->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
