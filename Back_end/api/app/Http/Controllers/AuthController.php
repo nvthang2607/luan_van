@@ -301,7 +301,7 @@ class AuthController extends Controller
             $message->to($data['email']);
             $message->subject('Xác nhận tài khoản SANGTV Shop');
         });
-        return response()->json(['errorCode'=> null,'data'=>true], 200);
+        return response()->json(['errorCode'=> null,'data'=>true,'code'=>$rand], 200);
     }
     public function post_check_code(request $req){
         $validator = Validator::make($req->all(), [
