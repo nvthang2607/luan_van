@@ -35,6 +35,7 @@ import {
 	Card,
 	CardHeader,
 	Chip,
+	Dialog,
 	DialogContent,
 	DialogTitle,
 	Divider,
@@ -77,6 +78,7 @@ import Cart from '../Cart/Cart';
 import { getCartData } from '../Product/CartSlice';
 import MenuMobile from '../MenuMobile/MenuMobile';
 import { TypeBrand } from '../../api/Product';
+import Contact from '../Contact/Contact';
 interface Props {
 	/**
 	 * Injected by the documentation to work in an iframe.
@@ -469,7 +471,13 @@ const Header: React.FC<Props> = (props) => {
 		handleLanguage(result);
 	};
 	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 900px)' });
-
+	const [openContact, setOpenContact] = React.useState(false);
+	const cancel: (result: boolean) => void = (result) => {
+		setOpenContact(result);
+	};
+	const handleCloseContact = () => {
+		setOpenContact(false);
+	};
 	return (
 		<div className={classes.grow}>
 			{isHeader ? (
@@ -480,7 +488,7 @@ const Header: React.FC<Props> = (props) => {
 								<img
 									src={Logo}
 									alt="logo"
-									width="85%"
+									width="170px"
 									onClick={() => {
 										history.push('/');
 										setValueSearch('');
@@ -534,7 +542,13 @@ const Header: React.FC<Props> = (props) => {
 										</Typography>
 									</Link> */}
 
-										<ListItem style={{ cursor: 'pointer' }}>
+										<ListItem
+											style={{ cursor: 'pointer' }}
+											onClick={() => {
+												history.push(AppURL.NEWS);
+												window.scrollTo(0, 0);
+											}}
+										>
 											<ListItemAvatar style={{ marginRight: '-8px' }}>
 												<Avatar style={{ backgroundColor: '#fff' }}>
 													{/* <CallIcon style={{ color: '#16a086' }} /> */}
@@ -795,6 +809,32 @@ const Header: React.FC<Props> = (props) => {
 															</a>
 														</Typography>
 													</Typography>
+													<Typography variant="body1" gutterBottom>
+														<Button
+															variant="text"
+															style={{
+																textTransform: 'inherit',
+																color: 'red',
+																fontWeight: 'bold',
+																fontSize: '15px',
+															}}
+															onClick={() => {
+																setShowBoxContact(false);
+																setOpenContact(true);
+															}}
+														>
+															Lien he voi chung toi
+														</Button>
+													</Typography>
+													<Dialog
+														open={openContact}
+														onClose={handleCloseContact}
+														aria-labelledby="form-dialog-title"
+														fullWidth
+														maxWidth="md"
+													>
+														<Contact cancel={cancel} />
+													</Dialog>
 												</Box>
 											</Box>
 										</Box>

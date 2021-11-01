@@ -96,6 +96,12 @@ const Login: React.FC = () => {
 				title: 'Dang nhap that bai',
 				text: 'Ten tai khoan hoac mat khau khong dung',
 			});
+		} else if (response?.errorCode === 2) {
+			Swal.fire({
+				icon: 'error',
+				title: 'Dang nhap that bai',
+				text: 'Ten tai khoan hoac mat khau khong dung',
+			});
 		} else {
 			Swal.fire({
 				icon: 'error',

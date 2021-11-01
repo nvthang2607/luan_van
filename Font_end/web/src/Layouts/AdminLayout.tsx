@@ -39,6 +39,7 @@ import { AppURL } from '../utils/const';
 import logo from '../public/images/logo1.png';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import PolicyIcon from '@material-ui/icons/Policy';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
@@ -47,6 +48,7 @@ import iconvn from '../public/images/vietnamese.svg';
 import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import PersonIcon from '@material-ui/icons/Person';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import Test from '../pages/text/Test';
 import User from '../pages/Admin/User/User';
 import HomeIcon from '@mui/icons-material/Home';
@@ -59,6 +61,24 @@ import TypeProduct from '../pages/Admin/ProductType/TypeProduct';
 
 import Product from '../pages/Admin/Product/Product';
 import BrandProduct from '../pages/Admin/BrandProduct/BrandProduct';
+import ProductPromotion from '../pages/Admin/Product/ProductPromotion';
+import BillDetail from '../pages/Admin/Bill/BillDetail';
+import ListBill from '../pages/Admin/Bill/ListBill';
+import ListRating from '../pages/Admin/Rating.tsx/ListRating';
+import ListNews from '../pages/Admin/News/ListNews';
+import ListSlide from '../pages/Admin/Slide/ListSlide';
+import PhoneIcon from '@mui/icons-material/Phone';
+import ListContact from '../pages/Admin/Contact/ListContact';
+import ListComment from '../pages/Admin/Comment/ListComment';
+import GroupIcon from '@mui/icons-material/Group';
+import ListEmployee from '../pages/Admin/Employee/ListEmployee';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import ChangePwd from '../pages/Admin/Profile/ChangePwd';
+import Profile from '../pages/Admin/Profile/Profile';
+import {
+	getValueRefreshPage,
+	updateValueRefreshPage,
+} from '../features/refresh/RefreshPageAdminSlice';
 const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -187,6 +207,7 @@ const AdminLayout: React.FC = (props) => {
 		{ text: 'user', icon: <PersonIcon /> },
 		{ text: 'license', icon: <PolicyIcon /> },
 	];
+	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	const [item, setItem] = React.useState(icon);
 	const [valueI18n, setValueI18n] = React.useState('en');
 	const [profile, setProfile] = React.useState<string | undefined>('user name');
@@ -209,7 +230,7 @@ const AdminLayout: React.FC = (props) => {
 			}
 		};
 		getDataProfile();
-	}, [setValueI18n]);
+	}, [setValueI18n, valueRefreshPage.value]);
 
 	//const title = useAppSelector(titleHeader);
 
@@ -260,8 +281,6 @@ const AdminLayout: React.FC = (props) => {
 				localStorage.removeItem('tokenAdmin');
 				return <Redirect to={AppURL.LOGIN} />;
 			} else if (checkToken.isAdmin === false) {
-				console.log(checkToken);
-
 				return <Redirect to="404" />;
 			}
 		} else {
@@ -292,6 +311,60 @@ const AdminLayout: React.FC = (props) => {
 			icon: <PersonIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
+		{
+			id: 4,
+			name: 'Quan tri don hang',
+			icon: <EventNoteIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [],
+		},
+		{
+			id: 5,
+			name: 'Quan tri tin tuc',
+			icon: (
+				<i
+					className="fa fa-newspaper-o"
+					aria-hidden="true"
+					style={{ color: '#fff', marginRight: '10px', fontSize: '20px' }}
+				></i>
+			),
+			children: [],
+		},
+		{
+			id: 6,
+			name: 'Quan tri slide',
+			icon: (
+				<i
+					className="fa fa-sliders"
+					aria-hidden="true"
+					style={{ color: '#fff', marginRight: '10px', fontSize: '20px' }}
+				></i>
+			),
+			children: [],
+		},
+		{
+			id: 7,
+			name: 'Quan tri lien he',
+			icon: <PhoneIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [],
+		},
+		{
+			id: 8,
+			name: 'Quan tri binh luan',
+			icon: (
+				<i
+					className="fa fa-comments-o"
+					aria-hidden="true"
+					style={{ color: '#fff', marginRight: '10px', fontSize: '20px' }}
+				></i>
+			),
+			children: [],
+		},
+		{
+			id: 9,
+			name: 'Quan tri nhan vien',
+			icon: <GroupIcon style={{ color: '#fff', marginRight: '10px' }} />,
+			children: [],
+		},
 	];
 
 	const handleNavLink = (id: number) => {
@@ -301,6 +374,18 @@ const AdminLayout: React.FC = (props) => {
 			return AppURL.LOGIN;
 		} else if (id === 3) {
 			return AppURL.MANAGER_USER;
+		} else if (id === 4) {
+			return AppURL.ADMIN_BILL;
+		} else if (id === 5) {
+			return AppURL.ADMIN_NEWS;
+		} else if (id === 6) {
+			return AppURL.ADMIN_SLIDE;
+		} else if (id === 7) {
+			return AppURL.ADMIN_CONTACT;
+		} else if (id === 8) {
+			return AppURL.ADMIN_COMMENT;
+		} else if (id === 9) {
+			return AppURL.ADMIN_EMPLOYEE;
 		} else {
 			return AppURL.ADMIN_HOME;
 		}
@@ -428,9 +513,28 @@ const AdminLayout: React.FC = (props) => {
 									open={Boolean(anchorElProfile)}
 									onClose={handleCloseProfile}
 								>
-									<MenuItem onClick={handleCloseProfile}>{t('tenant.profile')}</MenuItem>
-									<MenuItem onClick={handleCloseProfile}>My account</MenuItem>
-									<MenuItem onClick={handleLogout}>{t('tenant.log_out')}</MenuItem>
+									<MenuItem
+										onClick={() => {
+											history.push(AppURL.ADMIN_PROFILE);
+											setAnchorElProfile(null);
+										}}
+									>
+										<PersonIcon />
+										&nbsp;Quan ly thong tin
+									</MenuItem>
+									<MenuItem
+										onClick={() => {
+											history.push(AppURL.ADMIN_CHANGEPASSWORD);
+											setAnchorElProfile(null);
+										}}
+									>
+										<CompareArrowsIcon />
+										&nbsp;Doi mat khau
+									</MenuItem>
+									<MenuItem onClick={handleLogout}>
+										<ExitToAppIcon />
+										&nbsp;Thoat tai khoan
+									</MenuItem>
 								</Menu>
 							</Grid>
 						</Grid>
@@ -571,6 +675,16 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
 						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
 						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
+						<Route path={AppURL.ADMIN_PRODUCT_PROMOTION} component={ProductPromotion} />
+						<Route path={AppURL.ADMIN_BILL} component={ListBill} />
+						<Route path={AppURL.ADMIN_LIST_RATING} component={ListRating} />
+						<Route path={AppURL.ADMIN_NEWS} component={ListNews} />
+						<Route path={AppURL.ADMIN_SLIDE} component={ListSlide} />
+						<Route path={AppURL.ADMIN_CONTACT} component={ListContact} />
+						<Route path={AppURL.ADMIN_COMMENT} component={ListComment} />
+						<Route path={AppURL.ADMIN_EMPLOYEE} component={ListEmployee} />
+						<Route path={AppURL.ADMIN_CHANGEPASSWORD} component={ChangePwd} />
+						<Route path={AppURL.ADMIN_PROFILE} component={Profile} />
 					</Switch>
 				</main>
 			</div>
@@ -718,6 +832,17 @@ const AdminLayout: React.FC = (props) => {
 						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
 						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
 						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
+						<Route path={AppURL.ADMIN_PRODUCT_PROMOTION} component={ProductPromotion} />
+						<Route path={AppURL.ADMIN_BILL} component={ListBill} />
+						<Route path={AppURL.ADMIN_LIST_RATING} component={ListRating} />
+						<Route path={AppURL.ADMIN_NEWS} component={ListNews} />
+						<Route path={AppURL.ADMIN_SLIDE} component={ListSlide} />
+						<Route path={AppURL.ADMIN_SLIDE} component={ListSlide} />
+						<Route path={AppURL.ADMIN_CONTACT} component={ListContact} />
+						<Route path={AppURL.ADMIN_COMMENT} component={ListComment} />
+						<Route path={AppURL.ADMIN_EMPLOYEE} component={ListEmployee} />
+						<Route path={AppURL.ADMIN_CHANGEPASSWORD} component={ChangePwd} />
+						<Route path={AppURL.ADMIN_PROFILE} component={Profile} />
 					</Switch>
 				</main>
 			</div>

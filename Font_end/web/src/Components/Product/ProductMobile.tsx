@@ -188,7 +188,10 @@ const ProductMobile: React.FC<ProductProps> = (props) => {
 				onClick={() => history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`)}
 			>
 				<Chip
-					label="-6%"
+					label={`-${
+						((Number(props?.unit_price) - Number(props?.promotion_price)) * 100) /
+						Number(props?.unit_price)
+					}%`}
 					color="primary"
 					style={{ position: 'absolute', right: '9px', top: '8px', fontSize: '19px' }}
 				/>

@@ -32,6 +32,7 @@ import Login from './pages/Login/Login';
 import LoginLayout from './Layouts/LoginLayout';
 import AdminLayout from './Layouts/AdminLayout';
 import { useMediaQuery } from 'react-responsive';
+import ListNews from './pages/NewsDetail/ListNews';
 
 function App() {
 	// const theme = createMuiTheme({
@@ -71,6 +72,7 @@ function App() {
 									AppURL.SEARCH,
 									AppURL.ORDER,
 									AppURL.NEWSDETAIL,
+									AppURL.NEWS,
 								]}
 							>
 								<Home>
@@ -89,6 +91,7 @@ function App() {
 												AppURL.CHECKOUT,
 												AppURL.SEARCH,
 												AppURL.ORDER,
+												AppURL.NEWS,
 											]}
 										>
 											<Switch>
@@ -99,6 +102,7 @@ function App() {
 												<Route path={AppURL.CHECKOUT} component={MainLayoutCheckout} />
 												<Route path={AppURL.SEARCH} component={Search} />
 												<Route path={AppURL.NEWSDETAIL} component={NewsDetail} />
+												<Route path={AppURL.NEWS} component={ListNews} />
 												<Route path={[AppURL.PROFILE, AppURL.ORDER]}>
 													<Profile />
 												</Route>
@@ -128,6 +132,17 @@ function App() {
 									AppURL.ADMIN_TYPE_PRODUCT,
 									AppURL.ADMIN_BRAND_PRODUCT,
 									AppURL.ADMIN_PRODUCT,
+									AppURL.ADMIN_PRODUCT_DETAIL,
+									AppURL.ADMIN_PRODUCT_PROMOTION,
+									AppURL.ADMIN_BILL,
+									AppURL.ADMIN_LIST_RATING,
+									AppURL.ADMIN_NEWS,
+									AppURL.ADMIN_SLIDE,
+									AppURL.ADMIN_CONTACT,
+									AppURL.ADMIN_COMMENT,
+									AppURL.ADMIN_EMPLOYEE,
+									AppURL.ADMIN_CHANGEPASSWORD,
+									AppURL.ADMIN_PROFILE,
 								]}
 							>
 								<Switch>
@@ -139,6 +154,17 @@ function App() {
 											AppURL.ADMIN_TYPE_PRODUCT,
 											AppURL.ADMIN_BRAND_PRODUCT,
 											AppURL.ADMIN_PRODUCT,
+											AppURL.ADMIN_PRODUCT_DETAIL,
+											AppURL.ADMIN_PRODUCT_PROMOTION,
+											AppURL.ADMIN_BILL,
+											AppURL.ADMIN_LIST_RATING,
+											AppURL.ADMIN_NEWS,
+											AppURL.ADMIN_SLIDE,
+											AppURL.ADMIN_CONTACT,
+											AppURL.ADMIN_COMMENT,
+											AppURL.ADMIN_EMPLOYEE,
+											AppURL.ADMIN_CHANGEPASSWORD,
+											AppURL.ADMIN_PROFILE,
 										]}
 									>
 										<AdminLayout />

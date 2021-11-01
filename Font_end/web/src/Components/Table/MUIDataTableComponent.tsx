@@ -1,4 +1,4 @@
-import MUIDataTable, { DisplayData, MUIDataTableTextLabels } from 'mui-datatables';
+import MUIDataTable, { DisplayData, MUIDataTableTextLabels, SelectableRows } from 'mui-datatables';
 import React from 'react';
 interface MUIDataTableComponentProps {
 	title?: string;
@@ -34,7 +34,9 @@ interface MUIDataTableComponentProps {
 		jumpToPage?: boolean;
 		download?: boolean;
 		print?: boolean;
-
+		customTableBodyFooterRender?:
+			| ((options: { data: any[]; selectableRows: SelectableRows; columns: any[] }) => any)
+			| undefined;
 		responsive?: 'vertical' | 'standard' | 'simple';
 		fixedSelectColumn?: boolean;
 		viewColumns?: boolean;
@@ -69,6 +71,7 @@ const MUIDataTableComponent: React.FC<MUIDataTableComponentProps> = (props) => {
 				onSearchChange: props.options?.onSearchChange,
 				customSearch: props.options?.customSearch,
 				jumpToPage: props.options?.jumpToPage,
+				customTableBodyFooterRender: props.options?.customTableBodyFooterRender,
 				download: props.options?.download,
 				print: props.options?.print,
 				customToolbar: props.options?.customToolbar,

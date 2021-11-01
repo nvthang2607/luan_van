@@ -147,3 +147,12 @@ export const UpdateImagePost = (data: any) => {
 	});
 	return response;
 };
+export const ListRatingGet = (data: any) => {
+	const response = callApi(
+		'GET',
+		`/api/admin/list_rated?page=${data.page}&pageSize=${data.pageSize}&id_product=${data.id_product}`
+	).catch((res) => {
+		return res;
+	});
+	return response;
+};

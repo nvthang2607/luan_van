@@ -197,14 +197,18 @@ const News: React.FC<ProductProps> = (props) => {
 							WebkitBoxOrient: 'vertical',
 						}}
 					>
-						Đi cùng dòng chảy của công nghệ hiện nay thì việc thay đổi diện mạo trên các mẫu
-						smartphone vẫn luôn là xu hướng tất yếu. Điều này vừa mang lại cái nhìn mới Đi cùng dòng
-						chảy của công nghệ hiện nay thì việc thay đổi diện mạo trên các mẫu smartphone vẫn luôn
-						là xu hướng tất yếu. Điều này vừa mang lại cái nhìn mới
+						{/* {props.title} */}
 					</Typography>
 				</Box>
 				<Box>
-					<Button color="secondary">Doc tiep</Button>
+					<Button
+						color="secondary"
+						onClick={() => {
+							history.push(`/news_detail/${toURL(props?.title)}-${props?.id}.html`);
+						}}
+					>
+						Doc tiep
+					</Button>
 				</Box>
 			</Box>
 		</React.Fragment>

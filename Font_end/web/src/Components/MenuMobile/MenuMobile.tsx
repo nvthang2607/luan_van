@@ -367,8 +367,9 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 					<Box
 						className={classes.styleLink}
 						onClick={() => {
-							history.push(AppURL.PROFILE_INFO);
+							history.push(AppURL.NEWS);
 							props.receiveMenu?.(false);
+							window.scrollTo(0, 0);
 						}}
 					>
 						<Typography

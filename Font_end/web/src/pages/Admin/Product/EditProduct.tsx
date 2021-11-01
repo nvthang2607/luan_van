@@ -447,6 +447,7 @@ const EditProduct: React.FC<ProfileInfoProps> = (props) => {
 			});
 		}
 	};
+	console.log('files', files);
 
 	return (
 		<React.Fragment>
@@ -527,7 +528,10 @@ const EditProduct: React.FC<ProfileInfoProps> = (props) => {
 											{props.dataBrand.data?.map((item: any) => {
 												return [
 													<MenuItem value="" disabled style={{ fontWeight: 'bold', color: 'red' }}>
-														{item.name}
+														{item.image?.length === 1 &&
+															item.image?.map((item: any) => {
+																return item.name;
+															})}
 													</MenuItem>,
 													item.brand?.map((itemChildren: any) => {
 														return (
@@ -707,7 +711,18 @@ const EditProduct: React.FC<ProfileInfoProps> = (props) => {
 																			marginTop: '10px',
 																		}}
 																	>
-																		{item.name}
+																		{item.id_product !== undefined
+																			? item.image.length === 1
+																				? item.image?.map((itemChildren: any) => {
+																						return itemChildren.name;
+																				  })
+																				: `${item.image.substring(
+																						item.image.lastIndexOf('/') + 1,
+																						item.image.length
+																				  )}`
+																			: item.image?.map((itemChildren: any) => {
+																					return itemChildren.name;
+																			  })}
 																	</Typography>
 																	<Box
 																		style={{

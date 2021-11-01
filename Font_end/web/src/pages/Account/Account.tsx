@@ -40,6 +40,7 @@ import {
 	Button,
 	FormHelperText,
 	LinearProgress,
+	Collapse,
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { useForm } from 'react-hook-form';
@@ -51,6 +52,9 @@ import { useTranslation } from 'react-i18next';
 import jwtDecode from 'jwt-decode';
 import { useMediaQuery } from 'react-responsive';
 import clsx from 'clsx';
+import ForgotPwd from './ForgotPwd';
+import SendCode from './SendCode';
+import ResetPwd from './ResetPwd';
 
 interface TabPanelProps {
 	children?: React.ReactNode;
@@ -110,6 +114,10 @@ const useStyles = makeStyles((theme: Theme) =>
 			marginTop: theme.spacing(6),
 			backgroundColor: '#fff',
 		},
+		styleForgotPwd: {
+			padding: '62px',
+			paddingTop: '12px',
+		},
 		content: {
 			padding: theme.spacing(3, 15, 5, 15),
 		},
@@ -148,6 +156,36 @@ const Account: React.FC = () => {
 		if (result === 1) {
 			toast.error('ten tai khoan da ton tai');
 		}
+	};
+	const [showAccount, setShowAccount] = React.useState(true);
+	const [showSendCode, setShowSendCode] = React.useState(false);
+	const [showSendMail, setShowSendMail] = React.useState(true);
+	const [showResetPwd, setShowResetPwd] = React.useState(false);
+	const [valueEmail, setValueEmail] = React.useState('');
+	const forgotPwd: (result: boolean) => void = (result) => {
+		if (result) {
+			setShowAccount(!showAccount);
+			setShowResetPwd(false);
+			setShowSendMail(true);
+			setShowSendCode(false);
+		}
+	};
+	const sendMail: (result: boolean) => void = (result) => {
+		if (result) {
+			setShowResetPwd(false);
+			setShowSendMail(false);
+			setShowSendCode(true);
+		}
+	};
+	const sendCode: (result: boolean) => void = (result) => {
+		if (result) {
+			setShowResetPwd(true);
+			setShowSendMail(false);
+			setShowSendCode(false);
+		}
+	};
+	const email: (result: any) => void = (result) => {
+		setValueEmail(result);
 	};
 	const checkToken = () => {
 		const token: any = window.localStorage.getItem('token');
@@ -199,51 +237,67 @@ const Account: React.FC = () => {
 				<Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 					<Grid item className={classes.paper}>
 						<Box boxShadow={4}>
-							<div
-								className={clsx(
-									classes.button,
-									isResponseiveMobile ? classes.root : classes.rootMobile
-								)}
-							>
-								<Tabs
-									value={value}
-									onChange={handleChange}
-									style={{ color: theme.palette.primary.main, fontWeight: 'bold' }}
-									centered
-									indicatorColor="primary"
-									aria-label="full width tabs example"
+							{showAccount ? (
+								<div
+									className={clsx(
+										classes.button,
+										isResponseiveMobile ? classes.root : classes.rootMobile
+									)}
 								>
-									<Tab
-										disabled={propressRegister}
-										label={t('account.sign_in')}
-										{...a11yProps(0)}
-										style={{ fontSize: '22px' }}
-									/>
-									<Tab
-										disabled={propressLogin}
-										label={t('account.sign_up')}
-										{...a11yProps(1)}
-										style={{ fontSize: '22px' }}
-									/>
-								</Tabs>
-
-								<SwipeableViews
-									axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-									index={value}
-									onChangeIndex={handleChangeIndex}
-									className={clsx(classes.button, isResponseiveMobile && classes.content)}
-								>
-									<TabPanel value={value} index={0} dir={theme.direction}>
-										<Login receivePropsLogin={receivePropsLogin} resultApiLogin={resultApiLogin} />
-									</TabPanel>
-									<TabPanel value={value} index={1} dir={theme.direction}>
-										<Register
-											receivePropsRegister={receivePropsRegister}
-											resultApiRegister={resultApiRegister}
+									<Tabs
+										value={value}
+										onChange={handleChange}
+										style={{ color: theme.palette.primary.main, fontWeight: 'bold' }}
+										centered
+										indicatorColor="primary"
+										aria-label="full width tabs example"
+									>
+										<Tab
+											disabled={propressRegister}
+											label={t('account.sign_in')}
+											{...a11yProps(0)}
+											style={{ fontSize: '22px' }}
 										/>
-									</TabPanel>
-								</SwipeableViews>
-							</div>
+										<Tab
+											disabled={propressLogin}
+											label={t('account.sign_up')}
+											{...a11yProps(1)}
+											style={{ fontSize: '22px' }}
+										/>
+									</Tabs>
+
+									<SwipeableViews
+										axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+										index={value}
+										onChangeIndex={handleChangeIndex}
+										className={clsx(classes.button, isResponseiveMobile && classes.content)}
+									>
+										<TabPanel value={value} index={0} dir={theme.direction}>
+											<Login
+												receivePropsLogin={receivePropsLogin}
+												resultApiLogin={resultApiLogin}
+												forgotPwd={forgotPwd}
+											/>
+										</TabPanel>
+										<TabPanel value={value} index={1} dir={theme.direction}>
+											<Register
+												receivePropsRegister={receivePropsRegister}
+												resultApiRegister={resultApiRegister}
+											/>
+										</TabPanel>
+									</SwipeableViews>
+								</div>
+							) : (
+								<Box className={classes.styleForgotPwd}>
+									{showSendMail && (
+										<ForgotPwd forgotPwd={forgotPwd} sendMail={sendMail} email={email} />
+									)}
+									{showSendCode && (
+										<SendCode forgotPwd={forgotPwd} sendCode={sendCode} valueEmail={valueEmail} />
+									)}
+									{showResetPwd && <ResetPwd forgotPwd={forgotPwd} valueEmail={valueEmail} />}
+								</Box>
+							)}
 						</Box>
 					</Grid>
 				</Grid>

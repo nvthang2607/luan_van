@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Badge from '@material-ui/core/Badge';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -51,9 +51,11 @@ import Swal from 'sweetalert2';
 import jwtDecode from 'jwt-decode';
 import { useMediaQuery } from 'react-responsive';
 import clsx from 'clsx';
+import { AppURL } from '../../utils/const';
 interface loginprops {
 	receivePropsLogin?: (result: boolean) => void;
 	resultApiLogin?: (result: any) => void;
+	forgotPwd?: (result: boolean) => void;
 }
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -131,6 +133,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 const Login: React.FC<loginprops> = (props) => {
 	const classes = useStyles();
+	const history = useHistory();
 	const theme = useTheme();
 	const schema = yup.object().shape({
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
@@ -157,11 +160,13 @@ const Login: React.FC<loginprops> = (props) => {
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong dung quan tri de dang nhap',
+					title: 'Tai khoan hoac mk ko dung',
 					//text: 'Ten tai khoan hoac mat khau khong dung',
 				});
 				//props?.resultApiLogin?.(res.errorCode);
 			}
+		} else {
+			props?.resultApiLogin?.(res?.errorCode);
 		}
 	};
 	const [state, setState] = React.useState({
@@ -246,7 +251,12 @@ const Login: React.FC<loginprops> = (props) => {
 					</FormControl>
 				</Grid>
 				<Grid item xs={12} style={{ textAlign: 'end' }}>
-					<MuiLink style={{ textDecoration: 'underline', color: 'black' }} href="#">
+					<MuiLink
+						style={{ textDecoration: 'underline', color: 'black', cursor: 'pointer' }}
+						onClick={() => {
+							props.forgotPwd?.(true);
+						}}
+					>
 						Quên mật khẩu?
 					</MuiLink>
 				</Grid>

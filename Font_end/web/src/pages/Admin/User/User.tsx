@@ -14,6 +14,7 @@ import {
 	makeStyles,
 	TextField,
 	Tooltip,
+	Typography,
 } from '@material-ui/core';
 import DialogContent from '@material-ui/core/DialogContent';
 import SearchBar from 'material-ui-search-bar';
@@ -67,7 +68,7 @@ const User: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach nguoi dung da duoc kich hoat',
+		value: 'Danh sach nguoi dung dang duoc kich hoat',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -392,7 +393,7 @@ const User: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach nguoi dung da duoc kich hoat' });
+									setValueActive({ id: 0, value: 'Danh sach nguoi dung dang duoc kich hoat' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -401,7 +402,14 @@ const User: React.FC = () => {
 									setPageTB(0);
 								}}
 							>
-								Danh sach nguoi dung da duoc kich hoat&nbsp;
+								{valueActive.id === 0 ? (
+									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										Danh sach nguoi dung da duoc kich hoat
+									</Typography>
+								) : (
+									<Typography variant="body1">Danh sach nguoi dung da duoc kich hoat</Typography>
+								)}
+								&nbsp;
 								{valueActive.id === 0 && (
 									<i
 										className="fa fa-check"
@@ -422,7 +430,14 @@ const User: React.FC = () => {
 									setPageTB(0);
 								}}
 							>
-								Danh sach nguoi dung dang tam khoa&nbsp;
+								{valueActive.id === 1 ? (
+									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										Danh sach nguoi dung dang tam khoa
+									</Typography>
+								) : (
+									<Typography variant="body1">Danh sach nguoi dung dang tam khoa</Typography>
+								)}
+								&nbsp;
 								{valueActive.id === 1 && (
 									<i
 										className="fa fa-check"

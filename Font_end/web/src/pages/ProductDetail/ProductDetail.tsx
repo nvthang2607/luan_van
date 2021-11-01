@@ -52,11 +52,14 @@ import { getCartData, updataCartData } from '../../Components/Product/CartSlice'
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { CommentPost } from '../../api/comment';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import jwtDecode from 'jwt-decode';
 import { useMediaQuery } from 'react-responsive';
 import ProductCarouselPhone from '../../Components/Product/ProductCarouselPhone';
+import Swal from 'sweetalert2';
+import { UserGet } from '../../api/User';
+import { CreateCommentPost, ListCommentPost } from '../../api/Comment';
+import { CreateFeedbackPost } from '../../api/Feedback';
 function SampleNextArrow(props: any) {
 	const { className, style, onClick } = props;
 	return (
@@ -184,6 +187,17 @@ const ProductDetail: React.FC<Props> = (props) => {
 			});
 		}
 	};
+	const handleClickPageCmt = (event: any) => {
+		const anchor = ((event.target as HTMLDivElement).ownerDocument || document).querySelector(
+			'#back-to-Cmt'
+		);
+		if (anchor) {
+			anchor.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center',
+			});
+		}
+	};
 
 	const labels: { [index: string]: string } = {
 		1: 'Không thích',
@@ -222,7 +236,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 	const onSubmit = (data: any) => {
 		console.log(data);
 	};
-
+	const onSubmitCmt = (data: any) => {
+		console.log(data);
+	};
 	const dispatch = useAppDispatch();
 	const [dataProductRecommend, setDataProductRecommend] = React.useState<any>([]);
 	React.useEffect(() => {
@@ -247,6 +263,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 	});
 	const [ratingListData, setRatingListData] = React.useState<any>({});
 	const [pageCmt, setPageCmt] = React.useState(1);
+	const [refreshCmt, setRefreshCmt] = React.useState(1);
 	const [pageRating, setPageRating] = React.useState(1);
 	const [progressCmt, setProgressCmt] = React.useState(false);
 	const [progressRating, setProgressRating] = React.useState(false);
@@ -268,7 +285,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 	React.useEffect(() => {
 		const fetchCmt = async () => {
 			setProgressCmt(true);
-			const getComment = await CommentPost({ id: idProduct, page: pageCmt, pageSize: 5 });
+			const getComment = await ListCommentPost({ id: idProduct, page: pageCmt, pageSize: 5 });
 			console.log(getComment);
 
 			if (getComment) {
@@ -280,7 +297,23 @@ const ProductDetail: React.FC<Props> = (props) => {
 			}
 		};
 		fetchCmt();
-	}, [pageCmt, idProduct]);
+	}, [pageCmt, idProduct, refreshCmt]);
+	const [profileInfo, setProfileInfo] = React.useState<any>();
+	React.useEffect(() => {
+		const fetchProfile = async () => {
+			const profile = await UserGet();
+			if (profile) {
+				if (profile.errorCode === null) {
+					setProfileInfo(profile.data);
+					console.log('profile', profile);
+				} else {
+					setProfileInfo({ email: '' });
+				}
+			}
+		};
+		fetchProfile();
+	}, []);
+
 	React.useEffect(() => {
 		const fetchRating = async () => {
 			setProgressRating(true);
@@ -468,7 +501,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 		}
 	};
 	const [idcmt, setIdCmt] = React.useState(-1);
-
+	const [valueCmt, setValueCmt] = React.useState('');
+	const [valueEmail, setValueEmail] = React.useState('');
+	const [valueCmtMain, setValueCmtMain] = React.useState('');
+	const [valueEmailMain, setValueEmailMain] = React.useState('');
 	return isResponseiveMobile ? (
 		<Grid container className={classes.bgHeader}>
 			{isResponseive ? (
@@ -555,7 +591,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 								{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
 							</Typography>
 							<Typography component="span" className={classes.discount_percent}>
-								-6%
+								{`-${
+									((Number(dataProduct?.item?.unit_price) -
+										Number(dataProduct?.item?.promotion_price)) *
+										100) /
+									Number(dataProduct?.item?.unit_price)
+								}%`}
 							</Typography>
 							&nbsp;&nbsp;
 							<Typography
@@ -1162,35 +1203,156 @@ const ProductDetail: React.FC<Props> = (props) => {
 										<Typography component="span" className={classes.discount_percent}>
 											co {dataComment.total} binh luan
 										</Typography>
+										<Button
+											variant="text"
+											className={classes.discount_percent}
+											onClick={() => {
+												setRefreshCmt(refreshCmt + 1);
+											}}
+											style={{
+												marginLeft: '10px',
+												backgroundColor: '#d32f2f',
+												textTransform: 'inherit',
+												padding: '0',
+											}}
+										>
+											Tai lai
+										</Button>
 									</Typography>
 
 									<Box>
-										<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+										<Box style={{ display: 'contents' }}>
 											<Box style={{ display: 'inline-block', width: '100%' }}>
+												{profileInfo?.email === '' && (
+													<TextField
+														id="email"
+														value={valueEmailMain}
+														label="Email"
+														name="email"
+														size="small"
+														variant="outlined"
+														fullWidth
+														onChange={(e) => {
+															setValueEmailMain(e.target.value);
+														}}
+														style={{ marginBottom: '10px' }}
+													/>
+												)}
 												<TextField
-													id="rate_content"
-													{...register('rate_content')}
+													id="comment"
+													value={valueCmtMain}
 													multiline
-													name="rate_content"
+													name="comment"
 													rows={3}
 													placeholder="Nhập đánh giá về sản phẩm"
 													variant="outlined"
 													fullWidth
+													onChange={(e) => {
+														setValueCmtMain(e.target.value);
+													}}
 													style={{ marginBottom: '10px' }}
 												/>
-												<Button variant="contained" color="primary" type="submit">
+												<Button
+													variant="contained"
+													color="primary"
+													disabled={progressCmt}
+													onClick={async (event) => {
+														if (profileInfo.email === '') {
+															if (valueCmtMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Noi dung khong de trong',
+																});
+															} else if (valueEmailMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Email khong de trong',
+																});
+															} else {
+																setProgressCmt(true);
+																const response = await CreateCommentPost({
+																	email: valueEmailMain,
+																	comment: valueCmtMain,
+																	id_product: idProduct,
+																});
+																if (response) {
+																	if (response.errorCode === null) {
+																		Swal.fire({
+																			icon: 'success',
+																			title: 'Gui cau hoi thanh cong',
+																		});
+																		setRefreshCmt(refreshCmt + 1);
+																		setProgressCmt(false);
+																		setValueCmtMain('');
+																		setValueEmailMain('');
+																	} else if (response.errorCode === 1) {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Email khong dung dinh dang',
+																		});
+																		setProgressCmt(false);
+																	} else {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Co loi xay ra',
+																		});
+																		setProgressCmt(false);
+																	}
+																}
+															}
+														} else {
+															if (valueCmtMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Noi dung khong de trong',
+																});
+															} else {
+																setProgressCmt(true);
+																const response = await CreateCommentPost({
+																	email: profileInfo.email,
+																	comment: valueCmtMain,
+																	id_product: idProduct,
+																});
+																if (response) {
+																	if (response.errorCode === null) {
+																		Swal.fire({
+																			icon: 'success',
+																			title: 'Gui cau hoi thanh cong',
+																		});
+																		setRefreshCmt(refreshCmt + 1);
+																		setProgressCmt(false);
+																		setValueCmtMain('');
+																	} else if (response.errorCode === 1) {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Email khong dung dinh dang',
+																		});
+																		setProgressCmt(false);
+																	} else {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Co loi xay ra',
+																		});
+																		setProgressCmt(false);
+																	}
+																}
+															}
+														}
+													}}
+												>
 													gui cau hoi
 												</Button>
 											</Box>
-										</form>
+										</Box>
 									</Box>
 
 									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
+									<Toolbar id="back-to-Cmt" />
 									<Box style={{ position: 'relative' }}>
 										{progressCmt ? (
 											<CircularProgress
 												color="secondary"
-												style={{ position: 'absolute', top: '50%', left: '50%' }}
+												style={{ position: 'inherit', left: '50%' }}
 											/>
 										) : (
 											<React.Fragment>
@@ -1204,7 +1366,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 																		{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
 																	</Typography>
 																	&nbsp;&nbsp;
-																	<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+																	<Typography color="textSecondary">
+																		vao ngay {item.date}
+																	</Typography>
 																</Box>
 																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
 																	<Typography>{item.comment_comment}</Typography>
@@ -1212,7 +1376,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 																		className={classes.reply}
 																		onClick={() => {
 																			setCollapseReply(!collapseReply);
-																			setIdCmt(item.id_comment);
+																			if (idcmt === item.id_comment) {
+																				setIdCmt(0);
+																			} else {
+																				setIdCmt(item.id_comment);
+																				setValueCmt('');
+																			}
 																		}}
 																	>
 																		Tra loi
@@ -1246,7 +1415,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																					</Typography>
 																				)}
 																				<Typography color="textSecondary">
-																					vao ngay 29/09/2021
+																					vao ngay {itemFeedback.date}
 																				</Typography>
 																			</Typography>
 																			<Typography>{itemFeedback.comment_feedback}</Typography>
@@ -1263,31 +1432,136 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	}}
 																>
 																	<Collapse
-																		in={collapseReply && idcmt === item.id_comment}
+																		in={idcmt === item.id_comment ? true : false}
 																		timeout="auto"
 																		unmountOnExit
 																	>
-																		<form
-																			onSubmit={handleSubmit(onSubmit)}
-																			style={{ display: 'contents' }}
-																		>
+																		<Box style={{ display: 'contents' }}>
 																			<Box style={{ display: 'inline-block', width: '100%' }}>
+																				{profileInfo?.email === '' && (
+																					<TextField
+																						id="email"
+																						value={valueEmail}
+																						name="email"
+																						label="Email"
+																						variant="outlined"
+																						fullWidth
+																						onChange={(e) => {
+																							setValueEmail(e.target.value);
+																						}}
+																						style={{ marginBottom: '10px' }}
+																					/>
+																				)}
 																				<TextField
-																					id="rate_content"
-																					{...register('rate_content')}
+																					id="comment"
+																					value={valueCmt}
 																					multiline
-																					name="rate_content"
+																					name="comment"
 																					rows={3}
 																					placeholder="Nhập đánh giá về sản phẩm"
 																					variant="outlined"
 																					fullWidth
+																					onChange={(e) => {
+																						setValueCmt(e.target.value);
+																					}}
 																					style={{ marginBottom: '10px' }}
 																				/>
-																				<Button variant="contained" color="primary" type="submit">
+																				<Button
+																					variant="contained"
+																					color="primary"
+																					disabled={progressCmt}
+																					onClick={async () => {
+																						if (profileInfo.email === '') {
+																							if (valueCmt === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Noi dung khong de trong',
+																								});
+																							} else if (valueEmail === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Email khong de trong',
+																								});
+																							} else {
+																								handleClickPageCmt(event);
+																								setProgressCmt(true);
+																								const response = await CreateFeedbackPost({
+																									comment: valueCmt,
+																									email: valueEmail,
+																									id_comment: item.id_comment,
+																								});
+																								if (response) {
+																									if (response.errorCode === null) {
+																										Swal.fire({
+																											icon: 'success',
+																											title: 'Gui cau hoi thanh cong',
+																										});
+																										setRefreshCmt(refreshCmt + 1);
+																										setProgressCmt(false);
+																										setValueCmt('');
+																										setIdCmt(0);
+																										setValueEmail('');
+																									} else if (response.errorCode === 1) {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Email khong dung dinh dang',
+																										});
+																										setProgressCmt(false);
+																									} else {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Co loi xay ra',
+																										});
+																										setProgressCmt(false);
+																									}
+																								}
+																							}
+																						} else {
+																							if (valueCmt === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Noi dung khong de trong',
+																								});
+																							} else {
+																								handleClickPageCmt(event);
+																								setProgressCmt(true);
+																								const response = await CreateFeedbackPost({
+																									comment: valueCmt,
+																									email: profileInfo.email,
+																									id_comment: item.id_comment,
+																								});
+																								if (response) {
+																									if (response.errorCode === null) {
+																										Swal.fire({
+																											icon: 'success',
+																											title: 'Gui cau hoi thanh cong',
+																										});
+																										setRefreshCmt(refreshCmt + 1);
+																										setProgressCmt(false);
+																										setValueCmt('');
+																										setIdCmt(0);
+																									} else if (response.errorCode === 1) {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Email khong dung dinh dang',
+																										});
+																										setProgressCmt(false);
+																									} else {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Co loi xay ra',
+																										});
+																										setProgressCmt(false);
+																									}
+																								}
+																							}
+																						}
+																					}}
+																				>
 																					gui cau hoi
 																				</Button>
 																			</Box>
-																		</form>
+																		</Box>
 																	</Collapse>
 																</Box>
 															</Box>
@@ -1307,6 +1581,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 															variant="outlined"
 															color="primary"
 															defaultPage={pageCmt}
+															onClick={handleClickPageCmt}
 															onChange={(event: object, page: number) => {
 																setPageCmt(page);
 															}}
@@ -1601,7 +1876,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
 								</Typography>
 								<Typography component="span" className={classes.discount_percent}>
-									-6%
+									{`-${
+										((Number(dataProduct?.item?.unit_price) -
+											Number(dataProduct?.item?.promotion_price)) *
+											100) /
+										Number(dataProduct?.item?.unit_price)
+									}%`}
 								</Typography>
 								&nbsp;&nbsp;
 								<Typography
@@ -1828,7 +2108,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 									{Intl.NumberFormat('en-US').format(Number(dataProduct?.item?.promotion_price))}đ
 								</Typography>
 								<Typography component="span" className={classes.discount_percent}>
-									-6%
+									{`-${
+										((Number(dataProduct?.item?.unit_price) -
+											Number(dataProduct?.item?.promotion_price)) *
+											100) /
+										Number(dataProduct?.item?.unit_price)
+									}%`}
 								</Typography>
 								&nbsp;&nbsp;
 								<Typography
@@ -2429,27 +2714,147 @@ const ProductDetail: React.FC<Props> = (props) => {
 										<Typography component="span" className={classes.discount_percent}>
 											co {dataComment.total} binh luan
 										</Typography>
+										<Button
+											variant="text"
+											className={classes.discount_percent}
+											onClick={() => {
+												setRefreshCmt(refreshCmt + 1);
+											}}
+											style={{
+												marginLeft: '10px',
+												backgroundColor: '#d32f2f',
+												textTransform: 'inherit',
+												padding: '0',
+											}}
+										>
+											Tai lai
+										</Button>
 									</Typography>
 
 									<Box>
-										<form onSubmit={handleSubmit(onSubmit)} style={{ display: 'contents' }}>
+										<Box style={{ display: 'contents' }}>
 											<Box style={{ display: 'inline-block', width: '100%' }}>
+												{profileInfo?.email === '' && (
+													<TextField
+														id="email"
+														value={valueEmailMain}
+														label="Email"
+														name="email"
+														size="small"
+														variant="outlined"
+														fullWidth
+														onChange={(e) => {
+															setValueEmailMain(e.target.value);
+														}}
+														style={{ marginBottom: '10px' }}
+													/>
+												)}
 												<TextField
-													id="rate_content"
-													{...register('rate_content')}
+													id="comment"
+													value={valueCmtMain}
 													multiline
-													name="rate_content"
+													name="comment"
 													rows={3}
 													placeholder="Nhập đánh giá về sản phẩm"
 													variant="outlined"
 													fullWidth
+													onChange={(e) => {
+														setValueCmtMain(e.target.value);
+													}}
 													style={{ marginBottom: '10px' }}
 												/>
-												<Button variant="contained" color="primary" type="submit">
+												<Button
+													variant="contained"
+													color="primary"
+													disabled={progressCmt}
+													onClick={async (event) => {
+														if (profileInfo.email === '') {
+															if (valueCmtMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Noi dung khong de trong',
+																});
+															} else if (valueEmailMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Email khong de trong',
+																});
+															} else {
+																setProgressCmt(true);
+																const response = await CreateCommentPost({
+																	email: valueEmailMain,
+																	comment: valueCmtMain,
+																	id_product: idProduct,
+																});
+																if (response) {
+																	if (response.errorCode === null) {
+																		Swal.fire({
+																			icon: 'success',
+																			title: 'Gui cau hoi thanh cong',
+																		});
+																		setRefreshCmt(refreshCmt + 1);
+																		setProgressCmt(false);
+																		setValueCmtMain('');
+																		setValueEmailMain('');
+																	} else if (response.errorCode === 1) {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Email khong dung dinh dang',
+																		});
+																		setProgressCmt(false);
+																	} else {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Co loi xay ra',
+																		});
+																		setProgressCmt(false);
+																	}
+																}
+															}
+														} else {
+															if (valueCmtMain === '') {
+																Swal.fire({
+																	icon: 'error',
+																	title: 'Noi dung khong de trong',
+																});
+															} else {
+																setProgressCmt(true);
+																const response = await CreateCommentPost({
+																	email: profileInfo.email,
+																	comment: valueCmtMain,
+																	id_product: idProduct,
+																});
+																if (response) {
+																	if (response.errorCode === null) {
+																		Swal.fire({
+																			icon: 'success',
+																			title: 'Gui cau hoi thanh cong',
+																		});
+																		setRefreshCmt(refreshCmt + 1);
+																		setProgressCmt(false);
+																		setValueCmtMain('');
+																	} else if (response.errorCode === 1) {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Email khong dung dinh dang',
+																		});
+																		setProgressCmt(false);
+																	} else {
+																		Swal.fire({
+																			icon: 'error',
+																			title: 'Co loi xay ra',
+																		});
+																		setProgressCmt(false);
+																	}
+																}
+															}
+														}
+													}}
+												>
 													gui cau hoi
 												</Button>
 											</Box>
-										</form>
+										</Box>
 									</Box>
 
 									<Divider style={{ marginBottom: '10px', marginTop: '10px' }} />
@@ -2457,7 +2862,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 										{progressCmt ? (
 											<CircularProgress
 												color="secondary"
-												style={{ position: 'absolute', top: '50%', left: '50%' }}
+												style={{
+													position: 'inherit',
+
+													left: '50%',
+													marginBottom: '20px',
+												}}
 											/>
 										) : (
 											<React.Fragment>
@@ -2471,7 +2881,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 																		{item.email_comment.slice(0, item.email_comment.indexOf('@'))}
 																	</Typography>
 																	&nbsp;&nbsp;
-																	<Typography color="textSecondary">vao ngay 29/09/2021</Typography>
+																	<Typography color="textSecondary">
+																		vao ngay {item.date}
+																	</Typography>
 																</Box>
 																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
 																	<Typography>{item.comment_comment}</Typography>
@@ -2479,7 +2891,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 																		className={classes.reply}
 																		onClick={() => {
 																			setCollapseReply(!collapseReply);
-																			setIdCmt(item.id_comment);
+
+																			idcmt === item.id_comment
+																				? setIdCmt(0)
+																				: setIdCmt(item.id_comment);
 																		}}
 																	>
 																		Tra loi
@@ -2513,7 +2928,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																					</Typography>
 																				)}
 																				<Typography color="textSecondary">
-																					vao ngay 29/09/2021
+																					vao ngay {itemFeedback.date}
 																				</Typography>
 																			</Typography>
 																			<Typography>{itemFeedback.comment_feedback}</Typography>
@@ -2530,31 +2945,136 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	}}
 																>
 																	<Collapse
-																		in={collapseReply && idcmt === item.id_comment}
+																		in={idcmt === item.id_comment ? true : false}
 																		timeout="auto"
 																		unmountOnExit
 																	>
-																		<form
-																			onSubmit={handleSubmit(onSubmit)}
-																			style={{ display: 'contents' }}
-																		>
+																		<Box style={{ display: 'contents' }}>
 																			<Box style={{ display: 'inline-block', width: '100%' }}>
+																				{profileInfo?.email === '' && (
+																					<TextField
+																						id="email"
+																						value={valueEmail}
+																						name="email"
+																						label="Email"
+																						variant="outlined"
+																						fullWidth
+																						onChange={(e) => {
+																							setValueEmail(e.target.value);
+																						}}
+																						style={{ marginBottom: '10px' }}
+																					/>
+																				)}
 																				<TextField
-																					id="rate_content"
-																					{...register('rate_content')}
+																					id="comment"
+																					value={valueCmt}
 																					multiline
-																					name="rate_content"
+																					name="comment"
 																					rows={3}
 																					placeholder="Nhập đánh giá về sản phẩm"
 																					variant="outlined"
 																					fullWidth
+																					onChange={(e) => {
+																						setValueCmt(e.target.value);
+																					}}
 																					style={{ marginBottom: '10px' }}
 																				/>
-																				<Button variant="contained" color="primary" type="submit">
+																				<Button
+																					variant="contained"
+																					color="primary"
+																					disabled={progressCmt}
+																					onClick={async () => {
+																						if (profileInfo.email === '') {
+																							if (valueCmt === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Noi dung khong de trong',
+																								});
+																							} else if (valueEmail === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Email khong de trong',
+																								});
+																							} else {
+																								handleClickPageCmt(event);
+																								setProgressCmt(true);
+																								const response = await CreateFeedbackPost({
+																									comment: valueCmt,
+																									email: valueEmail,
+																									id_comment: item.id_comment,
+																								});
+																								if (response) {
+																									if (response.errorCode === null) {
+																										Swal.fire({
+																											icon: 'success',
+																											title: 'Gui cau hoi thanh cong',
+																										});
+																										setRefreshCmt(refreshCmt + 1);
+																										setProgressCmt(false);
+																										setValueCmt('');
+																										setIdCmt(0);
+																										setValueEmail('');
+																									} else if (response.errorCode === 1) {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Email khong dung dinh dang',
+																										});
+																										setProgressCmt(false);
+																									} else {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Co loi xay ra',
+																										});
+																										setProgressCmt(false);
+																									}
+																								}
+																							}
+																						} else {
+																							if (valueCmt === '') {
+																								Swal.fire({
+																									icon: 'error',
+																									title: 'Noi dung khong de trong',
+																								});
+																							} else {
+																								handleClickPageCmt(event);
+																								setProgressCmt(true);
+																								const response = await CreateFeedbackPost({
+																									comment: valueCmt,
+																									email: profileInfo.email,
+																									id_comment: item.id_comment,
+																								});
+																								if (response) {
+																									if (response.errorCode === null) {
+																										Swal.fire({
+																											icon: 'success',
+																											title: 'Gui cau hoi thanh cong',
+																										});
+																										setRefreshCmt(refreshCmt + 1);
+																										setProgressCmt(false);
+																										setValueCmt('');
+																										setIdCmt(0);
+																									} else if (response.errorCode === 1) {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Email khong dung dinh dang',
+																										});
+																										setProgressCmt(false);
+																									} else {
+																										Swal.fire({
+																											icon: 'error',
+																											title: 'Co loi xay ra',
+																										});
+																										setProgressCmt(false);
+																									}
+																								}
+																							}
+																						}
+																					}}
+																				>
 																					gui cau hoi
 																				</Button>
 																			</Box>
-																		</form>
+																		</Box>
 																	</Collapse>
 																</Box>
 															</Box>
@@ -2574,6 +3094,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 															variant="outlined"
 															color="primary"
 															defaultPage={pageCmt}
+															onClick={handleClickPageCmt}
 															onChange={(event: object, page: number) => {
 																setPageCmt(page);
 															}}

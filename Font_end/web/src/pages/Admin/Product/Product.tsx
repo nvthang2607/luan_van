@@ -40,7 +40,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { Link, NavLink, Redirect } from 'react-router-dom';
+import { Link, NavLink, Redirect, useHistory } from 'react-router-dom';
 import {
 	DeleteBrandProductDelete,
 	DeleteProductDelete,
@@ -60,6 +60,7 @@ import UpdateQuantity from './UpdateQuantity';
 import { boolean } from 'yup/lib/locale';
 import CreateProduct from './CreateProduct';
 import EditProduct from './EditProduct';
+import ProductDetail from './ProductDetail';
 
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
@@ -118,6 +119,7 @@ const Product: React.FC = () => {
 	const [totalDoc, setTotalDoc] = useState<number>(0);
 	const [pageTB, setPageTB] = useState<number>(0);
 	const [rowPage, setRowPage] = useState<number>(5);
+	const history = useHistory();
 	const column = [
 		{
 			name: 'stt',
@@ -226,6 +228,18 @@ const Product: React.FC = () => {
 								<MenuItemMui
 									onClick={() => {
 										setAnchorElProduct(null);
+										setDataEdit(data[index]);
+										setTitleDialog('Chi tiet san pham ');
+										setShowDialog(3);
+										setOpen(true);
+										console.log(data[index]);
+									}}
+								>
+									Xem chi tiet
+								</MenuItemMui>
+								<MenuItemMui
+									onClick={() => {
+										setAnchorElProduct(null);
 										setDataEditQuantity({ id: data[index].id_product, name: data[index].quantity });
 										setTitleDialog('Cap nhat so luong ');
 										setShowDialog(0);
@@ -261,6 +275,20 @@ const Product: React.FC = () => {
 									}}
 								>
 									Cap nhat thong tin
+								</MenuItemMui>
+								<MenuItemMui
+									onClick={() => {
+										history.push(`/admin/product_promotion/${data[index].id_product}`);
+									}}
+								>
+									Xem danh sach khuyen mai
+								</MenuItemMui>
+								<MenuItemMui
+									onClick={() => {
+										history.push(`/admin/rating/${data[index].id_product}`);
+									}}
+								>
+									Xem danh sach danh gia
 								</MenuItemMui>
 							</MenuMui>
 						</React.Fragment>
@@ -463,6 +491,15 @@ const Product: React.FC = () => {
 					dataEditImage={dataEditImage}
 				/>
 			);
+		} else if (showDialog === 3) {
+			return (
+				<ProductDetail
+					dataEdit={dataEdit}
+					cancel={cancel}
+					create={create}
+					titleDialog={titleDialog}
+				/>
+			);
 		}
 	};
 	return (
@@ -643,7 +680,14 @@ const Product: React.FC = () => {
 									setPageTB(0);
 								}}
 							>
-								Danh sach nguoi dung da duoc kich hoat&nbsp;
+								{valueActive.id === 0 ? (
+									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										Danh sach san pham dang duoc kich hoat
+									</Typography>
+								) : (
+									<Typography variant="body1">Danh sach san pham dang duoc kich hoat</Typography>
+								)}
+								&nbsp;
 								{valueActive.id === 0 && (
 									<i
 										className="fa fa-check"
@@ -664,7 +708,14 @@ const Product: React.FC = () => {
 									setPageTB(0);
 								}}
 							>
-								Danh sach nguoi dung dang tam khoa&nbsp;
+								{valueActive.id === 1 ? (
+									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
+										Danh sach san pham dang tam khoa
+									</Typography>
+								) : (
+									<Typography variant="body1">Danh sach san pham dang tam khoa</Typography>
+								)}
+								&nbsp;
 								{valueActive.id === 1 && (
 									<i
 										className="fa fa-check"

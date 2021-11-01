@@ -64,6 +64,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useMediaQuery } from 'react-responsive';
 import ProductMobile from '../Product/ProductMobile';
 import ProductPhone from '../Product/ProductPhone';
+import { ListSlideGet } from '../../api/Slide';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 	height: '30px',
@@ -211,12 +212,14 @@ const Content: React.FC = () => {
 	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
 	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
 	const [dataProductFsale, setDataProductFsale] = React.useState<any>([]);
+	const [dataSlide, setDataSlide] = React.useState<any>([]);
 	const [progressProductNew, setProgressProductNew] = React.useState(false);
 	const [progressProductSell, setProgressProductSell] = React.useState(false);
 	const [progressProductFsale, setProgressProductFsale] = React.useState(false);
 	const [progressProductRecommend, setProgressProductRecommend] = React.useState(false);
 	const [progressNews, setProgressNews] = React.useState(false);
 	const dispatch = useAppDispatch();
+	const history = useHistory();
 	const valueRefreshPage = useAppSelector(getValueRefreshPage);
 	React.useEffect(() => {
 		const fetchPhoneBrand = async () => {
@@ -242,6 +245,12 @@ const Content: React.FC = () => {
 					setDataProductNew(responseProductNew.data.listData);
 					//console.log(responseProductNew.data.listData);
 					setProgressProductNew(false);
+				}
+			}
+			const responseDataSlide = await ListSlideGet();
+			if (responseDataSlide) {
+				if (responseDataSlide.errorCode === null) {
+					setDataSlide(responseDataSlide.data);
 				}
 			}
 			setProgressProductSell(true);
@@ -342,15 +351,20 @@ const Content: React.FC = () => {
 						<React.Fragment>
 							<Grid item xs={9} style={{ zIndex: 0 }}>
 								<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
-									<div>
-										<img src={img1} />
-									</div>
-									<div>
-										<img src={img2} />
-									</div>
-									<div>
-										<img src={img3} />
-									</div>
+									{dataSlide?.map((item: any) => {
+										return (
+											<div
+												style={{ cursor: 'pointer' }}
+												onClick={() => {
+													history.push(
+														`/product_detail/${toURL(item.name_product)}-${item?.id_product}.html`
+													);
+												}}
+											>
+												<img src={`http://localhost:8000${item.image}`} />
+											</div>
+										);
+									})}
 								</Carousel>
 							</Grid>
 							<Grid item xs={3} style={{ paddingLeft: '8px' }}>
@@ -365,15 +379,20 @@ const Content: React.FC = () => {
 					) : (
 						<Grid item xs={12} style={{ zIndex: 0, marginTop: '25px' }}>
 							<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
-								<div>
-									<img src={img1} />
-								</div>
-								<div>
-									<img src={img2} />
-								</div>
-								<div>
-									<img src={img3} />
-								</div>
+								{dataSlide?.map((item: any) => {
+									return (
+										<div
+											style={{ cursor: 'pointer' }}
+											onClick={() => {
+												history.push(
+													`/product_detail/${toURL(item.name_product)}-${item?.id_product}.html`
+												);
+											}}
+										>
+											<img src={`http://localhost:8000${item.image}`} />
+										</div>
+									);
+								})}
 							</Carousel>
 						</Grid>
 					)}
@@ -788,7 +807,13 @@ const Content: React.FC = () => {
 							<Grid item xs={12} className={classes.borderTitle}>
 								<Grid container style={{ alignItems: 'baseline' }}>
 									<Grid item xs={4}>
-										<Link to="/" className={classes.titles}>
+										<Link
+											to={AppURL.NEWS}
+											className={classes.titles}
+											onClick={() => {
+												window.scrollTo(0, 0);
+											}}
+										>
 											24H CONG NGHE<div className={classes.title}></div>
 										</Link>
 									</Grid>
@@ -898,15 +923,20 @@ const Content: React.FC = () => {
 						<React.Fragment>
 							<Grid item xs={9} style={{ zIndex: 0 }}>
 								<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
-									<div>
-										<img src={img1} />
-									</div>
-									<div>
-										<img src={img2} />
-									</div>
-									<div>
-										<img src={img3} />
-									</div>
+									{dataSlide?.map((item: any) => {
+										return (
+											<div
+												style={{ cursor: 'pointer' }}
+												onClick={() => {
+													history.push(
+														`/product_detail/${toURL(item.name_product)}-${item?.id_product}.html`
+													);
+												}}
+											>
+												<img src={`http://localhost:8000${item.image}`} />
+											</div>
+										);
+									})}
 								</Carousel>
 							</Grid>
 							<Grid item xs={3} style={{ paddingLeft: '8px' }}>
@@ -921,15 +951,20 @@ const Content: React.FC = () => {
 					) : (
 						<Grid item xs={12} style={{ zIndex: 0, marginTop: '25px' }}>
 							<Carousel autoPlay infiniteLoop stopOnHover showThumbs={false}>
-								<div>
-									<img src={img1} />
-								</div>
-								<div>
-									<img src={img2} />
-								</div>
-								<div>
-									<img src={img3} />
-								</div>
+								{dataSlide?.map((item: any) => {
+									return (
+										<div
+											style={{ cursor: 'pointer' }}
+											onClick={() => {
+												history.push(
+													`/product_detail/${toURL(item.name_product)}-${item?.id_product}.html`
+												);
+											}}
+										>
+											<img src={`http://localhost:8000${item.image}`} />
+										</div>
+									);
+								})}
 							</Carousel>
 						</Grid>
 					)}
@@ -1386,7 +1421,13 @@ const Content: React.FC = () => {
 							<Grid item xs={12}>
 								<Grid container style={{ alignItems: 'baseline' }}>
 									<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
-										<Link to="/" className={classes.titles}>
+										<Link
+											to={AppURL.NEWS}
+											className={classes.titles}
+											onClick={() => {
+												window.scrollTo(0, 0);
+											}}
+										>
 											24H CONG NGHE
 										</Link>
 									</Grid>

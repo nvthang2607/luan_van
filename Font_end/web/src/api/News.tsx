@@ -6,3 +6,9 @@ export const NewsGet = (data: any) => {
 	});
 	return response;
 };
+export const NewsIdGet = (id: any) => {
+	const response = callApi('GET', `/api/news/${id}`).catch((res) => {
+		return res;
+	});
+	return response;
+};

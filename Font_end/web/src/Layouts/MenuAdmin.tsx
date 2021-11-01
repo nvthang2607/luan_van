@@ -210,6 +210,18 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 			return AppURL.LOGIN;
 		} else if (id === 3) {
 			return AppURL.MANAGER_USER;
+		} else if (id === 4) {
+			return AppURL.ADMIN_BILL;
+		} else if (id === 5) {
+			return AppURL.ADMIN_NEWS;
+		} else if (id === 6) {
+			return AppURL.ADMIN_SLIDE;
+		} else if (id === 7) {
+			return AppURL.ADMIN_CONTACT;
+		} else if (id === 8) {
+			return AppURL.ADMIN_COMMENT;
+		} else if (id === 9) {
+			return AppURL.ADMIN_EMPLOYEE;
 		} else {
 			return AppURL.ADMIN_HOME;
 		}

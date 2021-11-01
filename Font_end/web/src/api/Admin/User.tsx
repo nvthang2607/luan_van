@@ -39,3 +39,9 @@ export const ActiveUserGet = (id_user: any) => {
 	});
 	return response;
 };
+export const UpdatePasswordPost = (data: any) => {
+	const response = callApi('POST', '/api/users/change_password', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
