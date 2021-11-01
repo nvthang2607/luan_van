@@ -312,9 +312,9 @@ class AuthController extends Controller
         }
         //return response()->json(['errorCode'=> null,'data'=>$req->email], 200);
 
-        if(Session::get($req->email)==null){
-            return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
-        }
+        // if(Session::get($req->email)==null){
+        //     return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
+        // }
         //nếu chưa quá hạn
         else{
             if($req->code==Session::get($req->email)){
