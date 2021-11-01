@@ -400,6 +400,7 @@ class UserController extends Controller
         $mau2=sqrt(($req->b1*$req->b1)+($req->b2*$req->b2)+($req->b3*$req->b3)+($req->b4*$req->b4)+($req->b5*$req->b5));
         
         echo $tu/($mau1*$mau2);
+        
     }
 
 }

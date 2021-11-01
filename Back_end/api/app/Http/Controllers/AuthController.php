@@ -283,8 +283,6 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
-
-        
         //tạo 1 dãy số 4 chữ số ngẫu nhiêu làm mã xác nhận
         $rand=rand(1000,9999);
         //biến để set cookie
@@ -311,12 +309,13 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['errorCode'=> 1, 'data'=>null,'error'=>$validator->messages()], 400);
         }
+        return response()->json(['errorCode'=> null,'data'=>Session::get($req->email)], 200);
         if(Session::get($req->email)==null){
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Mã xác nhận hết hạn!'], 401);
         }
         //nếu chưa quá hạn
         else{
-            if($req->code==Cookie::get($req->email)){
+            if($req->code==Session::get($req->email)){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
