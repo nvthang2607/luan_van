@@ -206,7 +206,7 @@ class UserController extends Controller
             }else{
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
             }
-            
+
         }
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
@@ -235,7 +235,7 @@ class UserController extends Controller
                     $a->comment='abc';
                     $a->save();
                 }
-                
+
             }
         }
         $reader->close();
@@ -255,16 +255,16 @@ class UserController extends Controller
             if(!$user){
                 continue;
             }
-            if($i->rate>0){
+
                 $row=[$user,$i->id_product,$i->rate];
                 fputcsv($handle, $row, ' ');
-            }
-            
+
+
         }
         fclose($handle);
         echo 'Xong!<br>';
     }
-    
+
     public function get_admin_list_admin(request $req){
         if(Auth()->user()->isadmin=='admin'){
             $data=collect();
@@ -339,7 +339,7 @@ class UserController extends Controller
                 'idDistrict'=>'required',
                 'idCity'=>'required'
             ]);
-    
+
             if($validator->fails()){
                 return response()->json(['errorCode'=> 1,$validator->errors()->toJson()], 400);
             }
@@ -359,7 +359,7 @@ class UserController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
-        
+
     }
 
     public function get_admin_active_admin(request $req){
@@ -384,7 +384,7 @@ class UserController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
 
-        
+
 
     }
     public function test4(request $req){
@@ -401,9 +401,9 @@ class UserController extends Controller
         $tu=$req->a1*$req->b1+$req->a2*$req->b2+$req->a3*$req->b3+$req->a4*$req->b4+$req->a5*$req->b5;
         $mau1=sqrt(($req->a1*$req->a1)+($req->a2*$req->a2)+($req->a3*$req->a3)+($req->a4*$req->a4)+($req->a5*$req->a5));
         $mau2=sqrt(($req->b1*$req->b1)+($req->b2*$req->b2)+($req->b3*$req->b3)+($req->b4*$req->b4)+($req->b5*$req->b5));
-        
+
         echo $tu/($mau1*$mau2);
-        
+
     }
 
 }
