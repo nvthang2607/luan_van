@@ -333,6 +333,7 @@ class AuthController extends Controller
         $user=User::where('email',$req->email)->get();
         foreach($user as $i){
             $i->password=bcrypt($req->password);
+            $i->remember_token=null;
             if($i->save()){
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
