@@ -127,10 +127,13 @@ class BillController extends Controller
                 'status'=>$stt
             ];
         }
-
         $n=$bills->count();
         $bills=$bills->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
-        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$bills]], 200);
+        $data=[];
+        foreach($bills as $bills){
+            $data[count($data)]=$bills;
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
     }
 
 
