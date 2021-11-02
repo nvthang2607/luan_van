@@ -110,16 +110,9 @@ class AuthController extends Controller
             return response()->json(['errorCode'=> 1, 'data'=>null], 400);
         }
         $user=User::where('email',$request->email)->pluck('isadmin')->first();
-        if($user=='user'){
-            $payloadable = [
-                'isAdmin'=>false
-            ];
-        }
-        else{
-            $payloadable = [
-                'isAdmin'=>'admin'
-            ];
-        }
+        $payloadable = [
+            'isAdmin'=>$user
+        ];
         if (! $token = auth::claims($payloadable)->attempt(['email'=>$request->email, 'password'=>$request->password,'active'=>1])) {
             return response()->json(['errorCode'=> 2, 'data'=>null], 422);
         }

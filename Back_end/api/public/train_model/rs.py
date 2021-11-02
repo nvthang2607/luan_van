@@ -112,12 +112,6 @@ class CF(object):
         recommended_items=recommended_items[np.argsort(recommended_items[:, 1])]
         recommended_items=recommended_items[::-1]
         return recommended_items
-    def print_recommendation(self):
-        # print ('Recommendation: ')
-        for u in range(self.n_users):
-            recommended_items = self.recommend(u)
-            # for i in recommended_items:
-                # print ('    for user ', u+1, ': ', i[1:2])
  
 #train
 # r_cols = ['user_id', 'item_id', 'rating', 'unix_timestamp']
@@ -136,13 +130,17 @@ class CF(object):
 
 # rate_train = ratings_base.values
 # rate_test = ratings_test.values
-# # n_train = rate_train.shape[0]
-# # n_tests = rate_test.shape[0]
+# n_train = rate_train.shape[0]
+# n_tests = rate_test.shape[0]
 
 # rs = CF(rate_train, k = 50)
 # rs.fit()
-# print('du doan la',rs.pred(1,20))
-# # u=rs.recommend(1)
+# # print('du doan la',rs.pred(1,20))
+# u=rs.recommend(100)
+# object_i =u
+# print('Gợi ý cho ',100,' :')
+# for i in object_i[:10]:
+#     print('sản phẩm', int(i[0]), 'với dự đoán: ',int(i[1]))
 # # print(rs.pred(1,33))
 # SE = 0 # squared error
 
@@ -156,8 +154,8 @@ class CF(object):
 
 #web
 r_cols = ['user_id', 'item_id', 'rating']
-# ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
-ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+# ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
 
 rate_train = ratings_base.values
 n_train = rate_train.shape[0]

@@ -20,8 +20,8 @@ class RSController extends Controller
             return response()->json(['errorCode'=> 4, 'data'=>false],401);
         }
         $id=auth()->user()->id;
-        // exec("python ../public/train_model/rs.py $id",$output,$ret_code);
-        exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
+        exec("python ../public/train_model/rs.py $id",$output,$ret_code);
+        // exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
         $output=collect($output);
         $n=0;
         $item=collect();
