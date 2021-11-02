@@ -255,8 +255,11 @@ class UserController extends Controller
             if(!$user){
                 continue;
             }
-            $row=[$user,$i->id_product,$i->rate];
-            fputcsv($handle, $row, ' ');
+            if($i->rate>0){
+                $row=[$user,$i->id_product,$i->rate];
+                fputcsv($handle, $row, ' ');
+            }
+            
         }
         fclose($handle);
         echo 'Xong!<br>';
