@@ -154,8 +154,8 @@ class CF(object):
 
 #web
 r_cols = ['user_id', 'item_id', 'rating']
-ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
-# ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+# ratings_base = pd.read_csv('C:/Users/vanth/Desktop/LUAN_VAN/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
+ratings_base = pd.read_csv('D:/luan_van/Back_end/api/public/train_model/train_web.csv', sep=' ', names=r_cols, encoding='latin-1')
 
 rate_train = ratings_base.values
 n_train = rate_train.shape[0]
