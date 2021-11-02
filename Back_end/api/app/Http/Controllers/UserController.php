@@ -255,9 +255,8 @@ class UserController extends Controller
             if(!$user){
                 continue;
             }
-
-                $row=[$user,$i->id_product,$i->rate];
-                fputcsv($handle, $row, ' ');
+            $row=[$user,$i->id_product,$i->rate];
+            fputcsv($handle, $row, ' ');
 
 
         }

@@ -110,10 +110,6 @@ class BillDetailController extends Controller
             $detail=BillDetail::find($id_detail);
             $id_product=$detail->id_product;
             $id=auth()->user()->id;
-            // echo $id_detail.'-<br>';
-            // echo $id.'--<br>';
-            // echo $id_product.'---<br>';
-            // echo $req->rating.'----<br>';
             $detail->rate=$req->rating;
             if($req->has('comment')){
                 $detail->comment=$req->comment;
@@ -127,6 +123,9 @@ class BillDetailController extends Controller
                 foreach($rating as $i){
                     $email=$i->bill->customer->email;
                     $user=User::where('email',$email)->pluck('id')->first();
+                    if(!$user){
+                        continue;
+                    }
                     $row=[$user,$i->id_product,$i->rate];
                     fputcsv($handle, $row, ' ');
                 }

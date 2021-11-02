@@ -33,6 +33,7 @@ class RSController extends Controller
                 $item[]=$i;
             }
         }
+        
         $n=$item->count();
         $item=$item->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         if($n>0){
