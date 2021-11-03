@@ -230,10 +230,16 @@ const AdminLayout: React.FC = (props) => {
 			}
 		};
 		getDataProfile();
+		if (
+			window.location.pathname.indexOf('type_product') !== -1 ||
+			window.location.pathname.indexOf('brand_product') !== -1 ||
+			window.location.pathname.indexOf('product') !== -1
+		) {
+			setShowCategories(2);
+		}
 	}, [setValueI18n, valueRefreshPage.value]);
 
 	//const title = useAppSelector(titleHeader);
-
 	const handleClick = (index: number, text: string) => {
 		// setSelectedItem(index);
 		// dispatch(updateTitleHeader(text));
@@ -271,7 +277,7 @@ const AdminLayout: React.FC = (props) => {
 		window.localStorage.getItem('tokenAdmin') && window.localStorage.removeItem('tokenAdmin');
 		setAnchorElProfile(null);
 	};
-	const [showCategories, setShowCategories] = React.useState('');
+	const [showCategories, setShowCategories] = React.useState(0);
 	const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
 	const date = Date.now();
 	const handleCheckToken = () => {
@@ -412,6 +418,9 @@ const AdminLayout: React.FC = (props) => {
 	};
 
 	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 1200px)' });
+	const idCategory: (result: any) => void = (result) => {
+		setShowCategories(result);
+	};
 	return isResponseiveMobile ? (
 		<Box>
 			{handleCheckToken()}
@@ -578,7 +587,7 @@ const AdminLayout: React.FC = (props) => {
 										button
 										onClick={() => {
 											showCategories === item.id
-												? setShowCategories('')
+												? setShowCategories(0)
 												: setShowCategories(item.id);
 										}}
 									>
@@ -642,7 +651,7 @@ const AdminLayout: React.FC = (props) => {
 											button
 											onClick={() => {
 												showCategories === item.id
-													? setShowCategories('')
+													? setShowCategories(0)
 													: setShowCategories(item.id);
 											}}
 										>
@@ -672,7 +681,9 @@ const AdminLayout: React.FC = (props) => {
 					<Switch>
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
-						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
+						<Route path={AppURL.ADMIN_TYPE_PRODUCT}>
+							<TypeProduct idCategory={idCategory} />
+						</Route>
 						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
 						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
 						<Route path={AppURL.ADMIN_PRODUCT_PROMOTION} component={ProductPromotion} />
@@ -798,9 +809,28 @@ const AdminLayout: React.FC = (props) => {
 									open={Boolean(anchorElProfile)}
 									onClose={handleCloseProfile}
 								>
-									<MenuItem onClick={handleCloseProfile}>{t('tenant.profile')}</MenuItem>
-									<MenuItem onClick={handleCloseProfile}>My account</MenuItem>
-									<MenuItem onClick={handleLogout}>{t('tenant.log_out')}</MenuItem>
+									<MenuItem
+										onClick={() => {
+											history.push(AppURL.ADMIN_PROFILE);
+											setAnchorElProfile(null);
+										}}
+									>
+										<PersonIcon />
+										&nbsp;Quan ly thong tin
+									</MenuItem>
+									<MenuItem
+										onClick={() => {
+											history.push(AppURL.ADMIN_CHANGEPASSWORD);
+											setAnchorElProfile(null);
+										}}
+									>
+										<CompareArrowsIcon />
+										&nbsp;Doi mat khau
+									</MenuItem>
+									<MenuItem onClick={handleLogout}>
+										<ExitToAppIcon />
+										&nbsp;Thoat tai khoan
+									</MenuItem>
 								</Menu>
 							</Grid>
 						</Grid>
@@ -829,7 +859,9 @@ const AdminLayout: React.FC = (props) => {
 					<Switch>
 						<Route path={AppURL.MANAGER_USER} component={User} />
 						<Route path={AppURL.ADMIN_HOME} component={Home} />
-						<Route path={AppURL.ADMIN_TYPE_PRODUCT} component={TypeProduct} />
+						<Route path={AppURL.ADMIN_TYPE_PRODUCT}>
+							<TypeProduct idCategory={idCategory} />
+						</Route>
 						<Route path={AppURL.ADMIN_BRAND_PRODUCT} component={BrandProduct} />
 						<Route path={AppURL.ADMIN_PRODUCT} component={Product} />
 						<Route path={AppURL.ADMIN_PRODUCT_PROMOTION} component={ProductPromotion} />

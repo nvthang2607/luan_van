@@ -32,7 +32,7 @@ import MUIDataTableComponent from '../../../Components/Table/MUIDataTableCompone
 import { ActiveUserGet, DeleteUserGet, SearchUserGet, UserPost } from '../../../api/Admin/User';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, Redirect } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { Menu, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -40,6 +40,7 @@ import { DeleteNewsGet, ListNewsGet } from '../../../api/Admin/News';
 import EditContact from './EditContact';
 import { DeleteSlideDelete, ListSlideGet } from '../../../api/Admin/Slide';
 import { CheckContactPost, ListContactGet } from '../../../api/Admin/Contact';
+import jwtDecode from 'jwt-decode';
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
 		position: 'absolute',
@@ -318,8 +319,34 @@ const Contact: React.FC = () => {
 	const handleCloseActive = () => {
 		setAnchorElActive(null);
 	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem danh sach lien he',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
+	};
+	const handleCheckToken = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		const date = Date.now();
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('tokenAdmin');
+				return <Redirect to={AppURL.LOGIN} />;
+			}
+		}
+	};
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
+			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">

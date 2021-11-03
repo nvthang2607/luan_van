@@ -47,7 +47,7 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../../features/refresh/RefreshPageSlice';
-import { ProductIdGet, RatingPost, RecommendPost } from '../../api/Product';
+import { ProductIdGet, RatingPost, RecommendPost, SameProductPost } from '../../api/Product';
 import { getCartData, updataCartData } from '../../Components/Product/CartSlice';
 import { toast, ToastContainer } from 'react-toastify';
 import { AppURL } from '../../utils/const';
@@ -241,6 +241,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 	};
 	const dispatch = useAppDispatch();
 	const [dataProductRecommend, setDataProductRecommend] = React.useState<any>([]);
+	const [dataSameProduct, setDataSameProduct] = React.useState<any>([]);
 	React.useEffect(() => {
 		window.scrollTo(0, 0);
 		dispatch(updateValueRefreshPage(true));
@@ -286,8 +287,18 @@ const ProductDetail: React.FC<Props> = (props) => {
 		const fetchCmt = async () => {
 			setProgressCmt(true);
 			const getComment = await ListCommentPost({ id: idProduct, page: pageCmt, pageSize: 5 });
-			console.log(getComment);
 
+			const responseSameProduct = await SameProductPost({
+				id_product: idProduct,
+				page: 1,
+				pageSize: 5,
+			});
+			if (responseSameProduct) {
+				if (responseSameProduct.errorCode === null) {
+					console.log('responseSameProduct', responseSameProduct);
+					setDataSameProduct(responseSameProduct.data.listData);
+				}
+			}
 			if (getComment) {
 				if (getComment.errorCode === null) {
 					console.log(getComment);
@@ -1743,7 +1754,35 @@ const ProductDetail: React.FC<Props> = (props) => {
 							</Grid>
 						</Grid>
 					</Grid>
+					<Grid item xs={12}>
+						<Typography
+							variant="h5"
+							className={classes.titleText}
+							gutterBottom
+							style={{ marginTop: '10px' }}
+						>
+							San pham tuong tu
+						</Typography>
 
+						<Slider {...settings}>
+							{dataSameProduct?.map((item: any) => {
+								return (
+									<ProductCarousel
+										unit_price={item[0].unit_price}
+										name={item[0].name}
+										id={item[0].id}
+										promotion_price={item[0].promotion_price}
+										link={item.image}
+										avg={item.avg}
+										promotion={item.promotion}
+										rate_number={item.rate_number}
+										storeQuantity={item[0].quantity}
+										carouselOnclick={carouselOnclick}
+									/>
+								);
+							})}
+						</Slider>
+					</Grid>
 					{dataProductRecommend.length > 0 && (
 						<Grid item xs={12}>
 							<Typography
@@ -3108,7 +3147,48 @@ const ProductDetail: React.FC<Props> = (props) => {
 							</Grid>
 						</Grid>
 					</Grid>
+					<Grid item xs={12}>
+						<Typography
+							variant="h5"
+							className={classes.titleText}
+							gutterBottom
+							style={{ marginTop: '10px' }}
+						>
+							San pham goi y
+						</Typography>
 
+						<Slider {...settings}>
+							{dataSameProduct?.map((item: any) => {
+								return isResponseivePhone ? (
+									<ProductCarousel
+										unit_price={item[0].unit_price}
+										name={item[0].name}
+										id={item[0].id}
+										promotion_price={item[0].promotion_price}
+										link={item.image}
+										avg={item.avg}
+										promotion={item.promotion}
+										rate_number={item.rate_number}
+										storeQuantity={item[0].quantity}
+										carouselOnclick={carouselOnclick}
+									/>
+								) : (
+									<ProductCarouselPhone
+										unit_price={item[0].unit_price}
+										name={item[0].name}
+										id={item[0].id}
+										promotion_price={item[0].promotion_price}
+										link={item.image}
+										avg={item.avg}
+										promotion={item.promotion}
+										rate_number={item.rate_number}
+										storeQuantity={item[0].quantity}
+										carouselOnclick={carouselOnclick}
+									/>
+								);
+							})}
+						</Slider>
+					</Grid>
 					{dataProductRecommend.length > 0 && (
 						<Grid item xs={12}>
 							<Typography

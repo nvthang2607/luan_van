@@ -4,11 +4,17 @@ import React from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import { AppURL } from '../../../utils/const';
 import { useHistory } from 'react-router';
-const CardMenu: React.FC = () => {
+interface CardMenuProps {
+	url?: any;
+	title?: string;
+	icon?: any;
+	titleChildren?: string;
+}
+const CardMenu: React.FC<CardMenuProps> = (props) => {
 	const history = useHistory();
 	return (
 		<Card style={{ padding: '20px' }}>
-			<Typography variant="h5">Quan tri nguoi dung</Typography>
+			<Typography variant="h5">{props.title}</Typography>
 			<Card
 				variant="outlined"
 				style={{
@@ -23,14 +29,20 @@ const CardMenu: React.FC = () => {
 					cursor: 'pointer',
 				}}
 				onClick={() => {
-					history.push(AppURL.MANAGER_USER);
+					history.push(props?.url);
 				}}
 			>
 				<Box>
-					<PersonIcon style={{ color: '#fff', fontSize: '94px' }} />
+					{/* <i
+						className="fa fa-newspaper-o"
+						aria-hidden="true"
+						style={{ color: '#fff', fontSize: '94px' }}
+					></i> */}
+					{/* <PersonIcon style={{ color: '#fff', fontSize: '94px' }} /> */}
+					{props.icon}
 					<Box>
 						<Typography variant="h5" style={{ color: '#fff' }}>
-							Nguoi dung
+							{props.titleChildren}
 						</Typography>
 					</Box>
 				</Box>

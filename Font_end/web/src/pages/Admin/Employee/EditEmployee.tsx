@@ -262,7 +262,6 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 	};
 	const [open, setOpen] = React.useState(false);
 	const [txtManager, setTxtManager] = React.useState([
-		{ id: 'admin', name: 'Admin' },
 		{ id: 'manager', name: 'Quan ly' },
 		{ id: 'warehouse', name: 'Quan ly kho' },
 		{ id: 'merchandiser', name: 'Quan ly don hang' },

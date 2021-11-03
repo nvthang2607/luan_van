@@ -37,10 +37,12 @@ import { Rating } from '@material-ui/lab';
 import {
 	PhoneBrand,
 	ProductFSalePost,
-	ProductNewPost,
-	ProductSellPost,
+	NewProductRecommendPost,
 	RecommendPost,
 	SearchPhoneGet,
+	SellProductPost,
+	SellProductRecommendPost,
+	TopProductPost,
 } from '../../api/Product';
 import { AppURL } from '../../utils/const';
 import theme from './../../utils/theme/index';
@@ -54,6 +56,7 @@ import ad2_1 from './../../public/images/feature_banner.jpg';
 import jwtDecode from 'jwt-decode';
 import NewsSmall from '../News/NewsSmall';
 import { NewsGet } from '../../api/News';
+
 import Product from '../Product/Product';
 import { toast, ToastContainer } from 'react-toastify';
 import {
@@ -211,10 +214,14 @@ const Content: React.FC = () => {
 	const [dataNews, setDataNews] = React.useState<any>({});
 	const [dataProductSell, setDataProductSell] = React.useState<any>([]);
 	const [dataProductNew, setDataProductNew] = React.useState<any>([]);
+	const [dataPhoneSell, setDataPhoneSell] = React.useState<any>([]);
 	const [dataProductFsale, setDataProductFsale] = React.useState<any>([]);
 	const [dataSlide, setDataSlide] = React.useState<any>([]);
 	const [progressProductNew, setProgressProductNew] = React.useState(false);
+	const [dataTopProduct, setDataTopProduct] = React.useState<any>([]);
+	const [progressTopProduct, setProgressTopProduct] = React.useState(false);
 	const [progressProductSell, setProgressProductSell] = React.useState(false);
+	const [progressPhoneSell, setProgressPhoneSell] = React.useState(false);
 	const [progressProductFsale, setProgressProductFsale] = React.useState(false);
 	const [progressProductRecommend, setProgressProductRecommend] = React.useState(false);
 	const [progressNews, setProgressNews] = React.useState(false);
@@ -230,6 +237,12 @@ const Content: React.FC = () => {
 					setDataPhoneBrand(getPhoneBrand.data);
 				}
 			}
+			const responseDataSlide = await ListSlideGet();
+			if (responseDataSlide) {
+				if (responseDataSlide.errorCode === null) {
+					setDataSlide(responseDataSlide.data);
+				}
+			}
 			const getProductFSalePost = await ProductFSalePost({ page: 1, pageSize: 4, type: 'fsale' });
 			if (getProductFSalePost) {
 				if (getProductFSalePost.errorCode === null) {
@@ -237,29 +250,13 @@ const Content: React.FC = () => {
 					setDataProductFsale(getProductFSalePost.data.listData);
 				}
 			}
-
-			setProgressProductNew(true);
-			const responseProductNew = await ProductNewPost({ page: 1, pageSize: 4, type: 'new' });
-			if (responseProductNew) {
-				if (responseProductNew.errorCode === null) {
-					setDataProductNew(responseProductNew.data.listData);
-					//console.log(responseProductNew.data.listData);
-					setProgressProductNew(false);
-				}
-			}
-			const responseDataSlide = await ListSlideGet();
-			if (responseDataSlide) {
-				if (responseDataSlide.errorCode === null) {
-					setDataSlide(responseDataSlide.data);
-				}
-			}
-			setProgressProductSell(true);
-			const responseProductSell = await ProductSellPost({ page: 1, pageSize: 4, type: 'sell' });
-			if (responseProductSell) {
-				if (responseProductSell.errorCode === null) {
-					setDataProductSell(responseProductSell.data.listData);
-					//console.log(responseProductSell.data.listData);
-					setProgressProductSell(false);
+			setProgressPhoneSell(true);
+			const responsePhoneSellPost = await SellProductPost({ page: 1, pageSize: 4 });
+			if (responsePhoneSellPost) {
+				if (responsePhoneSellPost.errorCode === null) {
+					setDataPhoneSell(responsePhoneSellPost.data.listData);
+					//console.log(responseNewsGet.data);
+					setProgressPhoneSell(false);
 				}
 			}
 			setProgressNews(true);
@@ -283,7 +280,35 @@ const Content: React.FC = () => {
 					localStorage.removeItem('token');
 					dispatch(updateValueRefreshPage(true));
 					setDataProductRecommend([]);
+					setDataTopProduct([]);
 					setProgressProductRecommend(false);
+					setProgressTopProduct(false);
+					setProgressProductNew(true);
+					const responseProductNew = await NewProductRecommendPost({
+						page: 1,
+						pageSize: 4,
+						type: 'new',
+					});
+					if (responseProductNew) {
+						if (responseProductNew.errorCode === null) {
+							setDataProductNew(responseProductNew.data.listData);
+							//console.log(responseProductNew.data.listData);
+							setProgressProductNew(false);
+						}
+					}
+					setProgressProductSell(true);
+					const responseProductSell = await SellProductRecommendPost({
+						page: 1,
+						pageSize: 4,
+						type: 'sell',
+					});
+					if (responseProductSell) {
+						if (responseProductSell.errorCode === null) {
+							setDataProductSell(responseProductSell.data.listData);
+							//console.log(responseProductSell.data.listData);
+							setProgressProductSell(false);
+						}
+					}
 				} else {
 					const response = await RecommendPost({ page: 1, pageSize: 4 });
 					if (response) {
@@ -291,13 +316,48 @@ const Content: React.FC = () => {
 							//dispatch(updateValueRefreshPage(true));
 							setDataProductRecommend(response.data.listData);
 							setProgressProductRecommend(false);
+							setDataTopProduct([]);
 							//dispatch(updateProfileUser(response.data));
+						} else if (response.errorCode === 3) {
+							const responseTopProduct = await TopProductPost({ page: 1, pageSize: 4 });
+							if (responseTopProduct) {
+								if (responseTopProduct.errorCode === null) {
+									setDataTopProduct(responseTopProduct.data.listData);
+									setProgressTopProduct(false);
+								}
+							}
 						}
 					}
 				}
 			} else {
 				setDataProductRecommend([]);
 				setProgressProductRecommend(false);
+				setProgressProductNew(true);
+				const responseProductNew = await NewProductRecommendPost({
+					page: 1,
+					pageSize: 4,
+					type: 'new',
+				});
+				if (responseProductNew) {
+					if (responseProductNew.errorCode === null) {
+						setDataProductNew(responseProductNew.data.listData);
+						//console.log(responseProductNew.data.listData);
+						setProgressProductNew(false);
+					}
+				}
+				setProgressProductSell(true);
+				const responseProductSell = await SellProductRecommendPost({
+					page: 1,
+					pageSize: 4,
+					type: 'sell',
+				});
+				if (responseProductSell) {
+					if (responseProductSell.errorCode === null) {
+						setDataProductSell(responseProductSell.data.listData);
+						//console.log(responseProductSell.data.listData);
+						setProgressProductSell(false);
+					}
+				}
 			}
 		};
 		getDataRecommend();
@@ -584,8 +644,332 @@ const Content: React.FC = () => {
 							</Grid>
 						</Grid>
 					)}
+					{dataTopProduct.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12} className={classes.borderTitle}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={4}>
+											<Link to={AppURL.TOP_PRODUCT} className={classes.titles}>
+												SAN PHAM DANH GIA CAO NHAT<div className={classes.title}></div>
+											</Link>
+										</Grid>
+										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+									return (
+										<Link
+											to={`/views/${toURL(item.name)}-${item.id}`}
+											className={classes.stylePhoneBrand}
+										>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													{item.name}
+												</Typography>
+											</ListItem>
+										</Link>
+									);
+								})} */}
+												<Link to={AppURL.TOP_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressTopProduct ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseiveProductMobile ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataTopProduct?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<Product
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataTopProduct?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
+					{dataProductNew.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12} className={classes.borderTitle}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={4}>
+											<Link to={AppURL.NEW_PRODUCT} className={classes.titles}>
+												SAN PHAM MOI NHAT<div className={classes.title}></div>
+											</Link>
+										</Grid>
+										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+									return (
+										<Link
+											to={`/views/${toURL(item.name)}-${item.id}`}
+											className={classes.stylePhoneBrand}
+										>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													{item.name}
+												</Typography>
+											</ListItem>
+										</Link>
+									);
+								})} */}
+												<Link to={AppURL.NEW_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressProductNew ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseiveProductMobile ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductNew?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<Product
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductNew?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
+					{dataProductSell.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12} className={classes.borderTitle}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={4}>
+											<Link to={AppURL.SELL_PRODUCT} className={classes.titles}>
+												SAN PHAM BAN CHAY NHAT<div className={classes.title}></div>
+											</Link>
+										</Grid>
+										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+									return (
+										<Link
+											to={`/views/${toURL(item.name)}-${item.id}`}
+											className={classes.stylePhoneBrand}
+										>
+											<ListItem
+												style={{
+													padding: 0,
+													fontWeight: 'bold',
+													paddingRight: '10px',
+													paddingLeft: '10px',
+												}}
+											>
+												<Typography variant="body1" style={{ fontWeight: 500 }}>
+													{item.name}
+												</Typography>
+											</ListItem>
+										</Link>
+									);
+								})} */}
+												<Link to={AppURL.SELL_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressProductSell ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseiveProductMobile ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductSell?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<Product
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductSell?.map((item: any) => {
+											return (
+												<Grid item md={4} lg={3} xl={3}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
 
-					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+					{/* <Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
 							<Grid item xs={12} className={classes.borderTitle}>
 								<Grid container style={{ alignItems: 'baseline' }}>
@@ -690,7 +1074,7 @@ const Content: React.FC = () => {
 								</Grid>
 							)}
 						</Grid>
-					</Grid>
+					</Grid> */}
 
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
@@ -698,32 +1082,32 @@ const Content: React.FC = () => {
 								<Grid container style={{ alignItems: 'baseline' }}>
 									<Grid item xs={4}>
 										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
-											DIEN THOAI BAN CHAY<div className={classes.title}></div>
+											DIEN THOAI BAN CHAY NHAT<div className={classes.title}></div>
 										</Link>
 									</Grid>
 									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
-									return (
-										<Link
-											to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-											className={classes.stylePhoneBrand}
-										>
-											<ListItem
-												style={{
-													padding: 0,
-													fontWeight: 'bold',
-													paddingRight: '10px',
-													paddingLeft: '10px',
-												}}
-											>
-												<Typography variant="body1" style={{ fontWeight: 500 }}>
-													{item.name}
-												</Typography>
-											</ListItem>
-										</Link>
-									);
-								})} */}
+											{dataPhoneBrand?.listData?.map((item: any, index: number) => {
+												return (
+													<Link
+														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+														className={classes.stylePhoneBrand}
+													>
+														<ListItem
+															style={{
+																padding: 0,
+																fontWeight: 'bold',
+																paddingRight: '10px',
+																paddingLeft: '10px',
+															}}
+														>
+															<Typography variant="body1" style={{ fontWeight: 500 }}>
+																{item.name}
+															</Typography>
+														</ListItem>
+													</Link>
+												);
+											})}
 											<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
 												<ListItem
 													style={{
@@ -743,7 +1127,7 @@ const Content: React.FC = () => {
 								</Grid>
 							</Grid>
 
-							{progressProductSell ? (
+							{progressPhoneSell ? (
 								<Grid
 									item
 									xs={12}
@@ -756,7 +1140,7 @@ const Content: React.FC = () => {
 								</Grid>
 							) : isResponseiveProductMobile ? (
 								<Grid container spacing={3} style={{ marginTop: '10px' }}>
-									{dataProductSell?.map((item: any) => {
+									{dataPhoneSell?.map((item: any) => {
 										return (
 											<Grid item md={4} lg={3} xl={3}>
 												<Product
@@ -777,7 +1161,7 @@ const Content: React.FC = () => {
 								</Grid>
 							) : (
 								<Grid container spacing={3} style={{ marginTop: '10px' }}>
-									{dataProductSell?.map((item: any) => {
+									{dataPhoneSell?.map((item: any) => {
 										return (
 											<Grid item md={4} lg={3} xl={3}>
 												<ProductMobile
@@ -1171,7 +1555,253 @@ const Content: React.FC = () => {
 							</Grid>
 						</Grid>
 					)}
-					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+					{dataProductNew.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
+											<Link to={AppURL.NEW_PRODUCT} className={classes.titles}>
+												SAN PHAM MOI NHAT
+											</Link>
+										</Grid>
+										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+										return (
+											<Link
+												to={`/views/${toURL(item.name)}-${item.id}`}
+												className={classes.stylePhoneBrand}
+											>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														{item.name}
+													</Typography>
+												</ListItem>
+											</Link>
+										);
+									})} */}
+												<Link to={AppURL.NEW_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressProductNew ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseivePhone ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductNew?.map((item: any) => {
+											return isResponseiveProduct1Mobile ? (
+												<Grid item xs={6} md={3} sm={4}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											) : (
+												<Grid item xs={6} sm={6}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductNew?.map((item: any) => {
+											return (
+												<Grid item xs={6}>
+													<ProductPhone
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
+					{dataProductSell.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
+											<Link to={AppURL.SELL_PRODUCT} className={classes.titles}>
+												SAN PHAM BAN CHAY NHAT
+											</Link>
+										</Grid>
+										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+										return (
+											<Link
+												to={`/views/${toURL(item.name)}-${item.id}`}
+												className={classes.stylePhoneBrand}
+											>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														{item.name}
+													</Typography>
+												</ListItem>
+											</Link>
+										);
+									})} */}
+												<Link to={AppURL.SELL_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tat ca
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressProductSell ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseivePhone ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductSell?.map((item: any) => {
+											return isResponseiveProduct1Mobile ? (
+												<Grid item xs={6} md={3} sm={4}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											) : (
+												<Grid item xs={6} sm={6}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataProductSell?.map((item: any) => {
+											return (
+												<Grid item xs={6}>
+													<ProductPhone
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
+					{/* <Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
 							<Grid item xs={12}>
 								<Grid container style={{ alignItems: 'baseline' }}>
@@ -1291,7 +1921,7 @@ const Content: React.FC = () => {
 								</Grid>
 							)}
 						</Grid>
-					</Grid>
+					</Grid> */}
 					<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 						<Grid container>
 							<Grid item xs={12}>
@@ -1301,29 +1931,29 @@ const Content: React.FC = () => {
 											DIEN THOAI BAN CHAY
 										</Link>
 									</Grid>
-									<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-										<List style={{ display: 'flex' }}>
-											{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
-										return (
-											<Link
-												to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
-												className={classes.stylePhoneBrand}
-											>
-												<ListItem
-													style={{
-														padding: 0,
-														fontWeight: 'bold',
-														paddingRight: '10px',
-														paddingLeft: '10px',
-													}}
-												>
-													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														{item.name}
-													</Typography>
-												</ListItem>
-											</Link>
-										);
-									})} */}
+									<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
+										<List style={{ display: 'flex', width: 'max-content' }}>
+											{dataPhoneBrand?.listData?.map((item: any, index: number) => {
+												return (
+													<Link
+														to={`/views/dien-thoai/${toURL(item.name)}-${item.id}`}
+														className={classes.stylePhoneBrand}
+													>
+														<ListItem
+															style={{
+																padding: 0,
+																fontWeight: 'bold',
+																paddingRight: '10px',
+																paddingLeft: '10px',
+															}}
+														>
+															<Typography variant="body1" style={{ fontWeight: 500 }}>
+																{item.name}
+															</Typography>
+														</ListItem>
+													</Link>
+												);
+											})}
 											<Link to={AppURL.SELL_PHONE} className={classes.styleViewAll}>
 												<ListItem
 													style={{

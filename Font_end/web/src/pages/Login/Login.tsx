@@ -80,7 +80,7 @@ const Login: React.FC = () => {
 			const token: any = response.data.accessToken;
 			const checkToken: any = jwtDecode(token);
 
-			if (checkToken.isAdmin === 'admin') {
+			if (checkToken.isAdmin !== false) {
 				window.localStorage.setItem('tokenAdmin', response.data.accessToken || '');
 				history.push(AppURL.ADMIN_HOME);
 			} else {

@@ -178,16 +178,16 @@ const Login: React.FC<loginprops> = (props) => {
 	};
 	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
 	const responseGoogle = async (response: any) => {
-		// console.log(response.ht.Re);
-		// console.log(response.ht.St);
-		const reqData = { email: response.ht.St, name: response.ht.Re };
-		const resLoginGG = await LoginGGPost(reqData);
-		if (resLoginGG) {
-			if (resLoginGG?.errorCode === null) {
-				window.localStorage.setItem('token', resLoginGG.data.accessToken || '');
-			}
-			if (resLoginGG?.errorCode || resLoginGG?.errorCode === null) {
-				props?.resultApiLogin?.(resLoginGG.errorCode);
+		if (response) {
+			const reqData = { email: response?.mt?.Xt, name: response?.mt?.Re };
+			const resLoginGG = await LoginGGPost(reqData);
+			if (resLoginGG) {
+				if (resLoginGG?.errorCode === null) {
+					window.localStorage.setItem('token', resLoginGG.data.accessToken || '');
+				}
+				if (resLoginGG?.errorCode || resLoginGG?.errorCode === null) {
+					props?.resultApiLogin?.(resLoginGG.errorCode);
+				}
 			}
 		}
 	};

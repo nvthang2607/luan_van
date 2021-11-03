@@ -31,7 +31,7 @@ import MUIDataTableComponent from '../../../Components/Table/MUIDataTableCompone
 import { DeleteUserGet, SearchUserGet, UserPost } from '../../../api/Admin/User';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
-import { Link, NavLink, Redirect } from 'react-router-dom';
+import { Link, NavLink, Redirect, useHistory } from 'react-router-dom';
 import {
 	DeleteProductTypeGet,
 	ProductTypeGet,
@@ -62,8 +62,10 @@ const useStyles = makeStyles((theme) => ({
 		height: 20,
 	},
 }));
-
-const TypeProduct: React.FC = () => {
+interface TypeProductProps {
+	idCategory?: (result: any) => void;
+}
+const TypeProduct: React.FC<TypeProductProps> = (props) => {
 	const classes = useStyles();
 	const [dataEdit, setDataEdit] = React.useState<any>({ id: 0, name: '' });
 	const [progressData, setProgressData] = useState(false);
@@ -181,6 +183,19 @@ const TypeProduct: React.FC = () => {
 			Search: valChange,
 		});
 	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem loai san pham',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
+	};
 	const handleCheckToken = () => {
 		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
 		const date = Date.now();
@@ -192,6 +207,9 @@ const TypeProduct: React.FC = () => {
 			}
 		}
 	};
+	if (window.location.pathname.indexOf('type_product') !== -1) {
+		props.idCategory?.(2);
+	}
 	useEffect(() => {
 		const fetchProductType = async () => {
 			setProgressData(true);
@@ -238,6 +256,7 @@ const TypeProduct: React.FC = () => {
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">

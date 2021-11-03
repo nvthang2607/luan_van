@@ -232,7 +232,6 @@ const Product: React.FC = () => {
 										setTitleDialog('Chi tiet san pham ');
 										setShowDialog(3);
 										setOpen(true);
-										console.log(data[index]);
 									}}
 								>
 									Xem chi tiet
@@ -240,52 +239,103 @@ const Product: React.FC = () => {
 								<MenuItemMui
 									onClick={() => {
 										setAnchorElProduct(null);
-										setDataEditQuantity({ id: data[index].id_product, name: data[index].quantity });
-										setTitleDialog('Cap nhat so luong ');
-										setShowDialog(0);
-										setOpen(true);
+
+										const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+										if (tokenAdmin) {
+											const checkToken: any = jwtDecode(tokenAdmin);
+											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'warehouse') {
+												Swal.fire({
+													icon: 'error',
+													title: 'Ban khong co quyen cap nhat so luong',
+												});
+											} else {
+												setDataEditQuantity({
+													id: data[index].id_product,
+													name: data[index].quantity,
+												});
+												setTitleDialog('Cap nhat so luong ');
+												setShowDialog(0);
+												setOpen(true);
+											}
+										}
 									}}
 								>
 									Cap nhat so luong
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={async () => {
-										setProgressListTypeProduct(true);
 										setAnchorElProduct(null);
-										setDataEdit(data[index]);
-										setTitleDialog('Cap nhat thong tin ');
-										setShowDialog(2);
 
-										const response = await GetImageGet(data[index].id_product);
-										if (response)
-											if (response.errorCode === null) {
-												setProgressListTypeProduct(false);
-
-												const data = response.data.listData?.map((item: any) => {
-													return {
-														id: item.id,
-														id_product: item.id_product,
-														image: item.image,
-														delete: false,
-													};
+										const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+										if (tokenAdmin) {
+											const checkToken: any = jwtDecode(tokenAdmin);
+											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+												Swal.fire({
+													icon: 'error',
+													title: 'Ban khong co quyen cap nhat so luong',
 												});
-												setDataEditImage(data);
-												setOpen(true);
+											} else {
+												setProgressListTypeProduct(true);
+												setDataEdit(data[index]);
+												setTitleDialog('Cap nhat thong tin ');
+												setShowDialog(2);
+
+												const response = await GetImageGet(data[index].id_product);
+												if (response)
+													if (response.errorCode === null) {
+														setProgressListTypeProduct(false);
+
+														const data = response.data.listData?.map((item: any) => {
+															return {
+																id: item.id,
+																id_product: item.id_product,
+																image: item.image,
+																delete: false,
+															};
+														});
+														setDataEditImage(data);
+														setOpen(true);
+													}
 											}
+										}
 									}}
 								>
 									Cap nhat thong tin
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={() => {
-										history.push(`/admin/product_promotion/${data[index].id_product}`);
+										const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+										if (tokenAdmin) {
+											const checkToken: any = jwtDecode(tokenAdmin);
+											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+												setAnchorElProduct(null);
+												Swal.fire({
+													icon: 'error',
+													title: 'Ban khong co quyen xem danh sach khuyen mai',
+												});
+											} else {
+												history.push(`/admin/product_promotion/${data[index].id_product}`);
+											}
+										}
 									}}
 								>
 									Xem danh sach khuyen mai
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={() => {
-										history.push(`/admin/rating/${data[index].id_product}`);
+										const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+										if (tokenAdmin) {
+											const checkToken: any = jwtDecode(tokenAdmin);
+											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+												setAnchorElProduct(null);
+												Swal.fire({
+													icon: 'error',
+													title: 'Ban khong co quyen xem danh sach danh gia',
+												});
+											} else {
+												history.push(`/admin/rating/${data[index].id_product}`);
+											}
+										}
 									}}
 								>
 									Xem danh sach danh gia
@@ -336,6 +386,23 @@ const Product: React.FC = () => {
 			...filterSearch,
 			Search: valChange,
 		});
+	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (
+				checkToken.isAdmin !== 'admin' &&
+				checkToken.isAdmin !== 'manager' &&
+				checkToken.isAdmin !== 'warehouse'
+			) {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem san pham',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
 	};
 	const handleCheckToken = () => {
 		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
@@ -505,6 +572,7 @@ const Product: React.FC = () => {
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">
@@ -750,19 +818,30 @@ const Product: React.FC = () => {
 								<Tooltip title="Tao moi" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi san pham');
-											setDataEdit({
-												id: 0,
-												name: '',
-												quantity: 0,
-												id_brand: idBrandDef,
-												unit_price: 0,
-												promotion_price: 0,
-												description: '',
-											});
+											const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+											if (tokenAdmin) {
+												const checkToken: any = jwtDecode(tokenAdmin);
+												if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+													Swal.fire({
+														icon: 'error',
+														title: 'Ban khong co quyen xem danh sach khuyen mai',
+													});
+												} else {
+													setTitleDialog('Tao moi san pham');
+													setDataEdit({
+														id: 0,
+														name: '',
+														quantity: 0,
+														id_brand: idBrandDef,
+														unit_price: 0,
+														promotion_price: 0,
+														description: '',
+													});
 
-											setOpen(true);
-											setShowDialog(1);
+													setOpen(true);
+													setShowDialog(1);
+												}
+											}
 										}}
 									>
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
