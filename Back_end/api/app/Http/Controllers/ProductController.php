@@ -507,11 +507,36 @@ class ProductController extends Controller
             }
         }
         $datas=$datas->sortByDesc("count");
-        $n=$datas->count();
-        $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $data2=collect();
+        foreach($datas as $i){
+            $promotions=[];
+            $image=Product::find($i->id)->image_product()->pluck('image')->first();
+            $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+            $rate_number=$rate->count();
+            $avg=5;
+            if($rate_number>0){
+                $t=0;
+                foreach($rate as $r){
+                    $t=$t+$r->rate;
+                }
+                $avg=$t/$rate_number;
+                
+            }
+            $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+            foreach($promotion as $u){
+                $promotions[count($promotions)]=$u;
+            }
+            $data2[]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+
+        }
+
+        
+        
+        $n=$data2->count();
+        $data2=$data2->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
         $data=[];
-        foreach($datas as $datas){
-            $data[count($data)]=$datas;
+        foreach($data2 as $data2){
+            $data[count($data)]=$data2;
         }
         return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
     }
