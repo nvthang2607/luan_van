@@ -7,6 +7,7 @@ use App\Models\ImageProduct;
 use App\Models\InformationProduct;
 use App\Models\Promotion;
 use App\Models\BillDetail;
+use App\Models\TypeProduct;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ class ProductController extends Controller
 {
     //
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating','post_product']]);
+        $this->middleware('auth:api', ['except' => ['get_product_id','post_product_filter','post_product_rating','post_product','post_smartphone_sell','post_top_rate','post_the_same']]);
     }
     public function get_product_id(request $req){
         $product=Product::find($req->id);
@@ -252,7 +253,7 @@ class ProductController extends Controller
         }
     }
 
-    public function post_product(request $req){
+    public function post_product(request $req){//abc
         if($req->type=='new'){
             $product=Product::all()->sortByDesc("id");
         }
@@ -495,5 +496,97 @@ class ProductController extends Controller
         else{
             return response()->json(['errorCode'=> 4, 'data'=>null,'error'=>'Lỗi quyền truy cập!'], 401);
         }
+    }
+    public function post_smartphone_sell(request $req){//abc
+        $datas=collect();
+        $brand=BrandProduct::where('id_type',1)->get();
+        foreach($brand as $i){
+            $product=Product::where('id_brand',$i->id)->where('active',1)->get();
+            foreach($product as $product){
+                $datas[]=$product;
+            }
+        }
+        $datas=$datas->sortByDesc("count");
+        $n=$datas->count();
+        $datas=$datas->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $data=[];
+        foreach($datas as $datas){
+            $data[count($data)]=$datas;
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data]], 200);
+    }
+
+    public function post_top_rate(request $req){
+        $datas=Product::where('active',1)->get();
+        $data2=collect();
+        foreach($datas as $i){
+            $promotions=[];
+            $image=Product::find($i->id)->image_product()->pluck('image')->first();
+            $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+            $rate_number=$rate->count();
+            $avg=5;
+            if($rate_number>0){
+                $t=0;
+                foreach($rate as $r){
+                    $t=$t+$r->rate;
+                }
+                $avg=$t/$rate_number;
+                
+            }
+            $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+            foreach($promotion as $u){
+                $promotions[count($promotions)]=$u;
+            }
+            $data2[]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+
+        }
+        $data2 = $data2->sortByDesc('avg');
+        $n=$data2->count();
+        $data2=$data2->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $data1=[];
+        foreach($data2 as $i){
+            $data1[count($data1)]=$i;
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data1]], 200);
+    }
+    public function post_the_same(request $req){
+        $product=Product::find($req->id_product);
+        $products=$product->brand->product->sortByDesc('id');
+        $data2=collect();
+        foreach($products as $i){
+            if($req->id_product==$i->id){
+                continue;
+            }
+            if($i->active!=1){
+                continue;
+            }
+            $promotions=[];
+            $image=Product::find($i->id)->image_product()->pluck('image')->first();
+            $rate=BillDetail::where('id_product',$i->id)->get(['rate']);
+            $rate_number=$rate->count();
+            $avg=5;
+            if($rate_number>0){
+                $t=0;
+                foreach($rate as $r){
+                    $t=$t+$r->rate;
+                }
+                $avg=$t/$rate_number;
+                
+            }
+            $promotion=Promotion::where('id_product',$i->id)->where('start','<=',Carbon::now('Asia/Ho_Chi_Minh'))->where('finish','>=',Carbon::now('Asia/Ho_Chi_Minh'))->get();
+            foreach($promotion as $u){
+                $promotions[count($promotions)]=$u;
+            }
+            $data2[]=[$i,'rate_number'=>$rate_number,'avg'=>$avg,'image'=>$image,'promotion'=>$promotions];
+
+        }
+        $data2=$data2->sortByDesc('id');
+        $n=$data2->count();
+        $data2=$data2->skip(($req->page-1)*$req->pageSize)->take($req->pageSize);
+        $data1=[];
+        foreach($data2 as $i){
+            $data1[count($data1)]=$i;
+        }
+        return response()->json(['errorCode'=> null,'data'=>['totalCount'=>$n,'listData'=>$data1]], 200);
     }
 }

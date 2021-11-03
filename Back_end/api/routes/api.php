@@ -116,6 +116,9 @@ Route::group([
     Route::post('/rating', [ProductController::class, 'post_product_rating']);
     Route::post('/comment', [CommentController::class, 'post_product_comment']);
     Route::post('/filter', [ProductController::class, 'post_product_filter']);
+    Route::post('/smartphone_sell', [ProductController::class, 'post_smartphone_sell']);
+    Route::post('/top_rate', [ProductController::class, 'post_top_rate']);
+    Route::post('/the_same', [ProductController::class, 'post_the_same']);
 });    
 
 
@@ -210,6 +213,7 @@ Route::group([
     Route::get('/active_users/{id_user}', [UserController::class, 'get_admin_active_users']);
     Route::delete('/delete_users/{id_user}', [UserController::class, 'delete_admin_delete_users']);
     Route::get('/search_users', [UserController::class, 'get_admin_search_users']);
+    
     //type
     Route::get('/list_type_product', [TypeProductController::class, 'get_admin_list_type_product']);
     Route::delete('/delete_type_product/{id_type_product}', [TypeProductController::class, 'delete_admin_delete_type_product']);

@@ -30,7 +30,7 @@ class FeedbackController extends Controller
         
     }
     public function get_admin_list_feedback(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $validator = Validator::make($req->all(), [
                 'id_comment'=>'required|exists:comment,id',
             ]);
@@ -62,7 +62,7 @@ class FeedbackController extends Controller
         }
     }
     public function post_admin_create_feedback(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $validator = Validator::make($req->all(), [
                 'id_comment'=>'required|exists:comment,id',
                 'comment'=>'required',

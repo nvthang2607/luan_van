@@ -178,7 +178,7 @@ class BillController extends Controller
     }
 
     public function post_approve_bill(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $status1=Status::where('id_bill',$req->id_bill)->get();
             if($status1->count()>0){
                 $status2=Status::where('id_bill',$req->id_bill)->max('status');
@@ -240,7 +240,7 @@ class BillController extends Controller
     }
 
     public function get_admin_list_bill(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $c=Customer::where('phone','like','%'.$req->search.'%')->orwhere('id',$req->search)->orderBy('id', 'DESC')->get();
             if($c->count()==0){
                 return response()->json(['errorCode'=> null,'data'=>['totalCount'=>0,'listData'=>[]]], 200);
@@ -345,7 +345,7 @@ class BillController extends Controller
     }
 
     public function post_cancel_bill(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $email=Bill::find($req->id_bill)->customer->email;
             $stt=Bill::find($req->id_bill)->status->last();
             if($stt){

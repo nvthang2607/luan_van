@@ -111,7 +111,7 @@ class BrandProductController extends Controller
 
     public function patch_admin_update_brand_product(request $req){
         if(Auth()->user()->isadmin=='admin'||Auth()->user()->isadmin=='manager'){
-            $validator = Validator::make($req->all(), [
+            $validator = Validator::make(x, [
                 'name' => 'unique:brand_product,name',
                 'id'=>'exists:brand_product,id',
                 'id_type'=>'exists:type_product,id',

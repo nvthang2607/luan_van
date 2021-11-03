@@ -86,7 +86,7 @@ class CommentController extends Controller
     }
 
     public function get_admin_list_comment(request $req){
-        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='telesale')){
+        if((auth()->user()->isadmin=='manager')||(Auth()->user()->isadmin=='admin')||(Auth()->user()->isadmin=='merchandiser')){
             $product=Product::where('name','like','%'.$req->search.'%')->get();
             $comment=collect();
             if($product->count()>0){
