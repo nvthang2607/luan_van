@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console;
-
+use App\Http\Controllers\RSController;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        
+        $schedule->call('App\Http\Controllers\RSController@train_model')->timezone('Asia/Ho_Chi_Minh')->dailyAt('17:06');
     }
 
     /**
@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        //$this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
     }

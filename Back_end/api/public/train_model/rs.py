@@ -34,7 +34,6 @@ class CF(object):
         # cập nhật khi có thay đổi dữ liệu
         self.Y_data=np.concatenate((self.Y_data,new_data))
         # print(self.Y_data)
-        # print('ok nha')
         self.Ybar_data = None
         # id user lớn nhât
         self.n_users = int(np.max(self.Y_data[:, 0]))+1

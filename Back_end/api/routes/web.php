@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RSController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,4 +48,5 @@ route::get('/active',[
     'uses'=>'App\Http\Controllers\PageController@get_xac_nhan_tu_email'
 ]);
 Route::get('/test4', [UserController::class, 'test4']);
+Route::get('/test5', [RSController::class, 'train_model']);
 Route::post('/upload', [UserController::class, 'file']);

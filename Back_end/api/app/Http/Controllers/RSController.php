@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Validator;
+use App\Models\Slide;
 use App\Models\Product;
 use App\Models\Rating;
 use App\Models\ImageProduct;
@@ -13,15 +14,15 @@ use Carbon\Carbon;
 class RSController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['post_recommend']]);
+        $this->middleware('auth:api', ['except' => ['post_recommend','train_model']]);
     }
     public function post_recommend(Request $req){
         if (!auth()->check()) {
             return response()->json(['errorCode'=> 4, 'data'=>false],401);
         }
         $id=auth()->user()->id;
-        // exec("python ../public/train_model/rs.py $id",$output,$ret_code);
-        exec("python D:/luan_van/Back_end/api/public/train_model/rs.py $id",$output,$ret_code);
+        // exec("python ../public/train_model/model_loaded.py $id",$output,$ret_code);
+        exec("python D:/luan_van/Back_end/api/public/train_model/model_loaded.py $id",$output,$ret_code);
         $output=collect($output);
         $n=0;
         $item=collect();
@@ -64,5 +65,14 @@ class RSController extends Controller
             
         }
         return response()->json(['errorCode'=> 3,'data'=>null], 404);
-   }
+    }
+    public function train_model(Request $req){
+        // exec("python ../public/train_model/model_saved.py");
+        exec("python D:/luan_van/Back_end/api/public/train_model/model_saved.py");
+        $randoms = new Slide();
+        $randoms->id_product=3;
+        $randoms->image=3;
+        $randoms->save();
+        
+    }
 }
