@@ -34,10 +34,11 @@ import AddIcon from '@mui/icons-material/Add';
 import EditEmployee from './EditEmployee';
 import Swal from 'sweetalert2';
 import HomeIcon from '@material-ui/icons/Home';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, Redirect } from 'react-router-dom';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { Menu, MenuItem } from '@mui/material';
 import { DeleteEmployeeGet, SearchEmployeeGet } from '../../../api/Admin/Employee';
+import jwtDecode from 'jwt-decode';
 const useStyles = makeStyles((theme) => ({
 	closeButton: {
 		position: 'absolute',
@@ -310,8 +311,34 @@ const ListEmployee: React.FC = () => {
 	const handleCloseActive = () => {
 		setAnchorElActive(null);
 	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem danh sach nhan vien',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
+	};
+	const handleCheckToken = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		const date = Date.now();
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('tokenAdmin');
+				return <Redirect to={AppURL.LOGIN} />;
+			}
+		}
+	};
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
+			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">
@@ -359,7 +386,7 @@ const ListEmployee: React.FC = () => {
 												password: '',
 												retypePassword: '',
 												id: 0,
-												isadmin: 'admin',
+												isadmin: 'manager',
 											});
 
 											setOpen(true);

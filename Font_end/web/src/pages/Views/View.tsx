@@ -21,10 +21,12 @@ import { Link, Redirect, useHistory, useParams } from 'react-router-dom';
 import Product from '../../Components/Product/Product';
 import {
 	FilterPost,
-	ProductNewPost,
-	ProductSellPost,
+	NewProductRecommendPost,
+	SellProductRecommendPost,
 	RecommendPost,
 	SearchPhoneGet,
+	SellProductPost,
+	TopProductPost,
 } from '../../api/Product';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getValueRefreshPage } from '../../features/refresh/RefreshPageSlice';
@@ -241,26 +243,59 @@ const View: React.FC<ViewProps> = (props) => {
 			} else {
 				setRedirect(true);
 			}
-		} else if (props.name === AppURL.NEW_PHONE) {
+		} else if (props.name === AppURL.TOP_PRODUCT) {
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (window.localStorage.getItem('token')) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					setRedirect(true);
+				} else {
+					const fetchRecommend = async () => {
+						const response = await TopProductPost({ page: page, pageSize: 24 });
+						if (response) {
+							if (response.errorCode === null) {
+								console.log(response);
+								setDataFilter(response.data);
+								setProgress(false);
+							}
+						}
+					};
+					fetchRecommend();
+				}
+			} else {
+				setRedirect(true);
+			}
+		} else if (props.name === AppURL.NEW_PRODUCT) {
 			const fetchSellPhone = async () => {
-				const getDataSellPhone = await ProductNewPost({
+				const getDataSellPhone = await NewProductRecommendPost({
 					page: page,
 					pageSize: 24,
 					type: 'new',
 				});
 				if (getDataSellPhone) {
 					if (getDataSellPhone.errorCode === null) {
-						console.log(getDataSellPhone);
 						setDataFilter(getDataSellPhone.data);
 						//dispatch(updateDataFilter(getDataFilter.data));
 						setProgress(false);
 					}
 				}
 			};
-			fetchSellPhone();
-		} else if (props.name === AppURL.SELL_PHONE) {
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (window.localStorage.getItem('token')) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					fetchSellPhone();
+				}
+			} else {
+				fetchSellPhone();
+			}
+		} else if (props.name === AppURL.SELL_PRODUCT) {
 			const fetchSellPhone = async () => {
-				const getDataSellPhone = await ProductSellPost({
+				const getDataSellPhone = await SellProductRecommendPost({
 					page: page,
 					pageSize: 24,
 					type: 'sell',
@@ -274,7 +309,33 @@ const View: React.FC<ViewProps> = (props) => {
 					}
 				}
 			};
-			fetchSellPhone();
+			const token: any = window.localStorage.getItem('token');
+			const date = Date.now();
+			if (window.localStorage.getItem('token')) {
+				const checkToken: any = jwtDecode(token);
+				if (checkToken.exp < date / 1000) {
+					localStorage.removeItem('token');
+					fetchSellPhone();
+				}
+			} else {
+				fetchSellPhone();
+			}
+		} else if (props.name === AppURL.SELL_PHONE) {
+			const fetchFilter = async () => {
+				const getDataFilter = await SellProductPost({
+					page: page,
+					pageSize: 24,
+				});
+				if (getDataFilter) {
+					if (getDataFilter.errorCode === null) {
+						console.log(getDataFilter);
+						setDataFilter(getDataFilter.data);
+						//dispatch(updateDataFilter(getDataFilter.data));
+						setProgress(false);
+					}
+				}
+			};
+			fetchFilter();
 		} else {
 			const fetchFilter = async () => {
 				const getDataFilter = await FilterPost({

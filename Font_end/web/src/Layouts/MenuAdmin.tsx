@@ -140,6 +140,7 @@ const useStyles = makeStyles((theme: Theme) =>
 				display: 'flex',
 			},
 		},
+
 		inputSearch: {
 			height: '48px',
 			paddingRight: 0,
@@ -237,8 +238,8 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 			return AppURL.ADMIN_HOME;
 		}
 	};
-	return isResponseivePhone ? (
-		<Box style={{ width: 500, backgroundColor: '#00695c' }}>
+	return (
+		<Box style={{ width: isResponseivePhone ? 500 : 300, backgroundColor: '#00695c' }}>
 			<Box>
 				<DialogTitle
 					id="form-dialog-title"
@@ -255,7 +256,7 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 									button
 									onClick={() => {
 										props.showCategories === item.id
-											? props.receiveShowCategories({ click: true, id: '' })
+											? props.receiveShowCategories({ click: true, id: 0 })
 											: props.receiveShowCategories({ click: true, id: item.id });
 									}}
 								>
@@ -324,7 +325,7 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 										button
 										onClick={() => {
 											props.showCategories === item.id
-												? props.receiveShowCategories({ click: true, id: '' })
+												? props.receiveShowCategories({ click: true, id: 0 })
 												: props.receiveShowCategories({ click: true, id: item.id });
 
 											props.closeMenu?.(false);
@@ -348,17 +349,6 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 						);
 					})}
 				</DialogContent>
-			</Box>
-		</Box>
-	) : (
-		<Box style={{ width: 306 }}>
-			<Box>
-				<DialogTitle
-					id="form-dialog-title"
-					style={{ backgroundColor: theme.palette.primary.main, paddingBottom: '7px' }}
-				></DialogTitle>
-
-				<DialogContent style={{ padding: 0 }}></DialogContent>
 			</Box>
 		</Box>
 	);

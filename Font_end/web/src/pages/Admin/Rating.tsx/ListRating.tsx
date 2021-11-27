@@ -191,6 +191,19 @@ const ListRating: React.FC = () => {
 			Search: valChange,
 		});
 	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem danh sach danh gia',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
+	};
 	const handleCheckToken = () => {
 		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
 		const date = Date.now();
@@ -352,6 +365,7 @@ const ListRating: React.FC = () => {
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">

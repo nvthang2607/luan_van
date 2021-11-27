@@ -45,13 +45,13 @@ export const RecommendPost = (data: any) => {
 	});
 	return response;
 };
-export const ProductNewPost = (data: any) => {
+export const NewProductRecommendPost = (data: any) => {
 	const response = callApi('POST', `/api/product`, data).catch((res) => {
 		return res;
 	});
 	return response;
 };
-export const ProductSellPost = (data: any) => {
+export const SellProductRecommendPost = (data: any) => {
 	const response = callApi('POST', `/api/product`, data).catch((res) => {
 		return res;
 	});
@@ -65,6 +65,24 @@ export const RatingPost = (data: any) => {
 };
 export const ProductFSalePost = (data: any) => {
 	const response = callApi('POST', `/api/product/`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const SameProductPost = (data: any) => {
+	const response = callApi('POST', `/api/product/the_same`, data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const SellProductPost = (data: any) => {
+	const response = callApi('POST', '/api/product/smartphone_sell', data).catch((res) => {
+		return res;
+	});
+	return response;
+};
+export const TopProductPost = (data: any) => {
+	const response = callApi('POST', '/api/product/top_rate', data).catch((res) => {
 		return res;
 	});
 	return response;

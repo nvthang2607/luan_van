@@ -326,17 +326,6 @@ const ListBill: React.FC = () => {
 			Search: valChange,
 		});
 	};
-	const handleCheckToken = () => {
-		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
-		const date = Date.now();
-		if (tokenAdmin) {
-			const checkToken: any = jwtDecode(tokenAdmin);
-			if (checkToken.exp < date / 1000) {
-				localStorage.removeItem('tokenAdmin');
-				return <Redirect to={AppURL.LOGIN} />;
-			}
-		}
-	};
 	useEffect(() => {
 		const fetchProductType = async () => {
 			setProgressData(true);
@@ -516,10 +505,34 @@ const ListBill: React.FC = () => {
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
 	const [progressListTypeProduct, setProgressListTypeProduct] = useState(false);
-
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'merchandiser') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Ban khong co quyen xem danh sach don hang',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
+	};
+	const handleCheckToken = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		const date = Date.now();
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.exp < date / 1000) {
+				localStorage.removeItem('tokenAdmin');
+				return <Redirect to={AppURL.LOGIN} />;
+			}
+		}
+	};
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">
