@@ -30,13 +30,13 @@ class CreateProductTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
         $faker=Faker\Factory::create('vi_VN');
-        $n=10;
+        $n=300;
         for($i=0;$i<$n;$i++){
             $brand= $faker->randomElement(['Điện thoại', 'Máy tính','Máy tính bảng','phụ kiện','']);
             $g= $faker->randomElement(['2', '3','6','4','8','32','16','64','128','256','512','']);
             $r= $faker->randomElement(['A', 'B','C','D','E','F','G','H','I','K','L','U','V','R','']);
             $name= $brand." ".$r.''.$g."GB";
-            $unit_price=mt_rand(1,$n)*1000000;
+            $unit_price=mt_rand(1,10)*1000000;
             $promotion_price=$unit_price-$unit_price*mt_rand(1,50)/100;
             DB::table('product')->insert(
                 array(
