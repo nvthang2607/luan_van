@@ -36,7 +36,7 @@ class CreateNewsTable extends Migration
             DB::table('news')->insert(
                 array(
                     'id_user'=>5,
-                    'image'=>'source/image/news/news'.$t.'.jpg',
+                    'image'=>'/source/image/news/news'.$t.'.jpg',
                     'title' => $faker->paragraph,
                     'content'=>'content'
                 )

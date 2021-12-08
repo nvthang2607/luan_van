@@ -257,8 +257,6 @@ class UserController extends Controller
             }
             $row=[$user,$i->id_product,$i->rate];
             fputcsv($handle, $row, ' ');
-
-
         }
         fclose($handle);
         echo 'Xong!<br>';

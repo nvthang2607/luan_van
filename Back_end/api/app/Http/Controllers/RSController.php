@@ -11,6 +11,7 @@ use App\Models\ImageProduct;
 use App\Models\Promotion;
 use App\Models\BillDetail;
 use Carbon\Carbon;
+use App\Models\User;
 class RSController extends Controller
 {
     public function __construct() {
@@ -67,12 +68,20 @@ class RSController extends Controller
         return response()->json(['errorCode'=> 3,'data'=>null], 404);
     }
     public function train_model(Request $req){
+        ini_set('max_execution_time', 600);
+        $rating=BillDetail::all();
+        $handle = fopen('../public/train_model/train_web.csv', 'w');
+        foreach($rating as $i){
+            $email=$i->bill->customer->email;
+            $user=User::where('email',$email)->pluck('id')->first();
+            if(!$user){
+                continue;
+            }
+            $row=[$user,$i->id_product,$i->rate];
+            fputcsv($handle, $row, ' ');
+        }
+        fclose($handle);
         // exec("python ../public/train_model/model_saved.py");
         exec("python D:/luan_van/Back_end/api/public/train_model/model_saved.py");
-        $randoms = new Slide();
-        $randoms->id_product=3;
-        $randoms->image=3;
-        $randoms->save();
-        
     }
 }

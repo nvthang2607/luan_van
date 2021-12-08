@@ -118,18 +118,18 @@ class BillDetailController extends Controller
                 $detail->comment='';
             }
             if($detail->save()){
-                $rating=BillDetail::all();
-                $handle = fopen('../public/train_model/train_web.csv', 'w');
-                foreach($rating as $i){
-                    $email=$i->bill->customer->email;
-                    $user=User::where('email',$email)->pluck('id')->first();
-                    if(!$user){
-                        continue;
-                    }
-                    $row=[$user,$i->id_product,$i->rate];
-                    fputcsv($handle, $row, ' ');
-                }
-                fclose($handle);
+                // $rating=BillDetail::all();
+                // $handle = fopen('../public/train_model/train_web.csv', 'w');
+                // foreach($rating as $i){
+                //     $email=$i->bill->customer->email;
+                //     $user=User::where('email',$email)->pluck('id')->first();
+                //     if(!$user){
+                //         continue;
+                //     }
+                //     $row=[$user,$i->id_product,$i->rate];
+                //     fputcsv($handle, $row, ' ');
+                // }
+                // fclose($handle);
                 return response()->json(['errorCode'=> null,'data'=>true], 200);
             }
             else{
