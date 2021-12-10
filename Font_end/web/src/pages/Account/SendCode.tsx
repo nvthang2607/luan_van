@@ -142,9 +142,9 @@ const SendCode: React.FC<loginprops> = (props) => {
 	const schema = yup.object().shape({
 		code: yup
 			.number()
-			.typeError('month_must_specify_a_number')
-			.min(1, 'month_must_be_greater_than_or_equal_to_0')
-			.integer('month_must_be_an_integer'),
+			.typeError('Mã xác nhận là ký số')
+			.min(1, 'Mã xác nhận lớn hơn hoặc bằng 1')
+			.integer('Mã xác nhận là 1 số nguyên'),
 	});
 	const {
 		register,
@@ -162,12 +162,12 @@ const SendCode: React.FC<loginprops> = (props) => {
 			} else if (response.errorCode === 4) {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ma xac thuc khong dung, hoac da het han',
+					title: 'Mã xác nhận không đúng hoặc đã hết hạn',
 				});
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 			}
 		}
@@ -182,14 +182,14 @@ const SendCode: React.FC<loginprops> = (props) => {
 						gutterBottom
 						style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '20px' }}
 					>
-						Nhap ma xac nhan
+						Nhập mã xác nhận
 					</Typography>
 					<Typography
 						variant="body1"
 						gutterBottom
 						style={{ textAlign: 'center', marginBottom: '40px' }}
 					>
-						<Typography>Chung toi da gui ma xac nhan den dia chi email </Typography>
+						<Typography>Chúng tôi đã gửi mã xác nhận đến email </Typography>
 						<Typography style={{ fontWeight: 'bold' }}>{props.valueEmail}</Typography>
 					</Typography>
 					<TextField

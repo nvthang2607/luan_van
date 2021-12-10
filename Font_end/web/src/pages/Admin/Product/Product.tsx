@@ -130,7 +130,7 @@ const Product: React.FC = () => {
 		},
 		{
 			name: 'mainImg',
-			label: 'Hinh anh',
+			label: 'Hình ảnh',
 			options: {
 				sort: false,
 				customBodyRender: (mainImg: any) => {
@@ -140,28 +140,28 @@ const Product: React.FC = () => {
 		},
 		{
 			name: 'name',
-			label: 'Ten',
+			label: 'Tên',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'name_type',
-			label: 'Loai san pham',
+			label: 'Loại sản phẩm',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'name_brand',
-			label: 'Thuong hieu',
+			label: 'Thương hiệu',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'unit_price',
-			label: 'Gia goc',
+			label: 'Giá gốc',
 			options: {
 				sort: false,
 				customBodyRender: (unit_price: number) => {
@@ -175,28 +175,28 @@ const Product: React.FC = () => {
 		},
 		{
 			name: 'quantity',
-			label: 'So luong',
+			label: 'Số lượng',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'rate_number',
-			label: 'Danh gia',
+			label: 'Đánh giá',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
@@ -204,7 +204,7 @@ const Product: React.FC = () => {
 
 		{
 			name: 'id_product',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				sort: false,
 				customBodyRenderLite: (index: any) => {
@@ -229,12 +229,12 @@ const Product: React.FC = () => {
 									onClick={() => {
 										setAnchorElProduct(null);
 										setDataEdit(data[index]);
-										setTitleDialog('Chi tiet san pham ');
+										setTitleDialog('Chi tiết sản phẩm');
 										setShowDialog(3);
 										setOpen(true);
 									}}
 								>
-									Xem chi tiet
+									Xem chi tiết
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={() => {
@@ -246,21 +246,21 @@ const Product: React.FC = () => {
 											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'warehouse') {
 												Swal.fire({
 													icon: 'error',
-													title: 'Ban khong co quyen cap nhat so luong',
+													title: 'Bạn không có quyền cập nhật số lượng',
 												});
 											} else {
 												setDataEditQuantity({
 													id: data[index].id_product,
 													name: data[index].quantity,
 												});
-												setTitleDialog('Cap nhat so luong ');
+												setTitleDialog('Cập nhật số lượng');
 												setShowDialog(0);
 												setOpen(true);
 											}
 										}
 									}}
 								>
-									Cap nhat so luong
+									Cập nhật số lượng
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={async () => {
@@ -272,12 +272,12 @@ const Product: React.FC = () => {
 											if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 												Swal.fire({
 													icon: 'error',
-													title: 'Ban khong co quyen cap nhat so luong',
+													title: 'Bạn không có quyền cập nhật số lượng',
 												});
 											} else {
 												setProgressListTypeProduct(true);
 												setDataEdit(data[index]);
-												setTitleDialog('Cap nhat thong tin ');
+												setTitleDialog('Cập nhật thông tin');
 												setShowDialog(2);
 
 												const response = await GetImageGet(data[index].id_product);
@@ -300,7 +300,7 @@ const Product: React.FC = () => {
 										}
 									}}
 								>
-									Cap nhat thong tin
+									Cập nhật thông tin
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={() => {
@@ -311,7 +311,7 @@ const Product: React.FC = () => {
 												setAnchorElProduct(null);
 												Swal.fire({
 													icon: 'error',
-													title: 'Ban khong co quyen xem danh sach khuyen mai',
+													title: 'Bạn không có quyền xem danh sách khuyến mãi',
 												});
 											} else {
 												history.push(`/admin/product_promotion/${data[index].id_product}`);
@@ -319,7 +319,7 @@ const Product: React.FC = () => {
 										}
 									}}
 								>
-									Xem danh sach khuyen mai
+									Xem danh sách khuyến mãi
 								</MenuItemMui>
 								<MenuItemMui
 									onClick={() => {
@@ -330,7 +330,7 @@ const Product: React.FC = () => {
 												setAnchorElProduct(null);
 												Swal.fire({
 													icon: 'error',
-													title: 'Ban khong co quyen xem danh sach danh gia',
+													title: 'Bạn không có quyền xem danh sách đánh giá',
 												});
 											} else {
 												history.push(`/admin/rating/${data[index].id_product}`);
@@ -338,7 +338,7 @@ const Product: React.FC = () => {
 										}
 									}}
 								>
-									Xem danh sach danh gia
+									Xem danh sách đánh giá
 								</MenuItemMui>
 							</MenuMui>
 						</React.Fragment>
@@ -357,7 +357,7 @@ const Product: React.FC = () => {
 			noMatch: progressData ? <CircularProgress color="secondary" /> : t('tenant.no_match'),
 		},
 		selectedRows: {
-			text: 'File(s) selected',
+			text: 'File(s) đã được chọn',
 			delete: 'Delete',
 			deleteAria: 'Deleted Selected Row(s)',
 		},
@@ -398,7 +398,7 @@ const Product: React.FC = () => {
 			) {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem san pham',
+					title: 'Bạn không có quyền xem sản phẩm',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -496,7 +496,7 @@ const Product: React.FC = () => {
 		setOpen(result);
 	};
 	const [showBoxSearch, setShowBoxSearch] = useState(false);
-	const [valueFilter, setValueFilter] = useState({ id: 0, value: 'Tat ca san pham', type: 'all' });
+	const [valueFilter, setValueFilter] = useState({ id: 0, value: 'Tất cả sản phẩm', type: 'all' });
 	const [progressListTypeProduct, setProgressListTypeProduct] = useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const openFilter = Boolean(anchorEl);
@@ -508,7 +508,7 @@ const Product: React.FC = () => {
 	};
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach san pham dang duoc kich hoat',
+		value: 'Danh sách sản phẩm đang được kích hoạt',
 	});
 	const [anchorElActive, setAnchorElActive] = React.useState<null | HTMLElement>(null);
 	const openActive = Boolean(anchorElActive);
@@ -578,13 +578,13 @@ const Product: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
-						<Link to="/" className={classes.link}>
-							Quan ly danh muc
+						<Link to={AppURL.ADMIN_TYPE_PRODUCT} className={classes.link}>
+							Quản lý danh mục
 						</Link>
-						<Link to="/" className={classes.link}>
-							San pham
+						<Link to={AppURL.ADMIN_PRODUCT} className={classes.link}>
+							Sản phẩm
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -623,7 +623,7 @@ const Product: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorEl(null);
-									setValueFilter({ id: 0, value: 'Tat ca san pham', type: 'all' });
+									setValueFilter({ id: 0, value: 'Tất cả sản phẩm', type: 'all' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -634,7 +634,7 @@ const Product: React.FC = () => {
 								}}
 								style={{ fontWeight: 'bold' }}
 							>
-								Tat ca san pham
+								Tất cả sản phẩm
 								{valueFilter.id === 0 && (
 									<i
 										className="fa fa-check"
@@ -739,7 +739,7 @@ const Product: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach san pham dang duoc kich hoat' });
+									setValueActive({ id: 0, value: 'Danh sách sản phẩm đang được kích hoạt' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -750,10 +750,10 @@ const Product: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach san pham dang duoc kich hoat
+										Danh sách sản phẩm đang được kích hoạt
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach san pham dang duoc kich hoat</Typography>
+									<Typography variant="body1">Danh sách sản phẩm đang được kích hoạt</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -767,7 +767,7 @@ const Product: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach san pham dang tam khoa' });
+									setValueActive({ id: 1, value: 'Danh sách sản phẩm đang được tạm khóa' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -778,10 +778,10 @@ const Product: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach san pham dang tam khoa
+										Danh sách sản phẩm đang được tạm khóa
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach san pham dang tam khoa</Typography>
+									<Typography variant="body1">Danh sách sản phẩm đang được tạm khóa</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (
@@ -806,7 +806,7 @@ const Product: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -815,7 +815,7 @@ const Product: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={async () => {
 											const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
@@ -824,10 +824,10 @@ const Product: React.FC = () => {
 												if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 													Swal.fire({
 														icon: 'error',
-														title: 'Ban khong co quyen xem danh sach khuyen mai',
+														title: 'Bạn không có quyền xem danh sách khuyến mãi',
 													});
 												} else {
-													setTitleDialog('Tao moi san pham');
+													setTitleDialog('Tạo mới sản phẩm');
 													setDataEdit({
 														id: 0,
 														name: '',
@@ -847,7 +847,7 @@ const Product: React.FC = () => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -869,7 +869,7 @@ const Product: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập tên sản phẩm"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -923,7 +923,7 @@ const Product: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 1 ? 'Khôi phục' : 'Xóa'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -945,7 +945,11 @@ const Product: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} sản phẩm`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -1002,7 +1006,7 @@ const Product: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 1 ? 'Khôi phục' : 'Xóa'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -1024,7 +1028,11 @@ const Product: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} sản phẩm`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

@@ -12,45 +12,29 @@ import GroupIcon from '@mui/icons-material/Group';
 import axios from 'axios';
 const Home: React.FC = () => {
 	const history = useHistory();
-	React.useEffect(() => {
-		axios({
-			method: 'get',
-			url: 'http://localhost:8000/api/test',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-		})
-			.then((res) => {
-				console.log(res);
-			})
-			.catch((err) => {
-				console.log(err.response);
-			});
-	}, []);
 	const menu: any = [
 		{
 			url: AppURL.ADMIN_TYPE_PRODUCT,
-			title: 'Quan tri danh muc',
-			titleChildren: 'Danh muc',
+			title: 'Quản trị danh mục',
+			titleChildren: 'Danh mục',
 			icon: <AvTimerIcon style={{ color: '#fff', fontSize: '94px' }} />,
 		},
 		{
 			url: AppURL.MANAGER_USER,
-			title: 'Quan tri nguoi dung',
-			titleChildren: 'Nguoi dung',
+			title: 'Quản trị người dùng',
+			titleChildren: 'Người dùng',
 			icon: <PersonIcon style={{ color: '#fff', fontSize: '94px' }} />,
 		},
 		{
 			url: AppURL.ADMIN_BILL,
-			title: 'Quan tri don hang',
-			titleChildren: 'Don hang',
+			title: 'Quản trị đơn hàng',
+			titleChildren: 'Đơn hàng',
 			icon: <EventNoteIcon style={{ color: '#fff', fontSize: '94px' }} />,
 		},
 		{
 			url: AppURL.ADMIN_NEWS,
-			title: 'Quan tri tin tuc',
-			titleChildren: 'Tin tuc',
+			title: 'Quản trị tin tức',
+			titleChildren: 'Tin tức',
 			icon: (
 				<i
 					className="fa fa-newspaper-o"
@@ -61,7 +45,7 @@ const Home: React.FC = () => {
 		},
 		{
 			url: AppURL.ADMIN_SLIDE,
-			title: 'Quan tri slide',
+			title: 'Quản trị slide',
 			titleChildren: 'Slide',
 			icon: (
 				<i
@@ -73,14 +57,14 @@ const Home: React.FC = () => {
 		},
 		{
 			url: AppURL.ADMIN_CONTACT,
-			title: 'Quan tri lien he',
-			titleChildren: 'Lien he',
+			title: 'Quản trị liên hệ',
+			titleChildren: 'Liên hệ',
 			icon: <PhoneIcon style={{ color: '#fff', fontSize: '94px' }} />,
 		},
 		{
 			url: AppURL.ADMIN_COMMENT,
-			title: 'Quan tri binh luan',
-			titleChildren: 'Binh luan',
+			title: 'Quản trị bình luận',
+			titleChildren: 'Bình luận',
 			icon: (
 				<i
 					className="fa fa-comments-o"
@@ -91,8 +75,8 @@ const Home: React.FC = () => {
 		},
 		{
 			url: AppURL.ADMIN_EMPLOYEE,
-			title: 'Quan tri nhan vien',
-			titleChildren: 'Nhan vien',
+			title: 'Quản trị nhân viên',
+			titleChildren: 'Nhân viên',
 			icon: <GroupIcon style={{ color: '#fff', fontSize: '94px' }} />,
 		},
 	];

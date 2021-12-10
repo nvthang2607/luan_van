@@ -313,35 +313,35 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 					<Grid container spacing={3}>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Id san pham:
+								Mã sản phẩm:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.id_product}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Ten san pham:
+								Tên sản phẩm:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.name}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Ten loai san pham:
+								Tên loại sản phẩm:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.name_type}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Ten loai thuong hieu:
+								Tên loại thương hiệu:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.name_type}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={12} xl={12} md={12} sm={12}>
 							<Typography gutterBottom style={{ fontWeight: 'bold' }}>
-								Anh chinh:
+								Ảnh chính:
 							</Typography>
 
 							<img
@@ -353,7 +353,7 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={12} lg={12} xl={12} md={12} sm={12}>
 							<Typography gutterBottom style={{ fontWeight: 'bold' }}>
-								Anh mo ta:
+								Ảnh mô tả:
 							</Typography>
 							<Box style={{ display: 'flex' }}>
 								{props.dataEdit.images?.map((item: any) => {
@@ -374,39 +374,39 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Gia goc:
+								Giá gốc:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.unit_price}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Gia khuyen mai:
+								Giá khuyến mãi:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.promotion_price}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								So luong:
+								Số lượng:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.quantity}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Danh gia:
+								Đánh giá:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.rate_number}, </Typography>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Trung binh:
+								Trung bình:
 							</Typography>
 							<Typography component="span">{Number(props.dataEdit?.avg).toFixed(1)}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={12} xl={12} md={12} sm={12}>
 							<Typography style={{ fontWeight: 'bold' }} gutterBottom>
-								Thong so ky thuat:
+								Thông số kỹ thuật:
 							</Typography>
 							{props.dataEdit.informations?.map((item: any, index: number) => {
 								return (
@@ -436,7 +436,7 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={12} lg={12} xl={12} md={12} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Bai viet:
+								Bài viết:
 							</Typography>
 
 							<Typography>
@@ -445,14 +445,14 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Ngay tao:
+								Ngày tạo:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.created_at}</Typography>
 						</Grid>
 						<Grid item xs={12} lg={6} xl={6} md={6} sm={12}>
 							<Typography component="span" style={{ fontWeight: 'bold' }}>
-								Ngay cap nhat:
+								Ngày cập nhật:
 							</Typography>
 							&nbsp;
 							<Typography component="span">{props.dataEdit.updated_at}</Typography>
@@ -470,7 +470,7 @@ const ProductDetail: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

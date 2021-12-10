@@ -75,7 +75,7 @@ const ListComment: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 3,
-		value: 'Danh sach tat ca lien he',
+		value: 'Danh sách tất cả bình luận',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -99,14 +99,14 @@ const ListComment: React.FC = () => {
 		},
 		{
 			name: 'id_product',
-			label: 'Id san pham',
+			label: 'Mã sản phẩm',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'name_product',
-			label: 'Ten san pham',
+			label: 'Tên sản phẩm',
 			options: {
 				sort: false,
 			},
@@ -120,14 +120,14 @@ const ListComment: React.FC = () => {
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
@@ -135,7 +135,7 @@ const ListComment: React.FC = () => {
 
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -291,7 +291,7 @@ const ListComment: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach binh luan',
+					title: 'Bạn không có quyền xem danh sách bình luận',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -317,10 +317,10 @@ const ListComment: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Quan tri binh luan
+							Quản trị bình luận
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -332,7 +332,7 @@ const ListComment: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -341,7 +341,7 @@ const ListComment: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -363,7 +363,7 @@ const ListComment: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhap ten sản phẩm"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -429,7 +429,7 @@ const ListComment: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 3, value: 'Danh sach tat ca lien he' });
+									setValueActive({ id: 3, value: 'Danh sách tất cả bình luận' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -440,10 +440,10 @@ const ListComment: React.FC = () => {
 							>
 								{valueActive.id === 3 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach tat ca lien he
+										Danh sách tất cả bình luận
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach tat ca lien he</Typography>
+									<Typography variant="body1">Danh sách tất cả bình luận</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 3 && (
@@ -457,7 +457,7 @@ const ListComment: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach lien he chua xem' });
+									setValueActive({ id: 0, value: 'Danh sách bình luận chưa xem' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -468,10 +468,10 @@ const ListComment: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach lien he chua xem
+										Danh sách bình luận chưa xem
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach lien he chua xem</Typography>
+									<Typography variant="body1">Danh sách bình luận chưa xem</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -485,7 +485,7 @@ const ListComment: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach lien he da xem' });
+									setValueActive({ id: 1, value: 'Danh sách bình luận đã xem' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -496,10 +496,10 @@ const ListComment: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach lien he da xem
+										Danh sách bình luận đã xem
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach lien he da xem</Typography>
+									<Typography variant="body1">Danh sách bình luận đã xem</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (

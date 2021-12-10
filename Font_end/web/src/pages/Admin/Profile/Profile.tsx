@@ -49,11 +49,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 const Profile: React.FC = (props) => {
-	const isResponseive = useMediaQuery({ query: '(min-width: 1208px)' });
-	const isResponseiveMobile = useMediaQuery({ query: '(min-width: 940px)' });
-	const isResponseiveProductMobile = useMediaQuery({ query: '(min-width: 1098px)' });
-	const isResponseiveProduct1Mobile = useMediaQuery({ query: '(min-width: 780px)' });
-	const isResponseivePhone = useMediaQuery({ query: '(min-width: 555px)' });
 	const classes = useStyles();
 	const [profileInfo, setProfileInfo] = React.useState<any>({});
 	const [flag, setFlag] = React.useState(false);

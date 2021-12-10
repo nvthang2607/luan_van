@@ -99,15 +99,15 @@ const OrderStatus: React.FC<OrderStatusProps> = (props) => {
 	const contenStatus = (item: any) => {
 		let result = '';
 		if (item?.status == '1') {
-			result = 'Dang cho duyet';
+			result = 'Đang chờ duyệt';
 		} else if (item?.status == '4') {
-			result = 'Da hoan thanh';
+			result = 'Đã hoàn thành';
 		} else if (item?.status == '2') {
 			result = 'Đã đóng gói';
 		} else if (item?.status == '3') {
 			result = 'Đang vận chuyển';
 		} else if (item?.status == '5') {
-			result = 'Da huy';
+			result = 'Đã hủy';
 		}
 		return result;
 	};
@@ -135,7 +135,7 @@ const OrderStatus: React.FC<OrderStatusProps> = (props) => {
 			) : (
 				<React.Fragment>
 					{dataOrder?.listData?.length === 0 ? (
-						<h1 style={{ textAlign: 'center' }}>Danh sach rong</h1>
+						<h1 style={{ textAlign: 'center' }}>Danh sách rỗng</h1>
 					) : (
 						<React.Fragment>
 							<Typography variant="h5" gutterBottom>
@@ -182,7 +182,7 @@ const OrderStatus: React.FC<OrderStatusProps> = (props) => {
 																	{item.item[0]}
 																</Typography>
 																<Typography component="span">
-																	&nbsp;va {item.item.length - 1} san pham khac
+																	&nbsp;và {item.item.length - 1} sản phẩm khác
 																</Typography>
 															</React.Fragment>
 														) : (

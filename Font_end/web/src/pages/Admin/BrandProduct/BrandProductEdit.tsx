@@ -96,8 +96,8 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 	const [valueEdit, setValueEdit] = React.useState<any>(props.dataEdit);
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
-		name_type: yup.string().required('Type product không để trống'),
+		name: yup.string().required('Tên thương hiệu không để trống'),
+		name_type: yup.string().required('Loại sản phẩm không để trống'),
 	});
 
 	const {
@@ -121,13 +121,13 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Tao moi thanh cong',
+						title: 'Tạo mới thành công',
 					});
 					props.create?.(true);
 				} else {
 					Swal.fire({
 						icon: 'error',
-						title: 'Co loi xay ra',
+						title: 'Có lỗi xảy ra',
 					});
 					props.create?.(false);
 				}
@@ -151,13 +151,13 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 					if (response.errorCode === null) {
 						Swal.fire({
 							icon: 'success',
-							title: 'Cap nhat thong tin thanh cong',
+							title: 'Cập nhật thông tin thành công',
 						});
 						props.create?.(true);
 					} else {
 						Swal.fire({
 							icon: 'error',
-							title: 'Co loi xay ra',
+							title: 'Có lỗi xảy ra',
 						});
 						props.create?.(true);
 					}
@@ -166,7 +166,7 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 			} else {
 				Swal.fire({
 					icon: 'success',
-					title: 'Cap nhat thong tin thanh cong',
+					title: 'Cập nhật thông tin thành công',
 				});
 				props.create?.(true);
 			}
@@ -199,7 +199,7 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 				<DialogContent dividers>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							Ten thuong hieu
+							Tên thương hiệu
 						</Typography>
 						<Controller
 							control={control}
@@ -222,7 +222,7 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 					</Grid>
 					<Grid item xs={12} style={{ marginTop: '26px' }}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							Loai san pham
+							Loại sản phẩm
 						</Typography>
 
 						<Autocomplete
@@ -249,28 +249,26 @@ const BrandProductEdit: React.FC<ProfileInfoProps> = (props) => {
 				<DialogActions>
 					<Grid item xs={12}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							color="primary"
-							size="large"
 							type="submit"
 							disabled={isSubmitting}
 							style={{ position: 'relative' }}
 						>
-							{props.dataEdit.id === 0 ? 'Tao moi' : 'cap nhat thong tin'}
+							{props.dataEdit.id === 0 ? 'Tạo mới' : 'Cập nhật thông tin'}
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
 						<Button
-							variant="outlined"
-							color="primary"
-							size="large"
+							variant="contained"
+							color="secondary"
 							//disabled={true}
 							style={{ position: 'relative' }}
 							onClick={() => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

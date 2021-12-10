@@ -74,7 +74,7 @@ const Contact: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 3,
-		value: 'Danh sach tat ca lien he',
+		value: 'Danh sách tất cả liên hệ',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -98,7 +98,7 @@ const Contact: React.FC = () => {
 		},
 		{
 			name: 'name',
-			label: 'Ho ten',
+			label: 'Họ tên',
 			options: {
 				sort: false,
 			},
@@ -112,28 +112,28 @@ const Contact: React.FC = () => {
 		},
 		{
 			name: 'phone',
-			label: 'So dien thoai',
+			label: 'Số điện thoại',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'check',
-			label: 'Trang thai',
+			label: 'Trạng thái',
 			options: {
 				sort: false,
 				customBodyRender: (check: number) => {
@@ -142,7 +142,7 @@ const Contact: React.FC = () => {
 							variant="caption"
 							style={{
 								backgroundColor: '#d32f2f',
-								padding: '5px',
+								padding: '1px',
 								color: '#fff',
 
 								paddingTop: '2px',
@@ -150,7 +150,7 @@ const Contact: React.FC = () => {
 								borderRadius: '4px',
 							}}
 						>
-							chua xem
+							chưa xem
 						</Typography>
 					) : (
 						<Typography
@@ -166,7 +166,7 @@ const Contact: React.FC = () => {
 								borderRadius: '4px',
 							}}
 						>
-							da xem
+							Đã xem
 						</Typography>
 					);
 				},
@@ -326,7 +326,7 @@ const Contact: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach lien he',
+					title: 'Bạn không có quyền xem danh sách liên hệ',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -352,10 +352,10 @@ const Contact: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Quan tri lien he
+							Quản trị liên hệ
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -367,7 +367,7 @@ const Contact: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -376,7 +376,7 @@ const Contact: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -398,7 +398,7 @@ const Contact: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập số điện thoại"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -464,7 +464,7 @@ const Contact: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 3, value: 'Danh sach tat ca lien he' });
+									setValueActive({ id: 3, value: 'Danh sách tất cả liên hệ' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -475,10 +475,10 @@ const Contact: React.FC = () => {
 							>
 								{valueActive.id === 3 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach tat ca lien he
+										Danh sách tất cả liên hệ
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach tat ca lien he</Typography>
+									<Typography variant="body1">Danh sách tất cả liên hệ</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 3 && (
@@ -492,7 +492,7 @@ const Contact: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach lien he chua xem' });
+									setValueActive({ id: 0, value: 'Danh sách liên hệ chưa xem' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -503,10 +503,10 @@ const Contact: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach lien he chua xem
+										Danh sách liên hệ chưa xem
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach lien he chua xem</Typography>
+									<Typography variant="body1">Danh sách liên hệ chưa xem</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -520,7 +520,7 @@ const Contact: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach lien he da xem' });
+									setValueActive({ id: 1, value: 'Danh sách liên hệ đã xem' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -531,10 +531,10 @@ const Contact: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach lien he da xem
+										Danh sách liên hệ đã xem
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach lien he da xem</Typography>
+									<Typography variant="body1">Danh sách liên hệ đã xem</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (

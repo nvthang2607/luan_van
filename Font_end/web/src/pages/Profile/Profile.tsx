@@ -127,7 +127,7 @@ const Profile: React.FC = (props) => {
 								>
 									<div>
 										<Typography variant="body1" noWrap>
-											Xin chao!
+											Xin chào!
 										</Typography>
 									</div>
 									<div style={{ display: 'grid' }}>
@@ -151,7 +151,7 @@ const Profile: React.FC = (props) => {
 							<PersonIcon style={{ fontSize: '34px' }} /> &nbsp;
 							<ListItem style={{ paddingLeft: 0, textTransform: 'uppercase' }}>
 								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-									quan ly thong tin
+									Quản lý thông tin
 								</Typography>
 							</ListItem>
 							<ChevronRightIcon />
@@ -162,7 +162,7 @@ const Profile: React.FC = (props) => {
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Thong tin tai khoan</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Thông tin tài khoản</Typography>
 							</NavLink>
 
 							<NavLink
@@ -170,14 +170,14 @@ const Profile: React.FC = (props) => {
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Doi mat khau</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đổi mật khẩu</Typography>
 							</NavLink>
 						</Box>
 						<Box style={{ display: 'flex', alignItems: 'center', paddingLeft: '13px' }}>
 							<EventNoteIcon style={{ fontSize: '34px' }} /> &nbsp;
 							<ListItem style={{ paddingLeft: 0, textTransform: 'uppercase' }}>
 								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-									quan ly don hang
+									Quản lý đơn hàng
 								</Typography>
 							</ListItem>
 							<ChevronRightIcon />
@@ -188,42 +188,42 @@ const Profile: React.FC = (props) => {
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Tat ca don hang</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Tất cả đơn hàng</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_PENDING}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang dang cho duyet</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đang chờ duyệt</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_PROCESSING}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang da dong goi</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đã đóng gói</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_SHIPPING}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang dang van chuyen</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đang vận chuyển</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_COMPLETED}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang da hoan thanh</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đã hoàn thành</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_CANCELLED}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang da huy</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đã hủy</Typography>
 							</NavLink>
 						</Box>
 					</Card>
@@ -257,38 +257,38 @@ const Profile: React.FC = (props) => {
 							<Route path={AppURL.PROFILE_CHANGEPWD} component={ChangePwd} />
 							<Route path={AppURL.ORDER_COMPLETED}>
 								<OrderStatus
-									title="Don hang da hoan thanh"
+									title="Đơn hàng đã hoàn thành"
 									name={AppURL.ORDER_COMPLETED}
 									status={4}
 								/>
 							</Route>
 
 							<Route path={AppURL.ORDER_ALL}>
-								<OrderStatus title="Tat ca don hang" name={AppURL.ORDER_ALL} status={0} />
+								<OrderStatus title="Tất cả đơn hàng" name={AppURL.ORDER_ALL} status={0} />
 							</Route>
 							<Route path={AppURL.ORDER_PENDING}>
 								<OrderStatus
-									title="Don hang dang cho duyet"
+									title="Đơn hàng đang chờ duyệt"
 									name={AppURL.ORDER_PENDING}
 									status={1}
 								/>
 							</Route>
 							<Route path={AppURL.ORDER_SHIPPING}>
 								<OrderStatus
-									title="Don hang dang van chuyen"
+									title="Đơn hàng đang vận chuyển"
 									name={AppURL.ORDER_SHIPPING}
 									status={2}
 								/>
 							</Route>
 							<Route path={AppURL.ORDER_PROCESSING}>
 								<OrderStatus
-									title="Don hang da dong goi"
+									title="Đơn hàng đã đóng gói"
 									name={AppURL.ORDER_PROCESSING}
 									status={3}
 								/>
 							</Route>
 							<Route path={AppURL.ORDER_CANCELLED}>
-								<OrderStatus title="Don hang da huy" name={AppURL.ORDER_CANCELLED} status={5} />
+								<OrderStatus title="Đơn hàng đã hủy" name={AppURL.ORDER_CANCELLED} status={5} />
 							</Route>
 							<Route path={AppURL.ORDER_DETAIL}>
 								<OrderDetail />

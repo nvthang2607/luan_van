@@ -71,7 +71,7 @@ const ListNews: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach tin tuc dang duoc kich hoat',
+		value: 'Danh sách tin tức đang được kích hoạt',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -94,7 +94,7 @@ const ListNews: React.FC = () => {
 		},
 		{
 			name: 'image',
-			label: 'Hinh anh',
+			label: 'Hình ảnh',
 			options: {
 				sort: false,
 				customBodyRender: (image: any) => {
@@ -104,28 +104,28 @@ const ListNews: React.FC = () => {
 		},
 		{
 			name: 'title',
-			label: 'Tieu de',
+			label: 'Tiêu đề',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -165,7 +165,7 @@ const ListNews: React.FC = () => {
 			noMatch: progressData ? <CircularProgress color="secondary" /> : t('tenant.no_match'),
 		},
 		selectedRows: {
-			text: 'File(s) selected',
+			text: 'File(s) đã được chọn',
 			delete: 'Delete',
 			deleteAria: 'Deleted Selected Row(s)',
 		},
@@ -258,7 +258,7 @@ const ListNews: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach tin tuc',
+					title: 'Bạn không có quyền xem danh sách tin tức',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -284,10 +284,10 @@ const ListNews: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Quan tri tin tuc
+							Quản trị tin tức
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -299,7 +299,7 @@ const ListNews: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -308,10 +308,10 @@ const ListNews: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi tin tuc');
+											setTitleDialog('Tạo mới tin tức');
 											setDataEdit({
 												id: 0,
 												title: '',
@@ -325,7 +325,7 @@ const ListNews: React.FC = () => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -347,7 +347,7 @@ const ListNews: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhap ten tin tức"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -406,7 +406,7 @@ const ListNews: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach tin tuc dang duoc kich hoat' });
+									setValueActive({ id: 0, value: 'Danh sách tin tức đang được kích hoạt' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -417,10 +417,10 @@ const ListNews: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach tin tuc da duoc kich hoat
+										Danh sách tin tức đang được kích hoạt
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach tin tuc da duoc kich hoat</Typography>
+									<Typography variant="body1">Danh sách tin tức đang được kích hoạt</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -434,7 +434,7 @@ const ListNews: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach tin tuc dang tam khoa' });
+									setValueActive({ id: 1, value: 'Danh sách tin tức đang tạm khóa' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -445,10 +445,10 @@ const ListNews: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach tin tuc dang tam khoa
+										Danh sách tin tức đang tạm khóa
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach tin tuc dang tam khoa</Typography>
+									<Typography variant="body1">Danh sách tin tức đang tạm khóa</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (
@@ -509,7 +509,7 @@ const ListNews: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire('Đã xóa!', `Đã xóa thành công ${count} tin tức`, 'success');
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -570,7 +570,7 @@ const ListNews: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 0 ? 'Xoa' : 'Khoi phuc'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -592,7 +592,7 @@ const ListNews: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire('Đã xóa!', `Đã xóa thành công ${count} tin tức`, 'success');
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

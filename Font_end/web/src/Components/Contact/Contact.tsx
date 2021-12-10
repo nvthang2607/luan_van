@@ -90,10 +90,10 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 	const schema = yup.object().shape({
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số điện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
-		name: yup.string().required('the_title_field_is_required'),
+		name: yup.string().required('Tên không để trống'),
 	});
 
 	const {
@@ -125,13 +125,13 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 			if (response.errorCode === null) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Gui lien he thanh cong',
+					title: 'Gửi liên hệ thành công',
 				});
 				props.cancel?.(false);
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 				props.cancel?.(false);
 			}
@@ -156,7 +156,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 					<Close />
 				</IconButton>
 				<DialogTitle>
-					<Typography variant="h5">Lien he voi chung toi</Typography>
+					<Typography variant="h5">Liên hệ với chúng tôi</Typography>
 				</DialogTitle>
 				<DialogContent dividers>
 					<Grid item xs={12}>
@@ -193,7 +193,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							So dien thoai
+							Số điện thoại
 						</Typography>
 						<TextField
 							{...register('phone')}
@@ -209,7 +209,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							Noi dung
+							Nội dung
 						</Typography>
 						<TextField
 							id="rate_content"
@@ -217,7 +217,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 							multiline
 							name="content"
 							rows={4}
-							placeholder="Nhập noi dung lien he"
+							placeholder="Nhập noi dung liên hệ"
 							variant="outlined"
 							fullWidth
 						/>
@@ -232,7 +232,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 							disabled={isSubmitting}
 							style={{ position: 'relative', textTransform: 'inherit' }}
 						>
-							Gui lien he
+							Gửi liên hệ
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
@@ -245,7 +245,7 @@ const Contact: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

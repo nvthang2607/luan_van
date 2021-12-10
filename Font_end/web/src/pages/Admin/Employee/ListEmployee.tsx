@@ -71,7 +71,7 @@ const ListEmployee: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach nhan vien dang duoc kich hoat',
+		value: 'Danh sách nhân viên đang được kích hoạt',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -90,11 +90,11 @@ const ListEmployee: React.FC = () => {
 		if (isadmin === 'admin') {
 			name = 'Admin';
 		} else if (isadmin === 'manager') {
-			name = 'Quan ly';
+			name = 'Quản lý';
 		} else if (isadmin === 'warehouse') {
-			name = 'Quan ly kho';
+			name = 'Quản lý kho';
 		} else if (isadmin === 'merchandiser') {
-			name = 'Quan ly don hang';
+			name = 'Quản lý đơn hàng';
 		}
 		return name;
 	};
@@ -108,14 +108,14 @@ const ListEmployee: React.FC = () => {
 		},
 		{
 			name: 'name',
-			label: 'Ten',
+			label: 'Tên',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'gender',
-			label: 'Gioi tinh',
+			label: 'Giới tính',
 			options: {
 				sort: false,
 			},
@@ -129,21 +129,21 @@ const ListEmployee: React.FC = () => {
 		},
 		{
 			name: 'phone',
-			label: 'So dien thoai',
+			label: 'Số điện thoại',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'address',
-			label: 'Dia chi',
+			label: 'Địa chỉ',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'isadmin',
-			label: 'Chuc vu',
+			label: 'Chức vụ',
 			options: {
 				sort: false,
 				customBodyRender: (isadmin: string) => {
@@ -153,21 +153,21 @@ const ListEmployee: React.FC = () => {
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay dang ky',
+			label: 'Ngày đăng ký',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -181,7 +181,7 @@ const ListEmployee: React.FC = () => {
 								style={{ fontSize: '30px', cursor: 'pointer' }}
 								onClick={() => {
 									console.log(data[index]);
-									setTitleDialog('Cap nhat thong tin nhan vien');
+									setTitleDialog('Cập nhật thông tin nhân viên');
 									setProfileInfo({
 										phone: data[index].phone,
 										name: data[index].name,
@@ -318,7 +318,7 @@ const ListEmployee: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach nhan vien',
+					title: 'Bạn không có quyền xem danh sách nhân viên',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -344,10 +344,10 @@ const ListEmployee: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Quan tri nhan vien
+							Quản trị nhân viên
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -359,7 +359,7 @@ const ListEmployee: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -368,10 +368,10 @@ const ListEmployee: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi nhan vien');
+											setTitleDialog('Tạo mới nhân viên');
 											setProfileInfo({
 												phone: '',
 												name: '',
@@ -395,7 +395,7 @@ const ListEmployee: React.FC = () => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -417,7 +417,7 @@ const ListEmployee: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nhan vien"
+									placeholder="Nhập tên nhân viên"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -476,7 +476,7 @@ const ListEmployee: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach nhan vien dang duoc kich hoat' });
+									setValueActive({ id: 0, value: 'Danh sách nhân viên đang được kích hoạt' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -487,10 +487,10 @@ const ListEmployee: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach nhan vien da duoc kich hoat
+										Danh sách nhân viên đang được kích hoạt
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach nhan vien da duoc kich hoat</Typography>
+									<Typography variant="body1">Danh sách nhân viên đang được kích hoạt</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -504,7 +504,7 @@ const ListEmployee: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach nhan vien dang tam khoa' });
+									setValueActive({ id: 1, value: 'Danh sách nhân viên đang tạm khóa' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -515,10 +515,10 @@ const ListEmployee: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach nhan vien dang tam khoa
+										Danh sách nhân viên đang tạm khóa
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach nhan vien dang tam khoa</Typography>
+									<Typography variant="body1">Danh sách nhân viên đang tạm khóa</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (
@@ -557,7 +557,7 @@ const ListEmployee: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children={valueActive.id === 0 ? 'Xoa' : 'Khoi phuc'}
+										children={valueActive.id === 0 ? 'Xóa' : 'Khôi phục'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -579,7 +579,11 @@ const ListEmployee: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Deleted!',
+																`Đã xóa thành công ${count} nhân viên`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -640,7 +644,7 @@ const ListEmployee: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 0 ? 'Xóa' : 'Khôi phục'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -662,7 +666,11 @@ const ListEmployee: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Deleted!',
+																`Đã xóa thành công ${count} nhân viên`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

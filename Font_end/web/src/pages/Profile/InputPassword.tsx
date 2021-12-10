@@ -98,11 +98,11 @@ const InputPassword: React.FC<InputPasswordProps> = (props) => {
 		};
 		const response = await UpdateProfilePost(reqData);
 		if (response.errorCode === null) {
-			toast.success('Cap nhat thanh cong');
+			toast.success('Cập nhật thành công');
 			props?.action?.(true);
 			dispatch(updateValueRefreshPage(true));
 		} else if (response.errorCode === 2) {
-			toast.error('Mat khau ko chinh xac');
+			toast.error('Mật khẩu không đúng');
 		}
 	};
 
@@ -145,10 +145,10 @@ const InputPassword: React.FC<InputPasswordProps> = (props) => {
 			/>
 			<DialogActions>
 				<Button color="primary" onClick={() => props?.action?.(true)}>
-					Dong
+					Đóng
 				</Button>
 				<Button type="submit" color="primary" disabled={isSubmitting}>
-					Xac nhan
+					Xác nhận
 				</Button>
 			</DialogActions>
 			{isSubmitting && (

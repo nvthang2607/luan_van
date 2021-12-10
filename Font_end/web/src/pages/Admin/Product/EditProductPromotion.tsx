@@ -135,8 +135,8 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 		code: yup.string().required('code không để trống'),
 		value: yup
 			.number()
-			.typeError('Price must specify a number')
-			.min(0, 'price_must_be_greater_than_or_equal_to_0'),
+			.typeError('Giá khuyến mãi là 1 ký số')
+			.min(0, 'Giá khuyến mãi phải lớn hơn hoặc bằng 0'),
 	});
 
 	const {
@@ -249,13 +249,13 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Tao moi thanh cong',
+						title: 'Tạo mới thành công',
 					});
 					props.create?.(true);
 				} else if (response.errorCode === 1) {
-					toast.error('Ngay ket thuc phai lon hon ngay bat dau');
+					toast.error('Ngày kết thúc phải lớn hơn ngày bắt đầu');
 				} else {
-					toast.error('Co loi xay ra');
+					toast.error('Có lỗi xảy ra');
 				}
 			}
 		} else {
@@ -264,13 +264,13 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Cap nhat thanh cong',
+						title: 'Cập nhật thành công',
 					});
 					props.create?.(true);
 				} else if (response.errorCode === 1) {
-					toast.error('Ngay ket thuc phai lon hon ngay bat dau');
+					toast.error('Ngày kết thúc phải lớn hơn ngày bắt đầu');
 				} else {
-					toast.error('Co loi xay ra');
+					toast.error('Có lỗi xảy ra');
 				}
 			}
 		}
@@ -336,7 +336,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Ma code
+								Mã code
 							</Typography>
 							<Controller
 								control={control}
@@ -370,7 +370,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Giam gia
+								Giảm giá
 							</Typography>
 							<Controller
 								control={control}
@@ -407,7 +407,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" className={classes.titleInput}>
-								Ngay bat dau
+								Ngày bắt đầu
 							</Typography>
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
 								<Controller
@@ -445,7 +445,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" className={classes.titleInput}>
-								Ngay ket thuc
+								Ngày kết thúc
 							</Typography>
 							<MuiPickersUtilsProvider utils={DateFnsUtils}>
 								<Controller
@@ -463,7 +463,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 											fullWidth
 											size="small"
 											minDate={new Date(valueEdit.startDate)}
-											minDateMessage="Ngay ket thuc phai lon hon ngay bat dau"
+											minDateMessage="Ngày kết thúc phải lớn hơn ngày bắt đầu"
 											onChange={(e) => {
 												setValueEdit({ ...valueEdit, finishDate: e });
 												reset({
@@ -494,7 +494,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 							disabled={isSubmitting}
 							style={{ position: 'relative' }}
 						>
-							{props.dataEdit.create ? 'Tao moi' : 'cap nhat thong tin'}
+							{props.dataEdit.create ? 'Tạo mới' : 'Cập nhật thông tin'}
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
@@ -507,7 +507,7 @@ const EditProductPromotion: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

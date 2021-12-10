@@ -62,8 +62,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Login: React.FC = () => {
 	const classes = useStyles();
 	const schema = yup.object().shape({
-		loginName: yup.string().required('loginName la bat buoc'),
-		password: yup.string().required('password bat buoc'),
+		loginName: yup.string().required('Email không để trống'),
+		password: yup.string().required('Mật khẩu không để trống'),
 	});
 	const {
 		register,
@@ -86,27 +86,27 @@ const Login: React.FC = () => {
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen vao trang quan tri',
+					title: 'Bạn không có quyền vào trang quản trị',
 					//text: 'Ten tai khoan hoac mat khau khong dung',
 				});
 			}
 		} else if (response?.errorCode === 1) {
 			Swal.fire({
 				icon: 'error',
-				title: 'Dang nhap that bai',
-				text: 'Ten tai khoan hoac mat khau khong dung',
+				title: 'Đăng nhập thất bại',
+				text: 'Tên tài khoản hoặc mật khẩu không đúng',
 			});
 		} else if (response?.errorCode === 2) {
 			Swal.fire({
 				icon: 'error',
-				title: 'Dang nhap that bai',
-				text: 'Ten tai khoan hoac mat khau khong dung',
+				title: 'Đăng nhập thất bại',
+				text: 'Tên tài khoản hoặc mật khẩu không đúng',
 			});
 		} else {
 			Swal.fire({
 				icon: 'error',
-				title: 'Dang nhap that bai',
-				text: 'Co loi xay ra',
+				title: 'Đăng nhập thất bại',
+				text: 'Có lỗi xảy ra',
 			});
 		}
 	};

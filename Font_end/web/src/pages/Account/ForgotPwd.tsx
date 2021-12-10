@@ -160,12 +160,12 @@ const ForgotPwd: React.FC<loginprops> = (props) => {
 			} else if (response.errorCode === 1) {
 				Swal.fire({
 					icon: 'error',
-					title: 'Email khong ton tai',
+					title: 'Email không tồn tại',
 				});
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 			}
 		}

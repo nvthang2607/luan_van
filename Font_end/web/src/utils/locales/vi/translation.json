@@ -2,12 +2,30 @@
 	"header": {
 		"news": " Tin tức",
 		"cart": "Giỏ hàng",
-		"contact": "Liên hệ",
-		"account": "Tài khoản"
+		"sale": "Bán hàng",
+		"account": "Tài khoản",
+		"categories": "DANH MỤC SẢN PHẨM"
 	},
-	"account": {
-		"sign_in": "đăng nhập",
-		"sign_up": "đăng ký"
+	"header_admin": {
+		"hello": "Xin chào!",
+		"administrator_page": "Trang Quản Trị",
+		"information_management": "Quản lý thông tin",
+		"change_password": "Đổi mật khẩu",
+		"logout": "Thoát tài khoản"
+	},
+	"menu_admin": {
+		"home": "Trang chủ",
+		"category_management": "Quản trị danh mục",
+		"type": "Loại sản phẩm",
+		"product": "Sản phẩm",
+		"branch": "Thương hiệu",
+		"user_management": "Quản trị người dùng",
+		"order_management": "Quản trị đơn hàng",
+		"news_management": "Quản trị tin tức",
+		"slide_management": "Quản trị slide",
+		"contact_management": "Quản trị liên hệ",
+		"comment_management": "Quản trị bình luận",
+		"personnel_management": "Quản trị nhân viên"
 	},
 	"document": {
 		"search": "Tìm kiếm",

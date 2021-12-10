@@ -58,7 +58,7 @@ const ChangePwd: React.FC = () => {
 		retypeNewPassword: yup
 			.string()
 			.required('Mật khẩu không để trống')
-			.oneOf([yup.ref('newPassword')], '2 trường mật khẩu ko giống nhau'),
+			.oneOf([yup.ref('newPassword')], '2 trường mật khẩu không giống nhau'),
 	});
 	const {
 		register,
@@ -76,9 +76,9 @@ const ChangePwd: React.FC = () => {
 		};
 		const response = await UpdatePasswordPost(reqData);
 		if (response.errorCode === null) {
-			toast.success('Thay doi mat khau thanh cong');
+			toast.success('Thay đổi mật khẩu thành công');
 		} else if (response.errorCode === 2) {
-			toast.error('Mat khau ko chinh xac');
+			toast.error('Mật khẩu không đúng');
 		}
 	};
 	return (
@@ -90,7 +90,7 @@ const ChangePwd: React.FC = () => {
 							<Grid container spacing={3}>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Mat khau cu
+										Mật khẩu cũ
 									</Typography>
 									<TextField
 										{...register('oldPassword')}
@@ -105,7 +105,7 @@ const ChangePwd: React.FC = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Nhap mat khau moi
+										Nhập mật khẩu mới
 									</Typography>
 									<TextField
 										{...register('newPassword')}
@@ -120,7 +120,7 @@ const ChangePwd: React.FC = () => {
 								</Grid>
 								<Grid item xs={12}>
 									<Typography variant="body1" gutterBottom>
-										Nhap lai mat khau moi
+										Nhập lại mật khẩu mới
 									</Typography>
 									<TextField
 										{...register('retypeNewPassword')}
@@ -142,7 +142,7 @@ const ChangePwd: React.FC = () => {
 										disabled={isSubmitting}
 										//style={{ position: 'relative' }}
 									>
-										Doi mat khau
+										Đổi mật khẩu
 										{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 									</Button>
 								</Grid>

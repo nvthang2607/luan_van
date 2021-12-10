@@ -184,7 +184,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 		}
 	};
 	const now = new Date().getTime();
-	const countdownTime = new Date('3 Dec, 2021 13:00:00').getTime();
+	const countdownTime = new Date('3 Dec, 2022 13:00:00').getTime();
 	const distance = countdownTime - now;
 	//const days = Math.floor(distance / (1000 * 60 * 60 * 24));
 	const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -260,7 +260,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 					<Box style={{ marginTop: '10px' }}>
 						<Typography gutterBottom>
 							<Chip
-								label="FLASH SALE HOM NAY"
+								label="FLASH SALE HÔM NAY"
 								color="secondary"
 								variant="outlined"
 								size="medium"
@@ -269,7 +269,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 						</Typography>
 					</Box>
 					<Box>
-						<Typography>Gia soc online</Typography>
+						<Typography>Giá sốc online</Typography>
 					</Box>
 					<Box>
 						<Typography
@@ -328,7 +328,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 							<React.Fragment>
 								{isResponseiveFsale === false && (
 									<Typography component="span" style={{ marginRight: '10px' }}>
-										Ket thuc trong
+										Kết thúc trong
 									</Typography>
 								)}
 								<Box
@@ -342,7 +342,7 @@ const ProductSale: React.FC<ProductProps> = (props) => {
 								>
 									{isResponseiveFsale && (
 										<Typography component="span" style={{ marginRight: '10px' }}>
-											Ket thuc trong
+											Kết thúc trong
 										</Typography>
 									)}
 									{/* {days > 0 && (

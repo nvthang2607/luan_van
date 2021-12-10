@@ -186,10 +186,10 @@ const ListNews: React.FC = () => {
 							<Breadcrumbs aria-label="breadcrumb">
 								<Link to="/" className={classes.link}>
 									<HomeIcon className={classes.icon} />
-									Trang chu
+									Trang chủ
 								</Link>
 								<Link to="/" className={classes.link}>
-									Danh sach tin tuc
+									Danh sách tin tức
 								</Link>
 							</Breadcrumbs>
 						</Grid>
@@ -198,10 +198,10 @@ const ListNews: React.FC = () => {
 							<Breadcrumbs aria-label="breadcrumb">
 								<Link to="/" className={classes.link}>
 									<HomeIcon className={classes.icon} />
-									Trang chu
+									Trang chủ
 								</Link>
 								<Link to="/" className={classes.link}>
-									Danh sach tin tuc
+									Danh sách tin tức
 								</Link>
 							</Breadcrumbs>
 						</Grid>
@@ -282,10 +282,10 @@ const ListNews: React.FC = () => {
 						<Breadcrumbs aria-label="breadcrumb">
 							<Link to="/" className={classes.link}>
 								<HomeIcon className={classes.icon} />
-								Trang chu
+								Trang chủ
 							</Link>
 							<Link to="/" className={classes.link}>
-								Danh sach tin tuc
+								Danh sách tin tức
 							</Link>
 						</Breadcrumbs>
 					</Grid>

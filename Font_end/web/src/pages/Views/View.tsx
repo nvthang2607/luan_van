@@ -504,9 +504,9 @@ const View: React.FC<ViewProps> = (props) => {
 	};
 	const addToCart: (result: boolean) => void = (result) => {
 		if (result) {
-			toast.success('Da them san pham vao gio hang');
+			toast.success('Đã thêm sản phẩm vào giỏ hàng');
 		} else {
-			toast.error('ko du so luong');
+			toast.error('Không đủ số lượng');
 		}
 	};
 	const ShowFilter = (element: any) => {
@@ -520,13 +520,13 @@ const View: React.FC<ViewProps> = (props) => {
 								{!progress && (
 									<Box style={{ float: 'left', marginLeft: '16px' }}>
 										{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
-							 san pham duoc tim thay
+							 sản phẩm được tìm thấy
 						</Typography> */}
 										<Typography variant="h6" style={{ display: 'contents' }}>
 											<Typography variant="h6" style={{ fontWeight: 'bold', display: 'contents' }}>
 												{dataFilter.totalCount}
 											</Typography>
-											&nbsp;san pham duoc tim thay
+											&nbsp;sản phẩm được tìm thấy
 										</Typography>
 									</Box>
 								)}
@@ -550,10 +550,10 @@ const View: React.FC<ViewProps> = (props) => {
 						<Breadcrumbs aria-label="breadcrumb">
 							<Link to="/" className={classes.link}>
 								<HomeIcon className={classes.icon} />
-								Trang chu
+								Trang chủ
 							</Link>
 							<Link to="/" className={classes.link}>
-								Ket qua tim kiem
+								Kết quả tìm kiếm
 							</Link>
 						</Breadcrumbs>
 					</Grid>
@@ -562,10 +562,10 @@ const View: React.FC<ViewProps> = (props) => {
 						<Breadcrumbs aria-label="breadcrumb">
 							<Link to="/" className={classes.link}>
 								<HomeIcon className={classes.icon} />
-								Trang chu
+								Trang chủ
 							</Link>
 							<Link to="/" className={classes.link}>
-								Ket qua tim kiem
+								Kết quả tìm kiếm
 							</Link>
 						</Breadcrumbs>
 					</Grid>
@@ -631,7 +631,7 @@ const View: React.FC<ViewProps> = (props) => {
 											}}
 											onClick={() => handlePriceAbout('7_', 'tren7trieu')}
 										>
-											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Tren 7 trieu
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Trên 7 triệu
 										</Button>
 									)}
 
@@ -677,7 +677,7 @@ const View: React.FC<ViewProps> = (props) => {
 										}}
 									>
 										<i className="fa fa-filter" aria-hidden="true"></i>&nbsp;
-										<Typography variant="body1">Bo loc</Typography>
+										<Typography variant="body1">Bộ lọc</Typography>
 									</Card>
 									&nbsp;&nbsp;
 									<Card
@@ -685,7 +685,7 @@ const View: React.FC<ViewProps> = (props) => {
 										style={{ padding: '10px', display: 'flex', cursor: 'pointer' }}
 										onClick={handleClickPrice}
 									>
-										<Typography variant="body1">Gia san pham</Typography>
+										<Typography variant="body1">Giá sản phẩm</Typography>
 
 										<ArrowDropDownIcon />
 									</Card>
@@ -747,7 +747,7 @@ const View: React.FC<ViewProps> = (props) => {
 														[classes.stylePriceAbout]: priceAboutTren7,
 													})}
 												>
-													Tren 7 trieu
+													Trên 7 triệu
 												</Button>
 											</ListItem>
 										</List>
@@ -757,7 +757,7 @@ const View: React.FC<ViewProps> = (props) => {
 									{!progress && (
 										<Box style={{ float: 'left', marginLeft: '16px' }}>
 											{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										 san pham duoc tim thay
+										 sản phẩm được tìm thấy
 									</Typography> */}
 											<Typography variant="h6" style={{ display: 'contents' }}>
 												<Typography
@@ -766,7 +766,7 @@ const View: React.FC<ViewProps> = (props) => {
 												>
 													{dataFilter.totalCount}
 												</Typography>
-												&nbsp;san pham duoc tim thay
+												&nbsp;sản phẩm được tìm thấy
 											</Typography>
 										</Box>
 									)}
@@ -783,7 +783,7 @@ const View: React.FC<ViewProps> = (props) => {
 									>
 										<i className="fa fa-sort-alpha-desc" aria-hidden="true"></i>
 										&nbsp;
-										<Typography variant="body1">Xep theo</Typography>
+										<Typography variant="body1">Xếp theo</Typography>
 									</Box>
 									<Popover
 										id={idSort}
@@ -801,25 +801,25 @@ const View: React.FC<ViewProps> = (props) => {
 									>
 										<List>
 											<ListItem button divider onClick={() => handleSortBy('nameASC')}>
-												<Typography variant="body1">Ten A-Z</Typography>
+												<Typography variant="body1">Tên A-Z</Typography>
 												{option === 'nameASC' && <i className="fa fa-check" aria-hidden="true"></i>}
 											</ListItem>
 											<ListItem button divider>
 												<Typography variant="body1" onClick={() => handleSortBy('nameDESC')}>
-													Ten Z-A
+													Tên Z-A
 												</Typography>
 												{option === 'nameDESC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}
 											</ListItem>
 											<ListItem button divider onClick={() => handleSortBy('priceDESC')}>
-												<Typography variant="body1">Gia thap den cao</Typography>
+												<Typography variant="body1">Giá thấp đến cao</Typography>
 												{option === 'priceDESC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}
 											</ListItem>
 											<ListItem button onClick={() => handleSortBy('priceASC')}>
-												<Typography variant="body1">Gia cao xuong thap</Typography>
+												<Typography variant="body1">Giá cao xuống thấp</Typography>
 												{option === 'priceASC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}
@@ -948,10 +948,10 @@ const View: React.FC<ViewProps> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Ket qua tim kiem
+							Kết quả tìm kiếm
 						</Link>
 					</Breadcrumbs>
 				</Grid>
@@ -1016,7 +1016,7 @@ const View: React.FC<ViewProps> = (props) => {
 											}}
 											onClick={() => handlePriceAbout('7_', 'tren7trieu')}
 										>
-											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Tren 7 trieu
+											<i className="fa fa-times" aria-hidden="true"></i>&nbsp;&nbsp;Trên 7 triệu
 										</Button>
 									)}
 
@@ -1062,7 +1062,7 @@ const View: React.FC<ViewProps> = (props) => {
 										}}
 									>
 										<i className="fa fa-filter" aria-hidden="true"></i>&nbsp;
-										<Typography variant="body1">Bo loc</Typography>
+										<Typography variant="body1">Bộ lọc</Typography>
 									</Card>
 									&nbsp;&nbsp;
 									<Card
@@ -1070,7 +1070,7 @@ const View: React.FC<ViewProps> = (props) => {
 										style={{ padding: '10px', display: 'flex', cursor: 'pointer' }}
 										onClick={handleClickPrice}
 									>
-										<Typography variant="body1">Gia san pham</Typography>
+										<Typography variant="body1">Giá sản phẩm</Typography>
 
 										<ArrowDropDownIcon />
 									</Card>
@@ -1132,7 +1132,7 @@ const View: React.FC<ViewProps> = (props) => {
 														[classes.stylePriceAbout]: priceAboutTren7,
 													})}
 												>
-													Tren 7 trieu
+													Trên 7 triệu
 												</Button>
 											</ListItem>
 										</List>
@@ -1142,7 +1142,7 @@ const View: React.FC<ViewProps> = (props) => {
 									{!progress && (
 										<Box style={{ float: 'left', marginLeft: '16px' }}>
 											{/* <Typography variant="body1" style={{ fontWeight: 'bold' }}>
-											 san pham duoc tim thay
+											 sản phẩm được tìm thấy
 										</Typography> */}
 											<Typography variant="h6" style={{ display: 'contents' }}>
 												<Typography
@@ -1151,7 +1151,7 @@ const View: React.FC<ViewProps> = (props) => {
 												>
 													{dataFilter.totalCount}
 												</Typography>
-												&nbsp;san pham duoc tim thay
+												&nbsp;sản phẩm được tìm thấy
 											</Typography>
 										</Box>
 									)}
@@ -1168,7 +1168,7 @@ const View: React.FC<ViewProps> = (props) => {
 									>
 										<i className="fa fa-sort-alpha-desc" aria-hidden="true"></i>
 										&nbsp;
-										<Typography variant="body1">Xep theo</Typography>
+										<Typography variant="body1">Xếp theo</Typography>
 									</Box>
 									<Popover
 										id={idSort}
@@ -1186,25 +1186,25 @@ const View: React.FC<ViewProps> = (props) => {
 									>
 										<List>
 											<ListItem button divider onClick={() => handleSortBy('nameASC')}>
-												<Typography variant="body1">Ten A-Z</Typography>
+												<Typography variant="body1">Tên A-Z</Typography>
 												{option === 'nameASC' && <i className="fa fa-check" aria-hidden="true"></i>}
 											</ListItem>
 											<ListItem button divider>
 												<Typography variant="body1" onClick={() => handleSortBy('nameDESC')}>
-													Ten Z-A
+													Tên Z-A
 												</Typography>
 												{option === 'nameDESC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}
 											</ListItem>
 											<ListItem button divider onClick={() => handleSortBy('priceDESC')}>
-												<Typography variant="body1">Gia thap den cao</Typography>
+												<Typography variant="body1">Giá thấp đến cao</Typography>
 												{option === 'priceDESC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}
 											</ListItem>
 											<ListItem button onClick={() => handleSortBy('priceASC')}>
-												<Typography variant="body1">Gia cao xuong thap</Typography>
+												<Typography variant="body1">Giá cao xuống thấp</Typography>
 												{option === 'priceASC' && (
 													<i className="fa fa-check" aria-hidden="true"></i>
 												)}

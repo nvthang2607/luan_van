@@ -250,7 +250,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 			</IconButton>
 
 			<DialogTitle>
-				<Typography variant="h5">Noi dung binh luan</Typography>
+				<Typography variant="h5">Nội dung bình luận</Typography>
 			</DialogTitle>
 			<DialogContent dividers style={{ minHeight: '201px' }}>
 				<Grid container spacing={3}>
@@ -261,9 +261,9 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 							gutterBottom
 							style={{ marginTop: '10px' }}
 						>
-							Hoi & Dap{' '}
+							Hỏi & Đáp{' '}
 							<Typography component="span" className={classes.discount_percent}>
-								co {total} binh luan
+								có {total} bình luận
 							</Typography>
 							<Button
 								variant="text"
@@ -278,7 +278,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 									padding: '0',
 								}}
 							>
-								Tai lai
+								Tải lại
 							</Button>
 						</Typography>
 					</Grid>
@@ -298,7 +298,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 												{item?.email_comment.slice(0, item?.email_comment.indexOf('@'))}
 											</Typography>
 											&nbsp;&nbsp;
-											<Typography color="textSecondary">vao ngay {item?.date}</Typography>
+											<Typography color="textSecondary">vào ngày {item?.date}</Typography>
 										</Box>
 										<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
 											<Typography>{item?.comment_comment}</Typography>
@@ -341,11 +341,11 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 																className={classes.discount_percent}
 																style={{ fontSize: '11px', marginRight: '10px' }}
 															>
-																Quan tri vien
+																Quản trị viên
 															</Typography>
 														)}
 														<Typography color="textSecondary">
-															vao ngay {itemFeedback.date}
+															vào ngày {itemFeedback.date}
 														</Typography>
 													</Typography>
 													<Typography>{itemFeedback.comment_feedback}</Typography>
@@ -373,7 +373,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 															multiline
 															name="comment"
 															rows={3}
-															placeholder="Nhập noi dung tra loi"
+															placeholder="Nhập Nội dung trả lời"
 															variant="outlined"
 															fullWidth
 															onChange={(e) => {
@@ -389,7 +389,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 																if (valueCmt === '') {
 																	Swal.fire({
 																		icon: 'error',
-																		title: 'Noi dung khong de trong',
+																		title: 'Nội dung không để trống',
 																	});
 																} else {
 																	setProgressCmt(true);
@@ -399,19 +399,19 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 																	});
 																	if (response) {
 																		if (response.errorCode === null) {
-																			toast.success('Gui cau tra loi thanh cong');
+																			toast.success('Gửi câu trả lời thành công');
 																			setRefreshCmt(refreshCmt + 1);
 																			setProgressCmt(false);
 																			setValueCmt('');
 																		} else {
-																			toast.error('Co loi xay ra');
+																			toast.error('Có lỗi xảy ra');
 																			setProgressCmt(false);
 																		}
 																	}
 																}
 															}}
 														>
-															gui cau tra loi
+															Gửi câu trả lời
 														</Button>
 													</Box>
 												</Box>
@@ -454,7 +454,7 @@ const EditComment: React.FC<ProfileInfoProps> = (props) => {
 							props.cancel?.(false);
 						}}
 					>
-						Dong
+						Đóng
 						{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 					</Button>
 				</Grid>

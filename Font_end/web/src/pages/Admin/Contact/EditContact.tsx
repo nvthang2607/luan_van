@@ -307,7 +307,7 @@ const EditContact: React.FC<ProfileInfoProps> = (props) => {
 				</IconButton>
 
 				<DialogTitle>
-					<Typography variant="h5">Noi dung lien he</Typography>
+					<Typography variant="h5">Nội dung liên hệ</Typography>
 				</DialogTitle>
 				<DialogContent dividers style={{ minHeight: '201px' }}>
 					<Grid container spacing={3}>
@@ -327,7 +327,7 @@ const EditContact: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

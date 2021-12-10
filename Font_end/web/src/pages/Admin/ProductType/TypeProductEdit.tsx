@@ -90,7 +90,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
+		name: yup.string().required('Trường dữ liệu này không để trống'),
 	});
 
 	const {
@@ -113,13 +113,13 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Tao moi thanh cong',
+						title: 'Tạo mới thành công',
 					});
 					props.create?.(true);
 				} else {
 					Swal.fire({
 						icon: 'error',
-						title: 'Co loi xay ra',
+						title: 'Có lỗi xảy ra',
 					});
 					props.create?.(false);
 				}
@@ -130,13 +130,13 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Cap nhat thong tin thanh cong',
+						title: 'Cập nhật thông tin thành công',
 					});
 					props.create?.(true);
 				} else {
 					Swal.fire({
 						icon: 'error',
-						title: 'Co loi xay ra',
+						title: 'Có lỗi xảy ra',
 					});
 					props.create?.(true);
 				}
@@ -167,7 +167,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				<DialogContent dividers>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							Ten loai san pham
+							Tên loại sản phẩm
 						</Typography>
 						<Controller
 							control={control}
@@ -192,21 +192,19 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 				<DialogActions>
 					<Grid item xs={12}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							color="primary"
-							size="large"
 							type="submit"
 							disabled={isSubmitting}
 							style={{ position: 'relative' }}
 						>
-							{props.dataEdit.id === 0 ? 'Tao moi' : 'cap nhat thong tin'}
+							{props.dataEdit.id === 0 ? 'Tạo mới' : 'Cập nhật thông tin'}
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
 						<Button
-							variant="outlined"
-							color="primary"
-							size="large"
+							variant="contained"
+							color="secondary"
 							//disabled={true}
 							style={{ position: 'relative' }}
 							onClick={() => {

@@ -2,12 +2,34 @@
 	"header": {
 		"news": " News",
 		"cart": "Cart",
-		"contact": "Contact",
-		"account": "Account"
+		"sale": "Sale",
+		"account": "Account",
+		"categories": "CATEGORIES"
 	},
 	"account": {
 		"sign_in": "Sign in",
 		"sign_up": "Sign up"
+	},
+	"header_admin": {
+		"hello": "Hello!",
+		"administrator_page": "Administrator Page",
+		"information_management": "Information management",
+		"change_password": "Change password",
+		"logout": "Logout"
+	},
+	"menu_admin": {
+		"home": "Home",
+		"category_management": "Category management",
+		"type": "Type",
+		"branch": "Brand",
+		"product": "Product",
+		"user_management": "User management",
+		"order_management": "Order management",
+		"news_management": "News management",
+		"slide_management": "Slide management",
+		"contact_management": "Contact management",
+		"comment_management": "Comment management",
+		"personnel_management": "Personnel management"
 	},
 	"document": {
 		"search": "Search",

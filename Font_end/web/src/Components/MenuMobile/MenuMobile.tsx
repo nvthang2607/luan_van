@@ -35,6 +35,7 @@ import icon from '../../public/images/english.svg';
 import iconvn from '../../public/images/vietnamese.svg';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
+import { useTranslation } from 'react-i18next';
 interface CartProps {
 	receiveMenu?: (result: boolean) => void;
 	dataUser?: any;
@@ -176,7 +177,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 	const [openCart, setOpenCart] = React.useState(false);
 	const [count, setCount] = React.useState(0);
 	const [quantity, setQuantity] = React.useState(1);
-
+	const { t } = useTranslation();
 	const cartData = useAppSelector(getCartData);
 	const dispatch = useAppDispatch();
 	//console.log(cartData);
@@ -234,7 +235,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											cursor: 'pointer',
 										}}
 									>
-										Dang nhap
+										Đăng nhập
 									</Typography>
 								</Link>
 								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
@@ -247,7 +248,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											cursor: 'pointer',
 										}}
 									>
-										Dang Ky
+										Đăng ký
 									</Typography>
 								</Link>
 							</Box>
@@ -268,7 +269,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 							>
 								<div>
 									<Typography variant="body2" noWrap style={{ color: '#fff' }}>
-										Xin chao!
+										Xin chào!
 									</Typography>
 								</div>
 								<div style={{ display: 'grid' }}>
@@ -341,7 +342,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Trang chu
+							Trang chủ
 						</Typography>
 					</Box>
 					<Divider />
@@ -360,7 +361,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Gioi thieu
+							Giới thiệu
 						</Typography>
 					</Box>
 					<Divider />
@@ -380,7 +381,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Tin tuc
+							{t('header.news')}
 						</Typography>
 					</Box>
 					<Divider />
@@ -395,7 +396,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 							paddingBottom: '8px',
 						}}
 					>
-						Danh muc san pham
+						{t('header.categories')}
 					</Typography>
 					<Divider />
 					{props.dataMenu.data?.map((item: any) => {
@@ -486,7 +487,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 									paddingBottom: '8px',
 								}}
 							>
-								Thong tin tai khoan
+								Thông tin tài khoản
 							</Typography>
 							<Divider />
 							<Box
@@ -504,7 +505,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Quan ly thong tin
+									Quản lý thông tin
 								</Typography>
 							</Box>
 							<Divider />
@@ -523,7 +524,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Quan ly don hang
+									Quản lý đơn hàng
 								</Typography>
 							</Box>
 							<Divider />
@@ -543,7 +544,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Thoat tai khoan
+									Thoát tài khoản
 								</Typography>
 							</Box>
 							<Divider />
@@ -590,7 +591,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											cursor: 'pointer',
 										}}
 									>
-										Dang nhap
+										Đăng nhập
 									</Typography>
 								</Link>
 								<Link to={AppURL.ACCOUNT} style={{ textDecoration: 'none' }}>
@@ -603,7 +604,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 											cursor: 'pointer',
 										}}
 									>
-										Dang Ky
+										Đăng ký
 									</Typography>
 								</Link>
 							</Box>
@@ -624,7 +625,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 							>
 								<div>
 									<Typography variant="body2" noWrap style={{ color: '#fff' }}>
-										Xin chao!
+										Xin chào!
 									</Typography>
 								</div>
 								<div style={{ display: 'grid' }}>
@@ -697,7 +698,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Trang chu
+							Trang chủ
 						</Typography>
 					</Box>
 					<Divider />
@@ -716,7 +717,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Gioi thieu
+							Giới thiệu
 						</Typography>
 					</Box>
 					<Divider />
@@ -735,7 +736,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 								paddingBottom: '8px',
 							}}
 						>
-							Tin tuc
+							{t('header.news')}
 						</Typography>
 					</Box>
 					<Divider />
@@ -750,7 +751,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 							paddingBottom: '8px',
 						}}
 					>
-						Danh muc san pham
+						{t('header.categories')}
 					</Typography>
 					<Divider />
 					{props.dataMenu.data?.map((item: any) => {
@@ -841,7 +842,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 									paddingBottom: '8px',
 								}}
 							>
-								Thong tin tai khoan
+								Thông tin tài khoản
 							</Typography>
 							<Divider />
 							<Box
@@ -859,7 +860,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Quan ly thong tin
+									Quản lý thông tin
 								</Typography>
 							</Box>
 							<Divider />
@@ -878,7 +879,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Quan ly don hang
+									Quản lý đơn hàng
 								</Typography>
 							</Box>
 							<Divider />
@@ -898,7 +899,7 @@ const MenuMobile: React.FC<CartProps> = (props) => {
 										paddingBottom: '8px',
 									}}
 								>
-									Thoat tai khoan
+									Thoát tài khoản
 								</Typography>
 							</Box>
 							<Divider />

@@ -165,12 +165,12 @@ const ResetPwd: React.FC<loginprops> = (props) => {
 				props.forgotPwd?.(true);
 				Swal.fire({
 					icon: 'success',
-					title: 'Thay doi mat khau thanh cong',
+					title: 'Thay đổi mật khẩu thành công',
 				});
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 			}
 		}
@@ -185,11 +185,11 @@ const ResetPwd: React.FC<loginprops> = (props) => {
 						gutterBottom
 						style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '40px' }}
 					>
-						Thay doi mat khau
+						Thay đổi mật khẩu
 					</Typography>
 
 					<Typography variant="body1" gutterBottom>
-						Nhap mat khau moi
+						Nhập mật khẩu mới
 					</Typography>
 					<TextField
 						{...register('newPassword')}
@@ -204,7 +204,7 @@ const ResetPwd: React.FC<loginprops> = (props) => {
 					/>
 
 					<Typography variant="body1" gutterBottom style={{ marginTop: '20px' }}>
-						Nhap lai mat khau moi
+						Nhập lại mật khẩu mới
 					</Typography>
 					<TextField
 						{...register('retypeNewPassword')}
@@ -241,7 +241,7 @@ const ResetPwd: React.FC<loginprops> = (props) => {
 						type="submit"
 						disabled={isSubmitting}
 					>
-						Doi mat khau
+						Đổi mật khẩu
 						{isSubmitting && (
 							<CircularProgress
 								size={24}

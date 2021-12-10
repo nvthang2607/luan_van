@@ -119,7 +119,7 @@ const ListBill: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach tat ca don hang',
+		value: 'Danh sách tất cả đơn hàng',
 	});
 	const { idProduct } = useParams<{ idProduct?: string }>();
 	const [filterSearch, setFilterSearch] = React.useState<any>({
@@ -146,14 +146,14 @@ const ListBill: React.FC = () => {
 
 		{
 			name: 'id_bill',
-			label: 'Ma don hang',
+			label: 'Mã đơn hàng',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'name_customer',
-			label: 'Ten khach hang',
+			label: 'Tên khách hàng',
 			options: {
 				sort: false,
 			},
@@ -161,7 +161,7 @@ const ListBill: React.FC = () => {
 
 		{
 			name: 'phone_customer',
-			label: 'So dien thoai',
+			label: 'Số điện thoại',
 			options: {
 				sort: false,
 			},
@@ -169,7 +169,7 @@ const ListBill: React.FC = () => {
 
 		{
 			name: 'total',
-			label: 'Tong gia tri don hang',
+			label: 'Tổng giá trị đơn hàng',
 			options: {
 				sort: false,
 				customBodyRender: (total: number) => {
@@ -183,36 +183,36 @@ const ListBill: React.FC = () => {
 		},
 		{
 			name: 'status',
-			label: 'Trang thai',
+			label: 'Trạng thái',
 			options: {
 				sort: false,
 				customBodyRender: (status: number) => {
 					if (status == 1) {
-						return <Typography variant="body1">Don hang dang cho duyet</Typography>;
+						return <Typography variant="body1">Đơn hàng đang chờ duyệt</Typography>;
 					} else if (status == 2) {
-						return <Typography variant="body1">Don hang da duyet</Typography>;
+						return <Typography variant="body1">Đơn hàng đã duyệt</Typography>;
 					} else if (status == 3) {
-						return <Typography variant="body1">Don hang dang van chuyen</Typography>;
+						return <Typography variant="body1">Đơn hàng đang vận chuyển</Typography>;
 					} else if (status == 4) {
-						return <Typography variant="body1">Don hang da hoan thanh</Typography>;
+						return <Typography variant="body1">Đơn hàng đã hoàn thành</Typography>;
 					} else if (status == 5) {
-						return <Typography variant="body1">Don hang da huy</Typography>;
+						return <Typography variant="body1">Đơn hàng đã hủy</Typography>;
 					} else {
-						return <Typography variant="body1">Dang cap nhat</Typography>;
+						return <Typography variant="body1">Đang cập nhật</Typography>;
 					}
 				},
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay mua hang',
+			label: 'Ngày mua hàng',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
@@ -220,7 +220,7 @@ const ListBill: React.FC = () => {
 
 		{
 			name: 'id_bill',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -264,19 +264,19 @@ const ListBill: React.FC = () => {
 									});
 									let result = '';
 									if (data[index].status == 1) {
-										result = 'Don hang dang cho duyet';
+										result = 'Đơn hàng đang chờ duyệt';
 									} else if (data[index].status == 2) {
-										result = 'Don hang da duyet';
+										result = 'Đơn hàng đã duyệt';
 									} else if (data[index].status == 3) {
-										result = 'Don hang dang van chuyen';
+										result = 'Đơn hàng đang vận chuyển';
 									} else if (data[index].status == 4) {
-										result = 'Don hang da hoan thanh';
+										result = 'Đơn hàng đã hoàn thành';
 									} else if (data[index].status == 5) {
-										result = 'Don hang da huy';
+										result = 'Đơn hàng đã hủy';
 									} else {
-										result = 'Dang cap nhat';
+										result = 'Đang cập nhật';
 									}
-									setTitleDialog('Chi tiet don hang ' + `#${data[index].id_bill} - ${result} `);
+									setTitleDialog('Chi tiết đơn hàng ' + `#${data[index].id_bill} - ${result} `);
 									setOpen(true);
 								}}
 							></i>
@@ -386,7 +386,7 @@ const ListBill: React.FC = () => {
 			setOpen(false);
 			if (action === 'duyet') {
 				Swal.fire({
-					title: 'Ban co chac muon duyet don hang nay khong?',
+					title: 'Bạn có chắc muốn xóa đơn hàng này không?',
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonColor: '#3085d6',
@@ -402,22 +402,22 @@ const ListBill: React.FC = () => {
 							if (response.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Duyet don hang thanh cong',
+									title: 'Duyệt đơn hàng thành công',
 								});
 								setProgressBill(false);
 								setFlag(!flag);
 							} else if (response.errorCode === 4) {
 								Swal.fire({
 									icon: 'error',
-									title: 'Khong du so luong',
+									title: 'Không đủ số lượng',
 									footer: response.data?.map((item: any) => {
-										return `'<p>${item.name} hien con ${item.quantity} san pham</p>'`;
+										return `'<p>${item.name} hiện còn ${item.quantity} sản phẩm/p>'`;
 									}),
 								});
 
 								setProgressBill(false);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setOpen(true);
 								setProgressBill(false);
 							}
@@ -429,7 +429,7 @@ const ListBill: React.FC = () => {
 				//setFlag(!flag);
 			} else if (action === 'huy') {
 				Swal.fire({
-					title: 'Ban co chac muon huy don hang nay khong?',
+					title: 'Bạn có chắc muốn hủy đơn hàng này không?',
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonColor: '#3085d6',
@@ -445,12 +445,12 @@ const ListBill: React.FC = () => {
 							if (response.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Huy don hang thanh cong',
+									title: 'Hủy đơn hàng thành công',
 								});
 								setProgressBill(false);
 								setFlag(!flag);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setOpen(true);
 								setProgressBill(false);
 							}
@@ -462,7 +462,7 @@ const ListBill: React.FC = () => {
 				//setFlag(!flag);
 			} else if (action === 'delete') {
 				Swal.fire({
-					title: 'Ban co chac muon xoa san pham nay khong?',
+					title: 'Bạn có chắc muốn xóa sản phẩm này không?',
 					icon: 'warning',
 					showCancelButton: true,
 					confirmButtonColor: '#3085d6',
@@ -481,13 +481,13 @@ const ListBill: React.FC = () => {
 							if (response.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Xoa san pham thanh cong',
+									title: 'Xóa sản phẩm thành công',
 								});
 								setProgressBill(false);
 								setFlag(!flag);
 								//setOpen(true);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setOpen(true);
 								setProgressBill(false);
 							}
@@ -512,7 +512,7 @@ const ListBill: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'merchandiser') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach don hang',
+					title: 'Bạn không có quyền xem danh sách đơn hàng',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -538,13 +538,13 @@ const ListBill: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							San pham
+							San phẩm
 						</Link>
 						<Link to="/" className={classes.link}>
-							Khuyen mai
+							Khuyến mãi
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -562,7 +562,7 @@ const ListBill: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -571,7 +571,7 @@ const ListBill: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -593,7 +593,7 @@ const ListBill: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập mã đơn hàng"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -652,7 +652,7 @@ const ListBill: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach tat ca don hang' });
+									setValueActive({ id: 0, value: 'Danh sách tất cả đơn hàng' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -663,10 +663,10 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach tat ca don hang
+										Danh sách tất cả đơn hàng
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach tat ca don hang</Typography>
+									<Typography variant="body1">Danh sách tất cả đơn hàng</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -680,7 +680,7 @@ const ListBill: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach don hang dang cho duyet' });
+									setValueActive({ id: 1, value: 'Danh sách đơn hàng đang chờ duyệt' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -691,10 +691,10 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach don hang dang cho duyet
+										Danh sách đơn hàng đang chờ duyệt
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach don hang dang cho duyet</Typography>
+									<Typography variant="body1">Danh sách đơn hàng đang chờ duyệt</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (
@@ -710,7 +710,7 @@ const ListBill: React.FC = () => {
 									setAnchorElActive(null);
 									setValueActive({
 										id: 2,
-										value: 'Danh sach don hang da duyet va dang cho giao hang',
+										value: 'Danh sách đơn hàng đã duyệt và đang chờ giao hàng',
 									});
 									setFilterSearch({
 										...filterSearch,
@@ -722,11 +722,11 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 2 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach don hang da duyet va dang cho giao hang
+										Danh sách đơn hàng đã duyệt và đang chờ giao hàng
 									</Typography>
 								) : (
 									<Typography variant="body1">
-										Danh sach don hang da duyet va dang cho giao hang
+										Danh sách đơn hàng đã duyệt và đang chờ giao hàng
 									</Typography>
 								)}
 								&nbsp;
@@ -743,7 +743,7 @@ const ListBill: React.FC = () => {
 									setAnchorElActive(null);
 									setValueActive({
 										id: 3,
-										value: 'Danh sach don hang dang cho thanh toan',
+										value: 'Danh sách đơn hàng đang chờ thanh toán',
 									});
 									setFilterSearch({
 										...filterSearch,
@@ -755,10 +755,10 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 3 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach don hang dang cho thanh toan
+										Danh sách đơn hàng đang chờ thanh toán
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach don hang dang cho thanh toan</Typography>
+									<Typography variant="body1">Danh sách đơn hàng đang chờ thanh toán</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 3 && (
@@ -774,7 +774,7 @@ const ListBill: React.FC = () => {
 									setAnchorElActive(null);
 									setValueActive({
 										id: 4,
-										value: 'Danh sach don hang da hoan thanh',
+										value: 'Danh sách đơn hàng đã hoàn thành',
 									});
 									setFilterSearch({
 										...filterSearch,
@@ -786,10 +786,10 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 4 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach don hang da hoan thanh
+										Danh sách đơn hàng đã hoàn thành
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach don hang da hoan thanh</Typography>
+									<Typography variant="body1">Danh sách đơn hàng đã hoàn thành</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 4 && (
@@ -805,7 +805,7 @@ const ListBill: React.FC = () => {
 									setAnchorElActive(null);
 									setValueActive({
 										id: 5,
-										value: 'Danh sach don hang da huy',
+										value: 'Danh sách đơn hàng đã hủy',
 									});
 									setFilterSearch({
 										...filterSearch,
@@ -817,10 +817,10 @@ const ListBill: React.FC = () => {
 							>
 								{valueActive.id === 5 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach don hang da huy
+										Danh sách đơn hàng đã hủy
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach don hang da huy</Typography>
+									<Typography variant="body1">Danh sách đơn hàng đã hủy</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 5 && (

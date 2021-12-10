@@ -239,13 +239,27 @@ const MenuAdmin: React.FC<CartProps> = (props) => {
 		}
 	};
 	return (
-		<Box style={{ width: isResponseivePhone ? 500 : 300, backgroundColor: '#00695c' }}>
+		<Box
+			style={{
+				width: isResponseivePhone ? 500 : 300,
+				backgroundColor: '#00695c',
+				height: '-webkit-fill-available',
+			}}
+		>
 			<Box>
 				<DialogTitle
 					id="form-dialog-title"
 					style={{ backgroundColor: '#00695c', paddingBottom: '7px' }}
 				>
-					<img width="40%" src={logo} />
+					<img
+						width="40%"
+						src={logo}
+						onClick={() => {
+							history.push(AppURL.ADMIN_HOME);
+							props.closeMenu?.(false);
+						}}
+						style={{ cursor: 'pointer' }}
+					/>
 				</DialogTitle>
 				<Divider />
 				<DialogContent style={{ padding: 0 }}>

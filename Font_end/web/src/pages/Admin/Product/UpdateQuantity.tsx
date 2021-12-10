@@ -96,9 +96,9 @@ const UpdateQuantity: React.FC<ProfileInfoProps> = (props) => {
 	const schema = yup.object().shape({
 		name: yup
 			.number()
-			.typeError('month_must_specify_a_number')
-			.min(1, 'month_must_be_greater_than_or_equal_to_0')
-			.integer('month_must_be_an_integer'),
+			.typeError('Số lượng là 1 ký số')
+			.min(1, 'Số lượng phải lớn hơn hoặc bằng 1')
+			.integer('Số lượng là 1 số nguyên'),
 	});
 
 	const {
@@ -157,11 +157,11 @@ const UpdateQuantity: React.FC<ProfileInfoProps> = (props) => {
 		if (response.errorCode === null) {
 			Swal.fire({
 				icon: 'success',
-				title: 'Cap nhat thong tin thanh cong',
+				title: 'Cập nhật thông tin thành công',
 			});
 			props.create?.(true);
 		} else {
-			toast.error('Co loi xay ra');
+			toast.error('Có lỗi xảy ra');
 		}
 	};
 
@@ -188,7 +188,7 @@ const UpdateQuantity: React.FC<ProfileInfoProps> = (props) => {
 				<DialogContent dividers>
 					<Grid item xs={12}>
 						<Typography variant="body1" gutterBottom className={classes.titleInput}>
-							So luong
+							Số lượng
 						</Typography>
 						<Controller
 							control={control}
@@ -218,7 +218,7 @@ const UpdateQuantity: React.FC<ProfileInfoProps> = (props) => {
 							disabled={isSubmitting}
 							style={{ position: 'relative', textTransform: 'inherit' }}
 						>
-							Cap nhat
+							Cập nhật
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
@@ -231,7 +231,7 @@ const UpdateQuantity: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

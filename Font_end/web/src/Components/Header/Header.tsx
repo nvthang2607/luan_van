@@ -567,7 +567,7 @@ const Header: React.FC<Props> = (props) => {
 											>
 												<div>
 													<Typography variant="body2" noWrap>
-														Tin tuc
+														{t('header.news')}
 													</Typography>
 												</div>
 												<div>
@@ -602,7 +602,7 @@ const Header: React.FC<Props> = (props) => {
 											>
 												<div>
 													<Typography variant="body2" noWrap>
-														Ban hang
+														{t('header.sale')}
 													</Typography>
 												</div>
 												<div>
@@ -823,7 +823,7 @@ const Header: React.FC<Props> = (props) => {
 																setOpenContact(true);
 															}}
 														>
-															Lien he voi chung toi
+															Liên hệ với chúng tôi
 														</Button>
 													</Typography>
 													<Dialog
@@ -889,7 +889,7 @@ const Header: React.FC<Props> = (props) => {
 												>
 													<div>
 														<Typography variant="body2" noWrap>
-															Xin chao!
+															Xin chào!
 														</Typography>
 													</div>
 													<div style={{ display: 'grid' }}>
@@ -908,15 +908,15 @@ const Header: React.FC<Props> = (props) => {
 											onClose={handleCloseAccount}
 										>
 											<MenuItem onClick={handleClickOrder}>
-												<EventNoteIcon /> &nbsp;Quan ly don hang
+												<EventNoteIcon /> &nbsp;Quản lý đơn hàng
 											</MenuItem>
 											<MenuItem onClick={handleClickInfo}>
 												<PersonIcon />
-												&nbsp;Quan ly thong tin
+												&nbsp;Quản lý thông tin
 											</MenuItem>
 											<MenuItem onClick={handleClickLogout}>
 												<ExitToAppIcon />
-												&nbsp;Thoat tai khoan
+												&nbsp;Thoát tài khoản
 											</MenuItem>
 										</Menu>
 										{/* <Typography
@@ -956,7 +956,7 @@ const Header: React.FC<Props> = (props) => {
 											</div> */}
 												<div>
 													<Typography variant="h6" noWrap style={{ fontSize: '16px' }}>
-														Gio hang
+														{t('header.cart')}
 													</Typography>
 												</div>
 											</div>

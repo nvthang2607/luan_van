@@ -96,7 +96,7 @@ const ListSlide: React.FC = () => {
 		},
 		{
 			name: 'image',
-			label: 'Hinh anh',
+			label: 'Hình ảnh',
 			options: {
 				sort: false,
 				customBodyRender: (image: any) => {
@@ -106,28 +106,28 @@ const ListSlide: React.FC = () => {
 		},
 		{
 			name: 'id_product',
-			label: 'Id san pham',
+			label: 'Mã sản phẩm',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -259,7 +259,7 @@ const ListSlide: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach slide',
+					title: 'Bạn không có quyền xem danh sách slide',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -285,10 +285,10 @@ const ListSlide: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Quan tri slide
+							Quản trị slide
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -300,7 +300,7 @@ const ListSlide: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -309,10 +309,10 @@ const ListSlide: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi tin tuc');
+											setTitleDialog('Tạo mới slide');
 											setDataEdit({
 												id: 0,
 												idProduct: '',
@@ -324,7 +324,7 @@ const ListSlide: React.FC = () => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -346,7 +346,7 @@ const ListSlide: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập mã sản phẩm"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -508,7 +508,7 @@ const ListSlide: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} Slide`, 'success');
+															Swal.fire('Deleted!', `Đã xóa thành công ${count} Slide`, 'success');
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -591,7 +591,7 @@ const ListSlide: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} Slide`, 'success');
+															Swal.fire('Deleted!', `Đã xóa thành công ${count} Slide`, 'success');
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

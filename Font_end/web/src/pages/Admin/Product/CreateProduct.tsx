@@ -161,7 +161,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 	const [valueFilter, setValueFilter] = React.useState({
 		id: 0,
-		value: 'Tat ca san pham',
+		value: 'Tất cả sản phẩm',
 		type: 'all',
 	});
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -173,20 +173,20 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 		setAnchorEl(null);
 	};
 	const schema = yup.object().shape({
-		name: yup.string().required('the_name_field_is_required'),
+		name: yup.string().required('Tên sản phẩm là bắt buộc'),
 		quantity: yup
 			.number()
-			.typeError('year_must_specify_a_number')
-			.min(0, 'year_must_be_greater_than_or_equal_to_0')
-			.integer('year_must_be_an_integer'),
+			.typeError('Số lượng là 1 ký số')
+			.min(0, 'Số lượng lớn hơn hoặc bằng 0')
+			.integer('Số lượng là 1 số nguyên'),
 		unit_price: yup
 			.number()
-			.typeError('Price must specify a number')
-			.min(0, 'price_must_be_greater_than_or_equal_to_0'),
+			.typeError('Giá sản phẩm là 1 ký số')
+			.min(0, 'Giá sản phẩm phải lớn hơn hoặc bằng 0'),
 		promotion_price: yup
 			.number()
-			.typeError('Price must specify a number')
-			.min(0, 'price_must_be_greater_than_or_equal_to_0'),
+			.typeError('Giá sản phẩm là 1 ký số')
+			.min(0, 'Giá sản phẩm phải lớn hơn hoặc bằng 0'),
 	});
 
 	const {
@@ -334,13 +334,13 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 
 					Swal.fire({
 						icon: 'success',
-						title: 'Tao thanh cong',
+						title: 'Tạo mới thành công',
 					});
 					props.create?.(true);
 				} else if (responseProductPost.errorCode === 1) {
-					toast.error('Ten san pham da ton tai');
+					toast.error('Tên sản phẩm đã tồn tại');
 				} else {
-					toast.error('Co loi xay ra');
+					toast.error('Có lỗi xảy ra');
 				}
 			}
 		}
@@ -370,7 +370,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Ten san pham
+								Tên sản phẩm
 							</Typography>
 							<Controller
 								control={control}
@@ -393,7 +393,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Loai san pham
+								Loại sản phẩm
 							</Typography>
 							<Select
 								labelId="demo-simple-select-label"
@@ -424,7 +424,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								So luong
+								Số lượng
 							</Typography>
 							<Controller
 								control={control}
@@ -447,7 +447,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Gia goc
+								Giá gốc
 							</Typography>
 							<Controller
 								control={control}
@@ -474,7 +474,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						</Grid>
 						<Grid item xs={6}>
 							<Typography variant="body1" gutterBottom className={classes.titleInput}>
-								Gia Khuyen mai
+								Giá khuyến mãi
 							</Typography>
 							<Controller
 								control={control}
@@ -502,17 +502,17 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						<Grid item xs={12}>
 							<Card variant="outlined" style={{ padding: '10px' }}>
 								<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-									Anh san pham
+									Ảnh sản phẩm
 								</Typography>
 
 								{manyUpload && (
 									<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-										Khong duoc chon nhieu hon 1 anh
+										Không được chọn nhiều hơn 1 ảnh
 									</FormHelperText>
 								)}
 								{errUpload && (
 									<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-										Vui long chon it nhat 1 anh
+										Vui lòng chọn ít nhất 1 ảnh
 									</FormHelperText>
 								)}
 								<Box
@@ -553,7 +553,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 																		<input {...getInputProps()} />
 																		<Box>
 																			<Typography style={{ fontWeight: 'bold', marginTop: '10px' }}>
-																				{index === 0 ? 'Anh chinh: ' : `Anh mo ta ${index}:`}
+																				{index === 0 ? 'Ảnh chính: ' : `Ảnh mô tả ${index}:`}
 																			</Typography>
 																			<Button
 																				variant="contained"
@@ -564,7 +564,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 																				}}
 																				style={{ textTransform: 'initial' }}
 																			>
-																				Cap nhat
+																				Cập nhật
 																			</Button>
 																		</Box>
 
@@ -603,7 +603,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 																			/>
 
 																			<Tooltip
-																				title="Xoa"
+																				title="Xóa"
 																				placement="top-start"
 																				style={{
 																					position: 'absolute',
@@ -662,7 +662,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 																	style={{ fontSize: '60px', color: '#c1c1c1' }}
 																/>
 																<Typography variant="h6" style={{ color: '#c1c1c1' }}>
-																	Them anh
+																	Thêm ảnh
 																</Typography>
 															</Box>
 														</div>
@@ -677,7 +677,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						<Grid item xs={12}>
 							<Card variant="outlined" style={{ padding: '10px' }}>
 								<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-									Thong so ky thuat
+									Thông số kỹ thuật
 								</Typography>
 								<Box
 									style={{
@@ -741,7 +741,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 															)}
 														>
 															<Tooltip
-																title="Xoa"
+																title="Xóa"
 																placement="top-start"
 																onClick={() => {
 																	const newData = [...valueInformation];
@@ -773,7 +773,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 										}}
 										variant="contained"
 									>
-										Tao the moi
+										Tạo thẻ mới
 									</Button>
 								</Grid>
 							</Card>
@@ -781,7 +781,7 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 						<Grid item xs={12}>
 							<Card variant="outlined" style={{ padding: '10px' }}>
 								<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-									Mo ta
+									Mô tả
 								</Typography>
 
 								<Box style={{ padding: '10px' }}>
@@ -803,28 +803,26 @@ const CreateProduct: React.FC<ProfileInfoProps> = (props) => {
 				<DialogActions>
 					<Grid item xs={12}>
 						<Button
-							variant="outlined"
+							variant="contained"
 							color="primary"
-							size="large"
 							type="submit"
 							disabled={isSubmitting}
 							style={{ position: 'relative' }}
 						>
-							{props.dataEdit.id === 0 ? 'Tao moi' : 'cap nhat thong tin'}
+							{props.dataEdit.id === 0 ? 'Tạo mới' : 'Cập nhật thông tin'}
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
 						<Button
-							variant="outlined"
-							color="primary"
-							size="large"
+							variant="contained"
+							color="secondary"
 							//disabled={true}
 							style={{ position: 'relative' }}
 							onClick={() => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

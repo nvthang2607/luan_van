@@ -79,15 +79,15 @@ const RatingComponent: React.FC<RatingProps> = (props) => {
 				if (response.errorCode === null) {
 					Swal.fire({
 						icon: 'success',
-						title: 'Danh gia thanh cong!',
-						text: 'Cam on ban da danh gia san pham',
+						title: 'Đánh gia thành công!',
+						text: 'Cảm ơn bạn đã đánh giá sản phẩm',
 					});
 					setProgress(false);
 					props?.action?.(true);
 				} else {
 					Swal.fire({
 						icon: 'error',
-						title: 'Co loi xay ra!',
+						title: 'Có lỗi xảy ra!',
 					});
 					props?.action?.(false);
 					setProgress(false);
@@ -177,7 +177,7 @@ const RatingComponent: React.FC<RatingProps> = (props) => {
 							onClick={handleClick}
 							disabled={progress}
 						>
-							Gui danh gia
+							Gửi đánh giá
 						</Button>
 					</DialogContent>
 				</React.Fragment>

@@ -105,7 +105,7 @@ const Order: React.FC = (props) => {
 								>
 									<div>
 										<Typography variant="body1" noWrap>
-											Xin chao!
+											Xin chào!
 										</Typography>
 									</div>
 									<div style={{ display: 'grid' }}>
@@ -129,7 +129,7 @@ const Order: React.FC = (props) => {
 							<EventNoteIcon style={{ fontSize: '34px' }} /> &nbsp;
 							<ListItem style={{ paddingLeft: 0, textTransform: 'uppercase' }}>
 								<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-									quan ly don hang
+									Quản lý đơn hàng
 								</Typography>
 							</ListItem>
 							<ChevronRightIcon />
@@ -140,14 +140,14 @@ const Order: React.FC = (props) => {
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Tat ca don hang</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Tất cả đơn hàng</Typography>
 							</NavLink>
 							<NavLink
 								to={AppURL.ORDER_WAITING}
 								className={classes.tagLi}
 								activeClassName={classes.activeTagLi}
 							>
-								<Typography style={{ paddingLeft: '36px' }}>Don hang dang cho duyet</Typography>
+								<Typography style={{ paddingLeft: '36px' }}>Đơn hàng đang chờ duyệt</Typography>
 							</NavLink>
 
 							{/* <NavLink
@@ -177,7 +177,7 @@ const Order: React.FC = (props) => {
 											history.push(AppURL.ORDER_ALL);
 										}}
 									>
-										<Typography style={{ paddingLeft: '55px' }}>Tat ca don hang</Typography>
+										<Typography style={{ paddingLeft: '55px' }}>Tất cả đơn hàng</Typography>
 									</ListItem>
 									<ListItem
 										button
@@ -236,10 +236,10 @@ const Order: React.FC = (props) => {
 								)}
 							</Route>
 							<Route path={AppURL.ORDER_WAITING}>
-								<OrderStatus title="Don hang dang cho duyet" name="waiting" />
+								<OrderStatus title="Đơn hàng đang chờ duyệt" name="waiting" />
 							</Route>
 							<Route path={AppURL.ORDER_ALL}>
-								<OrderStatus title="Tat ca don hang" name="all" />
+								<OrderStatus title="Tất cả đơn hàng" name="all" />
 							</Route>
 							<Route path={AppURL.ORDER_DETAIL}>
 								<OrderDetail />

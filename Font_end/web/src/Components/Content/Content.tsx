@@ -381,9 +381,9 @@ const Content: React.FC = () => {
 	};
 	const addToCart: (result: boolean) => void = (result) => {
 		if (result) {
-			toast.success('Da them san pham vao gio hang');
+			toast.success('Đã thêm sản phẩm vào giỏ hàng');
 		} else {
-			toast.error('ko du so luong');
+			toast.error('Không đủ số lượng');
 		}
 	};
 	const [countSale, setCountSale] = React.useState(2);
@@ -495,7 +495,7 @@ const Content: React.FC = () => {
 											fontWeight: 'bold',
 										}}
 									>
-										HOM NAY
+										HÔM NAY
 									</Typography>
 								</Box>
 
@@ -543,7 +543,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={4}>
 											<Link to={AppURL.RECOMMEND} className={classes.titles}>
-												SAN PHAM GOI Y<div className={classes.title}></div>
+												SẢN PHẨM GỢI Ý<div className={classes.title}></div>
 											</Link>
 										</Grid>
 										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -579,7 +579,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -651,7 +651,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={4}>
 											<Link to={AppURL.TOP_PRODUCT} className={classes.titles}>
-												SAN PHAM DANH GIA CAO NHAT<div className={classes.title}></div>
+												SẢN PHẨM ĐÁNH GIÁ CAO NHẤT<div className={classes.title}></div>
 											</Link>
 										</Grid>
 										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -687,7 +687,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -759,7 +759,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={4}>
 											<Link to={AppURL.NEW_PRODUCT} className={classes.titles}>
-												SAN PHAM MOI NHAT<div className={classes.title}></div>
+												SẢN PHẨM MỚI NHẤT<div className={classes.title}></div>
 											</Link>
 										</Grid>
 										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -795,7 +795,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -867,7 +867,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={4}>
 											<Link to={AppURL.SELL_PRODUCT} className={classes.titles}>
-												SAN PHAM BAN CHAY NHAT<div className={classes.title}></div>
+												SẢN PHẨM BÁN CHẠY NHẤT<div className={classes.title}></div>
 											</Link>
 										</Grid>
 										<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -903,7 +903,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -1011,7 +1011,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>
@@ -1082,7 +1082,7 @@ const Content: React.FC = () => {
 								<Grid container style={{ alignItems: 'baseline' }}>
 									<Grid item xs={4}>
 										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
-											DIEN THOAI BAN CHAY NHAT<div className={classes.title}></div>
+											ĐIỆN THOẠI BÁN CHẠY NHẤT<div className={classes.title}></div>
 										</Link>
 									</Grid>
 									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1118,7 +1118,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>
@@ -1198,12 +1198,18 @@ const Content: React.FC = () => {
 												window.scrollTo(0, 0);
 											}}
 										>
-											24H CONG NGHE<div className={classes.title}></div>
+											24H CÔNG NGHỆ<div className={classes.title}></div>
 										</Link>
 									</Grid>
 									<Grid item xs={8} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+											<Link
+												to={AppURL.NEWS}
+												className={classes.styleViewAll}
+												onClick={() => {
+													window.scrollTo(0, 0);
+												}}
+											>
 												<ListItem
 													style={{
 														padding: 0,
@@ -1213,7 +1219,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>
@@ -1391,7 +1397,7 @@ const Content: React.FC = () => {
 											fontWeight: 'bold',
 										}}
 									>
-										HOM NAY
+										HÔM NAY
 									</Typography>
 								</Box>
 
@@ -1439,7 +1445,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 											<Link to={AppURL.RECOMMEND} className={classes.titles}>
-												SAN PHAM GOI Y
+												SẢN PHẨM GỢI Ý
 											</Link>
 										</Grid>
 										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1475,7 +1481,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -1555,6 +1561,129 @@ const Content: React.FC = () => {
 							</Grid>
 						</Grid>
 					)}
+					{dataTopProduct.length > 0 && (
+						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
+							<Grid container>
+								<Grid item xs={12}>
+									<Grid container style={{ alignItems: 'baseline' }}>
+										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
+											<Link to={AppURL.TOP_PRODUCT} className={classes.titles}>
+												SẢN PHẨM ĐÁNH GIÁ CAO NHẤT
+											</Link>
+										</Grid>
+										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+											<List style={{ display: 'flex' }}>
+												{/* {dataPhoneBrand?.listData?.map((item: any, index: number) => {
+										return (
+											<Link
+												to={`/views/${toURL(item.name)}-${item.id}`}
+												className={classes.stylePhoneBrand}
+											>
+												<ListItem
+													style={{
+														padding: 0,
+														fontWeight: 'bold',
+														paddingRight: '10px',
+														paddingLeft: '10px',
+													}}
+												>
+													<Typography variant="body1" style={{ fontWeight: 500 }}>
+														{item.name}
+													</Typography>
+												</ListItem>
+											</Link>
+										);
+									})} */}
+												<Link to={AppURL.TOP_PRODUCT} className={classes.styleViewAll}>
+													<ListItem
+														style={{
+															padding: 0,
+															fontWeight: 'bold',
+															paddingRight: '10px',
+															paddingLeft: '10px',
+														}}
+													>
+														<Typography variant="body1" style={{ fontWeight: 500 }}>
+															Xem tất cả
+														</Typography>
+													</ListItem>
+												</Link>
+											</List>
+										</Grid>
+									</Grid>
+								</Grid>
+								{progressTopProduct ? (
+									<Grid
+										item
+										xs={12}
+										style={{ position: 'relative', marginBottom: '50px', marginTop: '40px' }}
+									>
+										<CircularProgress
+											color="secondary"
+											style={{ position: 'absolute', left: '50%' }}
+										/>
+									</Grid>
+								) : isResponseivePhone ? (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataTopProduct?.map((item: any) => {
+											return isResponseiveProduct1Mobile ? (
+												<Grid item xs={6} md={3} sm={4}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											) : (
+												<Grid item xs={6} sm={6}>
+													<ProductMobile
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								) : (
+									<Grid container spacing={3} style={{ marginTop: '10px' }}>
+										{dataTopProduct?.map((item: any) => {
+											return (
+												<Grid item xs={6}>
+													<ProductPhone
+														unit_price={item[0].unit_price}
+														name={item[0].name}
+														id={item[0].id}
+														promotion_price={item[0].promotion_price}
+														link={item.image}
+														avg={item.avg}
+														promotion={item.promotion}
+														rate_number={item.rate_number}
+														storeQuantity={item[0].quantity}
+														addToCart={addToCart}
+													/>
+												</Grid>
+											);
+										})}
+									</Grid>
+								)}
+							</Grid>
+						</Grid>
+					)}
 					{dataProductNew.length > 0 && (
 						<Grid item xs={12} style={{ backgroundColor: '#fff', marginTop: '30px' }}>
 							<Grid container>
@@ -1562,7 +1691,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 											<Link to={AppURL.NEW_PRODUCT} className={classes.titles}>
-												SAN PHAM MOI NHAT
+												SẢN PHẨM MỚI NHẤT
 											</Link>
 										</Grid>
 										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1598,7 +1727,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -1685,7 +1814,7 @@ const Content: React.FC = () => {
 									<Grid container style={{ alignItems: 'baseline' }}>
 										<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 											<Link to={AppURL.SELL_PRODUCT} className={classes.titles}>
-												SAN PHAM BAN CHAY NHAT
+												SẢN PHẨM BÁN CHẠY NHẤT
 											</Link>
 										</Grid>
 										<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1721,7 +1850,7 @@ const Content: React.FC = () => {
 														}}
 													>
 														<Typography variant="body1" style={{ fontWeight: 500 }}>
-															Xem tat ca
+															Xem tất cả
 														</Typography>
 													</ListItem>
 												</Link>
@@ -1843,7 +1972,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>
@@ -1928,7 +2057,7 @@ const Content: React.FC = () => {
 								<Grid container style={{ alignItems: 'baseline' }}>
 									<Grid item xs={12} style={{ display: 'inline-grid', textAlign: 'center' }}>
 										<Link to={AppURL.SELL_PHONE} className={classes.titles}>
-											DIEN THOAI BAN CHAY
+											ĐIỆN THOẠI BÁN CHẠY
 										</Link>
 									</Grid>
 									<Grid item xs={12} style={{ display: 'inline-grid', overflowY: 'hidden' }}>
@@ -1964,7 +2093,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>
@@ -2058,12 +2187,18 @@ const Content: React.FC = () => {
 												window.scrollTo(0, 0);
 											}}
 										>
-											24H CONG NGHE
+											24H CÔNG NGHỆ
 										</Link>
 									</Grid>
 									<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 										<List style={{ display: 'flex' }}>
-											<Link to={`/views/-${5}.html`} className={classes.styleViewAll}>
+											<Link
+												to={AppURL.NEWS}
+												className={classes.styleViewAll}
+												onClick={() => {
+													window.scrollTo(0, 0);
+												}}
+											>
 												<ListItem
 													style={{
 														padding: 0,
@@ -2073,7 +2208,7 @@ const Content: React.FC = () => {
 													}}
 												>
 													<Typography variant="body1" style={{ fontWeight: 500 }}>
-														Xem tat ca
+														Xem tất cả
 													</Typography>
 												</ListItem>
 											</Link>

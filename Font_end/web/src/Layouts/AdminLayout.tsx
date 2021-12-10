@@ -79,7 +79,7 @@ import {
 	getValueRefreshPage,
 	updateValueRefreshPage,
 } from '../features/refresh/RefreshPageAdminSlice';
-const drawerWidth = 260;
+const drawerWidth = 300;
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -127,6 +127,7 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 		drawerOpen1: {
 			width: drawerWidth,
+			height: '-webkit-fill-available',
 			marginTop: '74px',
 			backgroundColor: '#00695c',
 			transition: theme.transitions.create('width', {
@@ -297,35 +298,35 @@ const AdminLayout: React.FC = (props) => {
 	const menuData = [
 		{
 			id: 1,
-			name: 'Trang chu',
+			name: t('menu_admin.home'),
 			icon: <HomeIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
 		{
 			id: 2,
-			name: 'Quan tri danh muc',
+			name: t('menu_admin.category_management'),
 			icon: <AvTimerIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [
-				{ id: 202, name: 'Loai san pham' },
-				{ id: 203, name: 'Thuong hieu' },
-				{ id: 204, name: 'San pham' },
+				{ id: 202, name: t('menu_admin.type') },
+				{ id: 203, name: t('menu_admin.branch') },
+				{ id: 204, name: t('menu_admin.product') },
 			],
 		},
 		{
 			id: 3,
-			name: 'Quan tri Nguoi dung',
+			name: t('menu_admin.user_management'),
 			icon: <PersonIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
 		{
 			id: 4,
-			name: 'Quan tri don hang',
+			name: t('menu_admin.order_management'),
 			icon: <EventNoteIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
 		{
 			id: 5,
-			name: 'Quan tri tin tuc',
+			name: t('menu_admin.news_management'),
 			icon: (
 				<i
 					className="fa fa-newspaper-o"
@@ -337,7 +338,7 @@ const AdminLayout: React.FC = (props) => {
 		},
 		{
 			id: 6,
-			name: 'Quan tri slide',
+			name: t('menu_admin.slide_management'),
 			icon: (
 				<i
 					className="fa fa-sliders"
@@ -349,13 +350,13 @@ const AdminLayout: React.FC = (props) => {
 		},
 		{
 			id: 7,
-			name: 'Quan tri lien he',
+			name: t('menu_admin.contact_management'),
 			icon: <PhoneIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
 		{
 			id: 8,
-			name: 'Quan tri binh luan',
+			name: t('menu_admin.comment_management'),
 			icon: (
 				<i
 					className="fa fa-comments-o"
@@ -367,7 +368,7 @@ const AdminLayout: React.FC = (props) => {
 		},
 		{
 			id: 9,
-			name: 'Quan tri nhan vien',
+			name: t('menu_admin.personnel_management'),
 			icon: <GroupIcon style={{ color: '#fff', marginRight: '10px' }} />,
 			children: [],
 		},
@@ -444,7 +445,7 @@ const AdminLayout: React.FC = (props) => {
 								)}
 							</IconButton> */}
 								<Typography variant="h5" noWrap style={{ color: '#fff' }}>
-									Trang Quan Tri
+									{t('header_admin.administrator_page')}
 								</Typography>
 							</Grid>
 							<Grid
@@ -507,7 +508,7 @@ const AdminLayout: React.FC = (props) => {
 											color: '#fff',
 										}}
 									>
-										<div>Xin chao!</div>
+										<div>{t('header_admin.hello')}</div>
 										<div>
 											<Typography variant="body2" noWrap>
 												{profile}
@@ -529,7 +530,7 @@ const AdminLayout: React.FC = (props) => {
 										}}
 									>
 										<PersonIcon />
-										&nbsp;Quan ly thong tin
+										&nbsp;{t('header_admin.information_management')}
 									</MenuItem>
 									<MenuItem
 										onClick={() => {
@@ -538,11 +539,11 @@ const AdminLayout: React.FC = (props) => {
 										}}
 									>
 										<CompareArrowsIcon />
-										&nbsp;Doi mat khau
+										&nbsp;{t('header_admin.change_password')}
 									</MenuItem>
 									<MenuItem onClick={handleLogout}>
 										<ExitToAppIcon />
-										&nbsp;Thoat tai khoan
+										&nbsp;{t('header_admin.logout')}
 									</MenuItem>
 								</Menu>
 							</Grid>
@@ -563,14 +564,20 @@ const AdminLayout: React.FC = (props) => {
 					}}
 				>
 					<div className={classes.toolbar} style={{ display: 'flex', alignItems: 'flex-end' }}>
-						<img src={logo} style={{ width: '-webkit-fill-available' }} />
+						<img
+							src={logo}
+							style={{ width: '-webkit-fill-available', cursor: 'pointer' }}
+							onClick={() => {
+								history.push(AppURL.ADMIN_HOME);
+							}}
+						/>
 					</div>
 					<Drawer
 						variant="permanent"
-						className={clsx(classes.drawer, {
-							[classes.drawerOpen1]: open,
-							[classes.drawerClose]: !open,
-						})}
+						// className={clsx(classes.drawer, {
+						// 	[classes.drawerOpen1]: open,
+						// 	[classes.drawerClose]: !open,
+						// })}
 						classes={{
 							paper: clsx({
 								[classes.drawerOpen1]: open,
@@ -731,7 +738,7 @@ const AdminLayout: React.FC = (props) => {
 									/>
 								</IconButton>
 								<Typography variant="h5" noWrap style={{ color: '#fff' }}>
-									Trang Quan Tri
+									{t('header_admin.administrator_page')}
 								</Typography>
 							</Grid>
 							<Grid
@@ -794,7 +801,7 @@ const AdminLayout: React.FC = (props) => {
 											color: '#fff',
 										}}
 									>
-										<div>Xin chao!</div>
+										<div>{t('header_admin.hello')}</div>
 										<div>
 											<Typography variant="body2" noWrap>
 												{profile}
@@ -816,7 +823,7 @@ const AdminLayout: React.FC = (props) => {
 										}}
 									>
 										<PersonIcon />
-										&nbsp;Quan ly thong tin
+										&nbsp;{t('header_admin.information_management')}
 									</MenuItem>
 									<MenuItem
 										onClick={() => {
@@ -825,11 +832,11 @@ const AdminLayout: React.FC = (props) => {
 										}}
 									>
 										<CompareArrowsIcon />
-										&nbsp;Doi mat khau
+										&nbsp;{t('header_admin.change_password')}
 									</MenuItem>
 									<MenuItem onClick={handleLogout}>
 										<ExitToAppIcon />
-										&nbsp;Thoat tai khoan
+										&nbsp;{t('header_admin.logout')}
 									</MenuItem>
 								</Menu>
 							</Grid>

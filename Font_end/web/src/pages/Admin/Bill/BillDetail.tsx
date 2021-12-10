@@ -152,7 +152,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 
 		{
 			name: 'image',
-			label: 'Hinh anh',
+			label: 'Hình ảnh',
 			options: {
 				sort: false,
 				customBodyRender: (image: any) => {
@@ -162,7 +162,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 		},
 		{
 			name: 'name_product',
-			label: 'Ten san pham',
+			label: 'Tên sản phẩm',
 			options: {
 				sort: false,
 			},
@@ -170,14 +170,14 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 
 		{
 			name: 'price',
-			label: 'Gia',
+			label: 'Giá',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'quantity',
-			label: 'So luong',
+			label: 'Số lượng',
 			options: {
 				sort: false,
 			},
@@ -185,7 +185,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 
 		{
 			name: 'id_detail',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -215,11 +215,11 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 	];
 	const textTable = {
 		body: {
-			noMatch: 'Khong co san pham',
+			noMatch: 'Không có sản phẩm',
 		},
 	};
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
+		name: yup.string().required('Tên không để trống'),
 		code: yup.string().required('code không để trống'),
 		value: yup
 			.number()
@@ -244,17 +244,17 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 	const statusValue = (item: any) => {
 		let result = '';
 		if (item.status == 1) {
-			result = 'Don hang dang cho duyet';
+			result = 'Đơn hàng đang chờ duyệt';
 		} else if (item.status == 2) {
-			result = 'Don hang da duyet';
+			result = 'Đơn hàng đã duyệt';
 		} else if (item.status == 3) {
-			result = 'Don hang dang van chuyen';
+			result = 'Đơn hàng đang vận chuyển';
 		} else if (item.status == 4) {
-			result = 'Don hang da hoan thanh';
+			result = 'Đơn hàng đã hoàn thành';
 		} else if (item.status == 5) {
-			result = 'Don hang da huy';
+			result = 'Đơn hàng đã hủy';
 		} else {
-			result = 'Dang cap nhat';
+			result = 'Đang cập nhật';
 		}
 		return result;
 	};
@@ -275,7 +275,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 				<Grid container spacing={3}>
 					<Grid item xs={12}>
 						<Typography component="span" style={{ fontWeight: 'bold' }}>
-							Ngay dat hang:{' '}
+							Ngày đặt hàng:{' '}
 						</Typography>
 						<Typography component="span">{props.dataEdit.created_at}</Typography>
 					</Grid>
@@ -286,7 +286,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 								style={{ fontWeight: 'bold', color: 'red', textTransform: 'inherit' }}
 								onClick={() => setShowBoxHistory(!showBoxHistory)}
 							>
-								Xem lich su duyet don hang
+								Xem lịch sử duyệt đơn hàng
 							</Button>
 							<Collapse in={showBoxHistory} timeout="auto" unmountOnExit>
 								<Box>
@@ -296,17 +296,17 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 												<TableRow>
 													<TableCell>
 														<Typography style={{ fontWeight: 'bold' }} variant="body1">
-															Trang thai
+															Trạng thái
 														</Typography>
 													</TableCell>
 													<TableCell>
 														<Typography style={{ fontWeight: 'bold' }} variant="body1">
-															Nguoi duyet
+															Người duyệt
 														</Typography>
 													</TableCell>
 													<TableCell>
 														<Typography style={{ fontWeight: 'bold' }} variant="body1">
-															Ngay duyet
+															Ngày duyệt
 														</Typography>
 													</TableCell>
 												</TableRow>
@@ -345,31 +345,31 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 						<Box style={{ paddingLeft: '10px' }}>
 							<Typography gutterBottom>
 								<Typography component="span" style={{ fontWeight: 'bold' }}>
-									Ho ten:&nbsp;
+									Họ tên:&nbsp;
 								</Typography>
 								<Typography component="span">{props.dataEdit.name_customer}</Typography>
 							</Typography>
 							<Typography gutterBottom>
 								<Typography component="span" style={{ fontWeight: 'bold' }}>
-									Gioi tinh:&nbsp;
+									Giới tính:&nbsp;
 								</Typography>
 								<Typography component="span">{props.dataEdit.gender_customer}</Typography>
 							</Typography>
 							<Typography gutterBottom>
 								<Typography component="span" style={{ fontWeight: 'bold' }}>
-									So dien thoai:&nbsp;
+									Số điện thoại:&nbsp;
 								</Typography>
 								<Typography component="span">{props.dataEdit.phone_customer}</Typography>
 							</Typography>
 							<Typography gutterBottom>
 								<Typography component="span" style={{ fontWeight: 'bold' }}>
-									Dia chi:&nbsp;
+									Địa chỉ:&nbsp;
 								</Typography>
 								<Typography component="span">{props.dataEdit.address_customer}</Typography>
 							</Typography>
 							<Typography gutterBottom>
 								<Typography component="span" style={{ fontWeight: 'bold' }}>
-									Ghi chu: &nbsp;
+									Ghi chú: &nbsp;
 								</Typography>
 								<Typography component="span">{props.dataEdit.note}</Typography>
 							</Typography>
@@ -387,15 +387,15 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 							<Typography gutterBottom>
 								<Typography component="span">
 									{props.dataEdit.cod === 'cod'
-										? 'Thanh toan khi nhan hang'
-										: 'Chuyen khoan ngan hang'}
+										? 'Thanh toán khi nhận hàng'
+										: 'Chuyển khoản ngân hàng'}
 								</Typography>
 							</Typography>
 						</Box>
 					</Grid>
 					<Grid item xs={12}>
 						<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-							Danh sach san pham
+							Danh sách sản phẩm
 						</Typography>
 					</Grid>
 					<Grid item xs={12}>
@@ -417,7 +417,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 									return (
 										<Typography style={{ padding: '10px' }}>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												Tong cong:{' '}
+												Tổng cộng:{' '}
 											</Typography>
 											<Typography component="span">
 												{Intl.NumberFormat('en-US').format(Number(props.dataEdit.total))}đ
@@ -446,7 +446,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 								props.create?.(true, 'duyet', props.dataEdit.id_bill);
 							}}
 						>
-							Duyet don hang
+							Duyệt đơn hàng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					)}
@@ -465,7 +465,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 								marginRight: '5px',
 							}}
 						>
-							Huy don hang
+							Hủy đơn hàng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					)}
@@ -479,7 +479,7 @@ const BillDetail: React.FC<ProfileInfoProps> = (props) => {
 							props.cancel?.(false);
 						}}
 					>
-						Dong
+						Đóng
 						{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 					</Button>
 				</Grid>

@@ -149,12 +149,12 @@ const Account: React.FC = () => {
 			//toast.success('dang nhap thanh cong');
 			history.push('/');
 		} else if (result === 2) {
-			toast.error('Tai skhoan ko chinh xac');
+			toast.error('Tài khoản hoặc mật khẩu không chính xác');
 		}
 	};
 	const resultApiRegister: (result: any) => void = (result) => {
 		if (result === 1) {
-			toast.error('ten tai khoan da ton tai');
+			toast.error('Tên tài khoản đã tồn tại');
 		}
 	};
 	const [showAccount, setShowAccount] = React.useState(true);

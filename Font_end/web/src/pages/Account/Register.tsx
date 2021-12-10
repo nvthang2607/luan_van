@@ -111,19 +111,19 @@ const Register: React.FC<registerProps> = (props) => {
 	const theme = useTheme();
 	const schema = yup.object().shape({
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
-		name: yup.string().required('Name không để trống'),
-		nameCity: yup.string().required('Address không để trống'),
-		nameDistrict: yup.string().required('district không để trống'),
-		nameCommune: yup.string().required('commune không để trống'),
+		name: yup.string().required('Tên không để trống'),
+		nameCity: yup.string().required('Tỉnh/Thành Phố không để trống'),
+		nameDistrict: yup.string().required('Quận/Huyện không để trống'),
+		nameCommune: yup.string().required('Phường/Xã không để trống'),
 		password: yup.string().required('Mật khẩu không để trống').min(8, 'Mật khẩu ít nhất 8 ký tự'),
-		gender: yup.string().required('gioi tinh bat buoc').oneOf(['Nam', 'Nữ']),
+		gender: yup.string().required('Giới tính là bắt buộc').oneOf(['Nam', 'Nữ']),
 		retypePassword: yup
 			.string()
 			.required('Mật khẩu không để trống')
-			.oneOf([yup.ref('password')], '2 trường mật khẩu ko giống nhau'),
+			.oneOf([yup.ref('password')], '2 trường mật khẩu không giống nhau'),
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số điện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 		//.max(11, 'Số điện thoại không hợp lệ'),

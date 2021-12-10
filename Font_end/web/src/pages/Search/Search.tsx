@@ -187,10 +187,10 @@ const Search: React.FC = () => {
 							<Breadcrumbs aria-label="breadcrumb">
 								<Link to="/" className={classes.link}>
 									<HomeIcon className={classes.icon} />
-									Trang chu
+									Trang chủ
 								</Link>
 								<Link to="/" className={classes.link}>
-									Ket qua tim kiem
+									Kết quả tìm kiếm
 								</Link>
 							</Breadcrumbs>
 						</Grid>
@@ -199,10 +199,10 @@ const Search: React.FC = () => {
 							<Breadcrumbs aria-label="breadcrumb">
 								<Link to="/" className={classes.link}>
 									<HomeIcon className={classes.icon} />
-									Trang chu
+									Trang chủ
 								</Link>
 								<Link to="/" className={classes.link}>
-									Ket qua tim kiem
+									Kết quả tìm kiếm
 								</Link>
 							</Breadcrumbs>
 						</Grid>
@@ -374,10 +374,10 @@ const Search: React.FC = () => {
 						<Breadcrumbs aria-label="breadcrumb">
 							<Link to="/" className={classes.link}>
 								<HomeIcon className={classes.icon} />
-								Trang chu
+								Trang chủ
 							</Link>
 							<Link to="/" className={classes.link}>
-								Ket qua tim kiem
+								Kết quả tìm kiếm
 							</Link>
 						</Breadcrumbs>
 					</Grid>

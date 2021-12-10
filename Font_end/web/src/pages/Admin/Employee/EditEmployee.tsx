@@ -98,15 +98,15 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
+		name: yup.string().required('Tên không để trống'),
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
-		nameCity: yup.string().required('nameCity không để trống'),
-		nameDistrict: yup.string().required('district không để trống'),
-		nameCommune: yup.string().required('commune không để trống'),
-		gender: yup.string().required('gioi tinh bat buoc').oneOf(['Nam', 'Nữ']),
+		nameCity: yup.string().required('Tỉnh/Thành phố không để trống'),
+		nameDistrict: yup.string().required('Quận/Huyện không để trống'),
+		nameCommune: yup.string().required('Phường/Xã không để trống'),
+		gender: yup.string().required('Giới tính là bắt buộc').oneOf(['Nam', 'Nữ']),
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số diện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 		password: yup.string().required('Mật khẩu không để trống').min(8, 'Mật khẩu ít nhất 8 ký tự'),
@@ -262,9 +262,9 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 	};
 	const [open, setOpen] = React.useState(false);
 	const [txtManager, setTxtManager] = React.useState([
-		{ id: 'manager', name: 'Quan ly' },
-		{ id: 'warehouse', name: 'Quan ly kho' },
-		{ id: 'merchandiser', name: 'Quan ly don hang' },
+		{ id: 'manager', name: 'Quản lý' },
+		{ id: 'warehouse', name: 'Quản lý kho' },
+		{ id: 'merchandiser', name: 'Quản lý đơn hàng' },
 	]);
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -365,13 +365,13 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 			if (response.errorCode === null) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Tao nhan vien thanh cong',
+					title: 'Tạo nhân viên thành công',
 				});
 				props.create?.(true);
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 				props.create?.(false);
 			}
@@ -388,13 +388,13 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 			if (response.errorCode === null) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Cap nhat nhan vien thanh cong',
+					title: 'Cập nhật thành công',
 				});
 				props.create?.(true);
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Co loi xay ra',
+					title: 'Có lỗi xảy ra',
 				});
 				props.create?.(false);
 			}
@@ -1167,7 +1167,7 @@ const EditEmployee: React.FC<ProfileInfoProps> = (props) => {
 							//disabled={true}
 							style={{ position: 'relative', textTransform: 'inherit' }}
 						>
-							{props.profileInfo.id === 0 ? 'Tao moi' : 'cap nhat thong tin'}
+							{props.profileInfo.id === 0 ? 'Tạo mới' : 'Cập nhật thông tin'}
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;

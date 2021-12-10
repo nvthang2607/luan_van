@@ -101,28 +101,28 @@ const BrandProduct: React.FC = () => {
 		},
 		{
 			name: 'name',
-			label: 'Ten',
+			label: 'Tên',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'name_type',
-			label: 'Loai san pham',
+			label: 'Loại sản phẩm',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
@@ -130,7 +130,7 @@ const BrandProduct: React.FC = () => {
 
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -149,7 +149,7 @@ const BrandProduct: React.FC = () => {
 										id_type: data[index].id_type,
 										name_type: data[index].name_type,
 									});
-									setTitleDialog('Cap nhat thong tin thuong hieu ');
+									setTitleDialog('Cập nhật thông tin thương hiệu');
 									setProgressListTypeProduct(true);
 									const response = await ListTypeProductGet();
 									if (response) {
@@ -177,8 +177,8 @@ const BrandProduct: React.FC = () => {
 			noMatch: progressData ? <CircularProgress color="secondary" /> : t('tenant.no_match'),
 		},
 		selectedRows: {
-			text: 'File(s) selected',
-			delete: 'Delete',
+			text: 'File(s) đã được chọn',
+			delete: 'Xóa',
 			deleteAria: 'Deleted Selected Row(s)',
 		},
 	};
@@ -206,6 +206,19 @@ const BrandProduct: React.FC = () => {
 			...filterSearch,
 			Search: valChange,
 		});
+	};
+	const handleCheckIsadmin = () => {
+		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
+		if (tokenAdmin) {
+			const checkToken: any = jwtDecode(tokenAdmin);
+			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Bạn không có quyền xem thương hiệu',
+				});
+				return <Redirect to={AppURL.ADMIN_HOME} />;
+			}
+		}
 	};
 	const handleCheckToken = () => {
 		const tokenAdmin: any = window.localStorage.getItem('tokenAdmin');
@@ -267,15 +280,16 @@ const BrandProduct: React.FC = () => {
 	return (
 		<Container style={{ backgroundColor: '#f4f4f4', padding: 0 }}>
 			{handleCheckToken()}
+			{handleCheckIsadmin()}
 			<Grid container spacing={3}>
 				<Grid item xs={12}>
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							{t('menu_admin.home')}
 						</Link>
-						<Link to="/" className={classes.link}>
-							Thuong hieu
+						<Link to={AppURL.ADMIN_BRAND_PRODUCT} className={classes.link}>
+							{t('menu_admin.branch')}
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -293,7 +307,7 @@ const BrandProduct: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -302,10 +316,10 @@ const BrandProduct: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={async () => {
-											setTitleDialog('Tao moi thuong hieu');
+											setTitleDialog('Tạo mới thương hiệu');
 											setDataEdit({ id: 0, name: '', id_type: '', name_type: '' });
 											setProgressListTypeProduct(true);
 											const response = await ListTypeProductGet();
@@ -321,7 +335,7 @@ const BrandProduct: React.FC = () => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tại lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -343,7 +357,7 @@ const BrandProduct: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập tên thương hiệu"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -397,7 +411,7 @@ const BrandProduct: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children="Xóa"
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -419,7 +433,11 @@ const BrandProduct: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Deleted!',
+																`Da xoa thanh cong ${count} thương hiệu`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -476,7 +494,7 @@ const BrandProduct: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children="Xóa"
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -498,7 +516,11 @@ const BrandProduct: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Deleted!',
+																`Da xoa thanh cong ${count} thương hiệu`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

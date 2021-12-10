@@ -78,15 +78,15 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
+		name: yup.string().required('Tên không để trống'),
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
-		nameCity: yup.string().required('nameCity không để trống'),
-		nameDistrict: yup.string().required('district không để trống'),
-		nameCommune: yup.string().required('commune không để trống'),
-		gender: yup.string().required('gioi tinh bat buoc').oneOf(['Nam', 'Nữ']),
+		nameCity: yup.string().required('Tên Thành phố/Tỉnh không để trống'),
+		nameDistrict: yup.string().required('Huyện/Quận không để trống'),
+		nameCommune: yup.string().required('Phường/Xã không để trống'),
+		gender: yup.string().required('Giới tính là bắt buộc').oneOf(['Nam', 'Nữ']),
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số điện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 	});
@@ -296,13 +296,13 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 		if (response.errorCode === null) {
 			Swal.fire({
 				icon: 'success',
-				title: 'Cap nhat thong tin thanh cong',
+				title: 'Cập nhật thông tin thành công',
 			});
 			props.create?.(true);
 		} else {
 			Swal.fire({
 				icon: 'error',
-				title: 'Co loi xay ra',
+				title: 'Có lỗi xảy ra',
 			});
 			props.create?.(false);
 		}
@@ -320,7 +320,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 					<Close />
 				</IconButton>
 				<DialogTitle>
-					<Typography variant="h5">Cap nhat thong tin nguoi dung</Typography>
+					<Typography variant="h5">Cập nhật thông tin người dùng</Typography>
 				</DialogTitle>
 				<DialogContent dividers>
 					<Grid item xs={12}>
@@ -833,7 +833,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 							//disabled={true}
 							style={{ position: 'relative' }}
 						>
-							cap nhat thong tin
+							Cập nhật thông tin
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 						&nbsp;&nbsp;
@@ -847,7 +847,7 @@ const UserEdit: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

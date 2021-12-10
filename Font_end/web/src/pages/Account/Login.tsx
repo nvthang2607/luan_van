@@ -160,7 +160,7 @@ const Login: React.FC<loginprops> = (props) => {
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Tai khoan hoac mk ko dung',
+					title: 'Tên tài khoản hoặc mật khẩu không đúng',
 					//text: 'Ten tai khoan hoac mat khau khong dung',
 				});
 				//props?.resultApiLogin?.(res.errorCode);
@@ -178,6 +178,8 @@ const Login: React.FC<loginprops> = (props) => {
 	};
 	isSubmitting !== undefined && props?.receivePropsLogin?.(isSubmitting);
 	const responseGoogle = async (response: any) => {
+		console.log(response);
+
 		if (response) {
 			const reqData = { email: response?.mt?.Xt, name: response?.mt?.Re };
 			const resLoginGG = await LoginGGPost(reqData);
@@ -310,7 +312,7 @@ const Login: React.FC<loginprops> = (props) => {
 							startIcon={<img src={ggIcon} alt="google" width="35px" />}
 							disabled={isSubmitting}
 						>
-							Dang nhap bang google
+							Đăng nhập bằng google
 						</Button>
 					</GoogleLogin>
 				</Grid>
@@ -334,7 +336,7 @@ const Login: React.FC<loginprops> = (props) => {
 								startIcon={<img src={fbIcon} alt="facebook" width="80%" />}
 								disabled={isSubmitting}
 							>
-								Dang nhap bang facebook
+								Đăng nhập bằng facebook
 							</Button>
 						}
 					></FacebookLogin>

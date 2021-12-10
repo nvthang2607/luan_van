@@ -92,15 +92,15 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
+		name: yup.string().required('Tên không để trống'),
 		email: yup.string().email('Email không hợp lệ').required('Email không để trống'),
-		nameCity: yup.string().required('nameCity không để trống'),
-		nameDistrict: yup.string().required('district không để trống'),
-		nameCommune: yup.string().required('commune không để trống'),
-		gender: yup.string().required('gioi tinh bat buoc').oneOf(['Nam', 'Nữ']),
+		nameCity: yup.string().required('Tỉnh/Thành Phố không để trống'),
+		nameDistrict: yup.string().required('Quận/Huyện không để trống'),
+		nameCommune: yup.string().required('Phường/Xã không để trống'),
+		gender: yup.string().required('Giới tính là bắt buộc').oneOf(['Nam', 'Nữ']),
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số điện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 	});
@@ -399,7 +399,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 			if (response.errorCode === null) {
 				Swal.fire({
 					icon: 'success',
-					title: 'Dat hang thanh cong!',
+					title: 'Đặt hàng thành công!',
 					text: 'Cảm ơn bạn đã mua hàng tại SangTV.VN',
 				});
 				dispatch(deleteCart());
@@ -407,7 +407,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 			} else {
 				Swal.fire({
 					icon: 'error',
-					title: 'Dat hang khong thanh cong!',
+					title: 'Đặt hàng không thành công!',
 				});
 				setProgressCheckOrder(false);
 			}
@@ -442,15 +442,15 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 		if (nofi === 1) {
 			Swal.fire({
 				icon: 'success',
-				title: 'Ma giam gia hop le!',
-				text: `Ban duoc giam ${Intl.NumberFormat('en-US').format(Number(price))}
+				title: 'Mã giảm giá hợp lệ!',
+				text: `Bạn được giảm ${Intl.NumberFormat('en-US').format(Number(price))}
 				đ`,
 			});
 			setValueCode(voucher);
 		} else {
 			Swal.fire({
 				icon: 'error',
-				title: 'Ma giam gia da het han!',
+				title: 'Mã giảm giá đã hết hạn!',
 				//text: 'Something went wrong!',
 			});
 		}
@@ -488,7 +488,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 															component="span"
 															style={{ float: 'left', fontStyle: 'italic' }}
 														>
-															Thong tin nhan hang:
+															Thông tin nhận hàng:
 														</Typography>
 														<Typography component="span" style={{ float: 'right' }}>
 															<Button
@@ -499,7 +499,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 																}}
 																onClick={() => setShowInforOrder(true)}
 															>
-																Thay doi
+																Thay đổi
 															</Button>
 														</Typography>
 													</Typography>
@@ -512,28 +512,28 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													</Typography>
 													<Typography variant="body1" gutterBottom>
 														<Typography component="span" style={{ fontWeight: 'bold' }}>
-															Ho ten:
+															Họ tên:
 														</Typography>
 														&nbsp;
 														<Typography component="span">{dataInforOrder.name}</Typography>
 													</Typography>
 													<Typography variant="body1" gutterBottom>
 														<Typography component="span" style={{ fontWeight: 'bold' }}>
-															Gioi tinh:
+															Giới tính:
 														</Typography>
 														&nbsp;
 														<Typography component="span">{dataInforOrder.gender}</Typography>
 													</Typography>
 													<Typography variant="body1" gutterBottom>
 														<Typography component="span" style={{ fontWeight: 'bold' }}>
-															So dien thoai:
+															Số điện thoại:
 														</Typography>
 														&nbsp;
 														<Typography component="span">{dataInforOrder.phone}</Typography>
 													</Typography>
 													<Typography variant="body1" gutterBottom>
 														<Typography component="span" style={{ fontWeight: 'bold' }}>
-															Dia chi:
+															Địa chỉ:
 														</Typography>
 														&nbsp;
 														<Typography component="span">{dataInforOrder.address}</Typography>
@@ -541,7 +541,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 
 													<Typography variant="body1" gutterBottom>
 														<Typography component="span" style={{ fontWeight: 'bold' }}>
-															Ghi chu:
+															Ghi chú:
 														</Typography>
 														&nbsp;
 														<Typography component="span">{dataInforOrder.note}</Typography>
@@ -617,7 +617,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													disabled={progressCheckOrder}
 													style={{ position: 'relative' }}
 												>
-													Thanh toan
+													Thanh toán
 													{progressCheckOrder && (
 														<CircularProgress
 															size={24}
@@ -639,7 +639,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 									<Collapse in={showInforOrder} timeout="auto" unmountOnExit>
 										<Grid container spacing={3}>
 											<Grid item xs={12}>
-												<Typography variant="h5">Thong tin mua hang</Typography>
+												<Typography variant="h5">Thông tin mua hàng</Typography>
 												<Divider style={{ marginTop: '20px' }} />
 											</Grid>
 											{flagOnchangeEmail ? (
@@ -1053,7 +1053,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											)}
 											<Grid item xs={12}>
 												<Typography variant="body1" gutterBottom>
-													Ghi chu
+													Ghi chú
 												</Typography>
 												<Controller
 													control={control}
@@ -1157,7 +1157,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 													//disabled={true}
 													style={{ position: 'relative' }}
 												>
-													xac nhan thong tin
+													Xác nhận thông tin
 													{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 												</Button>
 											</Grid>
@@ -1173,7 +1173,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 								>
 									<Grid container spacing={3}>
 										<Grid item xs={12}>
-											<Typography variant="h5">Don hang ({countQuantity()} san pham)</Typography>
+											<Typography variant="h5">Đơn hàng ({countQuantity()} sản phẩm)</Typography>
 											<Divider style={{ marginTop: '20px' }} />
 										</Grid>
 										<Grid item xs={12}>
@@ -1190,7 +1190,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 																</Typography>
 																<Box style={{ display: 'contents' }}>
 																	<Box style={{ width: '50%', float: 'left' }}>
-																		<Typography>So luong: {item.quantity}</Typography>
+																		<Typography>Số lượng: {item.quantity}</Typography>
 																	</Box>
 																	<Box style={{ width: '50%', float: 'right' }}>
 																		<Typography>
@@ -1213,7 +1213,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 												<Grid item xs={8}>
 													<TextField
 														id="outlined-basic"
-														label="Nhap ma giam gia"
+														label="Nhập mã giảm giá"
 														variant="outlined"
 														fullWidth
 														size="small"
@@ -1227,7 +1227,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 														onClick={handleCheckVoucher}
 														disabled={false}
 													>
-														Ap dung
+														Áp dụng
 													</Button>
 												</Grid>
 											</Grid>
@@ -1236,7 +1236,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 											<Divider style={{ marginBottom: '20px' }} />
 											<Box>
 												<Box style={{ float: 'left' }}>
-													<Typography>Tam tinh</Typography>
+													<Typography>Tạm tính</Typography>
 												</Box>
 												<Box style={{ float: 'right' }}>
 													{Intl.NumberFormat('en-US').format(Number(totalPriceTmp()))}đ
@@ -1246,7 +1246,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										<Grid item xs={12}>
 											<Box>
 												<Box style={{ float: 'left' }}>
-													<Typography>Giam gia</Typography>
+													<Typography>Giảm giá</Typography>
 												</Box>
 												<Box style={{ float: 'right' }}>
 													{Intl.NumberFormat('en-US').format(Number(valuePromotion()))}đ
@@ -1256,7 +1256,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 										<Grid item xs={12}>
 											<Divider style={{ marginBottom: '20px' }} />
 											<Box style={{ float: 'left' }}>
-												<Typography variant="h6">Tong cong:</Typography>
+												<Typography variant="h6">Tổng cộng:</Typography>
 											</Box>
 											<Box style={{ float: 'right' }}>
 												<Typography
@@ -1303,7 +1303,7 @@ const Checkout: React.FC<ProfileInfoProps> = (props) => {
 								window.scrollTo(0, 0);
 							}}
 						>
-							Tiep tuc mua hang
+							Tiếp tục mua hàng
 						</Button>
 					</Box>
 				</Box>

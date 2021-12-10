@@ -328,9 +328,9 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 		});
 		if (response) {
 			if (response.errorCode === null) {
-				toast.success('Cap nhat thong tin thanh cong');
+				toast.success('Cập nhật thành công');
 			} else {
-				toast.error('Co loi xay ra');
+				toast.error('Có lỗi xảy ra');
 			}
 		}
 	};
@@ -359,12 +359,12 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 							if (responseNewsPost.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Tao tin tuc thanh cong',
+									title: 'Tạo tin tức thành công',
 								});
 								props.create?.(true);
 								setProgress(false);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setProgress(false);
 							}
 						}
@@ -386,12 +386,12 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 								if (responseNewsPost.errorCode === null) {
 									Swal.fire({
 										icon: 'success',
-										title: 'Cap nhat tin tuc thanh cong',
+										title: 'Cập nhật tin tức thành công',
 									});
 									props.create?.(true);
 									setProgress(false);
 								} else {
-									toast.error('Co loi xay ra');
+									toast.error('Có lỗi xảy ra');
 									setProgress(false);
 								}
 							}
@@ -407,12 +407,12 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 							if (responseNewsPost.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Cap nhat tin tuc thanh cong',
+									title: 'Cập nhật tin tức thành công',
 								});
 								props.create?.(true);
 								setProgress(false);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setProgress(false);
 							}
 						}
@@ -442,7 +442,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 				</IconButton>
 
 				<DialogTitle>
-					<Typography variant="h5">Cap nhat tin tuc</Typography>
+					<Typography variant="h5">Cập nhật tin tức</Typography>
 				</DialogTitle>
 				<DialogContent dividers>
 					<Grid container spacing={3}>
@@ -458,7 +458,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 
 									<Grid item xs={12}>
 										<Typography variant="body1" gutterBottom className={classes.titleInput}>
-											Tieu de
+											Tiêu đề
 										</Typography>
 										<Controller
 											control={control}
@@ -482,17 +482,17 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 									<Grid item xs={12}>
 										<Card variant="outlined" style={{ padding: '10px' }}>
 											<Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
-												Anh san pham
+												Ảnh sản phẩm
 											</Typography>
 
 											{manyUpload && (
 												<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-													Khong duoc chon nhieu hon 1 anh
+													Không được chọn nhiều hơn 1 ảnh
 												</FormHelperText>
 											)}
 											{errUpload && (
 												<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-													Vui long chon it nhat 1 anh
+													Vui lòng chọn ít nhất 1 ảnh
 												</FormHelperText>
 											)}
 											<Box
@@ -534,7 +534,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 																					<Typography
 																						style={{ fontWeight: 'bold', marginTop: '10px' }}
 																					>
-																						{index === 0 ? 'Anh chinh: ' : `Anh mo ta ${index}:`}
+																						{index === 0 ? 'Ảnh chính: ' : `Ảnh mô tả ${index}:`}
 																					</Typography>
 																					<Button
 																						variant="contained"
@@ -545,7 +545,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 																						}}
 																						style={{ textTransform: 'initial' }}
 																					>
-																						Cap nhat
+																						Cập nhật
 																					</Button>
 																				</Box>
 
@@ -607,7 +607,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 																					/>
 
 																					<Tooltip
-																						title="Xoa"
+																						title="Xóa"
 																						placement="top-start"
 																						style={{
 																							position: 'absolute',
@@ -670,7 +670,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 																					style={{ fontSize: '60px', color: '#c1c1c1' }}
 																				/>
 																				<Typography variant="h6" style={{ color: '#c1c1c1' }}>
-																					Them anh
+																					Thêm ảnh
 																				</Typography>
 																			</Box>
 																		</div>
@@ -685,11 +685,11 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 									</Grid>
 									<Grid item xs={12}>
 										<Typography variant="body1" gutterBottom style={{ fontWeight: 'bold' }}>
-											Noi dung
+											Nội dung
 										</Typography>
 										{errContent && (
 											<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-												Noi dung la bat buoc
+												Nội dung không để trống
 											</FormHelperText>
 										)}
 										<Box style={{ padding: '10px' }}>
@@ -719,7 +719,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 							disabled={progress}
 							style={{ textTransform: 'inherit' }}
 						>
-							{props.dataEdit.id == 0 ? 'Tao moi' : 'Cap nhat'}
+							{props.dataEdit.id == 0 ? 'Tạo mới' : 'Cập nhật'}
 						</Button>
 						&nbsp;
 						<Button
@@ -731,7 +731,7 @@ const EditNews: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

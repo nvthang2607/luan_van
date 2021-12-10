@@ -192,15 +192,15 @@ const OrderDetail: React.FC = () => {
 	const contentStatus = () => {
 		let result = '';
 		if (dataOrderId?.bill?.status == '1') {
-			result = 'Dang cho duyet';
+			result = 'Đang chờ duyệt';
 		} else if (dataOrderId?.bill?.status == '4') {
-			result = 'Da hoan thanh';
+			result = 'Đã hoàn thành';
 		} else if (dataOrderId?.bill?.status == '2') {
 			result = 'Đã đóng gói';
 		} else if (dataOrderId?.bill?.status == '3') {
 			result = 'Đang vận chuyển';
 		} else if (dataOrderId?.bill?.status == '5') {
-			result = 'Da huy';
+			result = 'Đã hủy';
 		}
 		return result;
 	};
@@ -244,7 +244,7 @@ const OrderDetail: React.FC = () => {
 	};
 	const handleCancel = () => {
 		Swal.fire({
-			title: 'Are you sure?',
+			title: 'Bạn có chắc muốn hủy đơn hàng không?',
 			text: "You won't be able to revert this!",
 			icon: 'warning',
 			showCancelButton: true,
@@ -264,12 +264,12 @@ const OrderDetail: React.FC = () => {
 						const response = await OrderCancelPost({ id_bill: id });
 						if (response) {
 							if (response.errorCode === null) {
-								Swal.fire('Huy don hang thanh cong!', 'Your file has been deleted.', 'success');
+								Swal.fire('Hủy đơn hàng thành công!', 'Your file has been deleted.', 'success');
 								setRefresh(refresh + 1);
 							} else {
 								Swal.fire({
 									icon: 'error',
-									title: 'Co loi xay ra!',
+									title: 'Có lỗi xảy ra!',
 								});
 							}
 						}
@@ -336,28 +336,28 @@ const OrderDetail: React.FC = () => {
 									>
 										<Typography variant="body1" gutterBottom>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												Ho ten:
+												Họ tên:
 											</Typography>
 											&nbsp;
 											<Typography component="span">{dataOrderId.bill?.name_customer}</Typography>
 										</Typography>
 										<Typography variant="body1" gutterBottom>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												Gioi tinh:
+												Giới tính:
 											</Typography>
 											&nbsp;
 											<Typography component="span">{dataOrderId.bill?.gender_customer}</Typography>
 										</Typography>
 										<Typography variant="body1" gutterBottom>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												So dien thoai:
+												Số điện thoại:
 											</Typography>
 											&nbsp;
 											<Typography component="span">{dataOrderId.bill?.phone_customer}</Typography>
 										</Typography>
 										<Typography variant="body1" gutterBottom>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												Dia chi:
+												Địa chỉ:
 											</Typography>
 											&nbsp;
 											<Typography component="span">{dataOrderId.bill?.address_customer}</Typography>
@@ -365,7 +365,7 @@ const OrderDetail: React.FC = () => {
 
 										<Typography variant="body1" gutterBottom>
 											<Typography component="span" style={{ fontWeight: 'bold' }}>
-												Ghi chu:
+												Ghi chứ:
 											</Typography>
 											&nbsp;
 											<Typography component="span">{dataOrderId.bill?.note}</Typography>
@@ -394,16 +394,16 @@ const OrderDetail: React.FC = () => {
 											</TableCell>
 											<TableCell>
 												<Typography style={{ fontWeight: 'bold' }} variant="body1">
-													Gia
+													Giá
 												</Typography>
 											</TableCell>
 											<TableCell>
 												<Typography style={{ fontWeight: 'bold' }} variant="body1">
-													So luong
+													Số lượng
 												</Typography>
 											</TableCell>
 											<TableCell style={{ fontWeight: 'bold' }} align="right">
-												<Typography variant="body1">Tam tinh</Typography>
+												<Typography variant="body1">Tạm tính</Typography>
 											</TableCell>
 										</TableRow>
 									</TableHead>
@@ -435,7 +435,7 @@ const OrderDetail: React.FC = () => {
 																			});
 																		}}
 																	>
-																		Danh gia
+																		Đánh giá
 																	</Button>
 																)}
 
@@ -451,7 +451,7 @@ const OrderDetail: React.FC = () => {
 																		);
 																	}}
 																>
-																	Mua lai
+																	Mua lại
 																</Button>
 															</Typography>
 														)}
@@ -496,7 +496,7 @@ const OrderDetail: React.FC = () => {
 						{dataOrderId.bill?.status == '1' && (
 							<Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
 								<Button color="secondary" variant="contained" onClick={handleCancel}>
-									Huy don hang
+									Hủy đơn hàng
 								</Button>
 							</Grid>
 						)}

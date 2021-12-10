@@ -180,7 +180,7 @@ const Cart: React.FC<CartProps> = (props) => {
 	return isResponseivePhone ? (
 		<Box style={{ width: 400 }}>
 			<Box>
-				<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
+				<DialogTitle id="form-dialog-title">GIỎ HÀNG</DialogTitle>
 				{cartData.length === 0 ? (
 					<DialogContent style={{ textAlign: 'center' }}>
 						<img
@@ -196,7 +196,7 @@ const Cart: React.FC<CartProps> = (props) => {
 								window.scrollTo(0, 0);
 							}}
 						>
-							Tiep tuc mua hang
+							Tiếp tục mua hàng
 						</Button>
 					</DialogContent>
 				) : (
@@ -229,7 +229,7 @@ const Cart: React.FC<CartProps> = (props) => {
 											</Typography>
 											<Box style={{ display: 'contents' }}>
 												<Box style={{ width: '50%', float: 'left' }}>
-													<Typography>So luong</Typography>
+													<Typography>Số lượng</Typography>
 													<ButtonGroup style={{ width: '69px' }}>
 														<Button
 															aria-label="reduce"
@@ -290,7 +290,7 @@ const Cart: React.FC<CartProps> = (props) => {
 														</Button>
 													</ButtonGroup>
 													{err === item.id && (
-														<FormHelperText error>Khong du so luong</FormHelperText>
+														<FormHelperText error>Không đủ số lượng</FormHelperText>
 													)}
 												</Box>
 												<Box style={{ width: '50%', float: 'right', textAlign: 'end' }}>
@@ -312,7 +312,7 @@ const Cart: React.FC<CartProps> = (props) => {
 														onClick={() => {
 															props.receiveCart?.(false);
 															Swal.fire({
-																title: 'Ban co chac chan muon xoa khong',
+																title: 'Bạn có chắc chắn muốn xóa không?',
 																//text: t('confirmDelete.you_wont_be_able_to_revert_this'),
 																icon: 'warning',
 																confirmButtonColor: '#3085d6',
@@ -323,7 +323,7 @@ const Cart: React.FC<CartProps> = (props) => {
 																reverseButtons: true,
 															}).then((result) => {
 																if (result.isConfirmed) {
-																	toast.success('San pham da duoc xoa khoi gio hang');
+																	toast.success('Sản phẩm đã được xóa khỏi giỏ hàng');
 																	//Swal.fire('Da xoa', 'San pham da duoc xoa khoi gio hang', 'success');
 																	dispatch(deleteProduct({ id: item.id }));
 																	props.receiveCart?.(true);
@@ -333,7 +333,7 @@ const Cart: React.FC<CartProps> = (props) => {
 															});
 														}}
 													>
-														Xoa san pham
+														Xóa sản phẩm
 													</Button>
 												</Box>
 											</Box>
@@ -347,7 +347,7 @@ const Cart: React.FC<CartProps> = (props) => {
 							<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
 							<Box style={{ display: 'contents' }}>
 								<Box style={{ float: 'left' }}>
-									<Typography variant="h6">Tong tien:</Typography>
+									<Typography variant="h6">Tổng tiền:</Typography>
 								</Box>
 								<Box style={{ float: 'right' }}>
 									<Typography
@@ -374,7 +374,7 @@ const Cart: React.FC<CartProps> = (props) => {
 										props.receiveCart?.(false);
 									}}
 								>
-									Thanh toan
+									Thanh toán
 								</Button>
 							</Box>
 						</Box>
@@ -396,7 +396,7 @@ const Cart: React.FC<CartProps> = (props) => {
 	) : (
 		<Box style={{ width: 306 }}>
 			<Box>
-				<DialogTitle id="form-dialog-title">GIO HANG</DialogTitle>
+				<DialogTitle id="form-dialog-title">GIỎ HÀNG</DialogTitle>
 				{cartData.length === 0 ? (
 					<DialogContent style={{ textAlign: 'center' }}>
 						<img
@@ -412,7 +412,7 @@ const Cart: React.FC<CartProps> = (props) => {
 								window.scrollTo(0, 0);
 							}}
 						>
-							Tiep tuc mua hang
+							Tiếp tục mua hàng
 						</Button>
 					</DialogContent>
 				) : (
@@ -445,7 +445,7 @@ const Cart: React.FC<CartProps> = (props) => {
 											</Typography>
 											<Box style={{ display: 'contents' }}>
 												<Box style={{ width: '50%', float: 'left' }}>
-													<Typography>So luong</Typography>
+													<Typography>Số lượng</Typography>
 													<ButtonGroup style={{ width: '69px' }}>
 														<Button
 															aria-label="reduce"
@@ -506,7 +506,7 @@ const Cart: React.FC<CartProps> = (props) => {
 														</Button>
 													</ButtonGroup>
 													{err === item.id && (
-														<FormHelperText error>Khong du so luong</FormHelperText>
+														<FormHelperText error>Không đủ số lượng</FormHelperText>
 													)}
 												</Box>
 											</Box>
@@ -529,7 +529,7 @@ const Cart: React.FC<CartProps> = (props) => {
 													onClick={() => {
 														props.receiveCart?.(false);
 														Swal.fire({
-															title: 'Ban co chac chan muon xoa khong',
+															title: 'Bạn có chắc chắn muốn xóa không',
 															//text: t('confirmDelete.you_wont_be_able_to_revert_this'),
 															icon: 'warning',
 															confirmButtonColor: '#3085d6',
@@ -540,7 +540,7 @@ const Cart: React.FC<CartProps> = (props) => {
 															reverseButtons: true,
 														}).then((result) => {
 															if (result.isConfirmed) {
-																toast.success('San pham da duoc xoa khoi gio hang');
+																toast.success('Sản phẩm đã được xóa khỏi giỏ hàng');
 																//Swal.fire('Da xoa', 'San pham da duoc xoa khoi gio hang', 'success');
 																dispatch(deleteProduct({ id: item.id }));
 																props.receiveCart?.(true);
@@ -550,7 +550,7 @@ const Cart: React.FC<CartProps> = (props) => {
 														});
 													}}
 												>
-													Xoa san pham
+													Xóa sản phẩm
 												</Button>
 											</Box>
 										</Box>
@@ -563,7 +563,7 @@ const Cart: React.FC<CartProps> = (props) => {
 							<Divider style={{ marginBottom: '18px', marginTop: '17px' }} />
 							<Box style={{ display: 'contents' }}>
 								<Box style={{ float: 'left' }}>
-									<Typography variant="h6">Tong tien:</Typography>
+									<Typography variant="h6">Tổng tiền:</Typography>
 								</Box>
 								<Box style={{ float: 'right' }}>
 									<Typography
@@ -590,7 +590,7 @@ const Cart: React.FC<CartProps> = (props) => {
 										props.receiveCart?.(false);
 									}}
 								>
-									Thanh toan
+									Thanh toán
 								</Button>
 							</Box>
 						</Box>

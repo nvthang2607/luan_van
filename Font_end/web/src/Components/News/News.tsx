@@ -207,7 +207,7 @@ const News: React.FC<ProductProps> = (props) => {
 							history.push(`/news_detail/${toURL(props?.title)}-${props?.id}.html`);
 						}}
 					>
-						Doc tiep
+						Đọc tiếp
 					</Button>
 				</Box>
 			</Box>

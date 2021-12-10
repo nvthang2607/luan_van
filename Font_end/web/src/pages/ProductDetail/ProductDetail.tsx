@@ -474,7 +474,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 	const buyNow = () => {
 		//setPrefresh(refresh + 1);
 		if (storeQuantity() === -1) {
-			toast.error('ko du so luong');
+			toast.error('Không đủ số lượng');
 		} else {
 			dispatch(
 				updataCartData({
@@ -489,13 +489,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 				})
 			);
 			// history.push(AppURL.CHECKOUT);
-			toast.success('Da them san pham vao gio hang');
+			toast.success('Đã thêm sản phẩm vào giỏ hàng');
 		}
 	};
 	const addToCart = () => {
 		//setPrefresh(refresh + 1);
 		if (storeQuantity() === -1) {
-			toast.error('ko du so luong');
+			toast.error('Không đủ số lượng');
 		} else {
 			dispatch(
 				updataCartData({
@@ -508,7 +508,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 					quantity: 1,
 				})
 			);
-			toast.success('Da them san pham vao gio hang');
+			toast.success('Đã thêm sản phẩm vào giỏ hàng');
 		}
 	};
 	const [idcmt, setIdCmt] = React.useState(-1);
@@ -523,10 +523,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Dien thoai
+							Điện thoại
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 					Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -538,10 +538,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Dien thoai
+							Điện thoại
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 					Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -622,7 +622,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '20px', fontWeight: 'bold' }}
 								>
-									Tinh trang: het hang&nbsp;&nbsp;
+									Tình trạng: hết hàng&nbsp;&nbsp;
 									<i
 										className="fa fa-times-circle"
 										aria-hidden="true"
@@ -635,7 +635,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '20px', fontWeight: 'bold' }}
 								>
-									Tinh trang: con hang&nbsp;&nbsp;
+									Tình trạng: còn hàng&nbsp;&nbsp;
 									<i
 										className="fa fa-check-circle"
 										aria-hidden="true"
@@ -654,7 +654,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 											left: '10px',
 										}}
 									>
-										Khuyen mai
+										Khuyến mãi
 									</Typography>
 									<Typography>
 										<i
@@ -767,7 +767,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										Mua ngay
 									</Typography>
 									<Typography variant="body1" style={{ textTransform: 'initial' }}>
-										Giao hang tan noi
+										Giao hàng tận nơi
 									</Typography>
 								</Box>
 							</Button>
@@ -789,7 +789,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 						<Grid container spacing={3}>
 							<Grid item xs={9}>
 								<Typography variant="h5" className={classes.titleText} gutterBottom>
-									Thong so ly thuuat
+									Thông số kỹ thuật
 								</Typography>
 								{dataProduct.information?.map((item: any, index: number) => {
 									return (
@@ -822,7 +822,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '10px' }}
 								>
-									Bai viet danh gia
+									Bài viết đánh giá
 								</Typography>
 								<Box style={{ overflow: 'hidden' }}>
 									<div dangerouslySetInnerHTML={{ __html: dataProduct?.description }} />
@@ -833,7 +833,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '10px' }}
 								>
-									Nhan xet va danh gia
+									Nhận xét và đánh giá
 								</Typography>
 
 								<Card variant="outlined" style={{ padding: '10px' }}>
@@ -856,7 +856,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 													variant="body1"
 													style={{ display: 'flex', alignItems: 'center' }}
 												>
-													Co {dataProduct.rate_number} danh gia
+													Có {dataProduct.rate_number} Đánh giá
 												</Typography>
 											</Typography>
 											<Typography
@@ -1054,7 +1054,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 													setValue(3);
 												}}
 											>
-												{collapse ? 'Dong lai' : 'Gui danh gia cua ban'}
+												{collapse ? 'Đóng lại' : 'Gửi đánh giá của bạn'}
 											</Button>
 										</Box>
 									</Box>
@@ -1068,7 +1068,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 											}}
 										>
 											<Typography variant="body1" style={{ paddingRight: '20px' }}>
-												Chon danh gia cua ban
+												Chọn đánh giá của bạn
 											</Typography>
 
 											<Rating
@@ -1115,7 +1115,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 													<TextField
 														{...register('name')}
 														id="name"
-														label="Ho ten *"
+														label="Họ tên *"
 														name="name"
 														variant="outlined"
 														fullWidth
@@ -1135,7 +1135,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 														style={{ marginBottom: '10px' }}
 													/>
 													<Button variant="contained" color="primary" type="submit">
-														gui danh gia
+														Gửi đánh gia
 													</Button>
 												</Box>
 											</form>
@@ -1170,7 +1170,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	readOnly
 																/>
 
-																<Typography color="textSecondary">Vao ngay {item.date}</Typography>
+																<Typography color="textSecondary">vào ngày {item.date}</Typography>
 															</Typography>
 															<Typography>{item.comment}</Typography>
 														</Box>
@@ -1210,9 +1210,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '10px' }}
 									>
-										Hoi & Dap{' '}
+										Hỏi & Đáp{' '}
 										<Typography component="span" className={classes.discount_percent}>
-											co {dataComment.total} binh luan
+											có {dataComment.total} bình luận
 										</Typography>
 										<Button
 											variant="text"
@@ -1227,7 +1227,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 												padding: '0',
 											}}
 										>
-											Tai lai
+											Tải lại
 										</Button>
 									</Typography>
 
@@ -1272,12 +1272,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 															if (valueCmtMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Noi dung khong de trong',
+																	title: 'Nội dung không để trống',
 																});
 															} else if (valueEmailMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Email khong de trong',
+																	title: 'Email không để trống',
 																});
 															} else {
 																setProgressCmt(true);
@@ -1290,7 +1290,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	if (response.errorCode === null) {
 																		Swal.fire({
 																			icon: 'success',
-																			title: 'Gui cau hoi thanh cong',
+																			title: 'Gửi câu hỏi thành công',
 																		});
 																		setRefreshCmt(refreshCmt + 1);
 																		setProgressCmt(false);
@@ -1299,13 +1299,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	} else if (response.errorCode === 1) {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Email khong dung dinh dang',
+																			title: 'Email không đúng định dạng',
 																		});
 																		setProgressCmt(false);
 																	} else {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Co loi xay ra',
+																			title: 'Có lỗi xảy ra',
 																		});
 																		setProgressCmt(false);
 																	}
@@ -1315,7 +1315,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 															if (valueCmtMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Noi dung khong de trong',
+																	title: 'Nội dung không để trống',
 																});
 															} else {
 																setProgressCmt(true);
@@ -1328,7 +1328,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	if (response.errorCode === null) {
 																		Swal.fire({
 																			icon: 'success',
-																			title: 'Gui cau hoi thanh cong',
+																			title: 'Gửi câu hỏi thành công',
 																		});
 																		setRefreshCmt(refreshCmt + 1);
 																		setProgressCmt(false);
@@ -1336,13 +1336,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	} else if (response.errorCode === 1) {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Email khong dung dinh dang',
+																			title: 'Email không đúng định dạng',
 																		});
 																		setProgressCmt(false);
 																	} else {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Co loi xay ra',
+																			title: 'Có lỗi xảy ra',
 																		});
 																		setProgressCmt(false);
 																	}
@@ -1351,7 +1351,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 														}
 													}}
 												>
-													gui cau hoi
+													Gửi câu hỏi
 												</Button>
 											</Box>
 										</Box>
@@ -1378,7 +1378,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	</Typography>
 																	&nbsp;&nbsp;
 																	<Typography color="textSecondary">
-																		vao ngay {item.date}
+																		vào ngày {item.date}
 																	</Typography>
 																</Box>
 																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
@@ -1395,7 +1395,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																			}
 																		}}
 																	>
-																		Tra loi
+																		Trả lời
 																	</Typography>
 																</Box>
 																{item?.feedback?.map((itemFeedback: any) => {
@@ -1422,11 +1422,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 																						className={classes.discount_percent}
 																						style={{ fontSize: '11px', marginRight: '10px' }}
 																					>
-																						Quan tri vien
+																						Quản trị viên
 																					</Typography>
 																				)}
 																				<Typography color="textSecondary">
-																					vao ngay {itemFeedback.date}
+																					vào ngày {itemFeedback.date}
 																				</Typography>
 																			</Typography>
 																			<Typography>{itemFeedback.comment_feedback}</Typography>
@@ -1486,12 +1486,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 																							if (valueCmt === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Noi dung khong de trong',
+																									title: 'Nội dung không để trống',
 																								});
 																							} else if (valueEmail === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Email khong de trong',
+																									title: 'Email không để trống',
 																								});
 																							} else {
 																								handleClickPageCmt(event);
@@ -1505,7 +1505,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									if (response.errorCode === null) {
 																										Swal.fire({
 																											icon: 'success',
-																											title: 'Gui cau hoi thanh cong',
+																											title: 'Gửi câu hỏi thành công',
 																										});
 																										setRefreshCmt(refreshCmt + 1);
 																										setProgressCmt(false);
@@ -1515,13 +1515,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									} else if (response.errorCode === 1) {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Email khong dung dinh dang',
+																											title: 'Email không đúng định dạng',
 																										});
 																										setProgressCmt(false);
 																									} else {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Co loi xay ra',
+																											title: 'Có lỗi xảy ra',
 																										});
 																										setProgressCmt(false);
 																									}
@@ -1531,7 +1531,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																							if (valueCmt === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Noi dung khong de trong',
+																									title: 'Nội dung không để trống',
 																								});
 																							} else {
 																								handleClickPageCmt(event);
@@ -1545,7 +1545,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									if (response.errorCode === null) {
 																										Swal.fire({
 																											icon: 'success',
-																											title: 'Gui cau hoi thanh cong',
+																											title: 'Gửi câu hỏi thành công',
 																										});
 																										setRefreshCmt(refreshCmt + 1);
 																										setProgressCmt(false);
@@ -1554,13 +1554,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									} else if (response.errorCode === 1) {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Email khong dung dinh dang',
+																											title: 'Email không đúng định dạng',
 																										});
 																										setProgressCmt(false);
 																									} else {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Co loi xay ra',
+																											title: 'Có lỗi xảy ra',
 																										});
 																										setProgressCmt(false);
 																									}
@@ -1569,7 +1569,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																						}
 																					}}
 																				>
-																					gui cau hoi
+																					Gửi câu hỏi
 																				</Button>
 																			</Box>
 																		</Box>
@@ -1635,7 +1635,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 													left: '10px',
 												}}
 											>
-												Khuyen mai
+												Khuyến mãi
 											</Typography>
 											<Typography>
 												<i
@@ -1761,7 +1761,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 							gutterBottom
 							style={{ marginTop: '10px' }}
 						>
-							San pham tuong tu
+							Sản phẩm tương tự
 						</Typography>
 
 						<Slider {...settings}>
@@ -1791,7 +1791,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 								gutterBottom
 								style={{ marginTop: '10px' }}
 							>
-								San pham goi y
+								Sản phẩm gợi ý
 							</Typography>
 
 							<Slider {...settings}>
@@ -1835,10 +1835,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Dien thoai
+							Điện thoại
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -1850,10 +1850,10 @@ const ProductDetail: React.FC<Props> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to="/" className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							Dien thoai
+							Điện thoại
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -1935,7 +1935,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '20px', fontWeight: 'bold' }}
 									>
-										Tinh trang: het hang&nbsp;&nbsp;
+										Tình trạng: hết hàng&nbsp;&nbsp;
 										<i
 											className="fa fa-times-circle"
 											aria-hidden="true"
@@ -1948,7 +1948,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '20px', fontWeight: 'bold' }}
 									>
-										Tinh trang: con hang&nbsp;&nbsp;
+										Tình trạng: còn hàng&nbsp;&nbsp;
 										<i
 											className="fa fa-check-circle"
 											aria-hidden="true"
@@ -1967,7 +1967,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 												left: '10px',
 											}}
 										>
-											Khuyen mai
+											Khuyến mãi
 										</Typography>
 										<Typography>
 											<i
@@ -2080,7 +2080,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 											Mua ngay
 										</Typography>
 										<Typography variant="body1" style={{ textTransform: 'initial' }}>
-											Giao hang tan noi
+											Giao hàng tận nơi
 										</Typography>
 									</Box>
 								</Button>
@@ -2167,7 +2167,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '20px', fontWeight: 'bold' }}
 									>
-										Tinh trang: het hang&nbsp;&nbsp;
+										Tình trạng: hết hàng&nbsp;&nbsp;
 										<i
 											className="fa fa-times-circle"
 											aria-hidden="true"
@@ -2180,7 +2180,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '20px', fontWeight: 'bold' }}
 									>
-										Tinh trang: con hang&nbsp;&nbsp;
+										Tình trạng: còn hàng&nbsp;&nbsp;
 										<i
 											className="fa fa-check-circle"
 											aria-hidden="true"
@@ -2199,7 +2199,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 												left: '10px',
 											}}
 										>
-											Khuyen mai
+											Khuyến mãi
 										</Typography>
 										<Typography>
 											<i
@@ -2312,7 +2312,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 											Mua ngay
 										</Typography>
 										<Typography variant="body1" style={{ textTransform: 'initial' }}>
-											Giao hang tan noi
+											Giao hàng tận nơi
 										</Typography>
 									</Box>
 								</Button>
@@ -2335,7 +2335,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 						<Grid container spacing={3}>
 							<Grid item xs={12}>
 								<Typography variant="h5" className={classes.titleText} gutterBottom>
-									Thong so ly thuuat
+									Thông số kỹ thuật
 								</Typography>
 								{dataProduct.information?.map((item: any, index: number) => {
 									return (
@@ -2368,7 +2368,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '10px' }}
 								>
-									Bai viet danh gia
+									Bài viết đánh giá
 								</Typography>
 								<Box style={{ overflow: 'hidden' }}>
 									<div dangerouslySetInnerHTML={{ __html: dataProduct?.description }} />
@@ -2379,7 +2379,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 									gutterBottom
 									style={{ marginTop: '10px' }}
 								>
-									Nhan xet va danh gia
+									Nhận xét và đánh giá
 								</Typography>
 								<Card variant="outlined" style={{ padding: '10px' }}>
 									<Box style={{ display: 'flex' }}>
@@ -2594,13 +2594,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 													setValue(3);
 												}}
 											>
-												{collapse ? 'Dong lai' : 'Gui danh gia cua ban'}
+												{collapse ? 'Đóng lại' : 'Gửi đánh giá của bạn'}
 											</Button>
 										</Box>
 									</Box>
 									<Collapse in={collapse} timeout="auto" unmountOnExit>
 										<Typography variant="body1" style={{ paddingRight: '20px' }}>
-											Chon danh gia cua ban
+											Chọn đánh giá của bạn
 										</Typography>
 										<Box
 											style={{
@@ -2674,7 +2674,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 														style={{ marginBottom: '10px' }}
 													/>
 													<Button variant="contained" color="primary" type="submit">
-														gui danh gia
+														Gửi đánh gia
 													</Button>
 												</Box>
 											</form>
@@ -2709,7 +2709,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	readOnly
 																/>
 
-																<Typography color="textSecondary">Vao ngay {item.date}</Typography>
+																<Typography color="textSecondary">vào ngày {item.date}</Typography>
 															</Typography>
 															<Typography>{item.comment}</Typography>
 														</Box>
@@ -2749,9 +2749,9 @@ const ProductDetail: React.FC<Props> = (props) => {
 										gutterBottom
 										style={{ marginTop: '10px' }}
 									>
-										Hoi & Dap{' '}
+										Hỏi & Đáp{' '}
 										<Typography component="span" className={classes.discount_percent}>
-											co {dataComment.total} binh luan
+											có {dataComment.total} bình luận
 										</Typography>
 										<Button
 											variant="text"
@@ -2766,7 +2766,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 												padding: '0',
 											}}
 										>
-											Tai lai
+											Tải lại
 										</Button>
 									</Typography>
 
@@ -2811,12 +2811,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 															if (valueCmtMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Noi dung khong de trong',
+																	title: 'Nội dung không để trống',
 																});
 															} else if (valueEmailMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Email khong de trong',
+																	title: 'Email không để trống',
 																});
 															} else {
 																setProgressCmt(true);
@@ -2829,7 +2829,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	if (response.errorCode === null) {
 																		Swal.fire({
 																			icon: 'success',
-																			title: 'Gui cau hoi thanh cong',
+																			title: 'Gửi câu hỏi thành công',
 																		});
 																		setRefreshCmt(refreshCmt + 1);
 																		setProgressCmt(false);
@@ -2838,13 +2838,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	} else if (response.errorCode === 1) {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Email khong dung dinh dang',
+																			title: 'Email không đúng định dạng',
 																		});
 																		setProgressCmt(false);
 																	} else {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Co loi xay ra',
+																			title: 'Có lỗi xảy ra',
 																		});
 																		setProgressCmt(false);
 																	}
@@ -2854,7 +2854,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 															if (valueCmtMain === '') {
 																Swal.fire({
 																	icon: 'error',
-																	title: 'Noi dung khong de trong',
+																	title: 'Nội dung không để trống',
 																});
 															} else {
 																setProgressCmt(true);
@@ -2867,7 +2867,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	if (response.errorCode === null) {
 																		Swal.fire({
 																			icon: 'success',
-																			title: 'Gui cau hoi thanh cong',
+																			title: 'Gửi câu hỏi thành công',
 																		});
 																		setRefreshCmt(refreshCmt + 1);
 																		setProgressCmt(false);
@@ -2875,13 +2875,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	} else if (response.errorCode === 1) {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Email khong dung dinh dang',
+																			title: 'Email không đúng định dạng',
 																		});
 																		setProgressCmt(false);
 																	} else {
 																		Swal.fire({
 																			icon: 'error',
-																			title: 'Co loi xay ra',
+																			title: 'Có lỗi xảy ra',
 																		});
 																		setProgressCmt(false);
 																	}
@@ -2890,7 +2890,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 														}
 													}}
 												>
-													gui cau hoi
+													Gửi câu hỏi
 												</Button>
 											</Box>
 										</Box>
@@ -2921,7 +2921,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																	</Typography>
 																	&nbsp;&nbsp;
 																	<Typography color="textSecondary">
-																		vao ngay {item.date}
+																		vào ngày {item.date}
 																	</Typography>
 																</Box>
 																<Box style={{ marginLeft: '39px', marginBottom: '10px' }}>
@@ -2936,7 +2936,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																				: setIdCmt(item.id_comment);
 																		}}
 																	>
-																		Tra loi
+																		Trả lời
 																	</Typography>
 																</Box>
 																{item?.feedback?.map((itemFeedback: any) => {
@@ -2963,11 +2963,11 @@ const ProductDetail: React.FC<Props> = (props) => {
 																						className={classes.discount_percent}
 																						style={{ fontSize: '11px', marginRight: '10px' }}
 																					>
-																						Quan tri vien
+																						Quản trị viên
 																					</Typography>
 																				)}
 																				<Typography color="textSecondary">
-																					vao ngay {itemFeedback.date}
+																					vào ngày {itemFeedback.date}
 																				</Typography>
 																			</Typography>
 																			<Typography>{itemFeedback.comment_feedback}</Typography>
@@ -3027,12 +3027,12 @@ const ProductDetail: React.FC<Props> = (props) => {
 																							if (valueCmt === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Noi dung khong de trong',
+																									title: 'Nội dung không để trống',
 																								});
 																							} else if (valueEmail === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Email khong de trong',
+																									title: 'Email không để trống',
 																								});
 																							} else {
 																								handleClickPageCmt(event);
@@ -3046,7 +3046,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									if (response.errorCode === null) {
 																										Swal.fire({
 																											icon: 'success',
-																											title: 'Gui cau hoi thanh cong',
+																											title: 'Gửi câu hỏi thành công',
 																										});
 																										setRefreshCmt(refreshCmt + 1);
 																										setProgressCmt(false);
@@ -3056,13 +3056,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									} else if (response.errorCode === 1) {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Email khong dung dinh dang',
+																											title: 'Email không đúng định dạng',
 																										});
 																										setProgressCmt(false);
 																									} else {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Co loi xay ra',
+																											title: 'Có lỗi xảy ra',
 																										});
 																										setProgressCmt(false);
 																									}
@@ -3072,7 +3072,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																							if (valueCmt === '') {
 																								Swal.fire({
 																									icon: 'error',
-																									title: 'Noi dung khong de trong',
+																									title: 'Nội dung không để trống',
 																								});
 																							} else {
 																								handleClickPageCmt(event);
@@ -3086,7 +3086,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									if (response.errorCode === null) {
 																										Swal.fire({
 																											icon: 'success',
-																											title: 'Gui cau hoi thanh cong',
+																											title: 'Gửi câu hỏi thành công',
 																										});
 																										setRefreshCmt(refreshCmt + 1);
 																										setProgressCmt(false);
@@ -3095,13 +3095,13 @@ const ProductDetail: React.FC<Props> = (props) => {
 																									} else if (response.errorCode === 1) {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Email khong dung dinh dang',
+																											title: 'Email không đúng định dạng',
 																										});
 																										setProgressCmt(false);
 																									} else {
 																										Swal.fire({
 																											icon: 'error',
-																											title: 'Co loi xay ra',
+																											title: 'Có lỗi xảy ra',
 																										});
 																										setProgressCmt(false);
 																									}
@@ -3110,7 +3110,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 																						}
 																					}}
 																				>
-																					gui cau hoi
+																					Gửi câu hỏi
 																				</Button>
 																			</Box>
 																		</Box>
@@ -3154,7 +3154,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 							gutterBottom
 							style={{ marginTop: '10px' }}
 						>
-							San pham goi y
+							Sản phẩm gợi ý
 						</Typography>
 
 						<Slider {...settings}>
@@ -3197,7 +3197,7 @@ const ProductDetail: React.FC<Props> = (props) => {
 								gutterBottom
 								style={{ marginTop: '10px' }}
 							>
-								San pham goi y
+								Sản phẩm gợi ý
 							</Typography>
 
 							<Slider {...settings}>

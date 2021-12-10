@@ -69,7 +69,7 @@ const User: React.FC = () => {
 	const [t] = useTranslation();
 	const [valueActive, setValueActive] = useState({
 		id: 0,
-		value: 'Danh sach nguoi dung dang duoc kich hoat',
+		value: 'Danh sách người dùng đang được kích hoạt',
 	});
 	const [filterSearch, setFilterSearch] = React.useState<any>({
 		Search: '',
@@ -93,14 +93,14 @@ const User: React.FC = () => {
 		},
 		{
 			name: 'name',
-			label: 'Ten',
+			label: 'Tên',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'gender',
-			label: 'Gioi tinh',
+			label: 'Giới tính',
 			options: {
 				sort: false,
 			},
@@ -114,35 +114,35 @@ const User: React.FC = () => {
 		},
 		{
 			name: 'phone',
-			label: 'So dien thoai',
+			label: 'Số điện thoại',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'address',
-			label: 'Dia chi',
+			label: 'Địa chỉ',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay dang ky',
+			label: 'Ngày đăng ký',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -189,7 +189,7 @@ const User: React.FC = () => {
 			noMatch: progressData ? <CircularProgress color="secondary" /> : t('tenant.no_match'),
 		},
 		selectedRows: {
-			text: 'File(s) selected',
+			text: 'Người dùng(s) đã được chọn',
 			delete: 'Delete',
 			deleteAria: 'Deleted Selected Row(s)',
 		},
@@ -300,7 +300,7 @@ const User: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach nguoi dung',
+					title: 'Bạn không có quyền xem danh sách người dùng',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -315,10 +315,10 @@ const User: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
-						<Link to="/" className={classes.link}>
-							Quan tri nguoi dung
+						<Link to={AppURL.MANAGER_USER} className={classes.link}>
+							Quản trị người dung
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -330,7 +330,7 @@ const User: React.FC = () => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -339,7 +339,7 @@ const User: React.FC = () => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lịa" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -361,7 +361,7 @@ const User: React.FC = () => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập email người dùng"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -420,7 +420,7 @@ const User: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 0, value: 'Danh sach nguoi dung dang duoc kich hoat' });
+									setValueActive({ id: 0, value: 'Danh sách người dùng đang được kích hoạt' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -431,10 +431,10 @@ const User: React.FC = () => {
 							>
 								{valueActive.id === 0 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach nguoi dung da duoc kich hoat
+										Danh sách người dùng đang được kích hoạt
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach nguoi dung da duoc kich hoat</Typography>
+									<Typography variant="body1">Danh sách người dùng đang được kích hoạt</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 0 && (
@@ -448,7 +448,7 @@ const User: React.FC = () => {
 							<MenuItem
 								onClick={() => {
 									setAnchorElActive(null);
-									setValueActive({ id: 1, value: 'Danh sach nguoi dung dang tam khoa' });
+									setValueActive({ id: 1, value: 'Danh sách người dùng đang tạm khóa' });
 									setFilterSearch({
 										...filterSearch,
 										Page: 0,
@@ -459,10 +459,10 @@ const User: React.FC = () => {
 							>
 								{valueActive.id === 1 ? (
 									<Typography variant="body1" style={{ fontWeight: 'bold' }}>
-										Danh sach nguoi dung dang tam khoa
+										Danh sách người dùng đang tạm khóa
 									</Typography>
 								) : (
-									<Typography variant="body1">Danh sach nguoi dung dang tam khoa</Typography>
+									<Typography variant="body1">Danh sách người dùng đang tạm khóa</Typography>
 								)}
 								&nbsp;
 								{valueActive.id === 1 && (
@@ -501,7 +501,7 @@ const User: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children={valueActive.id === 0 ? 'Xoa' : 'Khoi phuc'}
+										children={valueActive.id === 0 ? 'Xóa' : 'Khôi phục'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -523,7 +523,11 @@ const User: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} người dùng`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -584,7 +588,7 @@ const User: React.FC = () => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children={valueActive.id === 0 ? 'Xóa' : 'Khôi phục'}
 										onClick={() => {
 											Swal.fire({
 												title: 'Are you sure?',
@@ -606,7 +610,11 @@ const User: React.FC = () => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} người dùng`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

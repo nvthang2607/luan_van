@@ -280,7 +280,7 @@ const Product: React.FC<ProductProps> = (props) => {
 								history.push(`/product_detail/${toURL(props?.name)}-${props?.id}.html`);
 							}}
 						>
-							Chi tiet
+							Chi tiết
 						</Button>
 						{props.storeQuantity === 0 ? (
 							<Button
@@ -288,7 +288,7 @@ const Product: React.FC<ProductProps> = (props) => {
 								variant="contained"
 								style={{ float: 'right', width: '48%', color: 'grey' }}
 							>
-								Het hang
+								Hết hàng
 							</Button>
 						) : (
 							<Button

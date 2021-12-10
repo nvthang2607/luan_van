@@ -79,14 +79,14 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 	const classes = useStyles();
 
 	const schema = yup.object().shape({
-		name: yup.string().required('Name không để trống'),
-		nameCity: yup.string().required('nameCity không để trống'),
-		nameDistrict: yup.string().required('district không để trống'),
-		nameCommune: yup.string().required('commune không để trống'),
-		gender: yup.string().required('gioi tinh bat buoc').oneOf(['Nam', 'Nữ']),
+		name: yup.string().required('Tên không để trống'),
+		nameCity: yup.string().required('Tỉnh/Thành Phố không để trống'),
+		nameDistrict: yup.string().required('Quận/Huyện không để trống'),
+		nameCommune: yup.string().required('Phường/Xã không để trống'),
+		gender: yup.string().required('Giới tính là bắt buộc').oneOf(['Nam', 'Nữ']),
 		phone: yup
 			.number()
-			.required('Phone không để trống')
+			.required('Số điện thoại không để trống')
 			.typeError('Số điện thoại không hợp lệ')
 			.integer('Số điện thoại không hợp lệ'),
 	});
@@ -641,7 +641,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 												<TextField
 													{...params}
 													variant="outlined"
-													name="district"
+													name="nameDistrict"
 													fullWidth
 													//defaultValue={valueDistrict.name}
 													error={errors.nameDistrict ? true : false}
@@ -780,7 +780,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 											//disabled={true}
 											style={{ position: 'relative' }}
 										>
-											cap nhat thong tin
+											Cập nhật thông tin
 											{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 										</Button>
 									</Grid>
@@ -803,7 +803,7 @@ const ProfileInfo: React.FC<ProfileInfoProps> = (props) => {
 			/>
 
 			<Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth>
-				<DialogTitle id="form-dialog-title">Xac nhan mat khau</DialogTitle>
+				<DialogTitle id="form-dialog-title">Xác nhận mật khẩu</DialogTitle>
 				<IconButton className={classes.closeButton} onClick={() => setOpen(false)}>
 					<Close />
 				</IconButton>

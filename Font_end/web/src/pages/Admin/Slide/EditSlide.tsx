@@ -195,10 +195,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 		setAnchorEl(null);
 	};
 	const schema = yup.object().shape({
-		idProduct: yup
-			.number()
-			.typeError('idProduct must specify a number')
-			.min(0, 'idProduct_must_be_greater_than_or_equal_to_0'),
+		idProduct: yup.number().typeError('Mã sản phẩm là ký số').min(0, 'Mã sản phẩm phải lớn hơn 0'),
 	});
 
 	const {
@@ -300,15 +297,15 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 							if (responseNewsPost.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Tao tin tuc thanh cong',
+									title: 'Tạo mới thành công',
 								});
 								props.create?.(true);
 								setProgress(false);
 							} else if (responseNewsPost.errorCode === 1) {
-								toast.error('Id san pham khong ton tai');
+								toast.error('Mã sản phẩm không tồn tại');
 								setProgress(false);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setProgress(false);
 							}
 						}
@@ -329,12 +326,12 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 								if (responseNewsPost.errorCode === null) {
 									Swal.fire({
 										icon: 'success',
-										title: 'Cap nhat Slide thanh cong',
+										title: 'Cập nhật Slide thành công',
 									});
 									props.create?.(true);
 									setProgress(false);
 								} else {
-									toast.error('Co loi xay ra');
+									toast.error('Có lỗi xảy ra');
 									setProgress(false);
 								}
 							}
@@ -349,12 +346,12 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 							if (responseNewsPost.errorCode === null) {
 								Swal.fire({
 									icon: 'success',
-									title: 'Cap nhat Slide thanh cong',
+									title: 'Cập nhật Slide thành công',
 								});
 								props.create?.(true);
 								setProgress(false);
 							} else {
-								toast.error('Co loi xay ra');
+								toast.error('Có lỗi xảy ra');
 								setProgress(false);
 							}
 						}
@@ -384,7 +381,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 				</IconButton>
 
 				<DialogTitle>
-					<Typography variant="h5">Cap nhat tin tuc</Typography>
+					<Typography variant="h5">Cập nhật tin tức</Typography>
 				</DialogTitle>
 				<DialogContent dividers>
 					<Grid container spacing={3}>
@@ -400,7 +397,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 
 									<Grid item xs={12}>
 										<Typography variant="body1" gutterBottom className={classes.titleInput}>
-											id san pham
+											Mã sản phẩm
 										</Typography>
 										<Controller
 											control={control}
@@ -424,17 +421,17 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 									<Grid item xs={12}>
 										<Card variant="outlined" style={{ padding: '10px' }}>
 											<Typography variant="h6" gutterBottom style={{ fontWeight: 'bold' }}>
-												Anh san pham
+												Ảnh Slide
 											</Typography>
 
 											{manyUpload && (
 												<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-													Khong duoc chon nhieu hon 1 anh
+													Không được chọn nhiều hơn 1 ảnh
 												</FormHelperText>
 											)}
 											{errUpload && (
 												<FormHelperText error style={{ paddingLeft: '10px', paddingTop: '10px' }}>
-													Vui long chon it nhat 1 anh
+													Vui lòng chọn ít nhất 1 ảnh
 												</FormHelperText>
 											)}
 											<Box
@@ -487,7 +484,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 																						}}
 																						style={{ textTransform: 'initial' }}
 																					>
-																						Cap nhat
+																						Cập nhật
 																					</Button>
 																				</Box>
 
@@ -612,7 +609,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 																					style={{ fontSize: '60px', color: '#c1c1c1' }}
 																				/>
 																				<Typography variant="h6" style={{ color: '#c1c1c1' }}>
-																					Them anh
+																					Thêm ảnh
 																				</Typography>
 																			</Box>
 																		</div>
@@ -639,7 +636,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 							disabled={progress}
 							style={{ textTransform: 'inherit' }}
 						>
-							{props.dataEdit.id == 0 ? 'Tao moi' : 'Cap nhat'}
+							{props.dataEdit.id == 0 ? 'Tạo mới' : 'Cập nhật'}
 						</Button>
 						&nbsp;
 						<Button
@@ -651,7 +648,7 @@ const EditSlide: React.FC<ProfileInfoProps> = (props) => {
 								props.cancel?.(false);
 							}}
 						>
-							Dong
+							Đóng
 							{/* <CircularProgress size={24} color="primary" style={{ position: 'absolute' }} /> */}
 						</Button>
 					</Grid>

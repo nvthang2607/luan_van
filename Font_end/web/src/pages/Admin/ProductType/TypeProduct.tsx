@@ -95,28 +95,28 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 		},
 		{
 			name: 'name',
-			label: 'Ten',
+			label: 'Tên',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'created_at',
-			label: 'Ngay tao',
+			label: 'Ngày tạo',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'updated_at',
-			label: 'Ngay cap nhat',
+			label: 'Ngày cập nhật',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'id',
-			label: 'Hanh dong',
+			label: 'Hành động',
 			options: {
 				filter: false,
 				sort: false,
@@ -133,7 +133,7 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 										name: data[index].name,
 										id: data[index].id,
 									});
-									setTitleDialog('Cap nhat thong tin loai san pham');
+									setTitleDialog('Cập nhật thông tin loại sản phẩm');
 									setOpen(true);
 								}}
 							></i>
@@ -153,8 +153,8 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 			noMatch: progressData ? <CircularProgress color="secondary" /> : t('tenant.no_match'),
 		},
 		selectedRows: {
-			text: 'File(s) selected',
-			delete: 'Delete',
+			text: 'File(s) được chọn',
+			delete: 'Xóa',
 			deleteAria: 'Deleted Selected Row(s)',
 		},
 	};
@@ -190,7 +190,7 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem loai san pham',
+					title: 'Bạn không có quyền xem loại sản phẩm',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -262,10 +262,10 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							{t('menu_admin.home')}
 						</Link>
-						<Link to="/" className={classes.link}>
-							Loai san pham
+						<Link to={AppURL.ADMIN_TYPE_PRODUCT} className={classes.link}>
+							{t('menu_admin.type')}
 						</Link>
 						{/* <Link to="/" className={classes.link}>
 						Apple Watch SE GPS 40mm Vàng Chính Hãng Chưa Kích Trôi BH Apple Watch SE GPS 40mm
@@ -277,7 +277,7 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 					<Box>
 						<Collapse in={!showBoxSearch} timeout="auto" unmountOnExit>
 							<Box style={{ textAlign: 'end' }}>
-								<Tooltip title="Tim kiem" placement="top">
+								<Tooltip title="Tìm kiếm" placement="top">
 									<IconButton
 										onClick={() => {
 											setShowBoxSearch(true);
@@ -286,10 +286,10 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 										<SearchIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tao moi" placement="top">
+								<Tooltip title="Tạo mới" placement="top">
 									<IconButton
 										onClick={() => {
-											setTitleDialog('Tao moi loai san pham');
+											setTitleDialog('Tạo mới loại sản phẩm');
 											setDataEdit({ id: 0, name: '' });
 											setOpen(true);
 										}}
@@ -297,7 +297,7 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 										<AddIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Tai lai" placement="top">
+								<Tooltip title="Tải lại" placement="top">
 									<IconButton onClick={() => setFlag(!flag)}>
 										<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 									</IconButton>
@@ -319,7 +319,7 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 								</IconButton>
 								<TextField
 									id="standard-basic"
-									placeholder="Nhap ten hoac id nguoi dung"
+									placeholder="Nhập tên hoặc id người dùng"
 									variant="standard"
 									fullWidth
 									size="medium"
@@ -373,16 +373,16 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children="Xóa"
 										onClick={() => {
 											Swal.fire({
-												title: 'Are you sure?',
-												text: "You won't be able to revert this!",
+												title: 'Bạn có chắc muốn xóa không?',
+												text: 'Bạn sẽ không thể khôi phục lại hành động này!',
 												icon: 'warning',
 												showCancelButton: true,
 												confirmButtonColor: '#3085d6',
 												cancelButtonColor: '#d33',
-												confirmButtonText: 'Yes',
+												confirmButtonText: 'Có',
 												reverseButtons: true,
 											}).then((result) => {
 												if (result.isConfirmed) {
@@ -395,7 +395,11 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} tài khoản người dùng`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};
@@ -452,16 +456,16 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 									<Button
 										variant="contained"
 										color="primary"
-										children="DELETE"
+										children="Xóa"
 										onClick={() => {
 											Swal.fire({
-												title: 'Are you sure?',
-												text: "You won't be able to revert this!",
+												title: 'Bạn có chắc muốn xóa không?',
+												text: 'Bạn sẽ không thể khôi phục lại hành động này!',
 												icon: 'warning',
 												showCancelButton: true,
 												confirmButtonColor: '#3085d6',
 												cancelButtonColor: '#d33',
-												confirmButtonText: 'Yes',
+												confirmButtonText: 'Có',
 												reverseButtons: true,
 											}).then((result) => {
 												if (result.isConfirmed) {
@@ -474,7 +478,11 @@ const TypeProduct: React.FC<TypeProductProps> = (props) => {
 															}
 														}
 														if (count === selectedRows.data?.length) {
-															Swal.fire('Deleted!', `Da xoa thanh cong ${count} user`, 'success');
+															Swal.fire(
+																'Đã xóa!',
+																`Đã xóa thành công ${count} tài khoản người dùng`,
+																'success'
+															);
 
 															selectedRows.data = [];
 															selectedRows.lookup = {};

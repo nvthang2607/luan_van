@@ -131,21 +131,21 @@ const ListRating: React.FC = () => {
 		},
 		{
 			name: 'rating',
-			label: 'Danh gia',
+			label: 'Đánh giá',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'comment',
-			label: 'Noi dung danh gia',
+			label: 'Nội dung đánh giá',
 			options: {
 				sort: false,
 			},
 		},
 		{
 			name: 'date',
-			label: 'Ngay danh gia',
+			label: 'Ngày đánh giá',
 			options: {
 				sort: false,
 			},
@@ -198,7 +198,7 @@ const ListRating: React.FC = () => {
 			if (checkToken.isAdmin !== 'admin' && checkToken.isAdmin !== 'manager') {
 				Swal.fire({
 					icon: 'error',
-					title: 'Ban khong co quyen xem danh sach danh gia',
+					title: 'Bạn không có quyền xem danh sách đánh giá',
 				});
 				return <Redirect to={AppURL.ADMIN_HOME} />;
 			}
@@ -371,13 +371,13 @@ const ListRating: React.FC = () => {
 					<Breadcrumbs aria-label="breadcrumb">
 						<Link to={AppURL.ADMIN_HOME} className={classes.link}>
 							<HomeIcon className={classes.icon} />
-							Trang chu
+							Trang chủ
 						</Link>
 						<Link to="/" className={classes.link}>
-							San pham
+							Sản phẩm
 						</Link>
 						<Link to="/" className={classes.link}>
-							Danh gia
+							Đánh giá
 						</Link>
 						<Link to="/" className={classes.link}>
 							{dataProduct?.item?.name}
@@ -404,7 +404,7 @@ const ListRating: React.FC = () => {
 										variant="h6"
 										style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}
 									>
-										Co {dataProduct.rate_number} danh gia
+										Có {dataProduct.rate_number} đánh giá
 									</Typography>
 									<Typography gutterBottom style={{ display: 'flex', paddingBottom: '5px' }}>
 										<Typography variant="h5" style={{ color: '#ffb400', fontWeight: 'bold' }}>
@@ -617,7 +617,7 @@ const ListRating: React.FC = () => {
                                     <AddIcon style={{ color: '#757575', fontSize: '24px' }} />
                                 </IconButton>
                             </Tooltip> */}
-										<Tooltip title="Tai lai" placement="top">
+										<Tooltip title="Tải lại" placement="top">
 											<IconButton onClick={() => setFlag(!flag)}>
 												<RefreshIcon style={{ color: '#757575', fontSize: '24px' }} />
 											</IconButton>
